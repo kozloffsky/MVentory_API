@@ -40,7 +40,7 @@ class MVentory_Tm_Block_Product_View_Tabs
   /**
    * Add static block as tab to the container by attribute's value
    */
-  function addCmsBlockAsTabByAttr ($alias, $title, $code) {
+  function addCmsBlockAsTabByAttr ($alias, $code) {
 
     if (!$code)
       return false;
@@ -55,6 +55,8 @@ class MVentory_Tm_Block_Product_View_Tabs
     $id = $attributes[$code]
             ->getFrontend()
             ->getValue($product);
+
+    $title = $this->__($attributes[$code]->getStoreLabel());
 
     return $this->addCmsBlockAsTab($alias, $title, $id);
   }
