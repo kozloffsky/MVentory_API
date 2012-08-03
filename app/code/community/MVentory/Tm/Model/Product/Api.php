@@ -146,7 +146,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       //Set visibility to "Catalog, Search" value
       $productData['visibility'] = 4;
 
-      $id = $this->create($type, $set, $sku, $productData, $storeId);
+      //Set storeId as null to save values of attributes in the default scope
+      $id = $this->create($type, $set, $sku, $productData, null);
     }
 
     return $this->fullInfo($id);
