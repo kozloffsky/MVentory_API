@@ -27,6 +27,7 @@
                 <rewrite>
                     <product_list>MVentory_Tm_Block_Catalog_Product_List</product_list>
                     <product_view>MVentory_Tm_Block_Catalog_Product_View</product_view>
+                    <product_view_attributes>MVentory_Tm_Block_Product_View_Attributes</product_view_attributes>
                     <product_view_tabs>MVentory_Tm_Block_Product_View_Tabs</product_view_tabs>
                 </rewrite>
             </catalog>
