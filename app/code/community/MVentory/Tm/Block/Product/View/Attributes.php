@@ -24,7 +24,7 @@ class MVentory_Tm_Block_Product_View_Attributes
     $productIdData= array(
       'label' => 'Product ID',
       'value' => $this->getProduct()->getId(),
-      'code' => null
+      'code' => 'id'
     );
 
     array_unshift($data, $productIdData);
