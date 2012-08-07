@@ -53,6 +53,7 @@
             <catalog>
               <rewrite>
                   <category>MVentory_Tm_Model_Category</category>
+                  <product_url>MVentory_Tm_Model_Product_Url</product_url>
               </rewrite>
             </catalog>
         </models>
