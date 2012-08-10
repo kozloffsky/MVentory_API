@@ -124,6 +124,14 @@
                 </args>
             </mventory_tm>
         </routers>
+
+      <layout>
+        <updates>
+          <page-tm-additions>
+            <file>page/mv-additions.xml</file>
+          </page-tm-additions>
+        </updates>
+      </layout>
     </frontend>
     
     <adminhtml>

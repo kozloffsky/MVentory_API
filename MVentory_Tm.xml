@@ -1,5 +1,5 @@
 <_>
-   <form_key>M0xIfoXnXBlPIWPw</form_key>
+   <form_key>e0j61OwHamXvo4GY</form_key>
    <name>MVentory_Tm</name>
    <channel>community</channel>
    <version_ids>
@@ -9,7 +9,7 @@
    <description>MVentory_Tm</description>
    <license>OSL v3.0</license>
    <license_uri/>
-   <version>0.0.4</version>
+   <version>0.0.10</version>
    <stability>devel</stability>
    <notes>Initial versions</notes>
    <authors>
@@ -43,7 +43,7 @@
             <max/>
          </max>
          <files>
-            <files>                            </files>
+            <files>                                    </files>
          </files>
       </package>
       <extension>
@@ -63,23 +63,43 @@
          <target>magelocal</target>
          <target>magecommunity</target>
          <target>mageetc</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>mageskin</target>
       </target>
       <path>
          <path/>
          <path>MVentory/Tm</path>
          <path>modules/MVentory_Tm.xml</path>
+         <path>frontend/default/default/layout/local.xml</path>
+         <path>frontend/base/default/layout/page/mv-additions.xml</path>
+         <path>frontend/base/default/template/catalog/product/view/store.phtml</path>
+         <path>frontend/base/default/css/mventory-tm/</path>
       </path>
       <type>
          <type>file</type>
          <type>dir</type>
          <type>file</type>
+         <type>file</type>
+         <type>file</type>
+         <type>file</type>
+         <type>dir</type>
       </type>
       <include>
          <include/>
          <include/>
          <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
       </include>
       <ignore>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
          <ignore/>
          <ignore/>
          <ignore/>
