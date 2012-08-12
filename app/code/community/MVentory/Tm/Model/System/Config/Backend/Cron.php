@@ -2,17 +2,32 @@
 class MVentory_Tm_Model_System_Config_Backend_Cron
   extends Mage_Core_Model_Config_Data {
 
-  const CRON_PATH = 'crontab/jobs/mventory_tm_check/schedule/cron_expr';
+  const PATH = 'crontab/jobs/mventory_tm_check/schedule/cron_expr';
 
   protected function _afterSave () {
+    $scope = $this->getScope();
+    $scopeId = $this->getScopeId();
+
+    $value = (int) $this->getValue();
+
+    $expression = $value
+                    ? '*/' . $value . ' * * * *'
+                      : null;
+
+    $model = Mage::getModel('core/config_data');
+
+    $model
+      ->setScope($scope)
+      ->setScopeId($scopeId)
+      ->setPath(self::PATH)
+      ->setValue($expression);
+      
     try {
-      Mage::getModel('core/config_data')
-        ->load(self::CRON_PATH, 'path')
-        ->setValue((int)$this->getValue() ? '*/' . (int)$this->getValue() . ' * * * *' : '')
-        ->setPath(self::CRON_PATH)
-        ->save();
+      $model->save();
+
     } catch (Exception $e) {
-      throw new Exception(Mage::helper('cron')->__('Unable to save the cron expression.'));
+      throw new Exception(Mage::helper('cron')
+                            ->__('Unable to save the cron expression.'));
     }
   }
 }
