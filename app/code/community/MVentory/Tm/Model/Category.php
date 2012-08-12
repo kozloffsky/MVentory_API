@@ -9,7 +9,10 @@ class MVentory_Tm_Model_Category extends Mage_Catalog_Model_Category
      */
     public function getProductCollection()
     {
-        if (Mage::getStoreConfig('mventory_tm/settings/descending') == 1) {
+        $displayDescendingProducts = (bool) Mage::getStoreConfig(
+                      'mventory_tm/shop-interface/display-descending-products');
+
+        if ($displayDescendingProducts) {
             $ids = array($this->getId());
 
             $sub = Mage::getModel('catalog/category')->getCategories($this->getId());
