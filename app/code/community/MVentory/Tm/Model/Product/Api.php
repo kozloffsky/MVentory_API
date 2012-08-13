@@ -84,7 +84,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
 
     $limit = (int) Mage::getStoreConfig(
-                                    'mventory_tm/api/products-number-to-fetch');
+                                    'mventory_tm/api/products-number-to-fetch',
+                                    $storeId);
 
     if ($categoryId) {
       $category = Mage::getModel('catalog/category')
