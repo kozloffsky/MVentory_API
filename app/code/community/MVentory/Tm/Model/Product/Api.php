@@ -33,6 +33,8 @@
  */
 class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
+  const FETCH_LIMIT_PATH = 'mventory_tm/api/products-number-to-fetch';
+
   public function fullInfo ($id = null, $sku = null) {
     $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
 
@@ -83,9 +85,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   public function limitedList ($name = null, $categoryId = null, $page = 1) {
     $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
 
-    $limit = (int) Mage::getStoreConfig(
-                                    'mventory_tm/api/products-number-to-fetch',
-                                    $storeId);
+    $limit = (int) Mage::getStoreConfig(self::FETCH_LIMIT_PATH, $storeId);
 
     if ($categoryId) {
       $category = Mage::getModel('catalog/category')
