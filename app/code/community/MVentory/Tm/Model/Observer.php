@@ -143,9 +143,6 @@ class MVentory_Tm_Model_Observer {
   public function productInit ($observer) {
     $product = $observer->getProduct();
 
-    if ($product->getCategory())
-      return;
-    
     $categories = $product->getCategoryIds();
 
     if (!count($categories))
@@ -153,13 +150,24 @@ class MVentory_Tm_Model_Observer {
 
     $categoryId = $categories[0];
 
+    $lastId = Mage::getSingleton('catalog/session')->getLastVisitedCategoryId();
+
+    // Return if last visited vategory was not used
+    if ($product->getCategory()->getId() != $lastId)
+      return;
+
+    // Return if categories are same, nothing to change
+    if ($lastId == $categoryId)
+      return;
+
     if (!$product->canBeShowInCategory($categoryId))
       return;
 
     $category = Mage::getModel('catalog/category')->load($categoryId);
 
     $product->setCategory($category);
-    
+
+    Mage::unregister('current_category');
     Mage::register('current_category', $category);
   }
 }
