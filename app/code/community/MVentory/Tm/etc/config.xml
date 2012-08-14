@@ -95,6 +95,16 @@
           </mventory_tm_media_save_before>
         </observers>
       </catalog_product_media_save_before>
+
+      <catalog_controller_product_init>
+        <observers>
+          <mventory_tm_product_init>
+            <type>singleton</type>  
+            <class>mventory_tm/observer</class>   
+            <method>productInit</method>
+          </mventory_tm_product_init>
+        </observers>
+      </catalog_controller_product_init>
     </events>
 
     <rewrite>

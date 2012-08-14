@@ -139,4 +139,27 @@ class MVentory_Tm_Model_Observer {
       $imageSave($imageData, $imagePath, 100);
     }
   }
+
+  public function productInit ($observer) {
+    $product = $observer->getProduct();
+
+    if ($product->getCategory())
+      return;
+    
+    $categories = $product->getCategoryIds();
+
+    if (!count($categories))
+      return;
+
+    $categoryId = $categories[0];
+
+    if (!$product->canBeShowInCategory($categoryId))
+      return;
+
+    $category = Mage::getModel('catalog/category')->load($categoryId);
+
+    $product->setCategory($category);
+    
+    Mage::register('current_category', $category);
+  }
 }
