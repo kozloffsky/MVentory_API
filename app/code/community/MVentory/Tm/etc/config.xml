@@ -1,197 +1,200 @@
 <?xml version="1.0"?>
 <config>
-    <modules>
-        <MVentory_Tm>
-            <version>0.0.2</version>
-        </MVentory_Tm>
-    </modules>
-    
-    <global>
+  <modules>
+    <MVentory_Tm>
+      <version>0.0.2</version>
+    </MVentory_Tm>
+  </modules>
+  
+  <global>
+    <blocks>
+      <mventory_tm>
+        <class>MVentory_Tm_Block</class>
+      </mventory_tm>
+
+      <adminhtml>
         <rewrite>
-            <mventory_tm_qr_get>
-                <from><![CDATA[#^/sku/#]]></from>
-                <to><![CDATA[/mventory_tm/qr/scan/sku/]]></to>
-            </mventory_tm_qr_get> 
+          <catalog_product_edit_tabs>MVentory_Tm_Block_Adminhtml_Catalog_Product_Edit_Tabs</catalog_product_edit_tabs>
         </rewrite>
+      </adminhtml>
 
-        <blocks>
-            <mventory_tm>
-                <class>MVentory_Tm_Block</class>
-            </mventory_tm>
-            <adminhtml>
-                <rewrite>
-                    <catalog_product_edit_tabs>MVentory_Tm_Block_Adminhtml_Catalog_Product_Edit_Tabs</catalog_product_edit_tabs>
-                </rewrite>
-            </adminhtml>
-            <catalog>
-                <rewrite>
-                    <product_list>MVentory_Tm_Block_Catalog_Product_List</product_list>
-                    <product_view>MVentory_Tm_Block_Catalog_Product_View</product_view>
-                    <product_view_attributes>MVentory_Tm_Block_Product_View_Attributes</product_view_attributes>
-                    <product_view_description>MVentory_Tm_Block_Product_View_Description</product_view_description>
-                    <product_view_tabs>MVentory_Tm_Block_Product_View_Tabs</product_view_tabs>
-                </rewrite>
-            </catalog>
-        </blocks>
-        
-        <models>
-            <mventory_tm>
-                <class>MVentory_Tm_Model</class>
-                <resourceModel>mventory_tm_resources</resourceModel>
-            </mventory_tm>
-
-            <mventory_tm_resources>
-                <class>MVentory_Tm_Model_Resource</class>
-
-                <entities>
-                    <order_transaction>
-                        <table>mventory_order_transaction</table>
-                    </order_transaction>
-                </entities>
-            </mventory_tm_resources>
-
-            <catalog>
-              <rewrite>
-                  <category>MVentory_Tm_Model_Category</category>
-                  <product_url>MVentory_Tm_Model_Product_Url</product_url>
-              </rewrite>
-            </catalog>
-        </models>
-
-        <helpers>
-            <mventory_tm>
-                <class>MVentory_Tm_Helper</class>
-            </mventory_tm>
-            <catalog>
-                <rewrite>
-                    <image>MVentory_Tm_Helper_Image</image>
-                </rewrite>
-            </catalog>
-        </helpers>
-
-        <resources>
-            <mventory_tm_setup>
-                <setup>
-                    <module>MVentory_Tm</module>
-                    <class>MVentory_Tm_Model_Resource_Setup</class>
-                </setup>
-            </mventory_tm_setup>
-        </resources>
-
-        <events>     
-            <catalog_product_save_after>      
-                <observers>     
-                    <mventory_tm_product_save_after>     
-                        <type>singleton</type>  
-                        <class>mventory_tm/observer</class>   
-                        <method>productSaveAfter</method>  
-                    </mventory_tm_product_save_after>
-                </observers>  
-            </catalog_product_save_after>
-
-            <!-- Requires M. >= 1.7 -->
-            <catalog_product_media_save_before>
-                <observers>
-                    <mventory_tm_media_save_before>
-                        <type>singleton</type>  
-                        <class>mventory_tm/observer</class>   
-                        <method>mediaSaveBefore</method>
-                    </mventory_tm_media_save_before>
-                </observers>
-            </catalog_product_media_save_before>
-        </events>
-    </global>
-
-    <admin>
-        <routers>
-            <mventory_tm_adminhtml>
-                <use>admin</use>
-                <args>
-                    <module>MVentory_Tm</module>
-                    <frontName>mventory_tm</frontName>
-                </args>
-            </mventory_tm_adminhtml>
-        </routers>
-    </admin>
+      <catalog>
+        <rewrite>
+          <product_list>MVentory_Tm_Block_Catalog_Product_List</product_list>
+          <product_view>MVentory_Tm_Block_Catalog_Product_View</product_view>
+          <product_view_attributes>MVentory_Tm_Block_Product_View_Attributes</product_view_attributes>
+          <product_view_description>MVentory_Tm_Block_Product_View_Description</product_view_description>
+          <product_view_tabs>MVentory_Tm_Block_Product_View_Tabs</product_view_tabs>
+        </rewrite>
+      </catalog>
+    </blocks>
     
-    <frontend>
-        <routers>
-            <mventory_tm>
-                <use>standard</use>
-                <args>
-                    <module>MVentory_Tm</module>
-                    <frontName>mventory_tm</frontName>
-                </args>
-            </mventory_tm>
-        </routers>
+    <models>
+      <mventory_tm>
+        <class>MVentory_Tm_Model</class>
+        <resourceModel>mventory_tm_resources</resourceModel>
+      </mventory_tm>
 
-      <layout>
-        <updates>
-          <page-tm-additions>
-            <file>page/mv-additions.xml</file>
-          </page-tm-additions>
-        </updates>
-      </layout>
-    </frontend>
-    
-    <adminhtml>
-        <acl>
-            <resources>
-                <admin>
-                    <children>
-                        <system>
-                            <children>
-                                <config>
-                                    <children>
-                                        <mventory_tm>
-                                            <title>mVentory Tm</title>
-                                        </mventory_tm>
-                                    </children>
-                                </config>
-                            </children>
-                        </system>
-                    </children>
-                </admin>
-            </resources>
-        </acl>
-    </adminhtml>
-    
-    <default>
-        <mventory_tm>
-            <qr>
-                <rows>10</rows>
-                <columns>15</columns>
-                <size>180</size>
-                <pages>3</pages>
-                <copies>1</copies>
-            </qr>
+      <mventory_tm_resources>
+        <class>MVentory_Tm_Model_Resource</class>
 
-            <api>
-                <products-number-to-fetch>50</products-number-to-fetch>
-                <add_to_websites>1</add_to_websites>
-            </api>
-        </mventory_tm>
+        <entities>
+          <order_transaction>
+            <table>mventory_order_transaction</table>
+          </order_transaction>
+        </entities>
+      </mventory_tm_resources>
 
-        <carriers>
-            <dummyshipping>
-                <active>0</active>
-                <sallowspecific>0</sallowspecific>
-                <cutoff_cost>0</cutoff_cost>
-                <model>mventory_tm/carrier_dummyshipping</model>
-                <name>Dummy</name>
-                <title>Dummy Shipping</title>
-                <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
-            </dummyshipping>
-        </carriers>
-    </default>
-    
-    <crontab>
-        <jobs>
-            <mventory_tm_check>
-                <run>
-                    <model>mventory_tm/observer::scheduledCheck</model>
-                </run>
-            </mventory_tm_check>
-        </jobs>
-    </crontab>
+      <catalog>
+        <rewrite>
+          <category>MVentory_Tm_Model_Category</category>
+          <product_url>MVentory_Tm_Model_Product_Url</product_url>
+        </rewrite>
+      </catalog>
+    </models>
+
+    <helpers>
+      <mventory_tm>
+        <class>MVentory_Tm_Helper</class>
+      </mventory_tm>
+
+      <catalog>
+        <rewrite>
+          <image>MVentory_Tm_Helper_Image</image>
+        </rewrite>
+      </catalog>
+    </helpers>
+
+    <resources>
+      <mventory_tm_setup>
+        <setup>
+          <module>MVentory_Tm</module>
+          <class>MVentory_Tm_Model_Resource_Setup</class>
+        </setup>
+      </mventory_tm_setup>
+    </resources>
+
+    <events>     
+      <catalog_product_save_after>      
+        <observers>     
+          <mventory_tm_product_save_after>     
+            <type>singleton</type>  
+            <class>mventory_tm/observer</class>   
+            <method>productSaveAfter</method>  
+          </mventory_tm_product_save_after>
+        </observers>  
+      </catalog_product_save_after>
+
+      <!-- Requires M. >= 1.7 -->
+      <catalog_product_media_save_before>
+        <observers>
+          <mventory_tm_media_save_before>
+            <type>singleton</type>  
+            <class>mventory_tm/observer</class>   
+            <method>mediaSaveBefore</method>
+          </mventory_tm_media_save_before>
+        </observers>
+      </catalog_product_media_save_before>
+    </events>
+
+    <rewrite>
+      <mventory_tm_qr_get>
+        <from><![CDATA[#^/sku/#]]></from>
+        <to><![CDATA[/mventory_tm/qr/scan/sku/]]></to>
+      </mventory_tm_qr_get> 
+    </rewrite>
+  </global>
+
+  <admin>
+    <routers>
+      <mventory_tm_adminhtml>
+        <use>admin</use>
+        <args>
+          <module>MVentory_Tm</module>
+          <frontName>mventory_tm</frontName>
+        </args>
+      </mventory_tm_adminhtml>
+    </routers>
+  </admin>
+  
+  <frontend>
+    <routers>
+      <mventory_tm>
+        <use>standard</use>
+        <args>
+          <module>MVentory_Tm</module>
+          <frontName>mventory_tm</frontName>
+        </args>
+      </mventory_tm>
+    </routers>
+
+    <layout>
+      <updates>
+        <page-tm-additions>
+        <file>page/mv-additions.xml</file>
+        </page-tm-additions>
+      </updates>
+    </layout>
+  </frontend>
+  
+  <adminhtml>
+    <acl>
+      <resources>
+        <admin>
+          <children>
+            <system>
+              <children>
+                <config>
+                  <children>
+                    <mventory_tm>
+                      <title>mVentory Tm</title>
+                    </mventory_tm>
+                  </children>
+                </config>
+              </children>
+            </system>
+          </children>
+        </admin>
+      </resources>
+    </acl>
+  </adminhtml>
+  
+  <default>
+    <mventory_tm>
+      <qr>
+        <rows>10</rows>
+        <columns>15</columns>
+        <size>180</size>
+        <pages>3</pages>
+        <copies>1</copies>
+      </qr>
+
+      <api>
+        <products-number-to-fetch>50</products-number-to-fetch>
+        <add_to_websites>1</add_to_websites>
+      </api>
+    </mventory_tm>
+
+    <carriers>
+      <dummyshipping>
+        <active>0</active>
+        <sallowspecific>0</sallowspecific>
+        <cutoff_cost>0</cutoff_cost>
+        <model>mventory_tm/carrier_dummyshipping</model>
+        <name>Dummy</name>
+        <title>Dummy Shipping</title>
+        <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
+      </dummyshipping>
+    </carriers>
+  </default>
+  
+  <crontab>
+    <jobs>
+      <mventory_tm_check>
+        <run>
+          <model>mventory_tm/observer::scheduledCheck</model>
+        </run>
+      </mventory_tm_check>
+    </jobs>
+  </crontab>
 </config>
