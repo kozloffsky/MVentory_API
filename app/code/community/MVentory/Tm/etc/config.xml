@@ -187,7 +187,7 @@
 
     <carriers>
       <dummyshipping>
-        <active>0</active>
+        <active>1</active>
         <sallowspecific>0</sallowspecific>
         <cutoff_cost>0</cutoff_cost>
         <model>mventory_tm/carrier_dummyshipping</model>
