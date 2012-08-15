@@ -8,36 +8,67 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const SANDBOX_PATH = 'mventory_tm/settings/sandbox';
   const FOOTER_PATH = 'mventory_tm/settings/footer';
 
-  private $_config = array();
+  private $_config = null;
   private $_host = 'trademe';
   private $_categories = array();
 
-  public function _construct () {
-    $this->_host = Mage::getStoreConfig(self::SANDBOX_PATH)
-                     ? 'tmsandbox'
-                       : 'trademe';
+  private $_store = null;
+
+  private function getConfig () {
+    if ($this->_config)
+      return $this->_config;
+
+    $host = Mage::getStoreConfig(self::SANDBOX_PATH, $this->_store)
+            ? 'tmsandbox'
+              : 'trademe';
 
     $this->_config = array(
       'requestScheme' => Zend_Oauth::REQUEST_SCHEME_HEADER,
       'version' => '1.0',
       'signatureMethod' => 'HMAC-SHA1',
       'callbackUrl' => Mage::helper('core/url')->getCurrentUrl(),
-      'siteUrl' => 'https://secure.' . $this->_host . '.co.nz/Oauth/',
+      'siteUrl' => 'https://secure.' . $host . '.co.nz/Oauth/',
       'requestTokenUrl'
-              => 'https://secure.' . $this->_host . '.co.nz/Oauth/RequestToken',
+                     => 'https://secure.' . $host . '.co.nz/Oauth/RequestToken',
       'userAuthorisationUrl'
-                 => 'https://secure.' . $this->_host . '.co.nz/Oauth/Authorize',
+                        => 'https://secure.' . $host . '.co.nz/Oauth/Authorize',
       'accessTokenUrl'
-               => 'https://secure.' . $this->_host . '.co.nz/Oauth/AccessToken',
-      'consumerKey' => Mage::getStoreConfig(self::KEY_PATH),
-      'consumerSecret' => Mage::getStoreConfig(self::SECRET_PATH)
+               => 'https://secure.' . $host . '.co.nz/Oauth/AccessToken',
+      'consumerKey' => Mage::getStoreConfig(self::KEY_PATH, $this->_store),
+      'consumerSecret' => Mage::getStoreConfig(self::SECRET_PATH, $this->_store)
     );
+
+    $this->host = $host;
+
+    return $this->_config;
+  }
+
+  private function setStoreId ($product) {
+    $ids = $product->getWebsiteIds();
+
+    for ($id = reset($ids); $id && $id == 1; $id = next($ids));
+
+    $this->_store = $id === false ? null : $id;
+  }
+
+  private function saveAccessToken ($token = '') {
+    $scope = 'default';
+    $scopeId = 0;
+
+    if ($this->_store) {
+      $scope = 'websites';
+      $scopeId = $this->_store;
+    }
+
+    Mage::getConfig()
+      ->saveConfig(self::ACCESS_TOKEN_PATH, $token, $scope, $scopeId)
+      ->reinit();
+
+    Mage::app()->reinitStores();
   }
 
   public function reset () {
-    Mage::getConfig()->saveConfig(self::ACCESS_TOKEN_PATH, '');
-    Mage::getConfig()->reinit();
-    Mage::app()->reinitStores();
+    $this->saveAccessToken();
 
     Mage::app()->getResponse()->setRedirect(Mage::helper('core/url')->getCurrentUrl());
     Mage::app()->getResponse()->sendResponse();
@@ -46,7 +77,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function auth () {
-    $accessTokenData = Mage::getStoreConfig(self::ACCESS_TOKEN_PATH);
+    $accessTokenData
+                 = Mage::getStoreConfig(self::ACCESS_TOKEN_PATH, $this->_store);
 
     $request = Mage::app()->getRequest();
     
@@ -57,7 +89,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $requestToken = $session->getMventoryTmRequestToken();
 
     if (!$accessTokenData) {
-      $oAuth = new Zend_Oauth_Consumer($this->_config);
+      $oAuth = new Zend_Oauth_Consumer($this->getConfig());
 
       if ($oAuthToken && $requestToken) {
         try {
@@ -67,11 +99,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           $accessTokenData = serialize(array($accessToken->getToken(),
                                                $accessToken->getTokenSecret()));
 
-          Mage::getConfig()
-                        ->saveConfig(self::ACCESS_TOKEN_PATH, $accessTokenData);
-
-          Mage::getConfig()->reinit();
-          Mage::app()->reinitStores();
+          $this->saveAccessToken($accessTokenData);
 
           $session->setMventoryTmRequestToken(null);
         } catch(Exception $e) {
@@ -108,6 +136,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function send ($product) {
+    $this->setStoreId($product);
+
     $return = 'Error';
 
     if ($accessTokenData = $this->auth()) {
@@ -142,7 +172,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       if (file_exists($imagePath)) {
         $imagePathInfo = pathinfo($imagePath);
 
-        $signature = md5(Mage::getStoreConfig(self::KEY_PATH)
+        $signature = md5(Mage::getStoreConfig(self::KEY_PATH, $this->_store)
                            . $imagePathInfo['filename']
                            . $imagePathInfo['extension']
                            . 'False'
@@ -157,7 +187,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   <IsUsernameAdded>' . 0 . '</IsUsernameAdded>
   </PhotoUploadRequest>';
 
-        $client = $accessToken->getHttpClient($this->_config);
+        $client = $accessToken->getHttpClient($this->getConfig());
         $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Photos.xml');
         $client->setMethod(Zend_Http_Client::POST);
         $client->setRawData($xml, 'application/xml');
@@ -179,14 +209,14 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         }
       }
 
-      $client = $accessToken->getHttpClient($this->_config);
+      $client = $accessToken->getHttpClient($this->getConfig());
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling.xml');
       $client->setMethod(Zend_Http_Client::POST);
 
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
 <Title>' . $product->getName() . '</Title>
-<Description><Paragraph>' . $product->getDescription() . ' ' . Mage::getStoreConfig(self::FOOTER_PATH) . ' ' . Mage::getBaseUrl() . $product->getUrlPath() . '</Paragraph></Description>
+<Description><Paragraph>' . $product->getDescription() . ' ' . Mage::getStoreConfig(self::FOOTER_PATH, $this->_store) . ' ' . Mage::getBaseUrl() . $product->getUrlPath() . '</Paragraph></Description>
 <StartPrice>' . $product->getPrice() . '</StartPrice>
 <ReservePrice>' . $product->getPrice() . '</ReservePrice>
 <BuyNowPrice>' . $product->getPrice() . '</BuyNowPrice>
@@ -261,6 +291,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function remove($product) {
+    $this->setStoreId($product);
+
     if ($accessTokenData = $this->auth()) {
       $error = false;
 
@@ -270,7 +302,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $accessToken->setToken($accessTokenData[0]);
       $accessToken->setTokenSecret($accessTokenData[1]);
 
-      $client = $accessToken->getHttpClient($this->_config);
+      $client = $accessToken->getHttpClient($this->getConfig());
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Withdraw.xml');
       $client->setMethod(Zend_Http_Client::POST);
 
@@ -302,6 +334,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function check($product) {
+    $this->setStoreId($product);
+
     if ($accessTokenData = $this->auth()) {
       $error = false;
 
@@ -311,7 +345,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $accessToken->setToken($accessTokenData[0]);
       $accessToken->setTokenSecret($accessTokenData[1]);
 
-      $client = $accessToken->getHttpClient($this->_config);
+      $client = $accessToken->getHttpClient($this->getConfig());
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/MyTradeMe/UnsoldItems.xml');
       $client->setMethod(Zend_Http_Client::GET);
       $client->setParameterGet('deleted', 'True');
@@ -330,7 +364,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         }
       }
 
-      $client = $accessToken->getHttpClient($this->_config);
+      $client = $accessToken->getHttpClient($this->getConfig());
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/MyTradeMe/SoldItems.xml');
       $client->setMethod(Zend_Http_Client::GET);
       $client->setParameterGet('deleted', '1');
@@ -349,7 +383,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         }
       }
 
-      $client = $accessToken->getHttpClient($this->_config);
+      $client = $accessToken->getHttpClient($this->getConfig());
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/MyTradeMe/SellingItems/All.xml');
       $client->setMethod(Zend_Http_Client::GET);
       $client->setParameterGet('deleted', '1');
