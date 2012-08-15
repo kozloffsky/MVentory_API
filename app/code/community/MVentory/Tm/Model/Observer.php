@@ -152,8 +152,10 @@ class MVentory_Tm_Model_Observer {
 
     $lastId = Mage::getSingleton('catalog/session')->getLastVisitedCategoryId();
 
+    $category = $product->getCategory();
+
     // Return if last visited vategory was not used
-    if ($product->getCategory()->getId() != $lastId)
+    if ($category && $category->getId() != $lastId)
       return;
 
     // Return if categories are same, nothing to change
