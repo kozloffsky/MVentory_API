@@ -38,7 +38,6 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
     if (!$productId) {
       $product
-        ->setStoreId(Mage::app()->getStore($storeId)->getId())
         ->setWebsiteIds($helper->getWebsitesForProduct($storeId))
         ->setAttributeSetId($product->getDefaultAttributeSetId())
         ->setTypeId('simple')
