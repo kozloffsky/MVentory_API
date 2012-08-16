@@ -172,4 +172,17 @@ class MVentory_Tm_Model_Observer {
     Mage::unregister('current_category');
     Mage::register('current_category', $category);
   }
+
+  public function addProductNameRebuildMassaction ($observer) {
+    $block = $observer->getBlock();
+
+    $route = 'mventory_tm/catalog_product/massNameRebuild';
+
+    $label = Mage::helper('mventory_tm')->__('Rebuild product name');
+    $url = $block->getUrl($route, array('_current' => true));
+
+    $block
+      ->getMassactionBlock()
+      ->addItem('namerebuild', compact('label', 'url'));
+  }
 }

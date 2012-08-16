@@ -105,6 +105,16 @@
           </mventory_tm_product_init>
         </observers>
       </catalog_controller_product_init>
+
+      <adminhtml_catalog_product_grid_prepare_massaction>
+        <observers>
+          <mventory_tm_product_name_rebuild>
+            <type>singleton</type>  
+            <class>mventory_tm/observer</class>   
+            <method>addProductNameRebuildMassaction</method>
+          </mventory_tm_product_name_rebuild>
+        </observers>
+      </adminhtml_catalog_product_grid_prepare_massaction>
     </events>
 
     <rewrite>
