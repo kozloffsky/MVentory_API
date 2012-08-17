@@ -7,8 +7,8 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
 
     $templates = array();
 
-    $productEntityTypeId = Mage::getResourceModel('catalog/product')
-                             ->getTypeId();
+    $attributeResource
+                   = Mage::getResourceSingleton('mventory_tm/entity_attribute');
 
     foreach ($productIds as $productId) {
       $product = Mage::getModel('catalog/product')
@@ -28,16 +28,11 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
 
         $attributeSetName = $attribueSet->getAttributeSetName();
 
-        $attributeCode = 'frm_'
-                         . str_replace(' ', '_', strtolower($attributeSetName));
+        $defaultValue = $attributeResource
+                          ->getDefaultValueByLabel($attributeSetName, $storeId);
 
-        $attribute = Mage::getModel('eav/entity_attribute')
-                       ->loadByCode($productEntityTypeId, $attributeCode);
-
-        if (!$attribute->getId())
-          continue;
-
-        $templates[$attributeSetId] = $attribute->getDefaultValue();
+        if ($defaultValue)
+          $templates[$attributeSetId] = $defaultValue;
       }
 
       if (!$templates[$attributeSetId])
