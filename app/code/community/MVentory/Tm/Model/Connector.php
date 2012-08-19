@@ -216,7 +216,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
 <Title>' . $product->getName() . '</Title>
-<Description><Paragraph>' . $product->getDescription() . ' ' . Mage::getStoreConfig(self::FOOTER_PATH, $this->_store) . ' ' . Mage::getBaseUrl() . $product->getUrlPath() . '</Paragraph></Description>
+<Description><Paragraph>'
+  . strlen($product->getDescription()) > 5 ? $product->getDescription() : ''
+  . ' ' . Mage::getStoreConfig(self::FOOTER_PATH, $this->_store)
+  . '</Paragraph></Description>
 <StartPrice>' . $product->getPrice() . '</StartPrice>
 <ReservePrice>' . $product->getPrice() . '</ReservePrice>
 <BuyNowPrice>' . $product->getPrice() . '</BuyNowPrice>
