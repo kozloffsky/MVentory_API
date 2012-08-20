@@ -7,6 +7,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const SECRET_PATH = 'mventory_tm/settings/secret';
   const SANDBOX_PATH = 'mventory_tm/settings/sandbox';
   const FOOTER_PATH = 'mventory_tm/settings/footer';
+  const BUY_NOW_PATH = 'mventory_tm/settings/allow_buy_now';
 
   private $_config = null;
   private $_host = 'trademe';
@@ -220,14 +221,19 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       if ($descriptionTmpl)
         $description = $this->processDescription($descriptionTmpl, $product);
 
+      $buyNow = ''
+
+      if ((bool) Mage::getStoreConfig(self::BUY_NOW_PATH, $this->_store))
+        $buyNow = '<BuyNowPrice>' . $product->getPrice() . '</BuyNowPrice>';
+
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
 <Title>' . $product->getName() . '</Title>
 <Description><Paragraph>' . $description . '</Paragraph></Description>
 <StartPrice>' . $product->getPrice() . '</StartPrice>
-<ReservePrice>' . $product->getPrice() . '</ReservePrice>
-<BuyNowPrice>' . $product->getPrice() . '</BuyNowPrice>
-<Duration>Seven</Duration>
+<ReservePrice>' . $product->getPrice() . '</ReservePrice>'
+. $buyNow .
+'<Duration>Seven</Duration>
 <Pickup>Allow</Pickup>';
 
       if ($photoId) {

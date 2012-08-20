@@ -181,6 +181,10 @@
   
   <default>
     <mventory_tm>
+      <settings>
+        <allow_buy_now>1</allow_buy_now>
+      </settings>
+
       <qr>
         <rows>10</rows>
         <columns>15</columns>
