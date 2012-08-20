@@ -213,13 +213,17 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling.xml');
       $client->setMethod(Zend_Http_Client::POST);
 
+      $descriptionTmpl = Mage::getStoreConfig(self::FOOTER_PATH, $this->_store);
+
+      $description = '';
+
+      if ($descriptionTmpl)
+        $description = $this->processDescription($descriptionTmpl, $product);
+
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
 <Title>' . $product->getName() . '</Title>
-<Description><Paragraph>'
-  . strlen($product->getDescription()) > 5 ? $product->getDescription() : ''
-  . ' ' . Mage::getStoreConfig(self::FOOTER_PATH, $this->_store)
-  . '</Paragraph></Description>
+<Description><Paragraph>' . $description . '</Paragraph></Description>
 <StartPrice>' . $product->getPrice() . '</StartPrice>
 <ReservePrice>' . $product->getPrice() . '</ReservePrice>
 <BuyNowPrice>' . $product->getPrice() . '</BuyNowPrice>
@@ -407,5 +411,62 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     }
 
     return 0;
+  }
+
+  private function processDescription ($template, $product) {
+    $search = array();
+    $replace = array();
+
+    $url = Mage::getModel('core/url')
+             ->setStore($this->_store);
+
+    $params = array(
+      'sku' => $product->getSku(),
+      '_nosid' => true
+    );
+
+    $search[] = '{{url}}';
+    $replace[] = $url->getUrl(null, $params);
+
+    $shortDescription = $product->getShortDescription();
+
+    $search[] = '{{sd}}';
+    $replace[] = $shortDescription && strlen($shortDescription) > 5
+                   ? $shortDescription
+                     : '';
+
+    $fullDescription = $product->getDescription();
+
+    $search[] = '{{fd}}';
+    $replace[] = $fullDescription && strlen($fullDescription) > 5
+                   ? $fullDescription
+                     : '';
+
+    Mage::register('product', $product);
+
+    $_attrs = Mage::app()
+              ->getLayout()
+              ->getBlockSingleton('mventory_tm/product_view_attributes')
+              ->getAdditionalData();
+
+    $attrs = '';
+
+    foreach ($_attrs as $_attr)
+      $attrs .= $_attr['label'] . ': ' . $_attr['value'] . "\r\n";
+
+    $search[] = '{{attrs}}';
+    $replace[] = rtrim($attrs);
+
+    $description = str_replace($search, $replace, $template);
+
+    do {
+      $before = strlen($description);
+
+      $description = str_replace("\r\n\r\n\r\n", "\r\n\r\n", $description);
+
+      $after = strlen($description);
+    } while ($before != $after);
+
+    return trim($description);
   }
 }
