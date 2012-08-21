@@ -107,6 +107,18 @@
           </add_product_quote_save_fault>
         </faults>
       </cart>
+
+      <sales_order translate="title" module="sales">
+        <model>mventory_tm/order_api</model>
+        <acl>sales/order</acl>
+
+        <methods>
+          <listByStatus translate="title" module="sales">
+            <title>Retrieve list of orders by status and store</title>
+            <acl>sales/order/info</acl>
+          </listByStatus>
+        </methods>
+      </sales_order>
     </resources>
   </api>
 </config>
