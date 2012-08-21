@@ -39,7 +39,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       'consumerSecret' => Mage::getStoreConfig(self::SECRET_PATH, $this->_store)
     );
 
-    $this->host = $host;
+    $this->_host = $host;
 
     return $this->_config;
   }
@@ -221,7 +221,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       if ($descriptionTmpl)
         $description = $this->processDescription($descriptionTmpl, $product);
 
-      $buyNow = ''
+      $buyNow = '';
 
       if ((bool) Mage::getStoreConfig(self::BUY_NOW_PATH, $this->_store))
         $buyNow = '<BuyNowPrice>' . $product->getPrice() . '</BuyNowPrice>';
