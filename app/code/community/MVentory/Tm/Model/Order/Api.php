@@ -17,7 +17,7 @@ class MVentory_Tm_Model_Order_Api extends Mage_Sales_Model_Order_Api {
 
     try {
       $collection
-        ->addFieldToFilter('status', 'complete')
+        ->addFieldToFilter('status', $status)
         ->addFieldToFilter('store_id', $storeId);
     } catch (Mage_Core_Exception $e) {
       $this->_fault('filters_invalid', $e->getMessage());
