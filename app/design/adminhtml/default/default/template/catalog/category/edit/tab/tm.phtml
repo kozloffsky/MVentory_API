@@ -1,0 +1,70 @@
+<?php
+
+$_categories = $this->getCategories();
+$_selected_categories = $this->getSelectedCategories();
+
+$_cols = $this->getColsNumber();
+
+?>
+
+<input id="mventory_tm_category" type="hidden" name="general[mventory_tm_category]" value="<?php echo implode(',', $_selected_categories); ?>" />
+
+<div class="grid">
+  <table id="tm_selected_categories" class="data" cellspacing="0">
+    <colgroup>
+      <col width='1' />
+      <col />
+    </colgroup>
+
+    <tbody>
+      <?php foreach ($_selected_categories as $id): ?>
+        <?php if (isset($_categories[$id])): ?>
+        <tr>
+          <td class="checkbox">
+            <input type="checkbox" value="<?php echo $id; ?>" checked="checked" onclick="window.tm_unselect(event)" />
+          </td>
+
+          <?php for ($n = 0; $n < $_cols; ++$n): ?>
+          <td><?php echo isset($_categories[$id][$n]) ? $_categories[$id][$n] : ''; ?></td>
+          <?php endfor; ?>
+        </tr>
+        <?php endif; ?>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>
+
+<div class="grid">
+  <table id="tm_categories" class="data" cellspacing="0">
+    <colgroup>
+      <col width='1' />
+      <col />
+    </colgroup>
+
+    <thead>
+      <tr class="filter">
+        <th></th>
+        <th colspan="<?php echo $_cols; ?>">
+          <div class="field-100">
+            <input id="tm_filter" class="input-text no-changes" type="text" onkeyup="window.tm_filter()" />
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <?php foreach ($_categories as $id => $names): ?>
+      <tr <?php echo in_array($id, $_selected_categories) ? 'class="no-display"' : ''; ?>>
+        <td class="checkbox">
+          <input type="checkbox" value="<?php echo $id; ?>" onclick="window.tm_select(event)" />
+        </td>
+
+        <?php for ($n = 0; $n < $_cols; ++$n): ?>
+        <td><?php echo isset($names[$n]) ? $names[$n] : ''; ?></td>
+        <?php endfor; ?>
+      </tr>
+      <?php endforeach; ?>
+
+    </tbody>
+  </table>
+</div>

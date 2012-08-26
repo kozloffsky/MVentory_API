@@ -9,6 +9,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const FOOTER_PATH = 'mventory_tm/settings/footer';
   const BUY_NOW_PATH = 'mventory_tm/settings/allow_buy_now';
 
+  const CACHE_TAG_TM = 'TM';
+  const CACHE_TM_CATEGORIES = 'TM_CATEGORIES';
+
   private $_config = null;
   private $_host = 'trademe';
   private $_categories = array();
@@ -474,5 +477,72 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     } while ($before != $after);
 
     return trim($description);
+  }
+
+  public function _loadTmCategories () {
+    $options = array(
+      CURLOPT_URL => 'http://api.trademe.co.nz/v1/Categories.json',
+      CURLOPT_RETURNTRANSFER => true,
+    );
+
+    $curl = curl_init();
+
+    if (!curl_setopt_array($curl, $options))
+      return null;
+
+    $output = curl_exec($curl);
+
+    curl_close($curl);
+
+    //list($headers, $body) = explode("\r\n\r\n", $output, 2);
+
+    return $output;
+  }
+
+  public function _parseTmCategories (&$list, $categories, $names = array()) {
+    foreach ($categories as $category) {
+      $id = explode('-', $category['Number']);
+      $id = (int) $id[count($id) - 2];
+
+      $_names = array_merge($names, array($category['Name']));
+
+      $list[$id] = $_names;
+
+      unset($id);
+
+      //$subCategories = $category['Subcategories'];
+
+      //if (is_array($subCategories) && count($subCategories))
+      //  $this->_parseTmCategories($list, $subCategories, $_names);
+    }
+  }
+
+  public function getTmCategories () {
+    $cache = Mage::getSingleton('core/cache');
+
+    if ($list = $cache->load(self::CACHE_TM_CATEGORIES))
+      return unserialize($list);
+
+    $json = $this->_loadTmCategories();
+
+    if (!$json)
+      return null;
+
+    $categories = json_decode($json, true);
+
+    unset($json);
+
+    $list = array();
+
+    $this->_parseTmCategories($list, $categories['Subcategories']);
+
+    unset($categories);
+
+    $cache
+      ->save(serialize($list),
+             self::CACHE_TM_CATEGORIES,
+             array(self::CACHE_TAG_TM));
+
+    return $list;
   }
 }

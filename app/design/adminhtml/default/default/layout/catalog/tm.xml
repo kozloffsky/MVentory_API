@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<layout>
+  <adminhtml_catalog_category_edit>
+    <reference name="head">
+      <action method="addJs">
+        <script>jquery/jquery-min.js</script>
+      </action>
+
+      <action method="addJs">
+        <script>jquery/jquery-uitablefilter.js</script>
+      </action>
+
+      <action method="addJs">
+        <script>tm/adminhtml/categories.js</script>
+      </action>
+    </reference>
+  </adminhtml_catalog_category_edit>
+</layout>

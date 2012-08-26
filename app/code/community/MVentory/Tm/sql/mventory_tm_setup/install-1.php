@@ -1,67 +1,59 @@
 <?php
-$installer = $this;
-$installer->startSetup();
 
-$entityTypeId     = $installer->getEntityTypeId('catalog_product');
-$attributeSetId   = $installer->getDefaultAttributeSetId($entityTypeId);
+//$this->startSetup();
 
-$installer->addAttribute(
-    'catalog_product', 
-    'mventory_tm_id',  
-    array(
-        'input' =>  'text',
-        'type'  =>  'int',
-        'label' =>  'MVentoryTm Id',
-        'backend'   => '',
-        'visible'   => true,
-        'required'  => false,
-        'user_defined'  => false,
-        'global'    => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
-        'default'   => ''
-    )
+$entityTypeId = $this->getEntityTypeId('catalog_product');
+$setId = $this->getDefaultAttributeSetId($entityTypeId);
+$groupId = $this->getDefaultAttributeGroupId($entityTypeId, $setId);
+
+$name = 'mventory_tm_id';
+
+$attributeData = array(
+  //Global settings
+  'type' => 'int',
+  'input' => 'text',
+  'label' => 'MVentory Tm ID',
+  'required' => false,
+  'user_defined' => true,
+  'default' => 0,
+  'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_WEBSITE,
+
+  //Catalogue setting
+  'visible' => false,
+  'is_configurable' => true
 );
 
-$installer->addAttributeToGroup(
-    $entityTypeId,
-    $attributeSetId,
-    $attributeGroupId,
-    'mventory_tm_id',
-    '100'
+$this
+  ->addAttribute($entityTypeId, $name, $attributeData)
+  ->addAttributeToGroup($entityTypeId, $setId, $groupId, $name);
+
+$entityTypeId = $this->getEntityTypeId('catalog_category');
+$setId  = $this->getDefaultAttributeSetId($entityTypeId);
+$groupId = $this->getDefaultAttributeGroupId($entityTypeId, $setId);
+
+$name = 'mventory_tm_category';
+
+$attributeData = array(
+  //Global settings
+  'type' => 'varchar',
+  'input' => 'hidden',
+  'label' => 'MVentoryTm Category',
+  'required' => false,
+  'user_defined' => true,
+  'default' => '',
+  'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
+
+  //Catalogue setting
+  'visible' => true,
+  'is_configurable' => true
 );
 
+$this
+  ->addAttribute($entityTypeId, $name, $attributeData)
+  ->addAttributeToGroup($entityTypeId, $setId, $groupId, $name);
+//  ->getAttributeId($entityTypeId, $name);
 
-$entityTypeId     = $installer->getEntityTypeId('catalog_category');
-$attributeSetId   = $installer->getDefaultAttributeSetId($entityTypeId);
-$attributeGroupId = $installer->getDefaultAttributeGroupId($entityTypeId, $attributeSetId);
-
-$installer->addAttribute(
-    'catalog_category', 
-    'mventory_tm_category',  
-    array(
-        'input' =>  'hidden',
-        'type'  =>  'varchar',
-        'label' =>  'MVentoryTm Category',
-        'input_renderer' => 'mventory_tm/form_element_category',        
-        'backend'   => '',
-        'visible'   => true,
-        'required'  => false,
-        'user_defined'  => false,
-        'global'    => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
-        'default'   => ''
-    )
-);
-
-$installer->addAttributeToGroup(
-    $entityTypeId,
-    $attributeSetId,
-    $attributeGroupId,
-    'mventory_tm_category',
-    '20'
-);
-
-$attributeId = $installer->getAttributeId($entityTypeId, 'mventory_tm_category');
-
-$installer->run("
+/*$installer->run("
 INSERT INTO `{$installer->getTable('catalog_category_entity_varchar')}`
 (`entity_type_id`, `attribute_id`, `entity_id`, `value`)
     SELECT '{$entityTypeId}', '{$attributeId}', `entity_id`, ''
@@ -80,6 +72,6 @@ Mage::getModel('catalog/category')
     ->load(2)
     ->setImportedCatId(0)
     ->setInitialSetupFlag(true)
-    ->save();
+    ->save();*/
 
-$installer->endSetup();
+//$installer->endSetup();

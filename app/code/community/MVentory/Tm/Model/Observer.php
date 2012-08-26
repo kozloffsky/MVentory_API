@@ -185,4 +185,19 @@ class MVentory_Tm_Model_Observer {
       ->getMassactionBlock()
       ->addItem('namerebuild', compact('label', 'url'));
   }
+
+  public function addCategoryTab ($observer) {
+    $tabs = $observer->getTabs();
+
+    $label = Mage::helper('mventory_tm')->__('TM Categories');
+
+    $content = $tabs
+                 ->getLayout()
+                 ->createBlock('mventory_tm/catalog_category_tab_tm',
+                               'category.tm')
+                 ->toHtml();
+
+    $tabs
+      ->addTab('tm', compact('label', 'content'));
+  }
 }
