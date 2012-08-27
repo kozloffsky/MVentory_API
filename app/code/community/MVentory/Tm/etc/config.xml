@@ -24,6 +24,7 @@
           <product_view>MVentory_Tm_Block_Catalog_Product_View</product_view>
           <product_view_attributes>MVentory_Tm_Block_Product_View_Attributes</product_view_attributes>
           <product_view_description>MVentory_Tm_Block_Product_View_Description</product_view_description>
+          <product_view_media>MVentory_Tm_Block_Product_View_Media</product_view_media>
           <product_view_tabs>MVentory_Tm_Block_Product_View_Tabs</product_view_tabs>
         </rewrite>
       </catalog>
@@ -49,6 +50,7 @@
         <rewrite>
           <category>MVentory_Tm_Model_Category</category>
           <product_url>MVentory_Tm_Model_Product_Url</product_url>
+          <product_image>MVentory_Tm_Model_Product_Image</product_image>
         </rewrite>
       </catalog>
     </models>
@@ -146,13 +148,25 @@
           <frontName>mventory_tm</frontName>
         </args>
       </mventory_tm>
+
+      <catalog>
+        <args>
+          <modules>
+            <MVentory_Tm before="Mage_Catalog">MVentory_Tm</MVentory_Tm>
+          </modules>
+        </args>
+      </catalog>
     </routers>
 
     <layout>
       <updates>
         <page-tm-additions>
-        <file>page/mv-additions.xml</file>
+          <file>page/mv-additions.xml</file>
         </page-tm-additions>
+
+        <catalog-tm>
+          <file>catalog/tm.xml</file>
+        </catalog-tm>
       </updates>
     </layout>
   </frontend>

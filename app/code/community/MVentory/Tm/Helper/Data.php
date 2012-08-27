@@ -37,4 +37,8 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
 
     return $websites;
   }
+
+  public function isAdminLogged () {
+    return Mage::registry('is_admin_logged') === true;
+  }
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<!--
+/**
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 MVentory (http://mventory.com)
+ */
+-->
+
+<layout version="0.1.0">
+  <catalog_product_view>
+    <reference name="head">
+      <action method="addJs">
+        <script>jquery/jquery-min.js</script>
+      </action>
+
+      <action method="addItem">
+        <type>skin_js</type>
+        <name>js/tm/image_edit.js</name>
+      </action>
+    </reference>
+
+    <reference name="before_body_end">
+      <block type="core/template"
+             name="tm_image_editor_js"
+             template="catalog/product/view/media/tm_editor/js.phtml" />
+    </reference>
+
+    <!--<reference name="product.info.media">
+      <block type="mventory_tm/product_view_media_editor"
+             name="product.info.media.tm_editor"
+             as="tm_image_editor"
+             template="catalog/product/view/media/tm_editor.phtml" />
+    </reference>-->
+  </catalog_product_view>
+</layout>

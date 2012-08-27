@@ -5,3 +5,56 @@
 .box-store pre.store-address {
   margin: 0 0 10px;
 }
+
+.rotate-90 { 
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  filter: progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=6.123031769111886e-17, M12=1, M21=-1, M22=6.123031769111886e-17);
+  zoom: 1;
+}
+
+.rotate90 {
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  filter: progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=6.123031769111886e-17, M12=-1, M21=1, M22=6.123031769111886e-17);
+  zoom: 1;
+}
+
+.tm-image-editor-menu {
+  display: none;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #C4C6C8;
+  padding: 4px 2px;
+  top: 100%;
+  margin: -10px 0 0 10px;
+  width: 52px;
+}
+
+.tm-image-editor-menu .rotate-image {
+  display: block;
+  float: left;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #C4C6C8;
+  margin: 0 2px;
+  cursor: pointer;
+}
+
+.tm-image-editor-menu .rotate-image:hover {
+  border-color: #DE5400;
+}
+
+.tm-image-editor-menu .rotate-image.rotate-left {
+  background: url('../../images/tm/rotate-left-icon.png') no-repeat center;
+}
+
+.tm-image-editor-menu .rotate-image.rotate-right {
+  background: url('../../images/tm/rotate-right-icon.png') no-repeat center; 
+}
