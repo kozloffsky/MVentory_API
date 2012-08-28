@@ -4,10 +4,17 @@ jQuery(document).ready(function ($) {
   $form
     .find('.tm-image-editor-menu')
     .parent()
-    .css('position', 'relative')
     .mouseenter(function () {
-      $(this)
+      $this = $(this);
+
+      var offset = $this.offset();
+
+      $this
         .children('.tm-image-editor-menu')
+        .css({
+          top: offset.top + $this.height() - 10,
+          left: offset.left + 10
+        })
         .show();
     })
     .mouseleave(function () {

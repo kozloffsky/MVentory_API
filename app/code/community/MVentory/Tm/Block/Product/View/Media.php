@@ -10,7 +10,7 @@
 class MVentory_Tm_Block_Product_View_Media
   extends Mage_Catalog_Block_Product_View_Media {
 
-  public function getImageEditorHtml ($image) {
+  public function getImageEditorHtml ($file) {
     if (!Mage::helper('mventory_tm')->isAdminLogged())
       return;
 
@@ -18,7 +18,7 @@ class MVentory_Tm_Block_Product_View_Media
              ->getLayout()
              ->createBlock('core/template')
              ->setTemplate('catalog/product/view/media/tm_editor.phtml')
-             ->setImage($image->getFile())
+             ->setImage($file)
              ->toHtml();
   }
 }

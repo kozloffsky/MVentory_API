@@ -32,9 +32,8 @@
   background-color: white;
   border: 1px solid #C4C6C8;
   padding: 4px 2px;
-  top: 100%;
-  margin: -10px 0 0 10px;
   width: 52px;
+  z-index: 10;
 }
 
 .tm-image-editor-menu .rotate-image {
