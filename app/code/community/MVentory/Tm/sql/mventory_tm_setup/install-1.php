@@ -27,7 +27,8 @@ $this
 
 $entityTypeId = $this->getEntityTypeId('catalog_category');
 $setId  = $this->getDefaultAttributeSetId($entityTypeId);
-$groupId = $this->getDefaultAttributeGroupId($entityTypeId, $setId);
+$groupId = $this->getAttributeGroupId($entityTypeId, $setId,
+                                      'General Information');
 
 $name = 'tm_assigned_categories';
 

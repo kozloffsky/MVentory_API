@@ -59,7 +59,7 @@ function collectIds () {
       $ids += ',' + $(this).val();
     });
 
-  $('#mventory_tm_category')
+  $('#group_4tm_assigned_categories')
     .val($ids.substring(1));
 }
 
