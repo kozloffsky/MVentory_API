@@ -12,12 +12,6 @@
         <class>MVentory_Tm_Block</class>
       </mventory_tm>
 
-      <adminhtml>
-        <rewrite>
-          <catalog_product_edit_tabs>MVentory_Tm_Block_Adminhtml_Catalog_Product_Edit_Tabs</catalog_product_edit_tabs>
-        </rewrite>
-      </adminhtml>
-
       <catalog>
         <rewrite>
           <product_list>MVentory_Tm_Block_Catalog_Product_List</product_list>
@@ -202,6 +196,16 @@
           </mventory_tm_add_category_tab>
         </observers>
       </adminhtml_catalog_category_tabs>
+
+      <core_block_abstract_prepare_layout_after>
+        <observers>
+          <tm-add-tab-to-product>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>addTabToProduct</method>
+          </tm-add-tab-to-product>
+        </observers>
+      </core_block_abstract_prepare_layout_after>
     </events>
 
     <layout>

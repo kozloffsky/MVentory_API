@@ -1,0 +1,117 @@
+<?php
+
+$_product = $this->getProduct();
+
+$_categories = $this->getCategories();
+$_selectedCategories = $this->getSelectedCategories();
+
+$_multiple = count($_selectedCategories) > 1;
+
+$_cols = $this->getColsNumber() - 1;
+?>
+
+<p>Product URL: <a target="_blank" href="<?php echo $this->getProductUrl(); ?>"><?php echo $this->getProductUrl(); ?></a></p>
+
+<table cellspacing="0" class="actions">
+  <tbody>
+    <tr>
+      <td>
+        <?php if ($_product->getTmListingId()): ?>
+        Listing URL:
+        <a target="_blank" href="<?php echo $this->getTmListingUrl(); ?>">
+          <?php echo $this->getTmListingUrl(); ?>
+        </a>
+        (ID: <?php echo $_product->getTmListingId(); ?>  )
+        <?php endif; ?>
+      </td>
+      <td class="tm-actions a-right">
+      <?php
+        if ($_product->getTmListingId()) {
+          echo $this->getStatusButton();
+          echo $this->getRemoveButton();
+        } else
+          echo $this->getSubmitButton();
+      ?>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="grid">
+  <table id="tm_selected_categories" class="data" cellspacing="0">
+    <colgroup>
+      <col width='1' />
+      <col />
+    </colgroup>
+
+    <tbody>
+      <tr id="tm_no_selected_message" class="even <?php echo count($_selectedCategories) ? 'no-display' : ''; ?>">
+        <td class="empty-text a-center last" colspan="10">
+          <?php echo $this->__('No category selected. Please, select category from the list below.'); ?>
+        </td>
+      </tr>
+      <?php foreach ($_selectedCategories as $id): ?>
+        <?php if (in_array($id, $_selectedCategories)): ?>
+        <tr>
+          <td class="checkbox">
+            <input type="checkbox" value="<?php echo $id; ?>" <?php echo !$_multiple ? 'checked="checked"' : '' ?> />
+          </td>
+
+          <?php for ($n = 0; $n <= $_cols; ++$n): ?>
+          <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
+            <?php echo isset($_categories[$id][$n]) ? $_categories[$id][$n] : ''; ?>
+          </td>
+          <?php endfor; ?>
+        </tr>
+        <?php endif; ?>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>
+
+<div class="grid">
+  <table id="tm_categories" class="data" cellspacing="0">
+    <colgroup>
+      <col width='1' />
+      <col />
+    </colgroup>
+
+    <thead>
+      <tr class="filter">
+        <th></th>
+        <th colspan="<?php echo $_cols; ?>">
+          <div class="field-100">
+            <input id="tm_filter" class="input-text no-changes" type="text" />
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <?php foreach ($_categories as $id => $names): ?>
+      <tr <?php echo in_array($id, $_selectedCategories) ? 'class="no-display"' : ''?>>
+        <td class="checkbox">
+          <input type="checkbox" value="<?php echo $id; ?>" />
+        </td>
+
+        <?php for ($n = 0; $n <= $_cols; ++$n): ?>
+        <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
+          <?php echo isset($names[$n]) ? $names[$n] : ''; ?>
+        </td>
+        <?php endfor; ?>
+      </tr>
+      <?php endforeach; ?>
+
+    </tbody>
+  </table>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+
+tm_categories(jQuery('#tm_categories'),
+              jQuery('#tm_selected_categories'),
+              <?php echo $this->getUrlTemplates() ?>);
+
+//]]>
+</script>

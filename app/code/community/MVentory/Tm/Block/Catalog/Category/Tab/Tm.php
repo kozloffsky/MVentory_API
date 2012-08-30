@@ -28,7 +28,7 @@ class MVentory_Tm_Block_Catalog_Category_Tab_Tm
   public function getSelectedCategories () {
     $category = $this->getCategory();
 
-    $categories = $category->getMventoryTmCategory();
+    $categories = $category->getTmAssignedCategories();
 
     if (!($categories && is_string($categories)))
       return array();

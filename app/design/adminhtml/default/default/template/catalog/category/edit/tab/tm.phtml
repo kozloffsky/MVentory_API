@@ -1,13 +1,13 @@
 <?php
 
 $_categories = $this->getCategories();
-$_selected_categories = $this->getSelectedCategories();
+$_selectedCategories = $this->getSelectedCategories();
 
 $_cols = $this->getColsNumber();
 
 ?>
 
-<input id="mventory_tm_category" type="hidden" name="general[mventory_tm_category]" value="<?php echo implode(',', $_selected_categories); ?>" />
+<input id="mventory_tm_category" type="hidden" name="general[tm_assigned_categories]" value="<?php echo implode(',', $_selectedCategories); ?>" />
 
 <div class="grid">
   <table id="tm_selected_categories" class="data" cellspacing="0">
@@ -17,7 +17,7 @@ $_cols = $this->getColsNumber();
     </colgroup>
 
     <tbody>
-      <?php foreach ($_selected_categories as $id): ?>
+      <?php foreach ($_selectedCategories as $id): ?>
         <?php if (isset($_categories[$id])): ?>
         <tr>
           <td class="checkbox">
@@ -54,7 +54,7 @@ $_cols = $this->getColsNumber();
     <tbody>
 
       <?php foreach ($_categories as $id => $names): ?>
-      <tr <?php echo in_array($id, $_selected_categories) ? 'class="no-display"' : ''; ?>>
+      <tr <?php echo in_array($id, $_selectedCategories) ? 'class="no-display"' : ''; ?>>
         <td class="checkbox">
           <input type="checkbox" value="<?php echo $id; ?>" onclick="window.tm_select(event)" />
         </td>

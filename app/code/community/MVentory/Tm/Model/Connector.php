@@ -48,11 +48,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   private function setStoreId ($product) {
-    $ids = $product->getWebsiteIds();
-
-    for ($id = reset($ids); $id && $id == 1; $id = next($ids));
-
-    $this->_store = $id === false ? null : $id;
+    $this->_store = Mage::helper('mventory_tm')
+                      ->getWebsiteIdFromProduct($product);
   }
 
   private function saveAccessToken ($token = '') {
@@ -139,7 +136,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return $accessTokenData;
   }
 
-  public function send ($product) {
+  public function send ($product, $categoryId) {
     $this->setStoreId($product);
 
     $return = 'Error';
@@ -151,18 +148,18 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $accessToken->setToken($accessTokenData[0]);
       $accessToken->setTokenSecret($accessTokenData[1]);
 
-      $categories = Mage::getModel('catalog/category')->getCollection()
-          ->addAttributeToSelect('mventory_tm_category')
-          ->addFieldToFilter('entity_id', array('in' => $product->getCategoryIds()));
+      //$categories = Mage::getModel('catalog/category')->getCollection()
+      //    ->addAttributeToSelect('mventory_tm_category')
+      //    ->addFieldToFilter('entity_id', array('in' => $product->getCategoryIds()));
 
-      $categoryId = null;
+      //$categoryId = null;
 
-      foreach ($categories as $category) {
-        if ($category->getMventoryTmCategory()) {
-          $categoryId = $category->getMventoryTmCategory();
-          break;
-        }
-      }
+      //foreach ($categories as $category) {
+      //  if ($category->getMventoryTmCategory()) {
+      //    $categoryId = $category->getMventoryTmCategory();
+      //    break;
+      //  }
+      //}
 
       if (!$categoryId) {
         return 'Product doesn\'t have matched tm category';
@@ -323,7 +320,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $client->setMethod(Zend_Http_Client::POST);
 
       $xml = '<WithdrawRequest xmlns="http://api.trademe.co.nz/v1">
-<ListingId>' . $product->getMventoryTmId() . '</ListingId>
+<ListingId>' . $product->getTmListingId() . '</ListingId>
 <Type>ListingWasNotSold</Type>
 <Reason>Withdraw</Reason>
 </WithdrawRequest>';
@@ -375,7 +372,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $xml = simplexml_load_string($response->getBody());
 
       foreach($xml->List->UnsoldItem as $item) {
-        if ($item->ListingId == $product->getMventoryTmId()) {
+        if ($item->ListingId == $product->getTmListingId()) {
           return 1;
         }
       }
@@ -394,7 +391,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $xml = simplexml_load_string($response->getBody());
 
       foreach($xml->List->SoldItem as $item) {
-        if ($item->ListingId == $product->getMventoryTmId()) {
+        if ($item->ListingId == $product->getTmListingId()) {
           return 2;
         }
       }
@@ -413,7 +410,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $xml = simplexml_load_string($response->getBody());
 
       foreach($xml->List->Item as $item) {
-        if ($item->ListingId == $product->getMventoryTmId()) {
+        if ($item->ListingId == $product->getTmListingId()) {
           return 3;
         }
       }
@@ -494,8 +491,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     curl_close($curl);
 
-    //list($headers, $body) = explode("\r\n\r\n", $output, 2);
-
     return $output;
   }
 
@@ -510,10 +505,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       unset($id);
 
-      //$subCategories = $category['Subcategories'];
+      $subCategories = $category['Subcategories'];
 
-      //if (is_array($subCategories) && count($subCategories))
-      //  $this->_parseTmCategories($list, $subCategories, $_names);
+      if (is_array($subCategories) && count($subCategories))
+        $this->_parseTmCategories($list, $subCategories, $_names);
     }
   }
 

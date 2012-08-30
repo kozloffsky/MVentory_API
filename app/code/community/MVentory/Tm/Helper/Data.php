@@ -38,7 +38,21 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     return $websites;
   }
 
+  public function getWebsiteIdFromProduct ($product) {
+    $ids = $product->getWebsiteIds();
+
+    for ($id = reset($ids); $id && $id == 1; $id = next($ids));
+
+    return $id === false ? null : $id;
+  }
+
   public function isAdminLogged () {
     return Mage::registry('is_admin_logged') === true;
+  }
+
+  public function isSandboxMode ($websiteId) {
+    $path = MVentory_Tm_Model_Connector::SANDBOX_PATH;
+
+    return Mage::getStoreConfig($path, $websiteId) == true;
   }
 }

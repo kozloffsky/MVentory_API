@@ -17,22 +17,22 @@ class MVentory_Tm_Model_Observer {
     $stock = Mage::getModel('cataloginventory/stock_item')
                ->loadByProduct($product);
 
-    $mventoryCategoryId = Mage::app()
-                            ->getRequest()
-                            ->getParam('mventory_category');
+    //$mventoryCategoryId = Mage::app()
+    //                        ->getRequest()
+    //                        ->getParam('mventory_category');
 
-    $category = Mage::getModel('catalog/category')
-                  ->getCollection()
-                  ->addAttributeToSelect('mventory_tm_category')
-                  ->addFieldToFilter('entity_id',
-                                     array('in' => $product->getCategoryIds()))
-                  ->getFirstItem();
+    //$category = Mage::getModel('catalog/category')
+    //              ->getCollection()
+    //              ->addAttributeToSelect('mventory_tm_category')
+    //              ->addFieldToFilter('entity_id',
+    //                                 array('in' => $product->getCategoryIds()))
+    //              ->getFirstItem();
 
-    $category->setMventoryTmCategory($mventoryCategoryId);
-    $category->save();
+    //$category->setMventoryTmCategory($mventoryCategoryId);
+    //$category->save();
 
     if ($stock->getManageStock() && $stock->getQty() == 0
-        && $product->getMventoryTmId()) {
+        && $product->getTmListingId()) {
 
       $connector = Mage::getModel('mventory_tm/connector');
       $result = $connector->remove($product);
@@ -41,7 +41,7 @@ class MVentory_Tm_Model_Observer {
         Mage::getSingleton('adminhtml/session')
           ->addSuccess(Mage::helper('catalog')->__('Removed!'));
 
-        $product->setMventoryTmId(0);
+        $product->setTmListingId(0);
         $product->save();
       } else
         Mage::getSingleton('adminhtml/session')
@@ -70,7 +70,7 @@ class MVentory_Tm_Model_Observer {
           }
         }
 
-        $product->setMventoryTmId(0);
+        $product->setTmListingId(0);
         $product->save();
       }
     }
@@ -199,5 +199,24 @@ class MVentory_Tm_Model_Observer {
 
     $tabs
       ->addTab('tm', compact('label', 'content'));
+  }
+
+  public function addTabToProduct ($observer) {
+    $block =  $observer->getEvent()->getBlock();
+
+    if (!$block instanceof Mage_Adminhtml_Block_Catalog_Product_Edit_Tabs)
+      return;
+
+    if (!($block->getProduct()->getAttributeSetId()
+          || $block->getRequest()->getParam('set', null)))
+      return;
+
+    $label = Mage::helper('mventory_tm')->__('mVentory');
+    $content = $block
+                 ->getLayout()
+                 ->createBlock('mventory_tm/catalog_product_edit_tab_tm')
+                 ->toHtml();
+
+    $block->addTab('tm', compact('label', 'content'));
   }
 }
