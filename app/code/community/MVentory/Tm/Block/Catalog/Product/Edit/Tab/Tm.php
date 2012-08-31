@@ -105,10 +105,11 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     $product = $this->getProduct();
 
     $baseUrl = Mage::app()
-                 ->getStore($helper->getWebsiteIdFromProduct($product))
-                 ->getBaseUrl();
+                 ->getWebsite($helper->getWebsiteIdFromProduct($product))
+                 ->getConfig('web/unsecure/base_url');
 
-    return $this->_productUrl = $baseUrl
+    return $this->_productUrl = rtrim($baseUrl, '/')
+                                . '/'
                                 . $product->getUrlPath($this->getCategory());
   }
 
