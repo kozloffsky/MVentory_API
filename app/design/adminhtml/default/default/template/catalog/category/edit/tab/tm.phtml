@@ -22,7 +22,7 @@ $_cols = $this->getColsNumber() - 1;
             <input type="checkbox" value="<?php echo $id; ?>" checked="checked" onclick="window.tm_unselect(event)" />
           </td>
 
-          <?php for ($n = 0; $n < $_cols; ++$n): ?>
+          <?php for ($n = 0; $n <= $_cols; ++$n): ?>
           <td><?php echo isset($_categories[$id][$n]) ? $_categories[$id][$n] : ''; ?></td>
           <?php endfor; ?>
         </tr>
@@ -57,7 +57,7 @@ $_cols = $this->getColsNumber() - 1;
           <input type="checkbox" value="<?php echo $id; ?>" onclick="window.tm_select(event)" />
         </td>
 
-        <?php for ($n = 0; $n < $_cols; ++$n): ?>
+        <?php for ($n = 0; $n <= $_cols; ++$n): ?>
         <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
           <?php echo isset($names[$n]) ? $names[$n] : ''; ?>
         </td>
