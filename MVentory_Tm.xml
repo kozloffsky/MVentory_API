@@ -1,5 +1,5 @@
 <_>
-   <form_key>e0j61OwHamXvo4GY</form_key>
+   <form_key>sxb15Jwlk7xABHpA</form_key>
    <name>MVentory_Tm</name>
    <channel>community</channel>
    <version_ids>
@@ -9,7 +9,7 @@
    <description>MVentory_Tm</description>
    <license>OSL v3.0</license>
    <license_uri/>
-   <version>0.0.10</version>
+   <version>0.0.25</version>
    <stability>devel</stability>
    <notes>Initial versions</notes>
    <authors>
@@ -43,7 +43,7 @@
             <max/>
          </max>
          <files>
-            <files>                                    </files>
+            <files>                                                                       </files>
          </files>
       </package>
       <extension>
@@ -67,6 +67,17 @@
          <target>magedesign</target>
          <target>magedesign</target>
          <target>mageskin</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>mageweb</target>
+         <target>mageweb</target>
+         <target>mageskin</target>
+         <target>mageskin</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>mageskin</target>
       </target>
       <path>
          <path/>
@@ -76,6 +87,17 @@
          <path>frontend/base/default/layout/page/mv-additions.xml</path>
          <path>frontend/base/default/template/catalog/product/view/store.phtml</path>
          <path>frontend/base/default/css/mventory-tm/</path>
+         <path>adminhtml/default/default/layout/catalog/tm.xml</path>
+         <path>adminhtml/default/default/template/catalog/category/edit/tab/</path>
+         <path>frontend/base/default/layout/catalog/tm.xml</path>
+         <path>frontend/base/default/template/catalog/product/view/media</path>
+         <path>js/jquery</path>
+         <path>js/tm</path>
+         <path>frontend/base/default/js/tm</path>
+         <path>frontend/base/default/images/tm</path>
+         <path>frontend/default/default/template/catalog/product/view/media.phtml</path>
+         <path>adminhtml/default/default/template/catalog/product/tab/tm.phtml</path>
+         <path>adminhtml/default/default/tm/styles.css</path>
       </path>
       <type>
          <type>file</type>
@@ -85,6 +107,17 @@
          <type>file</type>
          <type>file</type>
          <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>file</type>
+         <type>file</type>
       </type>
       <include>
          <include/>
@@ -94,8 +127,30 @@
          <include/>
          <include/>
          <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
       </include>
       <ignore>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
          <ignore/>
          <ignore/>
          <ignore/>
