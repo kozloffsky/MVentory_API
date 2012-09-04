@@ -12,19 +12,31 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const CACHE_TAG_TM = 'TM';
   const CACHE_TM_CATEGORIES = 'TM_CATEGORIES';
 
+  private $_helper = null;
+
   private $_config = null;
   private $_host = 'trademe';
   private $_categories = array();
 
-  private $_store = null;
+  private $_website = null;
+
+  protected function _construct () {
+    $this->_helper = Mage::helper('mventory_tm');
+  }
+
+  private function _getConfig ($path) {
+    return $this
+             ->_helper
+             ->getConfig($path, $this->_website);
+  }
 
   private function getConfig () {
     if ($this->_config)
       return $this->_config;
 
-    $host = Mage::getStoreConfig(self::SANDBOX_PATH, $this->_store)
-            ? 'tmsandbox'
-              : 'trademe';
+    $host = $this->_getConfig(self::SANDBOX_PATH)
+              ? 'tmsandbox'
+                : 'trademe';
 
     $this->_config = array(
       'requestScheme' => Zend_Oauth::REQUEST_SCHEME_HEADER,
@@ -38,8 +50,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
                         => 'https://secure.' . $host . '.co.nz/Oauth/Authorize',
       'accessTokenUrl'
                => 'https://secure.' . $host . '.co.nz/Oauth/AccessToken',
-      'consumerKey' => Mage::getStoreConfig(self::KEY_PATH, $this->_store),
-      'consumerSecret' => Mage::getStoreConfig(self::SECRET_PATH, $this->_store)
+      'consumerKey' => $this->_getConfig(self::KEY_PATH),
+      'consumerSecret' => $this->_getConfig(self::SECRET_PATH)
     );
 
     $this->_host = $host;
@@ -47,18 +59,19 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return $this->_config;
   }
 
-  private function setStoreId ($product) {
-    $this->_store = Mage::helper('mventory_tm')
-                      ->getWebsiteIdFromProduct($product);
+  private function getWebsiteId ($product) {
+    $this->_website = $this
+                        ->_helper
+                        ->getWebsiteIdFromProduct($product);
   }
 
   private function saveAccessToken ($token = '') {
     $scope = 'default';
     $scopeId = 0;
 
-    if ($this->_store) {
+    if ($this->_website) {
       $scope = 'websites';
-      $scopeId = $this->_store;
+      $scopeId = $this->_website;
     }
 
     Mage::getConfig()
@@ -78,8 +91,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function auth () {
-    $accessTokenData
-                 = Mage::getStoreConfig(self::ACCESS_TOKEN_PATH, $this->_store);
+    $accessTokenData = $this->_getConfig(self::ACCESS_TOKEN_PATH);
 
     $request = Mage::app()->getRequest();
     
@@ -108,7 +120,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         }
       } elseif ($request->getParam('denied'))
         return false;
-      else 
+      else
         try {
           $requestToken = $oAuth->getRequestToken();
 
@@ -137,7 +149,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function send ($product, $categoryId) {
-    $this->setStoreId($product);
+    $this->getWebsiteId($product);
 
     $return = 'Error';
 
@@ -173,7 +185,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       if (file_exists($imagePath)) {
         $imagePathInfo = pathinfo($imagePath);
 
-        $signature = md5(Mage::getStoreConfig(self::KEY_PATH, $this->_store)
+        $signature = md5($this->_getConfig(self::KEY_PATH)
                            . $imagePathInfo['filename']
                            . $imagePathInfo['extension']
                            . 'False'
@@ -214,7 +226,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling.xml');
       $client->setMethod(Zend_Http_Client::POST);
 
-      $descriptionTmpl = Mage::getStoreConfig(self::FOOTER_PATH, $this->_store);
+      $descriptionTmpl = $this->_getConfig(self::FOOTER_PATH);
 
       $description = '';
 
@@ -223,7 +235,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $buyNow = '';
 
-      if ((bool) Mage::getStoreConfig(self::BUY_NOW_PATH, $this->_store))
+      if ((bool) $this->_getConfig(self::BUY_NOW_PATH))
         $buyNow = '<BuyNowPrice>' . $product->getPrice() . '</BuyNowPrice>';
 
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
@@ -304,7 +316,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function remove($product) {
-    $this->setStoreId($product);
+    $this->getWebsiteId($product);
 
     if ($accessTokenData = $this->auth()) {
       $error = false;
@@ -347,7 +359,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function check($product) {
-    $this->setStoreId($product);
+    $this->getWebsiteId($product);
 
     if ($accessTokenData = $this->auth()) {
       $error = false;
@@ -423,16 +435,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $search = array();
     $replace = array();
 
-    $url = Mage::getModel('core/url')
-             ->setStore($this->_store);
-
-    $params = array(
-      'sku' => $product->getSku(),
-      '_nosid' => true
-    );
-
     $search[] = '{{url}}';
-    $replace[] = $url->getUrl(null, $params);
+    $replace[] = rtrim($this->_getConfig('web/unsecure/base_url'), '/')
+                 . '/'
+                 . Mage::getModel('core/url')
+                     ->setRouteParams(array('sku' => $product->getSku()))
+                     ->getRoutePath();
 
     $shortDescription = $product->getShortDescription();
 

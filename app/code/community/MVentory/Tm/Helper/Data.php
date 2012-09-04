@@ -46,6 +46,17 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     return $id === false ? null : $id;
   }
 
+  public function getConfig ($path, $website) {
+    $website = Mage::app()->getWebsite($website);
+
+    $config = $website->getConfig($path);
+
+    if ($config === false)
+      $config = (string) Mage::getConfig()->getNode('default/' . $path);
+
+    return $config;
+  }
+
   public function isAdminLogged () {
     return Mage::registry('is_admin_logged') === true;
   }
@@ -53,6 +64,6 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
   public function isSandboxMode ($websiteId) {
     $path = MVentory_Tm_Model_Connector::SANDBOX_PATH;
 
-    return Mage::getStoreConfig($path, $websiteId) == true;
+    return $this->getConfig($path, $websiteId) == true;
   }
 }
