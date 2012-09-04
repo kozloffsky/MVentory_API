@@ -55,6 +55,12 @@ class MVentory_Tm_Model_Order_Api extends Mage_Sales_Model_Order_Api {
       );
     }
 
-    return $orders;
+    unset($collection);
+
+    $statuses = Mage::getModel('sales/order_status')
+                    ->getCollection()
+                    ->toOptionHash();
+
+    return compact('statuses', 'orders');
   }
 }
