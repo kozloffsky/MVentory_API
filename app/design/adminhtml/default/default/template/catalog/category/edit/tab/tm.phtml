@@ -17,9 +17,9 @@ $_cols = $this->getColsNumber() - 1;
     <tbody>
       <?php foreach ($_selectedCategories as $id): ?>
         <?php if (isset($_categories[$id])): ?>
-        <tr>
-          <td class="checkbox">
-            <input type="checkbox" value="<?php echo $id; ?>" checked="checked" onclick="window.tm_unselect(event)" />
+        <tr onmouseover="window.tm_mouseover(event)" onmouseout="tm_mouseout(event)">
+          <td class="checkbox a-center">
+            <input type="checkbox" value="<?php echo $id; ?>" checked="checked" onclick="window.tm_second_checkbox(event)" />
           </td>
 
           <?php for ($n = 0; $n <= $_cols; ++$n): ?>
@@ -51,10 +51,20 @@ $_cols = $this->getColsNumber() - 1;
     </thead>
     <tbody>
 
+      <?php $i = 0; ?>
+
       <?php foreach ($_categories as $id => $names): ?>
-      <tr <?php echo in_array($id, $_selectedCategories) ? 'class="no-display"' : ''; ?>>
-        <td class="checkbox">
-          <input type="checkbox" value="<?php echo $id; ?>" onclick="window.tm_select(event)" />
+      <?php
+        $classes = (++$i % 2 == 0) ? 'even' : 'odd';
+
+        $isSelected = in_array($id, $_selectedCategories);
+
+        if ($isSelected)
+          $classes .= ' selected-row';
+      ?>
+      <tr class="<?php echo $classes ?>" onmouseover="window.tm_mouseover(event)" onmouseout="tm_mouseout(event)">
+        <td class="checkbox a-center">
+          <input type="checkbox" value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> onclick="window.tm_main_checkbox(event)" />
         </td>
 
         <?php for ($n = 0; $n <= $_cols; ++$n): ?>
@@ -62,6 +72,7 @@ $_cols = $this->getColsNumber() - 1;
           <?php echo isset($names[$n]) ? $names[$n] : ''; ?>
         </td>
         <?php endfor; ?>
+
       </tr>
       <?php endforeach; ?>
 

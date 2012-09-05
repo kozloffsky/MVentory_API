@@ -54,7 +54,7 @@ $_cols = $this->getColsNumber() - 1;
         <?php if (in_array($id, $_selectedCategories)): ?>
         <tr>
           <td class="checkbox">
-            <input type="checkbox" value="<?php echo $id; ?>" <?php echo !$_multiple ? 'checked="checked"' : '' ?> />
+            <input type="radio" name="selected_categories"  value="<?php echo $id; ?>" <?php echo !$_multiple ? 'checked="checked"' : '' ?> />
           </td>
 
           <?php for ($n = 0; $n <= $_cols; ++$n): ?>
@@ -88,10 +88,20 @@ $_cols = $this->getColsNumber() - 1;
     </thead>
     <tbody>
 
+      <?php $i = 0; ?>
+
       <?php foreach ($_categories as $id => $names): ?>
-      <tr <?php echo in_array($id, $_selectedCategories) ? 'class="no-display"' : ''?>>
+      <?php
+        $classes = (++$i % 2 == 0) ? 'even' : 'odd';
+
+        $isSelected = in_array($id, $_selectedCategories);
+
+        if ($isSelected)
+          $classes .= ' selected-row';
+      ?>
+      <tr class="<?php echo $classes ?>">
         <td class="checkbox">
-          <input type="checkbox" value="<?php echo $id; ?>" />
+          <input type="checkbox" value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> />
         </td>
 
         <?php for ($n = 0; $n <= $_cols; ++$n): ?>
