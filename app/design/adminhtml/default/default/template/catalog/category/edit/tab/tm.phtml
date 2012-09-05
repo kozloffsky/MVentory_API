@@ -5,6 +5,7 @@ $_selectedCategories = $this->getSelectedCategories();
 
 $_cols = $this->getColsNumber() - 1;
 
+$_tmUrl = $this->getTmUrl();
 ?>
 
 <div class="grid">
@@ -17,13 +18,14 @@ $_cols = $this->getColsNumber() - 1;
     <tbody>
       <?php foreach ($_selectedCategories as $id): ?>
         <?php if (isset($_categories[$id])): ?>
-        <tr onmouseover="window.tm_mouseover(event)" onmouseout="tm_mouseout(event)">
+        <tr onclick="window.tm_mouseclick(event)" onmouseover="window.tm_mouseover(event)" onmouseout="tm_mouseout(event)" class="pointer">
           <td class="checkbox a-center">
-            <input type="checkbox" value="<?php echo $id; ?>" checked="checked" onclick="window.tm_second_checkbox(event)" />
+            <input type="checkbox" class="category-check" value="<?php echo $id; ?>" checked="checked" onclick="window.tm_second_checkbox(event)" />
+            <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $_categories[$id]['path']; ?>" />
           </td>
 
           <?php for ($n = 0; $n <= $_cols; ++$n): ?>
-          <td><?php echo isset($_categories[$id][$n]) ? $_categories[$id][$n] : ''; ?></td>
+          <td><?php echo isset($_categories[$id]['name'][$n]) ? $_categories[$id]['name'][$n] : ''; ?></td>
           <?php endfor; ?>
         </tr>
         <?php endif; ?>
@@ -53,23 +55,24 @@ $_cols = $this->getColsNumber() - 1;
 
       <?php $i = 0; ?>
 
-      <?php foreach ($_categories as $id => $names): ?>
+      <?php foreach ($_categories as $id => $category): ?>
       <?php
-        $classes = (++$i % 2 == 0) ? 'even' : 'odd';
+        $classes = ((++$i % 2 == 0) ? 'even' : 'odd') . ' pointer';
 
         $isSelected = in_array($id, $_selectedCategories);
 
         if ($isSelected)
           $classes .= ' selected-row';
       ?>
-      <tr class="<?php echo $classes ?>" onmouseover="window.tm_mouseover(event)" onmouseout="tm_mouseout(event)">
+      <tr class="<?php echo $classes ?>" onclick="window.tm_mouseclick(event)" onmouseover="window.tm_mouseover(event)" onmouseout="tm_mouseout(event)">
         <td class="checkbox a-center">
-          <input type="checkbox" value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> onclick="window.tm_main_checkbox(event)" />
+          <input type="checkbox" class="category-check" value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> onclick="window.tm_main_checkbox(event)" />
+          <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $category['path']; ?>" />
         </td>
 
         <?php for ($n = 0; $n <= $_cols; ++$n): ?>
         <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
-          <?php echo isset($names[$n]) ? $names[$n] : ''; ?>
+          <?php echo isset($category['name'][$n]) ? $category['name'][$n] : ''; ?>
         </td>
         <?php endfor; ?>
 

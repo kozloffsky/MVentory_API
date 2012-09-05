@@ -514,7 +514,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         $id = explode('-', $category['Number']);
         $id = (int) $id[count($id) - 2];
 
-        $list[$id] = $_names;
+        $list[$id] = array(
+          'name' => $_names,
+          'path' => $category['Path']
+        );
       }
     }
   }

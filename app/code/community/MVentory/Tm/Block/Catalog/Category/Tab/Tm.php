@@ -41,11 +41,15 @@ class MVentory_Tm_Block_Catalog_Category_Tab_Tm
 
     $cols = 0;
 
-    foreach ($categories as $id => $names)
-      if (count($names) > $cols)
-        $cols = count($names);
+    foreach ($categories as $category)
+      if (count($category['name']) > $cols)
+        $cols = count($category['name']);
 
     return $cols;
+  }
+
+  public function getTmUrl () {
+    return 'http://www.trademe.co.nz';
   }
 }
 

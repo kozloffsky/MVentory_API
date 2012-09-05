@@ -20,7 +20,7 @@ function mt_checkbox_handler ($selected_table, on_add, on_remove) {
     var id = $this.val();
 
     $selected_table
-      .find('> tbody > tr > .checkbox > input[value="' + id + '"]')
+      .find('> tbody > tr > .checkbox > .category-check[value="' + id + '"]')
       .parents('tr')
       .remove();
 
@@ -34,7 +34,7 @@ function st_checkbox_handler ($main_table) {
   var id = $this.val();
 
   $main_table
-      .find('> tbody > tr > .checkbox > input[value="' + id + '"]')
+      .find('> tbody > tr > .checkbox > .category-check[value="' + id + '"]')
       .prop('checked', false)
       .parents('tr')
       .removeClass('selected-row');
@@ -54,9 +54,19 @@ function mouseout_handler () {
   $(this).removeClass('on-mouse');
 }
 
+function click_handler (event) {
+  if ($(event.target).is('td')) {
+    var link = $(this)
+                 .find('> .checkbox > .category-url')
+                 .val();
+
+    window.open(link, '_blank');
+  }
+}
+
 function add_for_category ($tr) {
   $tr
-    .find('> .checkbox > input')[0]
+    .find('> .checkbox > .category-check')[0]
     .onclick = window.tm_second_checkbox;
 
   collectIds();
@@ -70,7 +80,7 @@ function collectIds () {
   var $ids = ''
 
   $('#tm_selected_categories')
-    .find('> tbody > tr > .checkbox > input')
+    .find('> tbody > tr > .checkbox > .category-check')
     .each(function () {
       $ids += ',' + $(this).val();
     });
@@ -94,6 +104,13 @@ window.tm_second_checkbox = function (event) {
     var event = window.event;
 
   st_checkbox_handler.call(event.target, $('#tm_categories'));
+}
+
+window.tm_mouseclick = function (event) {
+  if (!event)
+    var event = window.event;
+
+  click_handler.call($(event.target).parent(), event);
 }
 
 window.tm_mouseover = function (event) {
@@ -126,20 +143,22 @@ window.tm_categories = function ($main_table, $selected_table, url_templates) {
   $main_table
     .find('> tbody > tr')
     .on({
+      click: click_handler,
       mouseover: mouseover_handler,
       mouseout: mouseout_handler
     })
-    .find('> .checkbox > input')
+    .find('> .checkbox > .category-check')
     .on('click', tm_main_checkbox);
     
 
   $selected_table
     .find('> tbody > tr')
     .on({
+      click: click_handler,
       mouseover: mouseover_handler,
       mouseout: mouseout_handler
     })
-    .find('> .checkbox > input')
+    .find('> .checkbox > .category-check')
     .on('click', tm_second_checkbox);
 
   function tm_main_checkbox () {
@@ -157,11 +176,12 @@ window.tm_categories = function ($main_table, $selected_table, url_templates) {
     $('#tm_no_selected_message').addClass('no-display');
 
     $tr.on({
+      click: click_handler,
       mouseover: mouseover_handler,
       mouseout: mouseout_handler
     });
 
-    var $input = $tr.find('> .checkbox > input');
+    var $input = $tr.find('> .checkbox > .category-check');
 
     $input
       .prop('name', 'selected_categories')
@@ -173,7 +193,7 @@ window.tm_categories = function ($main_table, $selected_table, url_templates) {
 
   function remove_for_product () {
     var $inputs = $selected_table
-                    .find('> tbody > tr > .checkbox > input')
+                    .find('> tbody > tr > .checkbox > .category-check')
 
     if (!$inputs.length) {
       $('#tm_no_selected_message').removeClass('no-display');
@@ -192,7 +212,7 @@ window.tm_categories = function ($main_table, $selected_table, url_templates) {
 
   function submit_handler () {
     var id = $selected_table
-               .find('> tbody > tr > .checkbox > input')
+               .find('> tbody > tr > .checkbox > .category-check')
                .filter(':checked')
                .val();
 

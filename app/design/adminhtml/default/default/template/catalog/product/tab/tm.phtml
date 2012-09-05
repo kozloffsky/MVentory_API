@@ -8,6 +8,8 @@ $_selectedCategories = $this->getSelectedCategories();
 $_multiple = count($_selectedCategories) > 1;
 
 $_cols = $this->getColsNumber() - 1;
+
+$_tmUrl = $this->getTmUrl();
 ?>
 
 <p>Product URL: <a target="_blank" href="<?php echo $this->getProductUrl(); ?>"><?php echo $this->getProductUrl(); ?></a></p>
@@ -52,14 +54,15 @@ $_cols = $this->getColsNumber() - 1;
       </tr>
       <?php foreach ($_selectedCategories as $id): ?>
         <?php if (in_array($id, $_selectedCategories)): ?>
-        <tr>
+        <tr class="pointer">
           <td class="checkbox">
-            <input type="radio" name="selected_categories"  value="<?php echo $id; ?>" <?php echo !$_multiple ? 'checked="checked"' : '' ?> />
+            <input type="radio" class="category-check" name="selected_categories"  value="<?php echo $id; ?>" <?php echo !$_multiple ? 'checked="checked"' : '' ?> />
+            <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $_categories[$id]['path']; ?>" />
           </td>
 
           <?php for ($n = 0; $n <= $_cols; ++$n): ?>
           <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
-            <?php echo isset($_categories[$id][$n]) ? $_categories[$id][$n] : ''; ?>
+            <?php echo isset($_categories[$id]['name'][$n]) ? $_categories[$id]['name'][$n] : ''; ?>
           </td>
           <?php endfor; ?>
         </tr>
@@ -90,9 +93,9 @@ $_cols = $this->getColsNumber() - 1;
 
       <?php $i = 0; ?>
 
-      <?php foreach ($_categories as $id => $names): ?>
+      <?php foreach ($_categories as $id => $category): ?>
       <?php
-        $classes = (++$i % 2 == 0) ? 'even' : 'odd';
+        $classes = ((++$i % 2 == 0) ? 'even' : 'odd') . ' pointer';
 
         $isSelected = in_array($id, $_selectedCategories);
 
@@ -101,12 +104,13 @@ $_cols = $this->getColsNumber() - 1;
       ?>
       <tr class="<?php echo $classes ?>">
         <td class="checkbox">
-          <input type="checkbox" value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> />
+          <input type="checkbox" class="category-check" value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> />
+          <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $category['path']; ?>" />
         </td>
 
         <?php for ($n = 0; $n <= $_cols; ++$n): ?>
         <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
-          <?php echo isset($names[$n]) ? $names[$n] : ''; ?>
+          <?php echo isset($category['name'][$n]) ? $category['name'][$n] : ''; ?>
         </td>
         <?php endfor; ?>
       </tr>
