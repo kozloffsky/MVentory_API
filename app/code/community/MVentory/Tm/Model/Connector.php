@@ -504,19 +504,18 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   public function _parseTmCategories (&$list, $categories, $names = array()) {
     foreach ($categories as $category) {
-      $id = explode('-', $category['Number']);
-      $id = (int) $id[count($id) - 2];
-
       $_names = array_merge($names, array($category['Name']));
-
-      $list[$id] = $_names;
-
-      unset($id);
 
       $subCategories = $category['Subcategories'];
 
       if (is_array($subCategories) && count($subCategories))
         $this->_parseTmCategories($list, $subCategories, $_names);
+      else {
+        $id = explode('-', $category['Number']);
+        $id = (int) $id[count($id) - 2];
+
+        $list[$id] = $_names;
+      }
     }
   }
 
