@@ -65,6 +65,25 @@
         </methods>
       </catalog_product_attribute_media>
 
+      <cataloginventory_stock_item translate="title" module="cataloginventory">
+        <model>mventory_tm/stock_item_api</model>
+        <acl>cataloginventory</acl>
+        <methods>
+          <list translate="title" module="cataloginventory">
+            <title>Retrieve stock data by product ids</title>
+            <method>items</method>
+            <acl>cataloginventory/info</acl>
+          </list>
+        </methods>
+
+        <faults module="cataloginventory">
+          <not_exists>
+            <code>101</code>
+            <message>Product not exists.</message>
+          </not_exists>
+        </faults>
+      </cataloginventory_stock_item>
+
       <cart translate="title" module="mventory_tm">
         <model>mventory_tm/cart_api</model>
         <acl>cart</acl>
