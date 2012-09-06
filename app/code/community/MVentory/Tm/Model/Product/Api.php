@@ -47,7 +47,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $result = $this->info($id, $storeId, null, 'id');
 
-    $stockItem = Mage::getModel('cataloginventory/stock_item_api');
+    $stockItem = Mage::getModel('mventory_tm/stock_item_api');
 
     $_result = $stockItem->items($id);
 
