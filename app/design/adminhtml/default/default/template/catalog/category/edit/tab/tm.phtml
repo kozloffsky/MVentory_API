@@ -25,9 +25,24 @@ $_tmUrl = $this->getTmUrl();
           </td>
 
           <?php for ($n = 0; $n <= $_cols; ++$n): ?>
-          <td><?php echo isset($_categories[$id]['name'][$n]) ? $_categories[$id]['name'][$n] : ''; ?></td>
+          <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
+            <?php echo isset($_categories[$id]['name'][$n]) ? $_categories[$id]['name'][$n] : ''; ?>
+          </td>
           <?php endfor; ?>
         </tr>
+
+          <?php $attrs = $this->getAttributes($id); ?>
+
+          <?php if ($attrs): ?>
+          <tr class="category-attrs">
+            <td>Attributes:</td>
+            <td colspan=<?php echo $_cols + 1; ?> class="last">
+            <?php foreach ($attrs as $attr): ?>
+              <?php echo $attr['Name'] . ' (' . $attr['Type'] . '), '; ?>
+            <?php endforeach; ?> 
+            </td>
+          </tr>
+          <?php endif; ?>
         <?php endif; ?>
       <?php endforeach; ?>
     </tbody>

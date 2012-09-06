@@ -11,6 +11,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   const CACHE_TAG_TM = 'TM';
   const CACHE_TM_CATEGORIES = 'TM_CATEGORIES';
+  const CACHE_TM_CATEGORY_ATTRS = 'TM_CATEGORY_ATTRS';
 
   private $_helper = null;
 
@@ -19,6 +20,16 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   private $_categories = array();
 
   private $_website = null;
+
+  private $_attrTypes = array(
+    0 => 'None',
+    1 => 'Boolean',
+    2 => 'Integer',
+    3 => 'Decimal',
+    4 => 'String',
+    5 => 'DateTime',
+    6 => 'StayPeriod'
+  );
 
   protected function _construct () {
     $this->_helper = Mage::helper('mventory_tm');
@@ -502,6 +513,26 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return $output;
   }
 
+  public function _loadTmCategoryAttrs ($categoryId) {
+    $options = array(
+      CURLOPT_URL => 'http://api.trademe.co.nz/v1/Categories/'
+                     . $categoryId
+                     . '/Attributes.json',
+      CURLOPT_RETURNTRANSFER => true,
+    );
+
+    $curl = curl_init();
+
+    if (!curl_setopt_array($curl, $options))
+      return null;
+
+    $output = curl_exec($curl);
+
+    curl_close($curl);
+
+    return $output;
+  }
+
   public function _parseTmCategories (&$list, $categories, $names = array()) {
     foreach ($categories as $category) {
       $_names = array_merge($names, array($category['Name']));
@@ -549,5 +580,35 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
              array(self::CACHE_TAG_TM));
 
     return $list;
+  }
+
+  public function getTmCategoryAttrs ($categoryId) {
+    if (!$categoryId)
+      return null;
+
+    $cache = Mage::getSingleton('core/cache');
+
+    if ($attrs = $cache->load(self::CACHE_TM_CATEGORY_ATTRS . $categoryId))
+      return unserialize($attrs);
+
+    $json = $this->_loadTmCategoryAttrs($categoryId);
+
+    if (!$json)
+      return null;
+
+    $attrs = json_decode($json, true);
+
+    $cache->save(serialize($attrs),
+                 self::CACHE_TM_CATEGORY_ATTRS . $categoryId,
+                 array(self::CACHE_TAG_TM));
+
+    return $attrs;
+  }
+
+  public function getAttrTypeName ($id) {
+    if (isset($this->_attrTypes[$id]))
+      return $this->_attrTypes[$id];
+
+    return 'Unknown';
   }
 }

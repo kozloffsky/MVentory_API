@@ -22,6 +22,9 @@ function mt_checkbox_handler ($selected_table, on_add, on_remove) {
     $selected_table
       .find('> tbody > tr > .checkbox > .category-check[value="' + id + '"]')
       .parents('tr')
+      .next('.category-attrs')
+        .remove()
+      .end()
       .remove();
 
     on_remove();
@@ -41,6 +44,9 @@ function st_checkbox_handler ($main_table) {
 
   $this
     .parents('tr')
+    .next('.category-attrs')
+      .remove()
+    .end()
     .remove();
 
   collectIds();
