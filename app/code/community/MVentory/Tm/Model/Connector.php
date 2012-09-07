@@ -9,6 +9,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const FOOTER_PATH = 'mventory_tm/settings/footer';
   const BUY_NOW_PATH = 'mventory_tm/settings/allow_buy_now';
 
+  const CACHE_TYPE_TM = 'tm';
   const CACHE_TAG_TM = 'TM';
   const CACHE_TM_CATEGORIES = 'TM_CATEGORIES';
   const CACHE_TM_CATEGORY_ATTRS = 'TM_CATEGORY_ATTRS';
@@ -574,10 +575,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     unset($categories);
 
-    $cache
-      ->save(serialize($list),
-             self::CACHE_TM_CATEGORIES,
-             array(self::CACHE_TAG_TM));
+    if ($cache->canUse(self::CACHE_TYPE_TM))
+      $cache->save(serialize($list),
+                   self::CACHE_TM_CATEGORIES,
+                   array(self::CACHE_TAG_TM));
 
     return $list;
   }
@@ -598,9 +599,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     $attrs = json_decode($json, true);
 
-    $cache->save(serialize($attrs),
-                 self::CACHE_TM_CATEGORY_ATTRS . $categoryId,
-                 array(self::CACHE_TAG_TM));
+    if ($cache->canUse(self::CACHE_TYPE_TM))
+      $cache->save(serialize($attrs),
+                   self::CACHE_TM_CATEGORY_ATTRS . $categoryId,
+                   array(self::CACHE_TAG_TM));
 
     return $attrs;
   }
