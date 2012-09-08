@@ -1,8 +1,8 @@
 jQuery(document).ready(function ($) {
   var $form = $('#product_addtocart_form');
+  var $menus = $form.find('.tm-image-editor-menu');
 
-  $form
-    .find('.tm-image-editor-menu')
+  $menus
     .parent()
     .mouseenter(function () {
       $this = $(this);
@@ -23,20 +23,40 @@ jQuery(document).ready(function ($) {
           .hide();
     });
 
-  $form
-    .find('div.rotate-image')
+  $menus
+    .children('.rotate-image')
     .filter('.rotate-left')
       .click({ rotate: 'left'}, rotate_button_click_handler)
     .end()
     .filter('.rotate-right')
       .click({ rotate: 'right'}, rotate_button_click_handler);
 
+  $menus
+    .children('.remove-image')
+    .on('click', remove_button_click_handler);
+
   function rotate_image (file, rotate, complete) {
     $.ajax({
-      url: _tm_image_editor_controller_url,
+      url: _tm_image_editor_rotate_url,
       type: 'POST',
       dataType: 'json',
       data: { file: file, rotate:  rotate},
+      error: function (jqXHR, status, errorThrown) {
+        alert(status);
+      },
+      /*success: function (data, status, jqXHR) {
+        console.log(data);
+      },*/
+      complete: complete
+    });
+  }
+
+  function remove_image (file, product_id, complete) {
+    $.ajax({
+      url: _tm_image_editor_remove_url,
+      type: 'POST',
+      dataType: 'json',
+      data: { file: file, product: product_id },
       error: function (jqXHR, status, errorThrown) {
         alert(status);
       },
@@ -82,5 +102,31 @@ jQuery(document).ready(function ($) {
       $imgs.addClass('rotate90');
 
     return false;
+  }
+
+  function remove_button_click_handler (event) {
+    $this = $(this);
+
+    $this.off('click', remove_button_click_handler);
+
+    var image = $this
+                  .parent()
+                  .children('input')
+                  .val();
+
+    var product_id = $form
+                       .find('input[name="product"]')
+                       .val();
+
+    remove_image(image, product_id, function () {
+      $this
+        .parent()
+        .remove();
+    });
+
+    $form
+      .find('img')
+      .filter('[src$="' + image + '"]')
+      .remove();
   }
 });

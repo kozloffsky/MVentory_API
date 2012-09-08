@@ -95,4 +95,25 @@ class MVentory_Tm_ImageController
 
     return Zend_Json::encode(true);
   }
+
+  public function removeAction () {
+    if (!$this->_isAdmin())
+      return;
+
+    $request = $this->getRequest();
+
+    if (!($request->has('file') && $request->has('product')))
+      return;
+
+    $file = $request->get('file');
+    $productId = (int) $request->get('product');
+
+    if (!($file && $productId >= 0))
+      return;
+
+    Mage::helper('mventory_tm/imageediting')
+      ->remove($file, $productId);
+
+    return Zend_Json::encode(true);
+  }
 }

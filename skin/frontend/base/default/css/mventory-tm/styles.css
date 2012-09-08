@@ -32,11 +32,12 @@
   background-color: white;
   border: 1px solid #C4C6C8;
   padding: 4px 2px;
-  width: 52px;
+  width: 78px;
   z-index: 10;
 }
 
-.tm-image-editor-menu .rotate-image {
+.tm-image-editor-menu .rotate-image,
+.tm-image-editor-menu .remove-image {
   display: block;
   float: left;
   width: 20px;
@@ -46,7 +47,8 @@
   cursor: pointer;
 }
 
-.tm-image-editor-menu .rotate-image:hover {
+.tm-image-editor-menu .rotate-image:hover,
+.tm-image-editor-menu .remove-image:hover {
   border-color: #DE5400;
 }
 
@@ -56,4 +58,8 @@
 
 .tm-image-editor-menu .rotate-image.rotate-right {
   background: url('../../images/tm/rotate-right-icon.png') no-repeat center; 
+}
+
+.tm-image-editor-menu .remove-image {
+  background: url('../../images/tm/remove-icon.png') no-repeat center;
 }
