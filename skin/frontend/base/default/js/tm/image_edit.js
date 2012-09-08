@@ -4,7 +4,7 @@ jQuery(document).ready(function ($) {
 
   $menus
     .parent()
-    .mouseenter(function () {
+    .on('mouseenter', function () {
       $this = $(this);
 
       var offset = $this.offset();
@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
         })
         .show();
     })
-    .mouseleave(function () {
+    .on('mouseleave', function () {
       $(this)
           .children('.tm-image-editor-menu')
           .hide();
@@ -26,10 +26,10 @@ jQuery(document).ready(function ($) {
   $menus
     .children('.rotate-image')
     .filter('.rotate-left')
-      .click({ rotate: 'left'}, rotate_button_click_handler)
+      .on('click', { rotate: 'left' }, rotate_button_click_handler)
     .end()
     .filter('.rotate-right')
-      .click({ rotate: 'right'}, rotate_button_click_handler);
+      .on('click, '{ rotate: 'right' }, rotate_button_click_handler);
 
   $menus
     .children('.remove-image')
@@ -77,7 +77,7 @@ jQuery(document).ready(function ($) {
 
     event.preventDefault();
 
-    var image = $(this)
+    var image = $this
                   .parent()
                   .children('input')
                   .val();
@@ -108,6 +108,8 @@ jQuery(document).ready(function ($) {
     $this = $(this);
 
     $this.off('click', remove_button_click_handler);
+
+    event.preventDefault();
 
     var image = $this
                   .parent()
