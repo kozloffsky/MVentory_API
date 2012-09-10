@@ -29,7 +29,7 @@ jQuery(document).ready(function ($) {
       .on('click', { rotate: 'left' }, rotate_button_click_handler)
     .end()
     .filter('.rotate-right')
-      .on('click, '{ rotate: 'right' }, rotate_button_click_handler);
+      .on('click', { rotate: 'right' }, rotate_button_click_handler);
 
   $menus
     .children('.remove-image')
