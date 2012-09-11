@@ -5,7 +5,7 @@ jQuery(document).ready(function ($) {
   $menus
     .parent()
     .on('mouseenter', function () {
-      $this = $(this);
+      var $this = $(this);
 
       var offset = $this.offset();
 
@@ -88,7 +88,7 @@ jQuery(document).ready(function ($) {
   }
 
   function rotate_button_click_handler (event) {
-    $this = $(this);
+    var $this = $(this);
 
     $this
       .parent()
@@ -125,7 +125,7 @@ jQuery(document).ready(function ($) {
   }
 
   function remove_button_click_handler (event) {
-    $this = $(this);
+    var $this = $(this);
 
     $this.off('click', remove_button_click_handler);
 
@@ -154,7 +154,7 @@ jQuery(document).ready(function ($) {
 
   
   function set_main_button_click_handler (event) {
-    $this = $(this);
+    var $this = $(this);
 
     $this.off('click', set_main_button_click_handler);
 
