@@ -65,3 +65,7 @@
 .tm-image-editor-menu .remove-image {
   background: url('../../images/tm/remove-icon.png') no-repeat center;
 }
+
+.tm-image-editor-menu .set-main-image {
+  background: url('../../images/tm/main-image-icon.png') no-repeat center;
+}
