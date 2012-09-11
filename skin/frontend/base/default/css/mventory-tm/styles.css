@@ -32,12 +32,13 @@
   background-color: white;
   border: 1px solid #C4C6C8;
   padding: 4px 2px;
-  width: 78px;
+  width: 104px;
   z-index: 10;
 }
 
 .tm-image-editor-menu .rotate-image,
-.tm-image-editor-menu .remove-image {
+.tm-image-editor-menu .remove-image,
+.tm-image-editor-menu .set-main-image {
   display: block;
   float: left;
   width: 20px;
@@ -48,7 +49,8 @@
 }
 
 .tm-image-editor-menu .rotate-image:hover,
-.tm-image-editor-menu .remove-image:hover {
+.tm-image-editor-menu .remove-image:hover,
+.tm-image-editor-menu .set-main-image:hover {
   border-color: #DE5400;
 }
 

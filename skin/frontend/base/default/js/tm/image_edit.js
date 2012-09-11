@@ -35,6 +35,10 @@ jQuery(document).ready(function ($) {
     .children('.remove-image')
     .on('click', remove_button_click_handler);
 
+  $menus
+    .children('.set-main-image')
+    .on('click', set_main_button_click_handler);
+
   function rotate_image (file, rotate, complete) {
     $.ajax({
       url: _tm_image_editor_rotate_url,
@@ -54,6 +58,22 @@ jQuery(document).ready(function ($) {
   function remove_image (file, product_id, complete) {
     $.ajax({
       url: _tm_image_editor_remove_url,
+      type: 'POST',
+      dataType: 'json',
+      data: { file: file, product: product_id },
+      error: function (jqXHR, status, errorThrown) {
+        alert(status);
+      },
+      /*success: function (data, status, jqXHR) {
+        console.log(data);
+      },*/
+      complete: complete
+    });
+  }
+
+  function set_main_image (file, product_id, complete) {
+    $.ajax({
+      url: _tm_image_editor_setmain_url,
       type: 'POST',
       dataType: 'json',
       data: { file: file, product: product_id },
@@ -130,5 +150,45 @@ jQuery(document).ready(function ($) {
       .find('img')
       .filter('[src$="' + image + '"]')
       .remove();
+  }
+
+  
+  function set_main_button_click_handler (event) {
+    $this = $(this);
+
+    $this.off('click', set_main_button_click_handler);
+
+    event.preventDefault();
+
+    var image = $this
+                  .parent()
+                  .children('input')
+                  .val();
+
+    var product_id = $form
+                       .find('input[name="product"]')
+                       .val();
+
+    set_main_image(image, product_id, function () {
+      $this
+        .parent()
+        .remove();
+    });
+
+    var $img = $form.find('.product-image img')
+
+    var image_url = $img.prop('src');
+
+    var $thumb = $form
+                   .find('img')
+                   .filter('[src$="' + image + '"]')
+
+    $thumb
+      .width($thumb.width())
+      .prop('src', image_url);
+
+    $img
+      .width($img.width())
+      .prop('src', '/media/catalog/product/' + image);
   }
 });
