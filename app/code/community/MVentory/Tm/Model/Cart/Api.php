@@ -170,7 +170,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     if ($price == 0)
       $data = array('method' => 'free', 0 => null);
     else
-      $data = array('method' => 'checkmo', 0 => null);
+      $data = array('method' => 'dummy', 0 => null);
 
     $result = $cartPayment->setPaymentMethod($quoteId, $data, $storeId);
 

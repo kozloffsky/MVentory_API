@@ -258,6 +258,17 @@
         <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
       </dummyshipping>
     </carriers>
+
+    <payment>
+      <dummy>
+        <active>1</active>
+        <model>mventory_tm/method_dummy</model>
+        <order_status>pending</order_status>
+        <title>Dummy payment method</title>
+        <allowspecific>0</allowspecific>
+        <group>offline</group>
+      </dummy>
+    </payment>
   </default>
   
   <crontab>
