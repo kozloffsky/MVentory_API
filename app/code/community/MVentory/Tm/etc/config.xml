@@ -244,6 +244,7 @@
       <api>
         <products-number-to-fetch>50</products-number-to-fetch>
         <add_to_websites>1</add_to_websites>
+        <tax_class>0</tax_class>
       </api>
     </mventory_tm>
 

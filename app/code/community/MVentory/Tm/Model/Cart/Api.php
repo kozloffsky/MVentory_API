@@ -2,8 +2,11 @@
 
 class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
+  const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
+
   public function createOrderForProduct ($sku, $price, $qty, $customerId,
-                                         $transactionId, $name = null) {
+                                         $transactionId, $name = null,
+                                         $taxClass = null) {
 
     $helper = Mage::helper('mventory_tm');
 
@@ -37,6 +40,10 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     $productId = (int) $product->getResource()->getIdBySku($sku);
 
     if (!$productId) {
+      if ($taxClass == null)
+        $taxClass = (int) $helper->getConfig(self::TAX_CLASS_PATH,
+                                             $helper->getCurrentWebsite());
+
       $product
         ->setWebsiteIds($helper->getWebsitesForProduct($storeId))
         ->setAttributeSetId($product->getDefaultAttributeSetId())
@@ -45,7 +52,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
         ->setVisibility(0)
         ->setWeight(0)
         ->setPrice($price)
-        ->setTaxClassId(0)
+        ->setTaxClassId($taxClass)
         ->setSku($sku)
         ->setName($name)
         ->setDescription($name)

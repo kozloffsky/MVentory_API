@@ -34,6 +34,7 @@
 class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
   const FETCH_LIMIT_PATH = 'mventory_tm/api/products-number-to-fetch';
+  const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
 
   public function fullInfo ($id = null, $sku = null) {
     $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
@@ -146,6 +147,11 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
       //Set visibility to "Catalog, Search" value
       $productData['visibility'] = 4;
+
+      if (!isset($productData['tax_class_id']))
+        $productData['tax_class_id']
+          = (int) $helper->getConfig(self::TAX_CLASS_PATH,
+                                     $helper->getCurrentWebsite());
 
       //Set storeId as null to save values of attributes in the default scope
       $id = $this->create($type, $set, $sku, $productData, null);
