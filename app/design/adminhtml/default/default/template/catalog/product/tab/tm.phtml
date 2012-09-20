@@ -53,7 +53,7 @@ $_tmUrl = $this->getTmUrl();
         </td>
       </tr>
       <?php foreach ($_selectedCategories as $id): ?>
-        <?php if (in_array($id, $_selectedCategories)): ?>
+        <?php if (in_array($id, $_categories)): ?>
         <tr class="pointer">
           <td class="checkbox">
             <input type="radio" class="category-check" name="selected_categories"  value="<?php echo $id; ?>" <?php echo !$_multiple ? 'checked="checked"' : '' ?> />
