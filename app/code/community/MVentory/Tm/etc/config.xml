@@ -22,6 +22,11 @@
           <product_view_tabs>MVentory_Tm_Block_Product_View_Tabs</product_view_tabs>
         </rewrite>
       </catalog>
+      <adminhtml>
+        <rewrite>
+          <dashboard_grids>MVentory_Tm_Block_Adminhtml_Dashboard_Grids</dashboard_grids>
+        </rewrite>
+      </adminhtml>
     </blocks>
     
     <models>

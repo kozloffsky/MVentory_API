@@ -84,6 +84,13 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
     return $numberOfRenamedProducts;
   }
   
+  /**
+   * Populate product attributes
+   * 
+   * @param  array  $productIds array of product ids
+   * @param  integer|null $storeId   
+   * @return integer      
+   */
   public function populateAttributes ($productIds, $storeId = null) {
     $numberOfPopulatedProducts = 0;
 

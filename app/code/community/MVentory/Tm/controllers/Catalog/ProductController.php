@@ -40,15 +40,18 @@ class MVentory_Tm_Catalog_ProductController
   
   
   /**
-   *  Populate product attributes
+   *  Populate product attributes when selected "Populate product attributes" action
    */           
   public function massAttributesPopulateAction () {
     $request = $this->getRequest();
 
+    // Get selected products ids
     $productIds = (array) $request->getParam('product');
+    
     $storeId = (int) $request->getParam('store', 0);
 
     try {
+      // Populate product attributes
       $numberOfPopulate = Mage::getSingleton('mventory_tm/product_action')
                            ->populateAttributes($productIds, $storeId);
 

@@ -31,6 +31,7 @@ class MVentory_Tm_Model_Observer {
     //$category->setMventoryTmCategory($mventoryCategoryId);
     //$category->save();
     
+    // populate product attributes
     Mage::getSingleton('mventory_tm/product_action')
                            ->populateAttributes(array($product->getId()));
 
@@ -189,6 +190,9 @@ class MVentory_Tm_Model_Observer {
       ->addItem('namerebuild', compact('label', 'url'));
   }
   
+  /**
+   * Add action "Populate product attributes" to admin product manage grid
+   */   
   public function addProductAttributesPopulateMassaction ($observer) {
     $block = $observer->getBlock();
 
