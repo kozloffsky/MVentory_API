@@ -12,7 +12,10 @@ $_tmUrl = $this->getTmUrl();
   <table id="tm_selected_categories" class="data" cellspacing="0">
     <colgroup>
       <col width='1' />
+
+      <?php for ($n = 0; $n <= $_cols; ++$n): ?>
       <col />
+      <?php endfor; ?>
     </colgroup>
 
     <tbody>
@@ -53,7 +56,10 @@ $_tmUrl = $this->getTmUrl();
   <table id="tm_categories" class="data" cellspacing="0">
     <colgroup>
       <col width='1' />
+
+      <?php for ($n = 0; $n <= $_cols; ++$n): ?>
       <col />
+      <?php endfor; ?>
     </colgroup>
 
     <thead>
