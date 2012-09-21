@@ -41,7 +41,7 @@ $_tmUrl = $this->getTmUrl();
 
           <?php if ($attrs): ?>
           <tr class="category-attrs">
-            <td>Attributes:</td>
+            <td><?php echo $this->__('Attributes'); ?>:</td>
             <td colspan=<?php echo $_cols + 1; ?> class="last">
             <?php foreach ($attrs as $attr): ?>
               <?php echo $attr['Name'] . ' (' . $attr['Type'] . '), '; ?>

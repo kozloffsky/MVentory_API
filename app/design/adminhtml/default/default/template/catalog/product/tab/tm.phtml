@@ -14,18 +14,18 @@ $_cols = $this->getColsNumber() - 1;
 $_tmUrl = $this->getTmUrl();
 ?>
 
-<p>Product URL: <a target="_blank" href="<?php echo $this->getProductUrl(); ?>"><?php echo $this->getProductUrl(); ?></a></p>
+<p><?php echo $this->__('Product URL'); ?>: <a target="_blank" href="<?php echo $this->getProductUrl(); ?>"><?php echo $this->getProductUrl(); ?></a></p>
 
 <table cellspacing="0" class="actions">
   <tbody>
     <tr>
       <td>
         <?php if ($_product->getTmListingId()): ?>
-        Listing URL:
+          <?php echo $this->__('Listing URL'); ?>:
         <a target="_blank" href="<?php echo $this->getTmListingUrl(); ?>">
           <?php echo $this->getTmListingUrl(); ?>
         </a>
-        (ID: <?php echo $_product->getTmListingId(); ?>  )
+        (<?php echo $this->__('ID'); ?>: <?php echo $_product->getTmListingId(); ?>  )
         <?php endif; ?>
       </td>
       <td class="tm-actions a-right">
@@ -76,7 +76,7 @@ $_tmUrl = $this->getTmUrl();
 
           <?php if ($attrs): ?>
           <tr class="category-attrs">
-            <td>Attributes:</td>
+            <td><?php echo $this->__('Attributes'); ?>:</td>
             <td colspan=<?php echo $_cols + 1; ?> class="last">
             <?php foreach ($attrs as $attr): ?>
               <?php echo $attr['Name'] . ' (' . $attr['Type'] . '), '; ?>
