@@ -1,11 +1,14 @@
 <?php
 
+$_helper = Mage::helper('mventory_tm/tm');
+
 $_categories = $this->getCategories();
 $_selectedCategories = $this->getSelectedCategories();
 
 $_cols = $this->getColsNumber() - 1;
 
 $_tmUrl = $this->getTmUrl();
+
 ?>
 
 <div class="grid">
@@ -34,7 +37,7 @@ $_tmUrl = $this->getTmUrl();
           <?php endfor; ?>
         </tr>
 
-          <?php $attrs = $this->getAttributes($id); ?>
+          <?php $attrs = $_helper->getAttributes($id); ?>
 
           <?php if ($attrs): ?>
           <tr class="category-attrs">

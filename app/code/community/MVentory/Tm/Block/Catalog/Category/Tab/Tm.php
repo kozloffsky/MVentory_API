@@ -51,21 +51,5 @@ class MVentory_Tm_Block_Catalog_Category_Tab_Tm
   public function getTmUrl () {
     return 'http://www.trademe.co.nz';
   }
-
-  public function getAttributes ($categoryId) {
-    $model = Mage::getModel('mventory_tm/connector');
-
-    $attrs = $model
-               ->getTmCategoryAttrs($categoryId);
-
-    if (!(is_array($attrs) && count($attrs)))
-      return null;
-
-    foreach ($attrs as &$attr) {
-      $attr['Type'] = $model->getAttrTypeName($attr['Type']);
-    }
-
-    return $attrs;
-  }
 }
 
