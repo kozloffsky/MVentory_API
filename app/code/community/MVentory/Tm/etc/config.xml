@@ -109,11 +109,6 @@
             <class>mventory_tm/observer</class>   
             <method>addProductNameRebuildMassaction</method>
           </mventory_tm_product_name_rebuild>
-          <mventory_tm_product_attributes_populate>
-            <type>singleton</type>  
-            <class>mventory_tm/observer</class>   
-            <method>addProductAttributesPopulateMassaction</method>
-          </mventory_tm_product_attributes_populate>
         </observers>
       </adminhtml_catalog_product_grid_prepare_massaction>
     </events>
