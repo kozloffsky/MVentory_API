@@ -63,4 +63,54 @@ class MVentory_Tm_Model_Order_Api extends Mage_Sales_Model_Order_Api {
 
     return compact('statuses', 'orders');
   }
+
+  public function fullInfo($orderIncrementId) {
+    $order = $this->info($orderIncrementId);
+
+    $orderId = (int) $order['order_id'];
+
+    //Collect credit memos
+
+    $order['credit_memos'] = array();
+
+    $creditMemoApi = Mage::getModel('sales/order_creditmemo_api');
+
+    $creditMemos = $creditMemoApi->items(array('order_id' => $orderId));
+
+    foreach ($creditMemos as $creditMemo)
+      $order['credit_memos'][]
+        = $creditMemoApi->info($creditMemo['increment_id']);
+
+    unset($creditMemos);
+
+    //Collect invoices
+
+    $order['invoices'] = array();
+
+    $invoiceApi = Mage::getModel('sales/order_invoice_api');
+
+    $invoices = $invoiceApi->items(array('order_id' => $orderId));
+
+    foreach ($invoices as $invoice)
+      $order['invoices'][]
+        = $invoiceApi->info($invoice['increment_id']);
+
+    unset($invoices);
+
+    //Collect shipments
+
+    $order['shipments'] = array();
+
+    $shipmentApi = Mage::getModel('sales/order_shipment_api');
+
+    $shipments = $shipmentApi->items(array('order_id' => $orderId));
+
+    foreach ($shipments as $shipment)
+      $order['shipments'][]
+        = $shipmentApi->info($shipment['increment_id']);
+
+    unset($shipments);
+
+    return $order;
+  }
 }

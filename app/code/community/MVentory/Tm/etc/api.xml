@@ -136,6 +136,11 @@
             <title>Retrieve list of orders by status and store</title>
             <acl>sales/order/info</acl>
           </listByStatus>
+
+          <fullInfo translate="title" module="sales">
+            <title>Retrieve order information</title>
+            <acl>sales/order/info</acl>
+          </fullInfo>
         </methods>
       </sales_order>
     </resources>
