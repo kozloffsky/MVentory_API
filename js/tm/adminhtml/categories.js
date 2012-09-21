@@ -53,11 +53,37 @@ function st_checkbox_handler ($main_table) {
 }
 
 function mouseover_handler () {
-  $(this).addClass('on-mouse');
+  var $this = $(this);
+
+  $this.addClass('on-mouse');
+
+  if ($this.hasClass('category-attrs'))
+    $this
+      .prev()
+      .addClass('on-mouse');
+  else {
+    $next = $this.next();
+
+    if ($next.hasClass('category-attrs'))
+      $next.addClass('on-mouse');
+  }
 }
 
 function mouseout_handler () {
-  $(this).removeClass('on-mouse');
+  var $this = $(this);
+
+  $this.removeClass('on-mouse');
+
+  if ($this.hasClass('category-attrs'))
+    $this
+      .prev()
+      .removeClass('on-mouse');
+  else {
+    $next = $this.next();
+
+    if ($next.hasClass('category-attrs'))
+      $next.removeClass('on-mouse');
+  }
 }
 
 function click_handler (event) {

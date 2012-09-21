@@ -40,7 +40,7 @@ $_tmUrl = $this->getTmUrl();
           <?php $attrs = $_helper->getAttributes($id); ?>
 
           <?php if ($attrs): ?>
-          <tr class="category-attrs">
+          <tr class="category-attrs" onmouseover="window.tm_mouseover(event)" onmouseout="tm_mouseout(event)">
             <td><?php echo $this->__('Attributes'); ?>:</td>
             <td colspan=<?php echo $_cols + 1; ?> class="last">
             <?php foreach ($attrs as $attr): ?>
