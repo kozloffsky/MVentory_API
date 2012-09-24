@@ -153,5 +153,35 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     return $this->getButtonHtml($label, $onclick, '', 'tm_remove_button');
   }
+
+  public function getPreparedAttributes ($tmCategoryId) {
+    $attributes = Mage::helper('mventory_tm/tm')->getAttributes($tmCategoryId);
+
+    if (!($attributes && count($attributes)))
+      return;
+
+    $product = $this->getProduct();
+
+    $existing = array();
+    $missing = array();
+    $optional = array();
+
+    foreach ($attributes as $attribute) {
+      if (!$attribute['IsRequiredForSell']) {
+        $optional[] = $attribute;
+
+        continue;
+      }
+  
+      $name = strtolower($attribute['Name']);
+
+      if ($product->hasData($name) || $product->hasData($name . '_'))
+        $existing[] = $attribute;
+      else
+        $missing[] = $attribute;
+    }
+
+    return compact('existing', 'missing', 'optional');
+  }
 }
 

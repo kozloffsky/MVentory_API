@@ -1,7 +1,5 @@
 <?php
 
-$_helper = Mage::helper('mventory_tm/tm');
-
 $_product = $this->getProduct();
 
 $_categories = $this->getCategories();
@@ -72,15 +70,38 @@ $_tmUrl = $this->getTmUrl();
           <?php endfor; ?>
         </tr>
 
-          <?php $attrs = $_helper->getAttributes($id); ?>
+          <?php $attrs = $this->getPreparedAttributes($id); ?>
 
           <?php if ($attrs): ?>
           <tr class="category-attrs">
             <td><?php echo $this->__('Attributes'); ?>:</td>
             <td colspan=<?php echo $_cols + 1; ?> class="last">
-            <?php foreach ($attrs as $attr): ?>
-              <?php echo $attr['Name'] . ' (' . $attr['Type'] . '), '; ?>
-            <?php endforeach; ?> 
+
+            <?php if (count($attrs['existing'])): ?>
+              <?php foreach ($attrs['existing'] as $attr): ?>
+                <?php echo $attr['Name'] . ' (' . $attr['Type'] . '), '; ?>
+              <?php endforeach; ?>
+
+              <br />
+            <?php endif; ?>
+
+            <?php if (count($attrs['optional'])): ?>
+              <?php echo $this->__('Optional'); ?>:
+
+              <?php foreach ($attrs['optional'] as $attr): ?>
+                <?php echo $attr['Name'] . ' (' . $attr['Type'] . '), '; ?>
+              <?php endforeach; ?>
+
+              <br />
+            <?php endif; ?>
+
+            <?php if (count($attrs['missing'])): ?>
+              <?php echo $this->__('Missing'); ?>:
+
+              <?php foreach ($attrs['missing'] as $attr): ?>
+                <?php echo $attr['Name'] . ' (' . $attr['Type'] . '), '; ?>
+              <?php endforeach; ?>
+            <?php endif; ?>
             </td>
           </tr>
           <?php endif; ?>
