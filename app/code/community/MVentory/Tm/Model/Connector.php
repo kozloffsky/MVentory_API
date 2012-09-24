@@ -273,25 +273,32 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 <PaymentMethod>BankDeposit</PaymentMethod>
 </PaymentMethods>';
 
-      $attributes = $this->getTmCategoryAttrs($categoryId)
+      $attributes = $this->getTmCategoryAttrs($categoryId);
 
-      if ($attributes) {
-        if (count($attributes)) {
-          $xml .= '<Attributes>';
+      if ($attributes && count($attributes)) {
+        $xml .= '<Attributes>';
 
-          foreach ($attributes as $attribute) {
-            if (!$product->getData(strtolower($attribute['Name'])) && !$product->getData(strtolower($attribute['Name'] . '_'))) {
-              return 'Product has empty ' . strtolower($attribute->['Name']) . ' attribute';
-            }
+        foreach ($attributes as $attribute) {
+          $name = strtolower($attribute['Name']);
 
-            $xml .= '<Attribute>';
-            $xml .= '<Name>' . $attribute->['Name'] . '</Name>';
-            $xml .= '<Value>' . ($product->getData(strtolower($attribute->['Name'])) ? $product->getData(strtolower($attribute->['Name'])) : $product->getData(strtolower($attribute->['Name'] . '_')))  . '</Value>';
-            $xml .= '</Attribute>';
+          if ($product->hasData($name))
+            $data = $product->getData($name);
+          else {
+            $name .= '_';
+
+            if ($product->hasData($name))
+              $data = $product->getData($name);
+            else
+              return 'Product has empty ' . $name . ' attribute';
           }
 
-          $xml .= '</Attributes>';
+          $xml .= '<Attribute>';
+          $xml .= '<Name>' . $name . '</Name>';
+          $xml .= '<Value>' . $data . '</Value>';
+          $xml .= '</Attribute>';
         }
+
+        $xml .= '</Attributes>';
       }
 
       $xml .= '</ListingRequest>';
