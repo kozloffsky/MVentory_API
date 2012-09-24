@@ -273,28 +273,20 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 <PaymentMethod>BankDeposit</PaymentMethod>
 </PaymentMethods>';
 
-      $cache = Mage::getSingleton('core/cache');
-      $xmlAttr = $cache->load('mventory_tm_attributes_' . $categoryId);
+      $attributes = $this->getTmCategoryAttrs($categoryId)
 
-      if (!$xmlAttr) {
-        $xmlAttr = file_get_contents('http://api.trademe.co.nz/v1/Categories/' . $categoryId . '/Attributes.xml');
-        $cache->save($xmlAttr, 'mventory_tm_attributes_' . $categoryId, array('mventory_tm_attributes_' . $categoryId), 9999999999);
-      }
-
-      $xmlAttr = simplexml_load_string($xmlAttr);
-
-      if ($xmlAttr) {
-        if (count($xmlAttr)) {
+      if ($attributes) {
+        if (count($attributes)) {
           $xml .= '<Attributes>';
 
-          foreach ($xmlAttr as $attribute) {
-            if (!$product->getData(strtolower($attribute->Name)) && !$product->getData(strtolower($attribute->Name . '_'))) {
-              return 'Product has empty ' . strtolower($attribute->Name) . ' attribute';
+          foreach ($attributes as $attribute) {
+            if (!$product->getData(strtolower($attribute['Name'])) && !$product->getData(strtolower($attribute['Name'] . '_'))) {
+              return 'Product has empty ' . strtolower($attribute->['Name']) . ' attribute';
             }
 
             $xml .= '<Attribute>';
-            $xml .= '<Name>' . $attribute->Name . '</Name>';
-            $xml .= '<Value>' . ($product->getData(strtolower($attribute->Name)) ? $product->getData(strtolower($attribute->Name)) : $product->getData(strtolower($attribute->Name . '_')))  . '</Value>';
+            $xml .= '<Name>' . $attribute->['Name'] . '</Name>';
+            $xml .= '<Value>' . ($product->getData(strtolower($attribute->['Name'])) ? $product->getData(strtolower($attribute->['Name'])) : $product->getData(strtolower($attribute->['Name'] . '_')))  . '</Value>';
             $xml .= '</Attribute>';
           }
 
