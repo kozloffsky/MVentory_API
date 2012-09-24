@@ -281,6 +281,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         foreach ($attributes as $attribute) {
           $name = strtolower($attribute['Name']);
 
+          $data = null;
+
           if ($product->hasData($name))
             $data = $product->getData($name);
           else {
@@ -288,9 +290,13 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
             if ($product->hasData($name))
               $data = $product->getData($name);
-            else
-              return 'Product has empty ' . $name . ' attribute';
           }
+
+          if ($data == null)
+            if ($attribute['IsRequiredForSell'])
+              return 'Product has empty ' . $name . ' attribute';
+            else
+              continue;
 
           $xml .= '<Attribute>';
           $xml .= '<Name>' . $name . '</Name>';
