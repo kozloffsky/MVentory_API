@@ -148,7 +148,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       //Set visibility to "Catalog, Search" value
       $productData['visibility'] = 4;
 
-      if (!isset($productData['tax_class_id']))
+      //if (!isset($productData['tax_class_id']))
         $productData['tax_class_id']
           = (int) $helper->getConfig(self::TAX_CLASS_PATH,
                                      $helper->getCurrentWebsite());
