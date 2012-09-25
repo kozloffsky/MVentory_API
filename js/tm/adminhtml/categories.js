@@ -243,15 +243,9 @@ window.tm_categories = function ($main_table, $selected_table, url_templates) {
   }
 
   function submit_handler () {
-    var id = $selected_table
-               .find('> tbody > tr > .checkbox > .category-check')
-               .filter(':checked')
-               .val();
-
-    if (!id)
-      return false;
-
-    setLocation(url_templates['submit'].replace('{{tm_category_id}}', id));
+    $('#product_edit_form')
+      .attr('action', url_templates['submit'])
+      .submit();
   }
 }
 

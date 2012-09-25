@@ -170,7 +170,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return $accessTokenData;
   }
 
-  public function send ($product, $categoryId) {
+  public function send ($product, $categoryId, $data) {
     $this->getWebsiteId($product);
 
     $return = 'Error';
@@ -258,7 +258,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $tmHelper = Mage::helper('mventory_tm/tm');
 
       //Apply fees to price of the product if it's allowed
-      $price = (bool) $this->_getConfig(self::ADD_TM_FEES_PATH)
+      $price = isset($data['add_tm_fees']) && $data['add_tm_fees']
                   ? $tmHelper->addFees($product->getPrice())
                     : $product->getPrice();
 
@@ -266,15 +266,18 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $buyNow = '';
 
-      if ((bool) $this->_getConfig(self::BUY_NOW_PATH))
+      if (isset($data['allow_buy_now']) && $data['allow_buy_now'])
         $buyNow = '<BuyNowPrice>' . $price . '</BuyNowPrice>';
 
       $shippingTypes
         = Mage::getModel('mventory_tm/system_config_source_shippingtype')
             ->toArray();
 
+      $shippingType = isset($data['shipping_type'])
+                        ? $data['shipping_type']
+                          : self::UNKNOWN;
       $shippingType
-        = $shippingTypes[$this->_getConfig(self::SHIPPING_TYPE_PATH)];
+        = $shippingTypes[$shippingType];
 
       unset($shippingTypes);
 

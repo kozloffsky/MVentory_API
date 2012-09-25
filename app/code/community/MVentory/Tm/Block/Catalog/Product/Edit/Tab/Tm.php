@@ -118,9 +118,8 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getUrlTemplates () {
-    $submit = $this->getUrl('mventory_tm/adminhtml_index/submit/id/',
-                            array('id' => $this->getProduct()->getId(),
-                            'tm_category_id' => '{{tm_category_id}}'));
+    $submit = $this->getUrl('mventory_tm/adminhtml_index/submit/',
+                            array('id' => $this->getProduct()->getId()));
 
     return Zend_Json::encode(compact('submit'));
   }
@@ -182,6 +181,41 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     }
 
     return compact('existing', 'missing', 'optional');
+  }
+
+  public function getAllowBuyNow () {
+    $helper = Mage::helper('mventory_tm');
+
+    $path = MVentory_Tm_Model_Connector::BUY_NOW_PATH;
+    $website = $helper->getWebsiteIdFromProduct($this->getProduct());
+
+    return $helper->getConfig($path, $website);
+  }
+
+  public function getAddTmFees () {
+    $helper = Mage::helper('mventory_tm');
+
+    $path = MVentory_Tm_Model_Connector::ADD_TM_FEES_PATH;
+    $website = $helper->getWebsiteIdFromProduct($this->getProduct());
+
+    return $helper->getConfig($path, $website);
+  }
+
+  public function getShippingOptions () {
+    $helper = Mage::helper('mventory_tm');
+
+    $path = MVentory_Tm_Model_Connector::SHIPPING_TYPE_PATH;
+    $website = $helper->getWebsiteIdFromProduct($this->getProduct());
+
+    $shippingType = $helper->getConfig($path, $website);
+
+    $options = Mage::getModel('mventory_tm/system_config_source_shippingtype')
+                 ->toOptionArray();
+
+    foreach ($options as &$option)
+      $option['selected'] = $shippingType == $option['value'];
+
+    return $options;
   }
 }
 

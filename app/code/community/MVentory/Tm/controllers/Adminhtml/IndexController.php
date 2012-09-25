@@ -4,18 +4,36 @@ class MVentory_Tm_Adminhtml_IndexController
   extends Mage_Adminhtml_Controller_Action {
 
   public function submitAction () {
-    $id = $this->_request->getParam('id');
-    $categoryId = $this->_request->getParam('tm_category_id');
-
-    $product = Mage::getModel('catalog/product')->load($id);
-
     $helper = Mage::helper('mventory_tm');
+    $request = $this->getRequest();
+
+    $data = $this->getRequest()->getPost();
+
+    $hasRequiredParams = $request->has('id')
+                         && isset($data['tm'])
+                         && isset($data['tm']['category']);
+
+    if (!($hasRequiredParams)) {
+      Mage::getSingleton('adminhtml/session')
+        ->addError($helper->__('No required parameters'));
+
+      $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
+
+      return;
+    }
+
+    $data = $data['tm'];
+
+    $productId = $request->getParam('id');
+    $categoryId = $data['category'];
+
+    $product = Mage::getModel('catalog/product')->load($productId);
 
     if (!$product->getId()) {
       Mage::getSingleton('adminhtml/session')
         ->addError($helper->__('Can\'t load product'));
 
-      $this->_redirect('adminhtml/catalog_product/edit/id/' . $id);
+      $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
 
       return;
     }
@@ -28,19 +46,19 @@ class MVentory_Tm_Adminhtml_IndexController
       Mage::getSingleton('adminhtml/session')
         ->addError($helper->__('Item is not available in inventory'));
 
-      $this->_redirect('adminhtml/catalog_product/edit/id/' . $id);
+      $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
 
       return;
     }
 
     $connector = Mage::getModel('mventory_tm/connector');
 
-    $result = $connector->send($product, $categoryId);
+    $result = $connector->send($product, $categoryId, $data);
 
     if (!is_int($result)) {
       Mage::getSingleton('adminhtml/session')->addError($helper->__($result));
 
-      $this->_redirect('adminhtml/catalog_product/edit/id/' . $id);
+      $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
 
       return;
     }
@@ -60,7 +78,7 @@ class MVentory_Tm_Adminhtml_IndexController
       ->setTmListingId($result)
       ->save();
 
-    $this->_redirect('adminhtml/catalog_product/edit/id/' . $id);
+    $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
   }
 
   public function removeAction () {

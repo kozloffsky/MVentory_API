@@ -10,9 +10,37 @@ $_multiple = count($_selectedCategories) > 1;
 $_cols = $this->getColsNumber() - 1;
 
 $_tmUrl = $this->getTmUrl();
+
+$_allowBuyNow = $this->getAllowBuyNow();
+$_addTmFees = $this->getAddTmFees();
+$_shippingOptions = $this->getShippingOptions();
+
 ?>
 
 <p><?php echo $this->__('Product URL'); ?>: <a target="_blank" href="<?php echo $this->getProductUrl(); ?>"><?php echo $this->getProductUrl(); ?></a></p>
+
+<div class="entry-edit">
+  <fieldset>
+    <label class="tm-option">
+      <?php echo $this->__('Shipping type: '); ?>
+      <select class="select" name="tm[shipping_type]">
+        <?php foreach ($_shippingOptions as $opt): ?>
+        <option value="<?php echo $opt['value']; ?>" <?php if ($opt['selected']) echo 'selected="selected"'; ?>><?php echo $opt['label'] ?></option>
+        <?php endforeach; ?>
+      </select>
+    </label>
+
+    <label class="tm-option">
+      <input type="checkbox" value="1" name="tm[allow_buy_now]" <?php if ($_allowBuyNow) echo 'checked="checked"'; ?> />
+      <?php echo $this->__('Allow Buy Now'); ?>
+    </label>
+
+    <label class="tm-option">
+      <input type="checkbox" value="1" name="tm[add_tm_fees]" <?php if ($_addTmFees) echo 'checked="checked"'; ?> />
+      <?php echo $this->__('Add TM fees'); ?>
+    </label>
+  </fieldset>
+</div>
 
 <table cellspacing="0" class="actions">
   <tbody>
@@ -59,7 +87,7 @@ $_tmUrl = $this->getTmUrl();
         <?php if (isset($_categories[$id])): ?>
         <tr class="pointer">
           <td class="checkbox">
-            <input type="radio" class="category-check" name="selected_categories"  value="<?php echo $id; ?>" <?php echo !$_multiple ? 'checked="checked"' : '' ?> />
+            <input type="radio" class="category-check" name="tm[category]"  value="<?php echo $id; ?>" <?php echo !$_multiple ? 'checked="checked"' : '' ?> />
             <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $_categories[$id]['path']; ?>" />
           </td>
 

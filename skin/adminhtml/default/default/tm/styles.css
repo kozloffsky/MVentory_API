@@ -5,3 +5,7 @@
 .grid tr.selected-row {
   background-color: #FCF5DD;
 }
+
+#product_info_tabs_tm_content .tm-option {
+  padding-right: 10px;
+}
