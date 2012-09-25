@@ -1,5 +1,5 @@
 <_>
-   <form_key>sxb15Jwlk7xABHpA</form_key>
+   <form_key>SuhQG9HhRr28QZ3V</form_key>
    <name>MVentory_Tm</name>
    <channel>community</channel>
    <version_ids>
@@ -9,7 +9,7 @@
    <description>MVentory_Tm</description>
    <license>OSL v3.0</license>
    <license_uri/>
-   <version>0.0.25</version>
+   <version>0.0.0-r725</version>
    <stability>devel</stability>
    <notes>Initial versions</notes>
    <authors>
@@ -43,7 +43,7 @@
             <max/>
          </max>
          <files>
-            <files>                                                                       </files>
+            <files>                                                                                               </files>
          </files>
       </package>
       <extension>
