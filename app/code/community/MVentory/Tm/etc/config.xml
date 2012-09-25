@@ -14,8 +14,6 @@
 
       <catalog>
         <rewrite>
-          <product_list>MVentory_Tm_Block_Catalog_Product_List</product_list>
-          <product_view>MVentory_Tm_Block_Catalog_Product_View</product_view>
           <product_view_attributes>MVentory_Tm_Block_Product_View_Attributes</product_view_attributes>
           <product_view_description>MVentory_Tm_Block_Product_View_Description</product_view_description>
           <product_view_media>MVentory_Tm_Block_Product_View_Media</product_view_media>
