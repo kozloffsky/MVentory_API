@@ -106,6 +106,18 @@
 
               <sort_order>7</sort_order>
             </relist_if_not_sold>
+
+            <add_tm_fees translate="label">
+              <label>Add TM fees</label>
+              <frontend_type>select</frontend_type>
+              <source_model>adminhtml/system_config_source_yesno</source_model>
+
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>8</sort_order>
+            </add_tm_fees>
           </fields>
         </settings>
 

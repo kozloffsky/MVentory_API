@@ -8,6 +8,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const SANDBOX_PATH = 'mventory_tm/settings/sandbox';
   const FOOTER_PATH = 'mventory_tm/settings/footer';
   const BUY_NOW_PATH = 'mventory_tm/settings/allow_buy_now';
+  const ADD_TM_FEES_PATH = 'mventory_tm/settings/add_tm_fees';
 
   const CACHE_TYPE_TM = 'tm';
   const CACHE_TAG_TM = 'TM';
@@ -245,17 +246,26 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       if ($descriptionTmpl)
         $description = $this->processDescription($descriptionTmpl, $product);
 
+      $tmHelper = Mage::helper('mventory_tm/tm');
+
+      //Apply fees to price of the product if it's allowed
+      $price = (bool) $this->_getConfig(self::ADD_TM_FEES_PATH)
+                  ? $tmHelper->addFees($product->getPrice())
+                    : $product->getPrice();
+
+      unset($tmHelper);
+
       $buyNow = '';
 
       if ((bool) $this->_getConfig(self::BUY_NOW_PATH))
-        $buyNow = '<BuyNowPrice>' . $product->getPrice() . '</BuyNowPrice>';
+        $buyNow = '<BuyNowPrice>' . $price . '</BuyNowPrice>';
 
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
 <Title>' . $product->getName() . '</Title>
 <Description><Paragraph>' . $description . '</Paragraph></Description>
-<StartPrice>' . $product->getPrice() . '</StartPrice>
-<ReservePrice>' . $product->getPrice() . '</ReservePrice>'
+<StartPrice>' . $price . '</StartPrice>
+<ReservePrice>' . $price . '</ReservePrice>'
 . $buyNow .
 '<Duration>Seven</Duration>
 <Pickup>Allow</Pickup>';
