@@ -44,7 +44,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
             </sandbox>
-            <cron>
+            <cron translate="label comment">
               <label>Cron interval (in minutes)</label>
               <comment>Zero = no cron</comment>
               <frontend_type>text</frontend_type>
@@ -54,7 +54,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
             </cron>
-            <footer>
+            <footer translate="label">
               <label>Footer description</label>
               <frontend_type>textarea</frontend_type>
               <sort_order>5</sort_order>
@@ -63,7 +63,7 @@
               <show_in_store>0</show_in_store>
             </footer>
 
-            <allow_buy_now>
+            <allow_buy_now translate="label">
               <label>Allow Buy Now</label>
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -73,7 +73,7 @@
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
-            </allow_buy_now>
+            </allow_buy_now translate="label">
 
             <relist_if_not_sold translate="label">
               <label>Relist if not sold</label>
@@ -141,7 +141,7 @@
           <show_in_store>0</show_in_store>
 
           <fields>
-            <display-descending-products>
+            <display-descending-products translate="label">
               <label>Display all descending products</label>
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
