@@ -6,61 +6,81 @@
       <label>mVentory</label>
       <tab>sales</tab>
       <frontend_type>text</frontend_type>
+
       <show_in_default>1</show_in_default>
       <show_in_website>1</show_in_website>
       <show_in_store>0</show_in_store>
+
       <sort_order>2000</sort_order>
+
       <groups>
         <settings translate="label">
           <label>TM Settings</label>
           <frontend_type>text</frontend_type>
-          <sort_order>1</sort_order>
+
           <show_in_default>1</show_in_default>
           <show_in_website>1</show_in_website>
           <show_in_store>0</show_in_store>
+
+          <sort_order>1</sort_order>
+
           <fields>
             <key translate="label">
               <label>API Key</label>
               <frontend_type>text</frontend_type>
-              <sort_order>1</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>1</sort_order>
             </key>
+
             <secret translate="label">
               <label>API Secret</label>
               <frontend_type>text</frontend_type>
-              <sort_order>2</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>2</sort_order>
             </secret>
+
             <sandbox translate="label">
               <label>Sandbox</label>
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
-              <sort_order>3</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>3</sort_order>
             </sandbox>
+
             <cron translate="label comment">
               <label>Cron interval (in minutes)</label>
               <comment>Zero = no cron</comment>
               <frontend_type>text</frontend_type>
               <backend_model>mventory_tm/system_config_backend_cron</backend_model>
-              <sort_order>4</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>4</sort_order>
             </cron>
+
             <footer translate="label">
               <label>Footer description</label>
               <frontend_type>textarea</frontend_type>
-              <sort_order>5</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>5</sort_order>
             </footer>
 
             <allow_buy_now translate="label">
@@ -68,11 +88,11 @@
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
 
-              <sort_order>6</sort_order>
-
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>6</sort_order>
             </allow_buy_now translate="label">
 
             <relist_if_not_sold translate="label">
@@ -80,41 +100,50 @@
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
 
-              <sort_order>7</sort_order>
-
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>7</sort_order>
             </relist_if_not_sold>
           </fields>
         </settings>
+
         <api translate="label">
           <label>Phone API</label>
           <frontend_type>text</frontend_type>
-          <sort_order>2</sort_order>
+
           <show_in_default>1</show_in_default>
           <show_in_website>1</show_in_website>
           <show_in_store>0</show_in_store>
+
+          <sort_order>2</sort_order>
+
           <fields>
             <products-number-to-fetch  translate="label">
               <label>Number of products to fetch</label>
               <frontend_type>text</frontend_type>
-              <sort_order>1</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>1</sort_order>
             </products-number-to-fetch>
 
-            <add_to_websites translate="label">
+            <add_to_websites translate="label comment">
               <label>Add product to websites</label>
+              <comment>Hold Ctrl to select multiple categories</comment>
+
               <frontend_type>multiselect</frontend_type>
               <source_model>adminhtml/system_config_source_website</source_model>
               <backend_model>mventory_tm/config_data_websites</backend_model>
-              <sort_order>2</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
-              <comment>Hold Ctrl to select multiple categories</comment>
+
+              <sort_order>2</sort_order>
             </add_to_websites>
 
             <tax_class translate="label">
@@ -123,10 +152,11 @@
               <frontend_type>select</frontend_type>
               <source_model>tax/class_source_product</source_model>
 
-              <sort_order>3</sort_order>
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>3</sort_order>
             </tax_class>
           </fields>
         </api>
@@ -134,21 +164,23 @@
         <shop-interface translate="label" module="mventory_tm">
           <label>Shop interface</label>
 
-          <sort_order>3</sort_order>
-
           <show_in_default>1</show_in_default>
           <show_in_website>1</show_in_website>
           <show_in_store>0</show_in_store>
+
+          <sort_order>3</sort_order>
 
           <fields>
             <display-descending-products translate="label">
               <label>Display all descending products</label>
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
-              <sort_order>1</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>1</sort_order>
             </display-descending-products>
           </fields>
         </shop-interface>
@@ -157,66 +189,89 @@
           <label>Labels</label>
           <comment><![CDATA[<a target="_blank" href="/mventory_tm/qr/labels">Generator</a>]]></comment>
           <frontend_type>text</frontend_type>
-          <sort_order>4</sort_order>
+
           <show_in_default>1</show_in_default>
           <show_in_website>0</show_in_website>
           <show_in_store>0</show_in_store>
+
+          <sort_order>4</sort_order>
+
           <fields>
             <rows translate="label">
               <label>Rows</label>
               <frontend_type>text</frontend_type>
-              <sort_order>1</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>0</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>1</sort_order>
             </rows>
+
             <columns translate="label">
               <label>Columns</label>
               <frontend_type>text</frontend_type>
-              <sort_order>2</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>0</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>2</sort_order>
             </columns>
+
             <size translate="label">
               <label>QR code size, px</label>
               <frontend_type>text</frontend_type>
-              <sort_order>3</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>0</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>3</sort_order>
             </size>
+
             <pages translate="label">
               <label>Number of pages</label>
               <frontend_type>text</frontend_type>
-              <sort_order>4</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>0</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>4</sort_order>
             </pages>
+
             <css translate="label">
               <label>Custom CSS</label>
               <frontend_type>textarea</frontend_type>
-              <sort_order>5</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>0</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>5</sort_order>
             </css>
+
             <base_url translate="label">
               <label>Base URL (optional)</label>
               <frontend_type>text</frontend_type>
-              <sort_order>6</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>0</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>6</sort_order>
             </base_url>
+
             <copies translate="label">
               <label>Copies per code</label>
               <frontend_type>text</frontend_type>
-              <sort_order>7</sort_order>
+
               <show_in_default>1</show_in_default>
               <show_in_website>0</show_in_website>
               <show_in_store>0</show_in_store>
+
+              <sort_order>7</sort_order>
             </copies>
           </fields>
         </qr>
