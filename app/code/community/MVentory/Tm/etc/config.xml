@@ -231,7 +231,7 @@
         <allow_buy_now>1</allow_buy_now>
         <relist_if_not_sold>0</relist_if_not_sold>
         <add_tm_fees>0</add_tm_fees>
-        <shipping_type>0</shipping_type>
+        <shipping_type>1</shipping_type>
       </settings>
 
       <qr>
