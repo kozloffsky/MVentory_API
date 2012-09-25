@@ -2,6 +2,8 @@
 
 class MVentory_Tm_Model_Observer {
 
+  const RELIST_IF_NOT_SOLD_PATH = 'mventory_tm/settings/relist_if_not_sold';
+
   private $supportedImageTypes = array(
     IMAGETYPE_GIF => 'gif',
     IMAGETYPE_JPEG => 'jpeg',
@@ -54,25 +56,33 @@ class MVentory_Tm_Model_Observer {
                     ->getCollection()
                     ->addFieldToFilter('mventory_tm_id', array('neq' => ''));
 
+    $relist = Mage::getStoreConfig(self::RELIST_IF_NOT_SOLD_PATH);
+
     foreach ($collection as $product) {
       $connector = Mage::getModel('mventory_tm/connector');
+
       $result = $connector->check($product);
 
-      if ($result == 1 || $result == 2) {
-        if ($result == 2) {
-          $stock = Mage::getModel('cataloginventory/stock_item')
-                     ->loadByProduct($product);
+      if (!($result == 1 || $result == 2))
+        continue;
 
-          if ($stock->getManageStock() && $stock->getQty()) {
-            $stockData = $stock->getData();
-            $stockData['qty'] -= 1;
-            $product->setStockData($stockData);
-          }
+      if ($result == 1)
+        $product->setTmListingId($connector->relist($product));
+
+      if ($result == 2) {
+        $stock = Mage::getModel('cataloginventory/stock_item')
+                   ->loadByProduct($product);
+
+        if ($stock->getManageStock() && $stock->getQty()) {
+          $stockData = $stock->getData();
+          $stockData['qty'] -= 1;
+          $product->setStockData($stockData);
         }
 
         $product->setTmListingId(0);
-        $product->save();
       }
+
+      $product->save();
     }
   }
 

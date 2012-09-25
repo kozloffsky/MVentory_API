@@ -448,6 +448,57 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return 0;
   }
 
+  public function relist ($product) {
+    $this->getWebsiteId($product);
+
+    if (!$listingId = $product->getTmListingId())
+      return;
+
+    if (!$accessTokenData = $this->auth())
+      return;
+
+    $accessTokenData = unserialize($accessTokenData);
+
+    $accessToken = new Zend_Oauth_Token_Access();
+
+    $accessToken->setToken($accessTokenData[0]);
+    $accessToken->setTokenSecret($accessTokenData[1]);
+
+    $client = $accessToken->getHttpClient($this->getConfig());
+
+    $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Relist.json');
+    $client->setMethod(Zend_Http_Client::POST);
+
+    $data = array('ListingId' => $listingId);
+
+    $client->setRawData(Zend_Json::encode($data), 'application/json');
+
+    $response = $client->request();
+
+    if ($response->getStatus() == '401') {
+      $this->reset();
+
+      return;
+    }
+
+    if ($response->getStatus() != 200)
+      return;
+
+    $response = Zend_Json::decode($response->getBody());
+
+    if (!$response['Success']) {
+      Mage::log('TM: error on relisting '
+                . $listingId
+                . ' ('
+                . $response['Description']
+                . ')');
+
+      return null;
+    }
+
+    return $response['ListingId'];
+  }
+
   private function processDescription ($template, $product) {
     $search = array();
     $replace = array();

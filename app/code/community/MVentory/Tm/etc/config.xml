@@ -231,6 +231,7 @@
     <mventory_tm>
       <settings>
         <allow_buy_now>1</allow_buy_now>
+        <relist_if_not_sold>0</relist_if_not_sold>
       </settings>
 
       <qr>
