@@ -9,11 +9,20 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const FOOTER_PATH = 'mventory_tm/settings/footer';
   const BUY_NOW_PATH = 'mventory_tm/settings/allow_buy_now';
   const ADD_TM_FEES_PATH = 'mventory_tm/settings/add_tm_fees';
+  const SHIPPING_TYPE_PATH = 'mventory_tm/settings/shipping_type';
 
   const CACHE_TYPE_TM = 'tm';
   const CACHE_TAG_TM = 'TM';
   const CACHE_TM_CATEGORIES = 'TM_CATEGORIES';
   const CACHE_TM_CATEGORY_ATTRS = 'TM_CATEGORY_ATTRS';
+
+  //TM shipping types
+  const UNKNOWN = 0;
+  const NONE = 0;
+  const UNDECIDED = 1;
+  const PICKUP = 2;
+  const FREE = 3;
+  const CUSTOM = 4;
 
   private $_helper = null;
 
@@ -260,6 +269,15 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       if ((bool) $this->_getConfig(self::BUY_NOW_PATH))
         $buyNow = '<BuyNowPrice>' . $price . '</BuyNowPrice>';
 
+      $shippingTypes
+        = Mage::getModel('mventory_tm/system_config_source_shippingtype')
+            ->toArray();
+
+      $shippingType
+        = $shippingTypes[$this->_getConfig(self::SHIPPING_TYPE_PATH)];
+
+      unset($shippingTypes);
+
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
 <Title>' . $product->getName() . '</Title>
@@ -275,7 +293,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       }
 
       $xml .= '<ShippingOptions>
-<ShippingOption><Type>Undecided</Type></ShippingOption>
+<ShippingOption><Type>' . $shippingType . '</Type></ShippingOption>
 </ShippingOptions>
 <PaymentMethods>
 <PaymentMethod>CreditCard</PaymentMethod>
