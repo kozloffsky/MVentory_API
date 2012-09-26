@@ -17,7 +17,12 @@ class MVentory_Tm_Adminhtml_IndexController
       Mage::getSingleton('adminhtml/session')
         ->addError($helper->__('No required parameters'));
 
-      $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
+      if ($request->has('id')) {
+        $productId = $request->getParam('id');
+
+        $this->_redirect('adminhtml/catalog_product/id' . $productId);
+      } else
+        $this->_redirectReferer();
 
       return;
     }
