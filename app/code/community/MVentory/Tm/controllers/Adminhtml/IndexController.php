@@ -20,7 +20,7 @@ class MVentory_Tm_Adminhtml_IndexController
       if ($request->has('id')) {
         $productId = $request->getParam('id');
 
-        $this->_redirect('adminhtml/catalog_product/id' . $productId);
+        $this->_redirect('adminhtml/catalog_product/edit/id' . $productId);
       } else
         $this->_redirectReferer();
 
