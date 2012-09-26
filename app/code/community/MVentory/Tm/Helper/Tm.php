@@ -74,24 +74,27 @@ class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
       if (!($from && $to))
         continue;
 
-      //Calculate percents
-      $fee = isset($_fee['rate'])
-               ? $price * $_fee['rate']
-                 : 0;
-
       //Add fixed part of the fee
-      $fee = isset($_fee['fixed'])
-               ? $fee + $_fee['fixed']
-                 : $fee;
+      $_price = isset($_fee['fixed'])
+                   ? $price + $_fee['fixed']
+                     : $price;
+
+      //Calculate final price
+      if (isset($_fee['rate']))
+        $_price /= 1 - $_fee['rate']; 
+
+      //Return final price if there's no min/max for the fee value
+      if (!(isset($_fee['min']) || isset($_fee['max'])))
+        return round($_price, 2);
+
+      $fee = $_price - $price;
 
       //Check for min and max values of the calculated fee
-      $fee = isset($_fee['min']) && $fee < $_fee['min']
-               ? $_fee['min']
-                 : $fee;
+      if (isset($_fee['min']) && $fee < $_fee['min'])
+        $fee = $_fee['min'];
 
-      $fee = isset($_fee['max']) && $fee > $_fee['max']
-               ? $_fee['max']
-                 : $fee;
+      if (isset($_fee['max']) && $fee > $_fee['max'])
+        $fee = $_fee['max'];
 
       return round($price + $fee, 2);
     }
