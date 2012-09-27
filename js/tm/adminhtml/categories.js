@@ -216,7 +216,7 @@ window.tm_categories = function ($main_table, $selected_table, url_templates) {
     var $input = $tr.find('> .checkbox > .category-check');
 
     $input
-      .prop('name', 'selected_categories')
+      .prop('name', 'tm[category]')
       .prop('type', 'radio')
       .on('click', tm_second_checkbox);
 
