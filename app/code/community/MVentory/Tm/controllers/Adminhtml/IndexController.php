@@ -7,30 +7,13 @@ class MVentory_Tm_Adminhtml_IndexController
     $helper = Mage::helper('mventory_tm');
     $request = $this->getRequest();
 
-    $data = $this->getRequest()->getPost();
+    $params = $request->getParams();
 
-    $hasRequiredParams = $request->has('id')
-                         && isset($data['tm'])
-                         && isset($data['tm']['category']);
-
-    if (!($hasRequiredParams)) {
-      Mage::getSingleton('adminhtml/session')
-        ->addError($helper->__('No required parameters'));
-
-      if ($request->has('id')) {
-        $productId = $request->getParam('id');
-
-        $this->_redirect('adminhtml/catalog_product/edit/id' . $productId);
-      } else
-        $this->_redirectReferer();
-
-      return;
-    }
-
-    $data = $data['tm'];
-
-    $productId = $request->getParam('id');
-    $categoryId = $data['category'];
+    $productId = isset($params['id']) ? $params['id'] : null;
+    $categoryId = isset($params['tm']['category'])
+                    ? $params['tm']['category']
+                      : null;
+    $data = isset($params['tm']) ? $params['tm'] : array();
 
     $product = Mage::getModel('catalog/product')->load($productId);
 

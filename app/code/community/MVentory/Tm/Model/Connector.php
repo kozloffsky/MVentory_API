@@ -42,6 +42,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     6 => 'StayPeriod'
   );
 
+  //Restored original request data, used only after auth process
+  private $_requestData = null;
+
   protected function _construct () {
     $this->_helper = Mage::helper('mventory_tm');
   }
@@ -137,7 +140,16 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           $this->saveAccessToken($accessTokenData);
 
           $session->setMventoryTmRequestToken(null);
+
+          //Restore original request data from session to use
+          //during interaction with TM
+          $this->_requestData
+            = $session->getData('original_request_data', true);
         } catch(Exception $e) {
+
+          //Auth failed, so we don't need data stored earlier
+          $session->unsetData('original_request_data');
+          
           return false;
         }
       } elseif ($request->getParam('denied'))
@@ -147,6 +159,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           $requestToken = $oAuth->getRequestToken();
 
           $session->setMventoryTmRequestToken(serialize($requestToken));
+
+          //Store original request data in session for using after
+          //auth success
+          $session->setData('original_request_data', $request->getParams());
 
           $requestToken = explode('=', str_replace('&', '=', $requestToken));
 
@@ -194,6 +210,13 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       //    break;
       //  }
       //}
+
+      if (!$categoryId && $this->_requestData
+          && isset($this->_requestData['tm'])) {
+
+        $data = $this->_requestData['tm'];
+        $categoryId = $data['category'];
+      }
 
       if (!$categoryId) {
         return 'Product doesn\'t have matched tm category';
