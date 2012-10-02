@@ -1,11 +1,11 @@
 jQuery(document).ready(function ($) {
   var $form = $('#product_addtocart_form');
-  var $menus = $form.find('.tm-image-editor-menu');
 
-  $menus
+  $form
+    .find('.tm-image-editor-menu')
     .parent()
-    .on('mouseenter', function () {
-      var $this = $(this);
+    .mouseenter(function () {
+      $this = $(this);
 
       var offset = $this.offset();
 
@@ -17,31 +17,23 @@ jQuery(document).ready(function ($) {
         })
         .show();
     })
-    .on('mouseleave', function () {
+    .mouseleave(function () {
       $(this)
           .children('.tm-image-editor-menu')
           .hide();
     });
 
-  $menus
-    .children('.rotate-image')
+  $form
+    .find('div.rotate-image')
     .filter('.rotate-left')
-      .on('click', { rotate: 'left' }, rotate_button_click_handler)
+      .click({ rotate: 'left'}, rotate_button_click_handler)
     .end()
     .filter('.rotate-right')
-      .on('click', { rotate: 'right' }, rotate_button_click_handler);
-
-  $menus
-    .children('.remove-image')
-    .on('click', remove_button_click_handler);
-
-  $menus
-    .children('.set-main-image')
-    .on('click', set_main_button_click_handler);
+      .click({ rotate: 'right'}, rotate_button_click_handler);
 
   function rotate_image (file, rotate, complete) {
     $.ajax({
-      url: _tm_image_editor_rotate_url,
+      url: _tm_image_editor_controller_url,
       type: 'POST',
       dataType: 'json',
       data: { file: file, rotate:  rotate},
@@ -55,40 +47,8 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  function remove_image (file, product_id, complete) {
-    $.ajax({
-      url: _tm_image_editor_remove_url,
-      type: 'POST',
-      dataType: 'json',
-      data: { file: file, product: product_id },
-      error: function (jqXHR, status, errorThrown) {
-        alert(status);
-      },
-      /*success: function (data, status, jqXHR) {
-        console.log(data);
-      },*/
-      complete: complete
-    });
-  }
-
-  function set_main_image (file, product_id, complete) {
-    $.ajax({
-      url: _tm_image_editor_setmain_url,
-      type: 'POST',
-      dataType: 'json',
-      data: { file: file, product: product_id },
-      error: function (jqXHR, status, errorThrown) {
-        alert(status);
-      },
-      /*success: function (data, status, jqXHR) {
-        console.log(data);
-      },*/
-      complete: complete
-    });
-  }
-
   function rotate_button_click_handler (event) {
-    var $this = $(this);
+    $this = $(this);
 
     $this
       .parent()
@@ -97,7 +57,7 @@ jQuery(document).ready(function ($) {
 
     event.preventDefault();
 
-    var image = $this
+    var image = $(this)
                   .parent()
                   .children('input')
                   .val();
@@ -122,73 +82,5 @@ jQuery(document).ready(function ($) {
       $imgs.addClass('rotate90');
 
     return false;
-  }
-
-  function remove_button_click_handler (event) {
-    var $this = $(this);
-
-    $this.off('click', remove_button_click_handler);
-
-    event.preventDefault();
-
-    var image = $this
-                  .parent()
-                  .children('input')
-                  .val();
-
-    var product_id = $form
-                       .find('input[name="product"]')
-                       .val();
-
-    remove_image(image, product_id, function () {
-      $this
-        .parent()
-        .remove();
-    });
-
-    $form
-      .find('img')
-      .filter('[src$="' + image + '"]')
-      .remove();
-  }
-
-  
-  function set_main_button_click_handler (event) {
-    var $this = $(this);
-
-    $this.off('click', set_main_button_click_handler);
-
-    event.preventDefault();
-
-    var image = $this
-                  .parent()
-                  .children('input')
-                  .val();
-
-    var product_id = $form
-                       .find('input[name="product"]')
-                       .val();
-
-    set_main_image(image, product_id, function () {
-      $this
-        .parent()
-        .remove();
-    });
-
-    var $img = $form.find('.product-image img')
-
-    var image_url = $img.prop('src');
-
-    var $thumb = $form
-                   .find('img')
-                   .filter('[src$="' + image + '"]')
-
-    $thumb
-      .width($thumb.width())
-      .prop('src', image_url);
-
-    $img
-      .width($img.width())
-      .prop('src', '/media/catalog/product/' + image);
   }
 });
