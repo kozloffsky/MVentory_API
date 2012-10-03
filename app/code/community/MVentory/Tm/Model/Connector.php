@@ -275,8 +275,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $description = '';
 
-      if ($descriptionTmpl)
+      if ($descriptionTmpl) {
         $description = $this->processDescription($descriptionTmpl, $product);
+        $description = htmlspecialchars($description);
+      }
 
       $tmHelper = Mage::helper('mventory_tm/tm');
 
