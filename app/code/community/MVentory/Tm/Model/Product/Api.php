@@ -101,11 +101,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $collection = Mage::getModel('catalog/product')
                       ->getCollection()
                       ->addStoreFilter($storeId);
-
-      if ($name)
-        $collection
-          ->addFieldToFilter('name', array('like' => "%{$name}%"));
     }
+
+    if ($name)
+      $collection->addAttributeToFilter(
+          array(
+              array('attribute'=> 'name','like' => "%{$name}%"),
+              array('attribute'=> 'sku','like' => "%{$name}%"))
+      );
 
     $collection
       ->addAttributeToSelect('name')
