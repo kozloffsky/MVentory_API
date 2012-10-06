@@ -139,63 +139,14 @@ $_shippingOptions = $this->getShippingOptions();
   </table>
 </div>
 
-<div class="grid">
-  <table id="tm_categories" class="data" cellspacing="0">
-    <colgroup>
-      <col width='1' />
+<?php echo $this->getCategoriesButton(); ?>
 
-      <?php for ($n = 0; $n <= $_cols; ++$n): ?>
-      <col />
-      <?php endfor; ?>
-    </colgroup>
-
-    <thead>
-      <tr class="filter">
-        <th></th>
-        <th colspan="<?php echo $_cols + 1; ?>">
-          <div class="field-100">
-            <input id="tm_filter" class="input-text no-changes" type="text" />
-          </div>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-
-      <?php $i = 0; ?>
-
-      <?php foreach ($_categories as $id => $category): ?>
-      <?php
-        $classes = ((++$i % 2 == 0) ? 'even' : 'odd') . ' pointer';
-
-        $isSelected = in_array($id, $_selectedCategories);
-
-        if ($isSelected)
-          $classes .= ' selected-row';
-      ?>
-      <tr class="<?php echo $classes ?>">
-        <td class="checkbox">
-          <input type="checkbox" class="category-check" value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> />
-          <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $category['path']; ?>" />
-        </td>
-
-        <?php for ($n = 0; $n <= $_cols; ++$n): ?>
-        <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
-          <?php echo isset($category['name'][$n]) ? $category['name'][$n] : ''; ?>
-        </td>
-        <?php endfor; ?>
-      </tr>
-      <?php endforeach; ?>
-
-    </tbody>
-  </table>
-</div>
+<div id="tm_categories_wrapper" class="grid"></div>
 
 <script type="text/javascript">
 //<![CDATA[
 
-tm_categories(jQuery('#tm_categories'),
-              jQuery('#tm_selected_categories'),
-              <?php echo $this->getUrlTemplates() ?>);
+tm_categories_for_product(<?php echo $this->getUrlTemplates() ?>);
 
 //]]>
 </script>

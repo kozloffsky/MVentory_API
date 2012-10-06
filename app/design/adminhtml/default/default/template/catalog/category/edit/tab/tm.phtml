@@ -24,9 +24,9 @@ $_tmUrl = $this->getTmUrl();
     <tbody>
       <?php foreach ($_selectedCategories as $id): ?>
         <?php if (isset($_categories[$id])): ?>
-        <tr onclick="window.tm_mouseclick(event)" onmouseover="window.tm_mouseover(event)" onmouseout="tm_mouseout(event)" class="pointer">
+        <tr class="pointer">
           <td class="checkbox a-center">
-            <input type="checkbox" class="category-check" value="<?php echo $id; ?>" checked="checked" onclick="window.tm_second_checkbox(event)" />
+            <input type="checkbox" class="category-check" value="<?php echo $id; ?>" checked="checked" />
             <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $_categories[$id]['path']; ?>" />
           </td>
 
@@ -40,7 +40,7 @@ $_tmUrl = $this->getTmUrl();
           <?php $attrs = $_helper->getAttributes($id); ?>
 
           <?php if ($attrs): ?>
-          <tr class="category-attrs" onmouseover="window.tm_mouseover(event)" onmouseout="tm_mouseout(event)">
+          <tr class="category-attrs">
             <td><?php echo $this->__('Attributes'); ?>:</td>
             <td colspan=<?php echo $_cols + 1; ?> class="last">
             <?php foreach ($attrs as $attr): ?>
@@ -55,54 +55,14 @@ $_tmUrl = $this->getTmUrl();
   </table>
 </div>
 
-<div class="grid">
-  <table id="tm_categories" class="data" cellspacing="0">
-    <colgroup>
-      <col width='1' />
+<?php echo $this->getCategoriesButton(); ?>
 
-      <?php for ($n = 0; $n <= $_cols; ++$n): ?>
-      <col />
-      <?php endfor; ?>
-    </colgroup>
+<div id="tm_categories_wrapper" class="grid"></div>
 
-    <thead>
-      <tr class="filter">
-        <th></th>
-        <th colspan="<?php echo $_cols + 1; ?>">
-          <div class="field-100">
-            <input id="tm_filter" class="input-text no-changes" type="text" onkeyup="window.tm_filter()" />
-          </div>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
+<script type="text/javascript">
+//<![CDATA[
 
-      <?php $i = 0; ?>
+tm_categories_for_category(<?php echo $this->getUrlTemplates() ?>);
 
-      <?php foreach ($_categories as $id => $category): ?>
-      <?php
-        $classes = ((++$i % 2 == 0) ? 'even' : 'odd') . ' pointer';
-
-        $isSelected = in_array($id, $_selectedCategories);
-
-        if ($isSelected)
-          $classes .= ' selected-row';
-      ?>
-      <tr class="<?php echo $classes ?>" onclick="window.tm_mouseclick(event)" onmouseover="window.tm_mouseover(event)" onmouseout="tm_mouseout(event)">
-        <td class="checkbox a-center">
-          <input type="checkbox" class="category-check" value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> onclick="window.tm_main_checkbox(event)" />
-          <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $category['path']; ?>" />
-        </td>
-
-        <?php for ($n = 0; $n <= $_cols; ++$n): ?>
-        <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
-          <?php echo isset($category['name'][$n]) ? $category['name'][$n] : ''; ?>
-        </td>
-        <?php endfor; ?>
-
-      </tr>
-      <?php endforeach; ?>
-
-    </tbody>
-  </table>
-</div>
+//]]>
+</script>

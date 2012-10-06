@@ -1,235 +1,165 @@
+/**
+ * MVentory
+ *
+ * @category MVentory
+ * @package  js
+ * @author   MVentory <???@mventory.com>
+ */
+
 (function ($) {
 
-function mt_checkbox_handler ($selected_table, on_add, on_remove) {
-  var $this = $(this);
+function apply_table_handlers ($target, checkbox_handler) {
 
-  var $tr = $this.parents('tr');
+  //Handlers
 
-  if ($this.prop('checked')) {
-    $_tr = $tr
-             .clone()
-             .removeClass('even odd on-mouse')
-             .appendTo($selected_table.children('tbody'));
+  function highlight_category () {
+    var $this = $(this);
 
-    $tr.addClass('selected-row');
+    $this.addClass('on-mouse');
 
-    on_add($_tr);
-  } else {
-    $tr.removeClass('selected-row');
+    if ($this.hasClass('category-attrs'))
+      $this
+        .prev()
+        .addClass('on-mouse');
+    else {
+      $next = $this.next();
 
-    var id = $this.val();
-
-    $selected_table
-      .find('> tbody > tr > .checkbox > .category-check[value="' + id + '"]')
-      .parents('tr')
-      .next('.category-attrs')
-        .remove()
-      .end()
-      .remove();
-
-    on_remove();
+      if ($next.hasClass('category-attrs'))
+        $next.addClass('on-mouse');
+    }
   }
-}
 
-function st_checkbox_handler ($main_table) {
-  var $this = $(this);
+  function dehighlight_category () {
+    var $this = $(this);
 
-  var id = $this.val();
+    $this.removeClass('on-mouse');
 
-  $main_table
-      .find('> tbody > tr > .checkbox > .category-check[value="' + id + '"]')
-      .prop('checked', false)
-      .parents('tr')
-      .removeClass('selected-row');
+    if ($this.hasClass('category-attrs'))
+      $this
+        .prev()
+        .removeClass('on-mouse');
+    else {
+      $next = $this.next();
 
-  $this
-    .parents('tr')
-    .next('.category-attrs')
-      .remove()
-    .end()
-    .remove();
-
-  collectIds();
-}
-
-function mouseover_handler () {
-  var $this = $(this);
-
-  $this.addClass('on-mouse');
-
-  if ($this.hasClass('category-attrs'))
-    $this
-      .prev()
-      .addClass('on-mouse');
-  else {
-    $next = $this.next();
-
-    if ($next.hasClass('category-attrs'))
-      $next.addClass('on-mouse');
+      if ($next.hasClass('category-attrs'))
+        $next.removeClass('on-mouse');
+    }
   }
-}
 
-function mouseout_handler () {
-  var $this = $(this);
+  function show_category (event) {
+    if ($(event.target).is('td')) {
+      var link = $(this)
+                   .find('> .checkbox > .category-url')
+                   .val();
 
-  $this.removeClass('on-mouse');
-
-  if ($this.hasClass('category-attrs'))
-    $this
-      .prev()
-      .removeClass('on-mouse');
-  else {
-    $next = $this.next();
-
-    if ($next.hasClass('category-attrs'))
-      $next.removeClass('on-mouse');
+      window.open(link, '_blank');
+    }
   }
+
+  var $trs = $target.is('table')
+               ? $target.find('> tbody > tr')
+                 : $target;
+
+  $trs
+    .on({
+      click: show_category,
+      mouseover: highlight_category,
+      mouseout: dehighlight_category
+    })
+    .find('> .checkbox > .category-check')
+    .on('click', checkbox_handler);
 }
 
-function click_handler (event) {
-  if ($(event.target).is('td')) {
-    var link = $(this)
-                 .find('> .checkbox > .category-url')
-                 .val();
+function categories_table (url_templates, on_add, on_remove) {
 
-    window.open(link, '_blank');
-  }
-}
+  //Handlers
 
-function add_for_category ($tr) {
-  $tr
-    .find('> .checkbox > .category-check')[0]
-    .onclick = window.tm_second_checkbox;
+  function show_all_categories_handler () {
+    $('#loading-mask').show();
 
-  collectIds();
-}
+    $.ajax({
+      url: url_templates['categories'],
+      dataType: 'html',
+      success: function (data, text_status, xhr) {
+        $('#tm_categories_wrapper').html(data);
 
-function remove_for_category () {
-  collectIds();
-}
+        $all_categories_button.hide();
 
-function collectIds () {
-  var $ids = ''
+        apply_table_handlers($('#tm_categories'), checkbox_handler_wrapper);
 
-  $('#tm_selected_categories')
-    .find('> tbody > tr > .checkbox > .category-check')
-    .each(function () {
-      $ids += ',' + $(this).val();
+        $('#tm_filter').on('keyup', function () {
+          $.uiTableFilter($table, $(this).val());
+        });
+      },
+      complete: function (xhr, text_status) {
+        $('#loading-mask').hide();
+      }
     });
-
-  $('#group_4tm_assigned_categories')
-    .val($ids.substring(1));
-}
-
-window.tm_main_checkbox = function (event) {
-  if (!event)
-    var event = window.event;
-
-  mt_checkbox_handler.call(event.target,
-                           $('#tm_selected_categories'),
-                           add_for_category,
-                           remove_for_category);
-}
-
-window.tm_second_checkbox = function (event) {
-  if (!event)
-    var event = window.event;
-
-  st_checkbox_handler.call(event.target, $('#tm_categories'));
-}
-
-window.tm_mouseclick = function (event) {
-  if (!event)
-    var event = window.event;
-
-  click_handler.call($(event.target).parent(), event);
-}
-
-window.tm_mouseover = function (event) {
-  if (!event)
-    var event = window.event;
-
-  mouseover_handler.call($(event.target).parents('tr'));
-}
-
-window.tm_mouseout = function (event) {
-  if (!event)
-    var event = window.event;
-
-  mouseout_handler.call($(event.target).parents('tr'));
-}
-
-window.tm_filter = function () {
-  var text = $('#tm_filter').val();
-
-  $.uiTableFilter($('#tm_categories'), text);
-}
-
-window.tm_categories = function ($main_table, $selected_table, url_templates) {
-  var $submit = $('#tm_submit_button').on('click', submit_handler);
-
-  $('#tm_filter').on('keyup', function () {
-    $.uiTableFilter($main_table, $(this).val());
-  });
-
-  $main_table
-    .find('> tbody > tr')
-    .on({
-      click: click_handler,
-      mouseover: mouseover_handler,
-      mouseout: mouseout_handler
-    })
-    .find('> .checkbox > .category-check')
-    .on('click', tm_main_checkbox);
-    
-
-  $selected_table
-    .find('> tbody > tr')
-    .on({
-      click: click_handler,
-      mouseover: mouseover_handler,
-      mouseout: mouseout_handler
-    })
-    .find('> .checkbox > .category-check')
-    .on('click', tm_second_checkbox);
-
-  function tm_main_checkbox () {
-    mt_checkbox_handler.call(this,
-                             $selected_table,
-                             add_for_product,
-                             remove_for_product);
   }
 
-  function tm_second_checkbox () {
-    $submit.removeClass('disabled');
+  function checkbox_handler (on_add, on_remove) {
+    var $this = $(this);
+    var $selected_table = $('#tm_selected_categories');
+
+    var $tr = $this.parents('tr');
+
+    if ($this.prop('checked')) {
+      $_tr = $tr
+               .clone()
+               .removeClass('even odd on-mouse')
+               .appendTo($selected_table.children('tbody'));
+
+      $tr.addClass('selected-row');
+
+      on_add($_tr);
+    } else {
+      $tr.removeClass('selected-row');
+
+      var id = $this.val();
+
+      $selected_table
+        .find('> tbody > tr > .checkbox > .category-check[value="' + id + '"]')
+        .parents('tr')
+        .next('.category-attrs')
+          .remove()
+        .end()
+        .remove();
+
+      on_remove();
+    }
   }
 
-  function add_for_product ($tr) {
+  function checkbox_handler_wrapper () {
+    return checkbox_handler.call(this, on_add, on_remove);
+  }
+
+  var $all_categories_button = $('#tm_categories_button')
+                                 .on('click', show_all_categories_handler);
+}
+
+function tm_categories_for_product (url_templates) {
+  var $selected_categories = $('#tm_selected_categories');
+
+  function on_add ($tr) {
     $('#tm_no_selected_message').addClass('no-display');
 
-    $tr.on({
-      click: click_handler,
-      mouseover: mouseover_handler,
-      mouseout: mouseout_handler
-    });
-
-    var $input = $tr.find('> .checkbox > .category-check');
-
-    $input
+    $tr
+      .find('> .checkbox > .category-check')
       .prop('name', 'tm[category]')
-      .prop('type', 'radio')
-      .on('click', tm_second_checkbox);
+      .prop('type', 'radio');
+
+    apply_table_handlers($tr, checkbox_handler);
 
     $submit.removeClass('disabled');
   }
 
-  function remove_for_product () {
-    var $inputs = $selected_table
-                    .find('> tbody > tr > .checkbox > .category-check')
+  function on_remove () {
+    var $inputs = $selected_categories
+                    .find('> tbody > tr > .checkbox > .category-check');
 
     if (!$inputs.length) {
       $('#tm_no_selected_message').removeClass('no-display');
-      $submit.addClass('disabled');
+      $('#tm_submit_button').addClass('disabled');
 
       return;
     }
@@ -242,11 +172,81 @@ window.tm_categories = function ($main_table, $selected_table, url_templates) {
       $submit.addClass('disabled');
   }
 
+  //Handlers
+
   function submit_handler () {
     $('#product_edit_form')
       .attr('action', url_templates['submit'])
       .submit();
   }
+
+  function checkbox_handler () {
+    $submit.removeClass('disabled');
+  }
+
+  var $submit = $('#tm_submit_button').on('click', submit_handler);
+
+  apply_table_handlers($selected_categories, checkbox_handler);
+  categories_table(url_templates, on_add, on_remove);
 }
+
+function tm_categories_for_category (url_templates) {
+  var $selected_categories = $('#tm_selected_categories');
+
+  function collectIds () {
+    var $ids = ''
+
+    $selected_categories
+      .find('> tbody > tr > .checkbox > .category-check')
+      .each(function () {
+        $ids += ',' + $(this).val();
+      });
+
+    $('#group_4tm_assigned_categories')
+      .val($ids.substring(1));
+  }
+
+  function on_add ($tr) {
+    $tr
+      .find('> .checkbox > .category-check')[0]
+      .on('click', checkbox_handler);
+
+    collectIds();
+  }
+
+  function on_remove () {
+    collectIds();
+  }
+
+  //Handlers
+
+  function checkbox_handler () {
+    var $this = $(this);
+
+    var id = $this.val();
+
+    $('#tm_categories')
+        .find('> tbody > tr > .checkbox > .category-check[value="' + id + '"]')
+        .prop('checked', false)
+        .parents('tr')
+        .removeClass('selected-row');
+
+    $this
+      .parents('tr')
+      .next('.category-attrs')
+        .remove()
+      .end()
+      .remove();
+
+    collectIds();
+  }
+
+  apply_table_handlers($selected_categories, checkbox_handler);
+  categories_table(url_templates, on_add, on_remove);
+}
+
+//Export functions to global namespace
+window.tm_categories_for_product = tm_categories_for_product;
+window.tm_categories_for_category = tm_categories_for_category;
 
 })(jQuery)

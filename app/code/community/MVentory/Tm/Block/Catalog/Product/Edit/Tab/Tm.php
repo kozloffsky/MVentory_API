@@ -118,10 +118,17 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getUrlTemplates () {
-    $submit = $this->getUrl('mventory_tm/adminhtml_index/submit/',
-                            array('id' => $this->getProduct()->getId()));
+    $productId = $this
+                   ->getProduct()
+                   ->getId();
 
-    return Zend_Json::encode(compact('submit'));
+    $submit = $this->getUrl('mventory_tm/adminhtml_index/submit/',
+                            array('id' => $productId));
+
+    $categories = $this->getUrl('mventory_tm/adminhtml_tm/categories/',
+                                array('product_id' => $productId));
+
+    return Zend_Json::encode(compact('submit', 'categories'));
   }
 
   public function getSubmitButton () {
@@ -151,6 +158,12 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
                . '\')';
 
     return $this->getButtonHtml($label, $onclick, '', 'tm_remove_button');
+  }
+
+  public function getCategoriesButton () {
+    $label = $this->__('Show all categories');
+
+    return $this->getButtonHtml($label, null, '', 'tm_categories_button');
   }
 
   public function getPreparedAttributes ($tmCategoryId) {

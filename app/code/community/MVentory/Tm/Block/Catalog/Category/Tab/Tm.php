@@ -48,8 +48,25 @@ class MVentory_Tm_Block_Catalog_Category_Tab_Tm
     return $cols;
   }
 
+  public function getUrlTemplates () {
+    $categoryId = $this
+                   ->getCategory()
+                   ->getId();
+
+    $categories = $this->getUrl('mventory_tm/adminhtml_tm/categories/',
+                                array('category_id' => $categoryId));
+
+    return Zend_Json::encode(compact('categories'));
+  }
+
   public function getTmUrl () {
     return 'http://www.trademe.co.nz';
+  }
+
+  public function getCategoriesButton () {
+    $label = $this->__('Show all categories');
+
+    return $this->getButtonHtml($label, null, '', 'tm_categories_button');
   }
 }
 
