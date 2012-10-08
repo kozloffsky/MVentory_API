@@ -53,7 +53,7 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
                      ->getFrontend()
                      ->getValue($product);
 
-        //Try to convert value of the to a string. Set it to empty if
+        //Try converting value of the field to a string. Set it to empty if
         //value of the field is array or class which doesn't support convertion
         //to string
         try {
