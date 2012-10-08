@@ -46,15 +46,24 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
       $replace = array();
 
       foreach ($productData as $code => $value) {
-        if (substr($code, -1) == '_') {
-          $_value = $productResource
-                      ->getAttribute($code)
-                      ->getFrontend()
-                      ->getValue($product);
+        //If field is an attribute...
+        if ($attribute = $productResource->getAttribute($code))
+          //... then get label for its value
+          $value = $attribute
+                     ->getFrontend()
+                     ->getValue($product);
 
-          $search[] = $code;
-          $replace[] = $_value;
+        //Try to convert value of the to a string. Set it to empty if
+        //value of the field is array or class which doesn't support convertion
+        //to string
+        try {
+          $value = (string) $value;
+        } catch (Exception $e) {
+          $value = '';
         }
+
+        $search[] = $code;
+        $replace[] = $value;
       }
 
       $name = str_replace($search, $replace, $templates[$attributeSetId]);
