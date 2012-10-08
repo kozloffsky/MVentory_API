@@ -21,7 +21,7 @@
       </catalog>
       <adminhtml>
         <rewrite>
-          <dashboard_grids>MVentory_Tm_Block_Adminhtml_Dashboard_Grids</dashboard_grids>
+          <dashboard_grids>MVentory_Tm_Block_Dashboard_Grids</dashboard_grids>
         </rewrite>
       </adminhtml>
     </blocks>
@@ -48,6 +48,12 @@
           <product_url>MVentory_Tm_Model_Product_Url</product_url>
         </rewrite>
       </catalog>
+      
+      <core>
+        <rewrite>
+          <design_package>MVentory_Tm_Model_Design_Package</design_package>
+        </rewrite>
+      </core>            
     </models>
 
     <helpers>
@@ -135,7 +141,21 @@
         </tm>
       </types>
     </cache>
-  </global>
+  </global>    
+  
+  <frontend>
+    <events>  
+      <controller_action_layout_generate_blocks_after>
+        <observers>
+          <tm_add_switcher>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>addSiteSwitcher</method>
+          </tm_add_switcher>
+        </observers>
+      </controller_action_layout_generate_blocks_after>
+    </events>  
+  </frontend>      
 
   <admin>
     <routers>
