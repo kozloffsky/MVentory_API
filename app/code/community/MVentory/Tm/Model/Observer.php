@@ -253,44 +253,26 @@ class MVentory_Tm_Model_Observer {
   public function addSiteSwitcher ($observer) {
     $layout = $observer->getEvent()->getLayout();
 
+    $storeId = Mage::app()->getStore()->getId();
+    $code = 'site_version_' . $storeId;
+    
     // check current site version
-    if (isset($_COOKIE['site_version']) 
-        && $_COOKIE['site_version'] == 'mobile') {
-      $label = Mage::helper('mventory_tm')->__('Desktop version');
-      $url = Mage::getUrl('mventory_tm/switch/toDesktop');
-      $identifier = 'mobile_footer_links';
-      $blockTitle = 'Mobile Footer Links';
-    } else {
-      $label = Mage::helper('mventory_tm')->__('Mobile version');
-      $url = Mage::getUrl('mventory_tm/switch/toMobile'); 
-      $identifier = 'desktop_footer_links';
-      $blockTitle = 'Desktop Footer Links';
+    if (Mage::getModel('core/cookie')->get($code) == 'mobile' || 
+        (Mage::getModel('core/cookie')->get($code) === false &&
+         Mage::getSingleton('core/session')->getData($code) == 'mobile')) {
+      Mage::getSingleton('core/session')
+        ->unsetData('site_version_' . $storeId);
+      $identifier = 'mobile_footer_links_' . $storeId;
+    } else {  
+      $identifier = 'desktop_footer_links_' . $storeId;
     }  
     
     $cmsBlock = Mage::getModel('cms/block')->load($identifier);
-
-    // create cms block for link if it doesn't exist
-    if(!$cmsBlock->getId()) {      
-      $content = '<ul><li><a href="' . $url . '">' . 
-                 $label . '</a></li></ul>';
-      
-      $storeId = Mage::app()->getStore()->getId();             
-      Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
-      
-      $cmsBlock = array('title' => $blockTitle,
-                        'identifier' => $identifier,                   
-                        'content' => $content,
-                        'is_active' => 1,                   
-                        'stores' => array(0));
-                         
-      Mage::getModel('cms/block')->setData($cmsBlock)->save();
-      Mage::app()->setCurrentStore($storeId);
-    }
-    
+   
     // append cms block to the footer
     $block = $layout
                ->createBlock('cms/block')
-               ->setBlockId($identifier);
+               ->setBlockId($identifier); 
     $layout->getBlock('footer')->append($block);               
   }
 }

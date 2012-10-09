@@ -21,7 +21,7 @@
       </catalog>
       <adminhtml>
         <rewrite>
-          <dashboard_grids>MVentory_Tm_Block_Dashboard_Grids</dashboard_grids>
+          <dashboard_grids>MVentory_Tm_Block_Adminhtml_Dashboard_Grids</dashboard_grids>
         </rewrite>
       </adminhtml>
     </blocks>
