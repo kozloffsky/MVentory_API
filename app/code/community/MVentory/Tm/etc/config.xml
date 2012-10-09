@@ -288,14 +288,4 @@
       </dummy>
     </payment>
   </default>
-  
-  <crontab>
-    <jobs>
-      <mventory_tm_check>
-        <run>
-          <model>mventory_tm/observer::scheduledCheck</model>
-        </run>
-      </mventory_tm_check>
-    </jobs>
-  </crontab>
 </config>

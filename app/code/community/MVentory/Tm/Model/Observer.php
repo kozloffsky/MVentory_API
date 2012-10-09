@@ -55,7 +55,7 @@ class MVentory_Tm_Model_Observer {
     }
   }
 
-  public function scheduledCheck ($schedule) {
+  public function sync ($schedule) {
     $collection = Mage::getModel('catalog/product')
                     ->getCollection()
                     ->addFieldToFilter('mventory_tm_id', array('neq' => ''));
