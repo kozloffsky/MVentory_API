@@ -87,6 +87,16 @@
           </mventory_tm_product_save_after>
         </observers>  
       </catalog_product_save_after>
+      
+      <catalog_product_save_before>      
+        <observers>     
+          <mventory_tm_product_save_after>     
+            <type>singleton</type>  
+            <class>mventory_tm/observer</class>   
+            <method>productSaveBefore</method>  
+          </mventory_tm_product_save_after>
+        </observers>  
+      </catalog_product_save_before>
 
       <!-- Requires M. >= 1.7 -->
       <catalog_product_media_save_before>

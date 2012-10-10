@@ -32,10 +32,6 @@ class MVentory_Tm_Model_Observer {
 
     //$category->setMventoryTmCategory($mventoryCategoryId);
     //$category->save();
-    
-    // populate product attributes
-    Mage::getSingleton('mventory_tm/product_action')
-                           ->populateAttributes(array($product->getId()));
 
     if ($stock->getManageStock() && $stock->getQty() == 0
         && $product->getTmListingId()) {
@@ -53,6 +49,14 @@ class MVentory_Tm_Model_Observer {
         Mage::getSingleton('adminhtml/session')
           ->addError($result);
     }
+  }
+  
+  public function productSaveBefore ($observer) {
+    $event = $observer->getEvent();
+                
+    // populate product attributes
+    Mage::getSingleton('mventory_tm/product_action')
+      ->populateAttributes(array($event->getProduct()), null, false);
   }
 
   public function sync ($schedule) {

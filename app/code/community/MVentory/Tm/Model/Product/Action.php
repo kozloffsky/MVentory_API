@@ -46,24 +46,15 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
       $replace = array();
 
       foreach ($productData as $code => $value) {
-        //If field is an attribute...
-        if ($attribute = $productResource->getAttribute($code))
-          //... then get label for its value
-          $value = $attribute
-                     ->getFrontend()
-                     ->getValue($product);
+        if (substr($code, -1) == '_') {
+          $_value = $productResource
+                      ->getAttribute($code)
+                      ->getFrontend()
+                      ->getValue($product);
 
-        //Try converting value of the field to a string. Set it to empty if
-        //value of the field is array or class which doesn't support convertion
-        //to string
-        try {
-          $value = (string) $value;
-        } catch (Exception $e) {
-          $value = '';
+          $search[] = $code;
+          $replace[] = $_value;
         }
-
-        $search[] = $code;
-        $replace[] = $value;
       }
 
       $name = str_replace($search, $replace, $templates[$attributeSetId]);
@@ -96,20 +87,27 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
   /**
    * Populate product attributes      
    * 
-   * @param  array  $productIds array of products ids
-   * @param  int|null $storeId   
+   * @param  array  $productIds array of products ids or products
+   * @param  int|null $storeId
+   * @param  bool $save      
    * @return int     
    */
-  public function populateAttributes($productIds, $storeId = null) {
+  public function populateAttributes($productIds, 
+                                     $storeId = null, 
+                                     $save = true) {
     $numberOfPopulatedProducts = 0;
 
     foreach ($productIds as $productId) {
 
-      // load product by product id
-      $product = Mage::getModel('catalog/product');
-      if ($storeId)
-        $product->setStoreId($storeId);
-      $product = $product->load($productId);
+      if(is_numeric($productId)) {
+        // load product by product id
+        $product = Mage::getModel('catalog/product');
+        if ($storeId)
+          $product->setStoreId($storeId);
+        $product = $product->load($productId);
+      } else {
+        $product = $productId;
+      }
 
       $updateProduct = false;
 
@@ -205,7 +203,7 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
         }
       }
 
-      if ($updateProduct) {
+      if ($updateProduct && $save) {
         $product->save();
 
         ++$numberOfPopulatedProducts;
