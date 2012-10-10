@@ -66,4 +66,15 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
 
     return $this->getConfig($path, $websiteId) == true;
   }
+  
+  public function isMobile () {
+    $storeId = $this->getCurrentStoreId();
+    $code = 'site_version_' . $storeId;
+    if(Mage::getModel('core/cookie')->get($code) == 'mobile' || 
+       (Mage::getModel('core/cookie')->get($code) === false &&
+        Mage::getSingleton('core/session')->getData($code) == 'mobile'))
+      return true;
+      
+    return false;
+  }
 }
