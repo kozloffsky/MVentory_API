@@ -162,4 +162,157 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     return $this->fullInfo($id);
   }
+  
+  /**
+   * Get info about new products, sales and stock      
+   *      
+   * @return array     
+   */
+  public function statistic () {
+    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
+    $store = Mage::app()->getStore($storeId);
+
+    // Get Sales info
+    $collection = Mage::getModel("sales/order")->getCollection();
+
+    $collection
+      ->addFieldToFilter('store_id', $storeId)
+      ->setOrder('updated_at', Varien_Data_Collection_Db::SORT_ORDER_DESC)
+      ;
+
+    $date       = new Zend_Date();
+    
+    $dayStart   = $date->toString('yyyy-MM-dd 00:00:00');
+    
+    $weekStart  = new Zend_Date($date->getTimestamp() - 7 * 24 * 3600);
+    $weekStart  = $weekStart->toString('yyyy-MM-dd 00:00:00');
+    
+    $monthStart = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
+    $monthStart = $monthStart->toString('yyyy-MM-dd 00:00:00');
+
+    $daySales   = 0;
+    $weekSales  = 0;
+    $monthSales = 0;
+    $totalSales = 0;
+
+    foreach ($collection as $order) {
+      $orderDate = new Zend_Date($order->getData('created_at'),
+                                                 'YYYY-MM-dd hh:mm:ss');
+      $orderGrandTotal  = $order->getData('grand_total');
+      
+      if($orderDate->isLater(new Zend_Date($dayStart,
+                                           'YYYY-MM-dd 00:00:00'))) {
+        $daySales += $orderGrandTotal;  
+      }
+      
+      if($orderDate->isLater(new Zend_Date($weekStart, 'YYYY-MM-dd'))) {
+        $weekSales += $orderGrandTotal;  
+      }
+      
+      if($orderDate->isLater(new Zend_Date($monthStart, 'YYYY-MM-dd'))) {
+        $monthSales += $orderGrandTotal;  
+      }
+      
+      $totalSales += $orderGrandTotal;  
+    }
+    // End of Sales info
+    
+    // Get Stock info
+    $collection = Mage::getModel('catalog/product')->getCollection();
+
+    if (Mage::helper('catalog')->isModuleEnabled('Mage_CatalogInventory')) {
+      $collection
+        ->joinField('qty', 
+                    'cataloginventory/stock_item', 
+                    'qty', 'product_id=entity_id', 
+                    '{{table}}.stock_id=1 AND {{table}}.is_in_stock=1', 'left');
+    }
+    if ($store->getId()) {
+      //$collection->setStoreId($store->getId());
+      $collection->addStoreFilter($store);
+      
+      $collection->joinAttribute(
+        'price',
+        'catalog_product/price',
+        'entity_id',
+        null,
+        'left',
+        $store->getId()
+      );
+    } else {
+      $collection->addAttributeToSelect('price');
+    }
+    
+    $collection->joinAttribute(
+      'status', 
+      'catalog_product/status',
+      'entity_id', 
+      null,
+      'inner',
+      $store->getId());
+    $collection->joinAttribute(
+      'visibility',
+      'catalog_product/visibility',
+      'entity_id',
+      null,
+      'inner',
+      $store->getId());
+      
+    $totalStockQty = 0;
+    $totalStockValue = 0;
+    foreach ($collection as $product) {
+      $totalStockQty += $product->getQty();
+      $totalStockValue += $product->getQty() * $product->getPrice();
+    }
+    // End of Stock info
+    
+    // Get Products info
+    $date       = new Zend_Date();
+    
+    $to   = $date->toString('yyyy-MM-dd 23:59:59');
+      
+    $from = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
+    $from = $from->toString('yyyy-MM-dd 00:00:00');
+    
+    $collection = Mage::getModel('catalog/product')->getCollection();
+    $collection
+      ->addStoreFilter($store)
+      ->addAttributeToFilter('created_at', array('from'  => $from,
+                                                 'to'    => $to));
+                                                          
+    $dayStart   = $date->toString('yyyy-MM-dd 00:00:00');
+    
+    $weekStart  = new Zend_Date($date->getTimestamp() - 7 * 24 * 3600);
+    $weekStart  = $weekStart->toString('yyyy-MM-dd 00:00:00');
+    
+    $monthStart = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
+    $monthStart = $monthStart->toString('yyyy-MM-dd 00:00:00');
+
+    $dayLoaded   = 0;
+    $weekLoaded  = 0;
+    $monthLoaded = 0;
+
+    foreach ($collection as $product) {
+      $productDate = new Zend_Date($product->getData('created_at'),
+                                   'YYYY-MM-dd hh:mm:ss');
+
+      if($productDate->isLater(new Zend_Date($dayStart,
+                                             'YYYY-MM-dd 00:00:00'))) {
+        $dayLoaded ++;  
+      }
+      
+      if($productDate->isLater(new Zend_Date($weekStart, 'YYYY-MM-dd'))) {
+        $weekLoaded ++;  
+      }
+      
+      if($productDate->isLater(new Zend_Date($monthStart, 'YYYY-MM-dd'))) {
+        $monthLoaded ++;  
+      }  
+    }
+    // End of Products info
+
+    return compact('daySales', 'weekSales', 'monthSales', 'totalSales',
+                   'totalStockQty', 'totalStockValue',
+                   'dayLoaded', 'weekLoaded', 'monthLoaded');
+  }
 }
