@@ -276,9 +276,7 @@ class MVentory_Tm_Model_Observer {
     } else {  
       $identifier = 'desktop_footer_links_' . $storeId;
     }  
-    
-    $cmsBlock = Mage::getModel('cms/block')->load($identifier);
-   
+      
     // append cms block to the footer
     $block = $layout
                ->createBlock('cms/block')
