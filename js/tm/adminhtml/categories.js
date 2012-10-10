@@ -85,7 +85,9 @@ function categories_table (url_templates, on_add, on_remove) {
 
         $all_categories_button.hide();
 
-        apply_table_handlers($('#tm_categories'), checkbox_handler_wrapper);
+        var $table = $('#tm_categories');
+
+        apply_table_handlers($table, checkbox_handler_wrapper);
 
         $('#tm_filter').on('keyup', function () {
           $.uiTableFilter($table, $(this).val());
