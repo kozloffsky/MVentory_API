@@ -56,11 +56,21 @@ class MVentory_Tm_Model_Observer {
   }
 
   public function sync ($schedule) {
+    //Get cron job config
+    $jobsRoot = Mage::getConfig()->getNode('default/crontab/jobs');
+    $jobConfig = $jobsRoot->{$schedule->getJobCode()};
+
+    //Get website code from the job config
+    $websiteCode = (string) $jobConfig->website;
+
     $collection = Mage::getModel('catalog/product')
                     ->getCollection()
-                    ->addFieldToFilter('mventory_tm_id', array('neq' => ''));
+                    ->addFieldToFilter('mventory_tm_id', array('neq' => ''))
+                    ->addWebsiteFilter($websiteCode)
+                    ->addWebsiteNamesToResult();
 
-    $relist = Mage::getStoreConfig(self::RELIST_IF_NOT_SOLD_PATH);
+    $relist = Mage::helper('mventory_tm')
+                ->getConfig(self::RELIST_IF_NOT_SOLD_PATH, $websiteCode);
 
     foreach ($collection as $product) {
       $connector = Mage::getModel('mventory_tm/connector');
