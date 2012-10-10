@@ -56,11 +56,21 @@ class MVentory_Tm_Model_Observer {
   }
 
   public function sync ($schedule) {
+    //Get cron job config
+    $jobsRoot = Mage::getConfig()->getNode('default/crontab/jobs');
+    $jobConfig = $jobsRoot->{$schedule->getJobCode()};
+
+    //Get website code from the job config
+    $websiteCode = (string) $jobConfig->website;
+
     $collection = Mage::getModel('catalog/product')
                     ->getCollection()
-                    ->addFieldToFilter('mventory_tm_id', array('neq' => ''));
+                    ->addFieldToFilter('mventory_tm_id', array('neq' => ''))
+                    ->addWebsiteFilter($websiteCode)
+                    ->addWebsiteNamesToResult();
 
-    $relist = Mage::getStoreConfig(self::RELIST_IF_NOT_SOLD_PATH);
+    $relist = Mage::helper('mventory_tm')
+                ->getConfig(self::RELIST_IF_NOT_SOLD_PATH, $websiteCode);
 
     foreach ($collection as $product) {
       $connector = Mage::getModel('mventory_tm/connector');
@@ -248,31 +258,5 @@ class MVentory_Tm_Model_Observer {
                  ->toHtml();
 
     $block->addTab('tm', compact('label', 'content'));
-  }
-  
-  public function addSiteSwitcher ($observer) {
-    $layout = $observer->getEvent()->getLayout();
-
-    $storeId = Mage::app()->getStore()->getId();
-    $code = 'site_version_' . $storeId;
-    
-    // check current site version
-    if (Mage::getModel('core/cookie')->get($code) == 'mobile' || 
-        (Mage::getModel('core/cookie')->get($code) === false &&
-         Mage::getSingleton('core/session')->getData($code) == 'mobile')) {
-      Mage::getSingleton('core/session')
-        ->unsetData('site_version_' . $storeId);
-      $identifier = 'mobile_footer_links_' . $storeId;
-    } else {  
-      $identifier = 'desktop_footer_links_' . $storeId;
-    }  
-    
-    $cmsBlock = Mage::getModel('cms/block')->load($identifier);
-   
-    // append cms block to the footer
-    $block = $layout
-               ->createBlock('cms/block')
-               ->setBlockId($identifier); 
-    $layout->getBlock('footer')->append($block);               
   }
 }
