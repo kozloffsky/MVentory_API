@@ -15,6 +15,11 @@ class MVentory_Tm_Adminhtml_IndexController
                       : null;
     $data = isset($params['tm']) ? $params['tm'] : array();
 
+    //Remember value of Relist if not sold attribute
+    $data['relist'] = isset($params['product']['tm_relist'])
+                        ? $params['product']['tm_relist']
+                          : null;
+
     $product = Mage::getModel('catalog/product')->load($productId);
 
     if (!$product->getId()) {

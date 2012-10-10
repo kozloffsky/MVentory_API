@@ -214,6 +214,20 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return $helper->getConfig($path, $website);
   }
 
+  public function getRelist () {
+    $product = $this->getProduct();
+
+    if ($product->getTmRelist() != null)
+      return $product->getTmRelist();
+
+    $helper = Mage::helper('mventory_tm');
+
+    $path = MVentory_Tm_Model_Connector::RELIST_IF_NOT_SOLD_PATH;
+    $website = $helper->getWebsiteIdFromProduct($product);
+
+    return $helper->getConfig($path, $website);
+  }
+
   public function getShippingOptions () {
     $helper = Mage::helper('mventory_tm');
 

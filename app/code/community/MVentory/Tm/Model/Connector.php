@@ -10,6 +10,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const BUY_NOW_PATH = 'mventory_tm/settings/allow_buy_now';
   const ADD_TM_FEES_PATH = 'mventory_tm/settings/add_tm_fees';
   const SHIPPING_TYPE_PATH = 'mventory_tm/settings/shipping_type';
+  const RELIST_IF_NOT_SOLD_PATH = 'mventory_tm/settings/relist_if_not_sold';
 
   const CACHE_TYPE_TM = 'tm';
   const CACHE_TAG_TM = 'TM';
@@ -376,6 +377,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       if ($xml) {
         if ((string)$xml->Success == 'true') {
+          $product->setTmRelist($data['relist']);
+
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
           $return = (string)$xml->ErrorDescription;

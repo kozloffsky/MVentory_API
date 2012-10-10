@@ -2,8 +2,6 @@
 
 class MVentory_Tm_Model_Observer {
 
-  const RELIST_IF_NOT_SOLD_PATH = 'mventory_tm/settings/relist_if_not_sold';
-
   private $supportedImageTypes = array(
     IMAGETYPE_GIF => 'gif',
     IMAGETYPE_JPEG => 'jpeg',
@@ -69,9 +67,6 @@ class MVentory_Tm_Model_Observer {
                     ->addWebsiteFilter($websiteCode)
                     ->addWebsiteNamesToResult();
 
-    $relist = Mage::helper('mventory_tm')
-                ->getConfig(self::RELIST_IF_NOT_SOLD_PATH, $websiteCode);
-
     foreach ($collection as $product) {
       $connector = Mage::getModel('mventory_tm/connector');
 
@@ -80,7 +75,7 @@ class MVentory_Tm_Model_Observer {
       if (!($result == 1 || $result == 2))
         continue;
 
-      if ($result == 1)
+      if ($result == 1 && $product->getTmRelist())
         $product->setTmListingId($connector->relist($product));
 
       if ($result == 2) {

@@ -14,10 +14,20 @@ $_tmUrl = $this->getTmUrl();
 $_allowBuyNow = $this->getAllowBuyNow();
 $_addTmFees = $this->getAddTmFees();
 $_shippingOptions = $this->getShippingOptions();
+$_relist = $this->getRelist();
 
 ?>
 
 <p><?php echo $this->__('Product URL'); ?>: <a target="_blank" href="<?php echo $this->getProductUrl(); ?>"><?php echo $this->getProductUrl(); ?></a></p>
+
+<div class="entry-edit">
+  <fieldset>
+    <label class="tm-option">
+      <input type="checkbox" value="1" name="product[tm_relist]" <?php if ($_relist) echo 'checked="checked"'; ?> />
+      <?php echo $this->__('Relist if not sold'); ?>
+    </label>
+  </fieldset>
+</div>
 
 <div class="entry-edit">
   <fieldset>
