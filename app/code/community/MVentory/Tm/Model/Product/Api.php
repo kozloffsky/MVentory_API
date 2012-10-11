@@ -168,9 +168,22 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
    *      
    * @return array     
    */
-  public function statistic () {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
-    $store = Mage::app()->getStore($storeId);
+  public function statistics () {
+    $storeId    = Mage::helper('mventory_tm')->getCurrentStoreId();
+    $store      = Mage::app()->getStore($storeId);
+
+    $date       = new Zend_Date();
+    
+    $dayStart   = $date->toString('yyyy-MM-dd 00:00:00');
+    $dayStart   = new Zend_Date($dayStart, 'YYYY-MM-dd 00:00:00');
+    
+    $weekStart  = new Zend_Date($date->getTimestamp() - 7 * 24 * 3600);
+    $weekStart  = $weekStart->toString('yyyy-MM-dd 00:00:00');
+    $weekStart  = new Zend_Date($weekStart, 'YYYY-MM-dd');
+    
+    $monthStart = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
+    $monthStart = $monthStart->toString('yyyy-MM-dd 00:00:00');
+    $monthStart = new Zend_Date($monthStart, 'YYYY-MM-dd');
 
     // Get Sales info
     $collection = Mage::getModel("sales/order")->getCollection();
@@ -179,16 +192,6 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       ->addFieldToFilter('store_id', $storeId)
       ->setOrder('updated_at', Varien_Data_Collection_Db::SORT_ORDER_DESC)
       ;
-
-    $date       = new Zend_Date();
-    
-    $dayStart   = $date->toString('yyyy-MM-dd 00:00:00');
-    
-    $weekStart  = new Zend_Date($date->getTimestamp() - 7 * 24 * 3600);
-    $weekStart  = $weekStart->toString('yyyy-MM-dd 00:00:00');
-    
-    $monthStart = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
-    $monthStart = $monthStart->toString('yyyy-MM-dd 00:00:00');
 
     $daySales   = 0;
     $weekSales  = 0;
@@ -200,19 +203,16 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                                                  'YYYY-MM-dd hh:mm:ss');
       $orderGrandTotal  = $order->getData('grand_total');
       
-      if($orderDate->isLater(new Zend_Date($dayStart,
-                                           'YYYY-MM-dd 00:00:00'))) {
-        $daySales += $orderGrandTotal;  
-      }
-      
-      if($orderDate->isLater(new Zend_Date($weekStart, 'YYYY-MM-dd'))) {
-        $weekSales += $orderGrandTotal;  
-      }
-      
-      if($orderDate->isLater(new Zend_Date($monthStart, 'YYYY-MM-dd'))) {
+      if($orderDate->isLater($dayStart)) {
+        $daySales += $orderGrandTotal; 
+        $weekSales += $orderGrandTotal; 
+        $monthSales += $orderGrandTotal;
+      } elseif($orderDate->isLater($weekStart)) {
+        $weekSales += $orderGrandTotal; 
         $monthSales += $orderGrandTotal;  
-      }
-      
+      } elseif($orderDate->isLater($monthStart)) {
+        $monthSales += $orderGrandTotal;  
+      }     
       $totalSales += $orderGrandTotal;  
     }
     // End of Sales info
@@ -227,7 +227,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                     'qty', 'product_id=entity_id', 
                     '{{table}}.stock_id=1 AND {{table}}.is_in_stock=1', 'left');
     }
-    if ($store->getId()) {
+    if ($storeId) {
       //$collection->setStoreId($store->getId());
       $collection->addStoreFilter($store);
       
@@ -237,7 +237,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
         'entity_id',
         null,
         'left',
-        $store->getId()
+        $storeId
       );
     } else {
       $collection->addAttributeToSelect('price');
@@ -249,14 +249,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       'entity_id', 
       null,
       'inner',
-      $store->getId());
+      $storeId);
     $collection->joinAttribute(
       'visibility',
       'catalog_product/visibility',
       'entity_id',
       null,
       'inner',
-      $store->getId());
+      $storeId);
       
     $totalStockQty = 0;
     $totalStockValue = 0;
@@ -266,9 +266,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     }
     // End of Stock info
     
-    // Get Products info
-    $date       = new Zend_Date();
-    
+    // Get Products info    
     $to   = $date->toString('yyyy-MM-dd 23:59:59');
       
     $from = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
@@ -279,14 +277,6 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       ->addStoreFilter($store)
       ->addAttributeToFilter('created_at', array('from'  => $from,
                                                  'to'    => $to));
-                                                          
-    $dayStart   = $date->toString('yyyy-MM-dd 00:00:00');
-    
-    $weekStart  = new Zend_Date($date->getTimestamp() - 7 * 24 * 3600);
-    $weekStart  = $weekStart->toString('yyyy-MM-dd 00:00:00');
-    
-    $monthStart = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
-    $monthStart = $monthStart->toString('yyyy-MM-dd 00:00:00');
 
     $dayLoaded   = 0;
     $weekLoaded  = 0;
@@ -296,23 +286,23 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $productDate = new Zend_Date($product->getData('created_at'),
                                    'YYYY-MM-dd hh:mm:ss');
 
-      if($productDate->isLater(new Zend_Date($dayStart,
-                                             'YYYY-MM-dd 00:00:00'))) {
-        $dayLoaded ++;  
-      }
-      
-      if($productDate->isLater(new Zend_Date($weekStart, 'YYYY-MM-dd'))) {
+      if($productDate->isLater($dayStart)) {
+        $dayLoaded ++;
+        $weekLoaded ++; 
+        $monthLoaded ++; 
+      } elseif($productDate->isLater($weekStart)) {
         $weekLoaded ++;  
-      }
-      
-      if($productDate->isLater(new Zend_Date($monthStart, 'YYYY-MM-dd'))) {
+      } elseif($productDate->isLater($monthStart)) {
         $monthLoaded ++;  
       }  
     }
     // End of Products info
 
-    return compact('daySales', 'weekSales', 'monthSales', 'totalSales',
-                   'totalStockQty', 'totalStockValue',
-                   'dayLoaded', 'weekLoaded', 'monthLoaded');
+    return array('day_sales' => $daySales, 'week_sales' => $weekSales,
+                 'month_sales' => $monthSales, 'total_sales' => $totalSales,
+                 'total_stock_qty' => $totalStockQty,
+                 'total_stock_value' => $totalStockValue,
+                 'day_loaded' => $dayLoaded, 'week_loaded' => $weekLoaded,
+                 'month_loaded' => $monthLoaded);
   }
 }

@@ -19,10 +19,10 @@
             <title>Create new product</title>
             <acl>catalog/product/create</acl>
           </createAndReturnInfo>
-          <statistic translate="title" module="catalog">
+          <statistics translate="title" module="catalog">
             <title>Get info about new products, sales and stock</title>
             <acl>catalog/product/info</acl>
-          </statistic>
+          </statistics>
         </methods>
       </catalog_product>
 
