@@ -67,7 +67,7 @@ class MVentory_Tm_Model_Observer {
 
     $collection = Mage::getModel('catalog/product')
                     ->getCollection()
-                    ->addFieldToFilter('mventory_tm_id', array('neq' => ''))
+                    ->addFieldToFilter('tm_listing_id', array('neq' => ''))
                     ->addWebsiteFilter($websiteCode)
                     ->addWebsiteNamesToResult();
 
