@@ -1,5 +1,5 @@
 <_>
-   <form_key>eFAVlWPRgNZngCGY</form_key>
+   <form_key>TXQXhj1DlSbNjqB8</form_key>
    <name>MVentory_Tm</name>
    <channel>community</channel>
    <version_ids>
@@ -9,7 +9,7 @@
    <description>MVentory_Tm</description>
    <license>OSL v3.0</license>
    <license_uri/>
-   <version>0.0.0-r748</version>
+   <version>0.0.0-r788</version>
    <stability>devel</stability>
    <notes>Development releases</notes>
    <authors>
@@ -43,7 +43,7 @@
             <max/>
          </max>
          <files>
-            <files>                                                                                                  </files>
+            <files>                                                                                                      </files>
          </files>
       </package>
       <extension>
@@ -70,10 +70,12 @@
          <target>magedesign</target>
          <target>magedesign</target>
          <target>mageweb</target>
-         <target>mageweb</target>
          <target>magedesign</target>
          <target>mageskin</target>
          <target>magedesign</target>
+         <target>magedesign</target>
+         <target>mageweb</target>
+         <target>mageweb</target>
       </target>
       <path>
          <path/>
@@ -85,11 +87,13 @@
          <path>frontend/base/default/css/mventory-tm/</path>
          <path>adminhtml/default/default/layout/catalog/tm.xml</path>
          <path>adminhtml/default/default/template/catalog/category/edit/tab/</path>
-         <path>js/jquery</path>
          <path>js/tm</path>
          <path>adminhtml/default/default/template/catalog/product/tab/tm.phtml</path>
          <path>adminhtml/default/default/tm/styles.css</path>
          <path>adminhtml/default/default/template/mventory_tm/</path>
+         <path>adminhtml/default/default/template/tm/</path>
+         <path>js/jquery/jquery-min.js</path>
+         <path>js/jquery/jquery-uitablefilter.js</path>
       </path>
       <type>
          <type>file</type>
@@ -102,10 +106,12 @@
          <type>file</type>
          <type>dir</type>
          <type>dir</type>
-         <type>dir</type>
          <type>file</type>
          <type>file</type>
          <type>dir</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>file</type>
       </type>
       <include>
          <include/>
@@ -122,8 +128,12 @@
          <include/>
          <include/>
          <include/>
+         <include/>
+         <include/>
       </include>
       <ignore>
+         <ignore/>
+         <ignore/>
          <ignore/>
          <ignore/>
          <ignore/>
