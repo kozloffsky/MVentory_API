@@ -434,77 +434,26 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return $error;
   }
 
-  public function check($product) {
-    $this->getWebsiteId($product);
+  public function check ($product) {
+    $json = $this->_loadTmListingDetails($product->getTmListingId());
 
-    if ($accessTokenData = $this->auth()) {
-      $error = false;
+    if (!$json)
+      return 'Error';
 
-      $accessTokenData = unserialize($accessTokenData);
+    $item = $this->_parseTmListingDetails($json);
 
-      $accessToken = new Zend_Oauth_Token_Access();
-      $accessToken->setToken($accessTokenData[0]);
-      $accessToken->setTokenSecret($accessTokenData[1]);
+    unset($json);
 
-      $client = $accessToken->getHttpClient($this->getConfig());
-      $client->setUri('https://api.' . $this->_host . '.co.nz/v1/MyTradeMe/UnsoldItems.xml');
-      $client->setMethod(Zend_Http_Client::GET);
-      $client->setParameterGet('deleted', 'True');
+    //Check if item on sold
+    if ($item['AsAt'] < $item['EndDate'])
+      return 3;
 
-      $response = $client->request();
+    //Check if item was sold
+    if ($item['BidCount'] > 0)
+      return 2;
 
-      if ($response->getStatus() == '401') {
-        $this->reset();
-      }
-
-      $xml = simplexml_load_string($response->getBody());
-
-      foreach($xml->List->UnsoldItem as $item) {
-        if ($item->ListingId == $product->getTmListingId()) {
-          return 1;
-        }
-      }
-
-      $client = $accessToken->getHttpClient($this->getConfig());
-      $client->setUri('https://api.' . $this->_host . '.co.nz/v1/MyTradeMe/SoldItems.xml');
-      $client->setMethod(Zend_Http_Client::GET);
-      $client->setParameterGet('deleted', '1');
-
-      $response = $client->request();
-
-      if ($response->getStatus() == '401') {
-        $this->reset();
-      }
-
-      $xml = simplexml_load_string($response->getBody());
-
-      foreach($xml->List->SoldItem as $item) {
-        if ($item->ListingId == $product->getTmListingId()) {
-          return 2;
-        }
-      }
-
-      $client = $accessToken->getHttpClient($this->getConfig());
-      $client->setUri('https://api.' . $this->_host . '.co.nz/v1/MyTradeMe/SellingItems/All.xml');
-      $client->setMethod(Zend_Http_Client::GET);
-      $client->setParameterGet('deleted', '1');
-
-      $response = $client->request();
-
-      if ($response->getStatus() == '401') {
-        $this->reset();
-      }
-
-      $xml = simplexml_load_string($response->getBody());
-
-      foreach($xml->List->Item as $item) {
-        if ($item->ListingId == $product->getTmListingId()) {
-          return 3;
-        }
-      }
-    }
-
-    return 0;
+    //Item wasn't sold or was withdrawn
+    return 1;
   }
 
   public function relist ($product) {
@@ -649,6 +598,26 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return $output;
   }
 
+  public function _loadTmListingDetails ($listingId) {
+    $options = array(
+      CURLOPT_URL => 'http://api.trademe.co.nz/v1/Listings/'
+                     . $listingId
+                     . '.json',
+      CURLOPT_RETURNTRANSFER => true,
+    );
+
+    $curl = curl_init();
+
+    if (!curl_setopt_array($curl, $options))
+      return null;
+
+    $output = curl_exec($curl);
+
+    curl_close($curl);
+
+    return $output;
+  }
+
   public function _parseTmCategories (&$list, $categories, $names = array()) {
     foreach ($categories as $category) {
       $_names = array_merge($names, array($category['Name']));
@@ -667,6 +636,22 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         );
       }
     }
+  }
+
+  public function _parseTmListingDetails ($details) {
+    $details = json_decode($details, true);
+
+    $details['EndDate'] = $this->_prepareTimestamp($details['EndDate']);
+    $details['AsAt'] = $this->_prepareTimestamp($details['AsAt']);
+
+    if (!isset($item['BidCount'])
+      $item['BidCount'] = 0;
+
+    return $details;
+  }
+
+  private function _prepareTimestamp ($data) {
+    return substr($data, 6, -2) / 1000;
   }
 
   public function getTmCategories () {
