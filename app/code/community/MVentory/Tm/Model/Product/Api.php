@@ -291,7 +291,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
         $weekLoaded ++; 
         $monthLoaded ++; 
       } elseif($productDate->isLater($weekStart)) {
-        $weekLoaded ++;  
+        $weekLoaded ++;
+        $monthLoaded ++;  
       } elseif($productDate->isLater($monthStart)) {
         $monthLoaded ++;  
       }  
