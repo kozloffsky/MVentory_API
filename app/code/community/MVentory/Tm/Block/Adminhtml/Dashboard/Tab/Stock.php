@@ -39,7 +39,8 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
         ->joinField('qty', 
                     'cataloginventory/stock_item', 
                     'qty', 'product_id=entity_id', 
-                    '{{table}}.stock_id=1 AND {{table}}.is_in_stock=1', 'left');
+                    '{{table}}.stock_id=1 AND {{table}}.is_in_stock=1
+                    AND {{table}}.manage_stock=1 AND {{table}}.qty>0', 'left');
     }
     if ($store->getId()) {
       //$collection->setStoreId($store->getId());

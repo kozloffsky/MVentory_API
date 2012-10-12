@@ -225,7 +225,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
         ->joinField('qty', 
                     'cataloginventory/stock_item', 
                     'qty', 'product_id=entity_id', 
-                    '{{table}}.stock_id=1 AND {{table}}.is_in_stock=1', 'left');
+                    '{{table}}.stock_id=1 AND {{table}}.is_in_stock=1
+                    AND {{table}}.manage_stock=1 AND {{table}}.qty>0', 'left');
     }
     if ($storeId) {
       //$collection->setStoreId($store->getId());
