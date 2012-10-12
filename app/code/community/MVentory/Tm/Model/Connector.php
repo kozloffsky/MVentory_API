@@ -644,8 +644,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $details['EndDate'] = $this->_prepareTimestamp($details['EndDate']);
     $details['AsAt'] = $this->_prepareTimestamp($details['AsAt']);
 
-    if (!isset($item['BidCount'])
-      $item['BidCount'] = 0;
+    if (!isset($details['BidCount']))
+      $details['BidCount'] = 0;
 
     return $details;
   }
