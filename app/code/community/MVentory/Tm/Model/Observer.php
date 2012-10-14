@@ -86,6 +86,9 @@ class MVentory_Tm_Model_Observer {
 
       $result = $connector->check($product);
 
+      if (!$result)
+        continue;
+
       if ($result == 1 && $product->getTmRelist())
         $product->setTmListingId($connector->relist($product));
 

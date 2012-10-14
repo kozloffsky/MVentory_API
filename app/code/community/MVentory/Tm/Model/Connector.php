@@ -446,6 +446,16 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     $item = $this->_parseTmListingDetails($json);
 
+    if (is_string($item)) {
+      Mage::log('TM: error on retrieving listing details '
+                . $listingId
+                . ' ('
+                . $item
+                . ')');
+
+      return;
+    }
+
     unset($json);
 
     //Check if item on sold
@@ -686,6 +696,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   public function _parseTmListingDetails ($details) {
     $details = json_decode($details, true);
+
+    if (isset($details['ErrorDescription']))
+      return $details['ErrorDescription'];
 
     $details['EndDate'] = $this->_prepareTimestamp($details['EndDate']);
     $details['AsAt'] = $this->_prepareTimestamp($details['AsAt']);
