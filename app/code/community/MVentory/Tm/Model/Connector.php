@@ -439,7 +439,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function check ($product) {
-    $json = $this->_loadTmListingDetails($product->getTmListingId());
+    $listingId = $product->getTmListingId();
+
+    $json = $this->_loadTmListingDetails($listingId);
 
     if (!$json)
       return 'Error';
