@@ -91,6 +91,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
                         ->getWebsiteIdFromProduct($product);
   }
 
+  public function setWebsiteId ($websiteId) {
+    $this->_website = $websiteId;
+  }
+
   private function saveAccessToken ($token = '') {
     $scope = 'default';
     $scopeId = 0;
@@ -454,6 +458,48 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     //Item wasn't sold or was withdrawn
     return 1;
+  }
+
+  public function massCheck($products) {
+    if (!$accessTokenData = $this->auth())
+      return 0;
+
+    if ($products instanceof Mage_Catalog_Model_Product) {
+      $collection = new Varien_Data_Collection();
+      $products = $collection->addItem($products);
+    }
+
+    $accessTokenData = unserialize($accessTokenData);
+
+    $accessToken = new Zend_Oauth_Token_Access();
+
+    $accessToken->setToken($accessTokenData[0]);
+    $accessToken->setTokenSecret($accessTokenData[1]);
+
+    $client = $accessToken->getHttpClient($this->getConfig());
+    $client->setUri('https://api.' . $this->_host . '.co.nz/v1/MyTradeMe/SellingItems/All.json');
+    $client->setMethod(Zend_Http_Client::GET);
+    $client->setParameterGet('rows', 100/*count($products)*/);
+
+    $response = $client->request();
+
+    if ($response->getStatus() == 401) {
+      $this->reset();
+
+      return;
+    }
+
+    if ($response->getStatus() != 200)
+      return;
+
+    $items = json_decode($response->getBody(), true);
+
+    foreach ($products as $product)
+      foreach ($items['List'] as $item)
+        if ($item['ListingId'] == $product->getTmListingId())
+          $product->setIsSelling(true);
+
+    return true;
   }
 
   public function relist ($product) {

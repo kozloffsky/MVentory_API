@@ -65,19 +65,26 @@ class MVentory_Tm_Model_Observer {
     //Get website code from the job config
     $websiteCode = (string) $jobConfig->website;
 
-    $collection = Mage::getModel('catalog/product')
-                    ->getCollection()
-                    ->addFieldToFilter('tm_listing_id', array('neq' => ''))
-                    ->addWebsiteFilter($websiteCode)
-                    ->addWebsiteNamesToResult();
+    $products = Mage::getModel('catalog/product')
+                  ->getCollection()
+                  ->addFieldToFilter('tm_listing_id', array('neq' => ''))
+                  ->addWebsiteFilter($websiteCode)
+                  ->addWebsiteNamesToResult();
 
-    foreach ($collection as $product) {
-      $connector = Mage::getModel('mventory_tm/connector');
+    $connector = Mage::getModel('mventory_tm/connector');
+
+    $connector->setWebsiteId(Mage::app()->getWebsite($websiteCode)->getId());
+
+    $result = $connector->massCheck($products);
+
+    if (!$result)
+      return;
+
+    foreach ($products as $product) {
+      if ($product->getIsSelling())
+        continue;
 
       $result = $connector->check($product);
-
-      if (!($result == 1 || $result == 2))
-        continue;
 
       if ($result == 1 && $product->getTmRelist())
         $product->setTmListingId($connector->relist($product));
