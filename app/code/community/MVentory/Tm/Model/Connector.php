@@ -491,7 +491,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $client = $accessToken->getHttpClient($this->getConfig());
     $client->setUri('https://api.' . $this->_host . '.co.nz/v1/MyTradeMe/SellingItems/All.json');
     $client->setMethod(Zend_Http_Client::GET);
-    $client->setParameterGet('rows', 100/*count($products)*/);
+    $client->setParameterGet('rows', count($products));
 
     $response = $client->request();
 
