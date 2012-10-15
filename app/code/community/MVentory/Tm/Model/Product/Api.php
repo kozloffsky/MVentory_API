@@ -181,39 +181,59 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $monthStart = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
 
     // Get Sales info   
-    $collection = Mage::getModel("sales/order")->getCollection();
-    $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+    $collection = Mage::getModel('sales/order')->getCollection();
+    $collection
+      ->getSelect()
+      ->reset(Zend_Db_Select::COLUMNS);
     $collection
       ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
       ->addFieldToFilter('store_id', $storeId)
       ->addFieldToFilter('created_at', array(
         'from' => $dayStart));
-    $daySales = trim( $collection->load()->getFirstItem()->getData('sum'), 0);
+    $daySales = trim($collection
+                  ->load()
+                  ->getFirstItem()
+                  ->getData('sum'), 0);
     
-    $collection = Mage::getModel("sales/order")->getCollection();
-    $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+    $collection = Mage::getModel('sales/order')->getCollection();
+    $collection
+      ->getSelect()
+      ->reset(Zend_Db_Select::COLUMNS);
     $collection
       ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
       ->addFieldToFilter('store_id', $storeId)
       ->addFieldToFilter('created_at', array(
         'from' => $weekStart->toString('YYYY-MM-dd 00:00:00')));
-    $weekSales = trim($collection->load()->getFirstItem()->getData('sum'), 0);
+    $weekSales = trim($collection
+                   ->load()
+                   ->getFirstItem()
+                   ->getData('sum'), 0);
     
-    $collection = Mage::getModel("sales/order")->getCollection();
-    $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+    $collection = Mage::getModel('sales/order')->getCollection();
+    $collection
+      ->getSelect()
+      ->reset(Zend_Db_Select::COLUMNS);
     $collection
       ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
       ->addFieldToFilter('store_id', $storeId)
       ->addFieldToFilter('created_at', array(
         'from' => $monthStart->toString('YYYY-MM-dd 00:00:00')));
-    $monthSales = trim($collection->load()->getFirstItem()->getData('sum'), 0);
+    $monthSales = trim($collection
+                    ->load()
+                    ->getFirstItem()
+                    ->getData('sum'), 0);
     
-    $collection = Mage::getModel("sales/order")->getCollection();
-    $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+    $collection = Mage::getModel('sales/order')->getCollection();
+    $collection
+      ->getSelect()
+      ->reset(Zend_Db_Select::COLUMNS);
     $collection
       ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
       ->addFieldToFilter('store_id', $storeId);
-    $totalSales = trim($collection->load()->getFirstItem()->getData('sum'), 0);
+    $totalSales = trim($collection
+                    ->load()
+                    ->getFirstItem()
+                    ->getData('sum'), 0);
     // End of Sales info
     
     // Get Stock info
@@ -243,10 +263,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $collection->addAttributeToSelect('price');
     }
       
-    $collection->getSelect()->columns(
-      array('SUM(at_qty.qty) AS total_qty', 
-            'SUM(at_qty.qty*at_price.value) AS total_value'));
-    $result = $collection->load()->getFirstItem()->getData();
+    $collection
+      ->getSelect()
+      ->columns(array('SUM(at_qty.qty) AS total_qty', 
+                      'SUM(at_qty.qty*at_price.value) AS total_value'));
+    $result = $collection
+                ->load()
+                ->getFirstItem()
+                ->getData();
       
     $totalStockQty = trim($result['total_qty'], 0);
     $totalStockValue = trim($result['total_value'], 0);
@@ -254,28 +278,43 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     
     // Get Products info       
     $collection = Mage::getModel('catalog/product')->getCollection();
-    $collection->getSelect()->columns('COUNT(entity_id) as loaded');
+    $collection
+      ->getSelect()
+      ->columns('COUNT(entity_id) as loaded');
     $collection
       ->addStoreFilter($store)
       ->addFieldToFilter('created_at', array(
         'from' => $dayStart));
-    $dayLoaded = $collection->load()->getFirstItem()->getData('loaded');
+    $dayLoaded = $collection
+                   ->load()
+                   ->getFirstItem()
+                   ->getData('loaded');
     
     $collection = Mage::getModel('catalog/product')->getCollection();
-    $collection->getSelect()->columns('COUNT(entity_id) as loaded');
+    $collection
+      ->getSelect()
+      ->columns('COUNT(entity_id) as loaded');
     $collection
       ->addStoreFilter($store)
       ->addFieldToFilter('created_at', array(
         'from' => $weekStart->toString('YYYY-MM-dd 00:00:00')));                                                 
-    $weekLoaded  = $collection->load()->getFirstItem()->getData('loaded');
+    $weekLoaded  = $collection
+                     ->load()
+                     ->getFirstItem()
+                     ->getData('loaded');
     
     $collection = Mage::getModel('catalog/product')->getCollection();
-    $collection->getSelect()->columns('COUNT(entity_id) as loaded');
+    $collection
+      ->getSelect()
+      ->columns('COUNT(entity_id) as loaded');
     $collection
       ->addStoreFilter($store)
       ->addFieldToFilter('created_at', array(
         'from' => $monthStart->toString('YYYY-MM-dd 00:00:00')));
-    $monthLoaded = $collection->load()->getFirstItem()->getData('loaded');;
+    $monthLoaded = $collection
+                     ->load()
+                     ->getFirstItem()
+                     ->getData('loaded');
     // End of Products info
 
     return array('day_sales' => $daySales, 'week_sales' => $weekSales,
