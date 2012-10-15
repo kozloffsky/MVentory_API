@@ -68,7 +68,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       'requestScheme' => Zend_Oauth::REQUEST_SCHEME_HEADER,
       'version' => '1.0',
       'signatureMethod' => 'HMAC-SHA1',
-      'callbackUrl' => Mage::helper('core/url')->getCurrentUrl(),
       'siteUrl' => 'https://secure.' . $host . '.co.nz/Oauth/',
       'requestTokenUrl'
                      => 'https://secure.' . $host . '.co.nz/Oauth/RequestToken',
@@ -79,6 +78,13 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       'consumerKey' => $this->_getConfig(self::KEY_PATH),
       'consumerSecret' => $this->_getConfig(self::SECRET_PATH)
     );
+
+    $request = Mage::app()->getRequest();
+
+    //Check if code was invoked during HTTP request.
+    //Don't set incorrect value when code is invoked by cron
+    if ($request->getHttpHost())
+      $this->_config['callbackUrl'] = Mage::helper('core/url')->getCurrentUrl();
 
     $this->_host = $host;
 
