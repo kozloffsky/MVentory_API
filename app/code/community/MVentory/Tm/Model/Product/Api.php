@@ -175,46 +175,45 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $date       = new Zend_Date();
     
     $dayStart   = $date->toString('yyyy-MM-dd 00:00:00');
-    $dayStart   = new Zend_Date($dayStart, 'YYYY-MM-dd 00:00:00');
     
     $weekStart  = new Zend_Date($date->getTimestamp() - 7 * 24 * 3600);
-    $weekStart  = $weekStart->toString('yyyy-MM-dd 00:00:00');
-    $weekStart  = new Zend_Date($weekStart, 'YYYY-MM-dd');
     
     $monthStart = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
-    $monthStart = $monthStart->toString('yyyy-MM-dd 00:00:00');
-    $monthStart = new Zend_Date($monthStart, 'YYYY-MM-dd');
 
-    // Get Sales info
+    // Get Sales info   
     $collection = Mage::getModel("sales/order")->getCollection();
-
+    $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
     $collection
+      ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
       ->addFieldToFilter('store_id', $storeId)
-      ->setOrder('updated_at', Varien_Data_Collection_Db::SORT_ORDER_DESC)
-      ;
-
-    $daySales   = 0;
-    $weekSales  = 0;
-    $monthSales = 0;
-    $totalSales = 0;
-
-    foreach ($collection as $order) {
-      $orderDate = new Zend_Date($order->getData('created_at'),
-                                                 'YYYY-MM-dd hh:mm:ss');
-      $orderGrandTotal  = $order->getData('grand_total');
-      
-      if($orderDate->isLater($dayStart)) {
-        $daySales += $orderGrandTotal; 
-        $weekSales += $orderGrandTotal; 
-        $monthSales += $orderGrandTotal;
-      } elseif($orderDate->isLater($weekStart)) {
-        $weekSales += $orderGrandTotal; 
-        $monthSales += $orderGrandTotal;  
-      } elseif($orderDate->isLater($monthStart)) {
-        $monthSales += $orderGrandTotal;  
-      }     
-      $totalSales += $orderGrandTotal;  
-    }
+      ->addFieldToFilter('created_at', array(
+        'from' => $dayStart));
+    $daySales = trim( $collection->load()->getFirstItem()->getData('sum'), 0);
+    
+    $collection = Mage::getModel("sales/order")->getCollection();
+    $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+    $collection
+      ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
+      ->addFieldToFilter('store_id', $storeId)
+      ->addFieldToFilter('created_at', array(
+        'from' => $weekStart->toString('YYYY-MM-dd 00:00:00')));
+    $weekSales = trim($collection->load()->getFirstItem()->getData('sum'), 0);
+    
+    $collection = Mage::getModel("sales/order")->getCollection();
+    $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+    $collection
+      ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
+      ->addFieldToFilter('store_id', $storeId)
+      ->addFieldToFilter('created_at', array(
+        'from' => $monthStart->toString('YYYY-MM-dd 00:00:00')));
+    $monthSales = trim($collection->load()->getFirstItem()->getData('sum'), 0);
+    
+    $collection = Mage::getModel("sales/order")->getCollection();
+    $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+    $collection
+      ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
+      ->addFieldToFilter('store_id', $storeId);
+    $totalSales = trim($collection->load()->getFirstItem()->getData('sum'), 0);
     // End of Sales info
     
     // Get Stock info
@@ -243,61 +242,40 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     } else {
       $collection->addAttributeToSelect('price');
     }
-    
-    $collection->joinAttribute(
-      'status', 
-      'catalog_product/status',
-      'entity_id', 
-      null,
-      'inner',
-      $storeId);
-    $collection->joinAttribute(
-      'visibility',
-      'catalog_product/visibility',
-      'entity_id',
-      null,
-      'inner',
-      $storeId);
       
-    $totalStockQty = 0;
-    $totalStockValue = 0;
-    foreach ($collection as $product) {
-      $totalStockQty += $product->getQty();
-      $totalStockValue += $product->getQty() * $product->getPrice();
-    }
+    $collection->getSelect()->columns(
+      array('SUM(at_qty.qty) AS total_qty', 
+            'SUM(at_qty.qty*at_price.value) AS total_value'));
+    $result = $collection->load()->getFirstItem()->getData();
+      
+    $totalStockQty = trim($result['total_qty'], 0);
+    $totalStockValue = trim($result['total_value'], 0);
     // End of Stock info
     
-    // Get Products info    
-    $to   = $date->toString('yyyy-MM-dd 23:59:59');
-      
-    $from = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
-    $from = $from->toString('yyyy-MM-dd 00:00:00');
-    
+    // Get Products info       
     $collection = Mage::getModel('catalog/product')->getCollection();
+    $collection->getSelect()->columns('COUNT(entity_id) as loaded');
     $collection
       ->addStoreFilter($store)
-      ->addAttributeToFilter('created_at', array('from'  => $from,
-                                                 'to'    => $to));
-
-    $dayLoaded   = 0;
-    $weekLoaded  = 0;
-    $monthLoaded = 0;
-
-    foreach ($collection as $product) {
-      $productDate = new Zend_Date($product->getData('created_at'),
-                                   'YYYY-MM-dd hh:mm:ss');
-
-      if($productDate->isLater($dayStart)) {
-        $dayLoaded ++;
-        $weekLoaded ++; 
-        $monthLoaded ++; 
-      } elseif($productDate->isLater($weekStart)) {
-        $weekLoaded ++;
-        $monthLoaded ++;  
-      } elseif($productDate->isLater($monthStart)) {
-        $monthLoaded ++;  
-      }  
-    }
+      ->addFieldToFilter('created_at', array(
+        'from' => $dayStart));
+    $dayLoaded = $collection->load()->getFirstItem()->getData('loaded');
+    
+    $collection = Mage::getModel('catalog/product')->getCollection();
+    $collection->getSelect()->columns('COUNT(entity_id) as loaded');
+    $collection
+      ->addStoreFilter($store)
+      ->addFieldToFilter('created_at', array(
+        'from' => $weekStart->toString('YYYY-MM-dd 00:00:00')));                                                 
+    $weekLoaded  = $collection->load()->getFirstItem()->getData('loaded');
+    
+    $collection = Mage::getModel('catalog/product')->getCollection();
+    $collection->getSelect()->columns('COUNT(entity_id) as loaded');
+    $collection
+      ->addStoreFilter($store)
+      ->addFieldToFilter('created_at', array(
+        'from' => $monthStart->toString('YYYY-MM-dd 00:00:00')));
+    $monthLoaded = $collection->load()->getFirstItem()->getData('loaded');;
     // End of Products info
 
     return array('day_sales' => $daySales, 'week_sales' => $weekSales,
