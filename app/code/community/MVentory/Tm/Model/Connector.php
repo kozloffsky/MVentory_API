@@ -664,7 +664,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   public function _loadTmListingDetails ($listingId) {
     $options = array(
-      CURLOPT_URL => 'http://api.trademe.co.nz/v1/Listings/'
+      CURLOPT_URL => 'http://api.'
+                     . $this->_host
+                     . '.co.nz/v1/Listings/'
                      . $listingId
                      . '.json',
       CURLOPT_RETURNTRANSFER => true,
