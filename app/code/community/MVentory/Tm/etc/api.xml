@@ -145,6 +145,11 @@
             <title>Retrieve order information</title>
             <acl>sales/order/info</acl>
           </fullInfo>
+          
+          <createShipmentWithTracking translate="title" module="sales">
+            <title>Create shipment with track and retrieve order information</title>
+            <acl>sales/order/info</acl>
+          </createShipmentWithTracking>
         </methods>
       </sales_order>
     </resources>

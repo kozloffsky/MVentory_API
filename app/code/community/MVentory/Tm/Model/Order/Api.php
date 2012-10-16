@@ -113,4 +113,80 @@ class MVentory_Tm_Model_Order_Api extends Mage_Sales_Model_Order_Api {
 
     return $order;
   }
+  
+  public function createShipmentWithTracking($orderIncrementId, $carrier,
+    $title, $trackNumber, $itemsQty = array(), $comment = null, $email = false,
+     $includeComment = false){
+  	
+  	$order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
+
+    
+    // Check order existing
+    
+    if (!$order->getId()) {
+      $this->_fault('order_not_exists');
+    }
+
+    
+    // Check shipment create availability
+    
+    if (!$order->canShip()) {
+      $this->_fault('data_invalid', Mage::helper('sales')->__('Cannot do 
+        shipment for order.'));
+    }
+
+    // @var $shipment Mage_Sales_Model_Order_Shipment 
+    $shipment = $order->prepareShipment($itemsQty);
+    if ($shipment) {
+      $shipment->register();
+      $shipment->addComment($comment, $email && $includeComment);
+      if ($email) {
+        $shipment->setEmailSent(true);
+      }
+      $shipment->getOrder()->setIsInProcess(true);
+      try {
+        $transactionSave = Mage::getModel('core/resource_transaction')
+          ->addObject($shipment)
+          ->addObject($shipment->getOrder())
+          ->save();
+        $shipment->sendEmail($email, ($includeComment ? $comment : ''));
+      } 
+      catch (Mage_Core_Exception $e) {
+        $this->_fault('data_invalid', $e->getMessage());
+      }
+    }
+        
+    // Get carriers 
+    $carriers = array();
+    $carrierInstances = Mage::getSingleton('shipping/config')->getAllCarriers(
+      $shipment->getStoreId()
+    );
+    $carriers['custom'] = Mage::helper('sales')->__('Custom Value');
+    foreach ($carrierInstances as $code => $car) {
+      if ($car->isTrackingAvailable()) {
+        $carriers[$code] = $car->getConfigData('title');
+      }
+    }
+    if (!isset($carriers[$carrier])) {
+      $this->_fault('data_invalid', Mage::helper('sales')->__('Invalid carrier
+        specified.'));
+    }
+
+    $track = Mage::getModel('sales/order_shipment_track')
+      ->setNumber($trackNumber)
+      ->setCarrierCode($carrier)
+      ->setTitle($title);
+
+    $shipment->addTrack($track);
+
+    try {
+      $shipment->save();
+      $track->save();
+    } 
+    catch (Mage_Core_Exception $e) {
+      $this->_fault('data_invalid', $e->getMessage());
+    }
+
+    return $this->fullInfo($orderIncrementId);
+  }
 }
