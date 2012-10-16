@@ -11,6 +11,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const ADD_TM_FEES_PATH = 'mventory_tm/settings/add_tm_fees';
   const SHIPPING_TYPE_PATH = 'mventory_tm/settings/shipping_type';
   const RELIST_IF_NOT_SOLD_PATH = 'mventory_tm/settings/relist_if_not_sold';
+  const BUYER_PATH = 'mventory_tm/settings/buyer';
 
   const CACHE_TYPE_TM = 'tm';
   const CACHE_TAG_TM = 'TM';

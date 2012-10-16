@@ -62,19 +62,31 @@ class MVentory_Tm_Model_Observer {
     $jobsRoot = Mage::getConfig()->getNode('default/crontab/jobs');
     $jobConfig = $jobsRoot->{$schedule->getJobCode()};
 
-    //Get website code from the job config
-    $websiteCode = (string) $jobConfig->website;
+    //Get website from the job config
+    $website = Mage::app()->getWebsite((string) $jobConfig->website);
+
+    //Get default customer ID for TM sells (TM buyer)
+    $path = MVentory_Tm_Model_Connector::BUYER_PATH;
+    $customerId = Mage::helper('mventory_tm')->getConfig($path, $website);
+
+    $customer = Mage::getModel('customer/customer')->load($customerId);
 
     $products = Mage::getModel('catalog/product')
                   ->getCollection()
                   ->addAttributeToSelect('tm_relist')
+                  ->addAttributeToSelect('price')
                   ->addFieldToFilter('tm_listing_id', array('neq' => ''))
-                  ->addWebsiteFilter($websiteCode)
+                  ->addWebsiteFilter($website)
                   ->addWebsiteNamesToResult();
+
+    //If customer exists and loaded add price data to the product collection
+    //filtered by customer's group ID 
+    if ($customer->getId())
+      $products->addPriceData($customer->getGroupId());
 
     $connector = Mage::getModel('mventory_tm/connector');
 
-    $connector->setWebsiteId(Mage::app()->getWebsite($websiteCode)->getId());
+    $connector->setWebsiteId($website->getId());
 
     $result = $connector->massCheck($products);
 
@@ -94,14 +106,19 @@ class MVentory_Tm_Model_Observer {
         $product->setTmListingId($connector->relist($product));
 
       if ($result == 2) {
-        $stock = Mage::getModel('cataloginventory/stock_item')
-                   ->loadByProduct($product);
+        $sku = $product->getSku();
+        $price = $product->getPrice();
+        $qty = 1;
 
-        if ($stock->getManageStock() && $stock->getQty()) {
-          $stockData = $stock->getData();
-          $stockData['qty'] -= 1;
-          $product->setStockData($stockData);
-        }
+        //API function for creating order requires curren store to be set
+        Mage::app()->setCurrentStore($website->getDefaultStore());
+
+        //Set global flag to enable our dummy shipping method
+        Mage::register('tm_allow_dummyshipping', true);
+
+        //Make order for the product
+        Mage::getModel('mventory_tm/cart_api')
+          ->createOrderForProduct($sku, $price, $qty, $customerId);
 
         $product->setTmListingId(0);
       }

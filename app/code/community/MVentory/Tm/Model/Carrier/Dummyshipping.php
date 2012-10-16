@@ -15,7 +15,8 @@ class MVentory_Tm_Model_Carrier_Dummyshipping
   protected $_isFixed = true;
 
   public function collectRates (Mage_Shipping_Model_Rate_Request $request) {
-    if (!(Mage::getSingleton('api/server')->getAdapter() != null
+    if (!((Mage::getSingleton('api/server')->getAdapter() != null
+           || Mage::registry('tm_allow_dummyshipping'))
           && $this->getConfigFlag('active')))
       return false;
 
