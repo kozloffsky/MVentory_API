@@ -5,26 +5,31 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
   const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
 
   public function createOrderForProduct ($sku, $price, $qty, $customerId,
-                                         $transactionId, $name = null,
+                                         $transactionId = null, $name = null,
                                          $taxClass = null) {
 
     $helper = Mage::helper('mventory_tm');
 
     $storeId = $helper->getCurrentStoreId();
 
-    $transactionId = (int) $transactionId;
-
     $productApi = Mage::getModel('mventory_tm/product_api');
 
-    $orderId = Mage::getResourceModel('mventory_tm/order_transaction')
-                 ->getOrderIdByTransaction($transactionId);
+    //Try load order which was created but API client didn't received
+    //its ID. It prevents from double ordering in case data lost during
+    //communication
+    if ($transactionId !== null) {
+      $transactionId = (int) $transactionId;
 
-    if ($orderId) {
-      $result = $productApi->fullInfo(null, $sku);
+      $orderId = Mage::getResourceModel('mventory_tm/order_transaction')
+                   ->getOrderIdByTransaction($transactionId);
 
-      $result['order_id'] = $orderId;
+      if ($orderId) {
+        $result = $productApi->fullInfo(null, $sku);
 
-      return $result;
+        $result['order_id'] = $orderId;
+
+        return $result;
+      }
     }
 
     $price = (float) $price;
@@ -183,12 +188,17 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
     $orderId = $this->createOrder($quoteId, $storeId);
 
-    $transaction = Mage::getModel('mventory_tm/order_transaction');
+    //Save transaction ID and orderId pair. So, it will return existing order
+    //to API client if it will try to create order with same transaction ID
+    //next time
+    if ($transactionId !== null) {
+      $transaction = Mage::getModel('mventory_tm/order_transaction');
 
-    $transaction
-      ->setOrderId((int) $orderId)
-      ->setTransactionId((int) $transactionId)
-      ->save();
+      $transaction
+        ->setOrderId((int) $orderId)
+        ->setTransactionId((int) $transactionId)
+        ->save();
+    }
 
     if ($updateProduct) {
       Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
