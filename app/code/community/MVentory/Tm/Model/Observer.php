@@ -67,6 +67,7 @@ class MVentory_Tm_Model_Observer {
 
     $products = Mage::getModel('catalog/product')
                   ->getCollection()
+                  ->addAttributeToSelect('tm_relist')
                   ->addFieldToFilter('tm_listing_id', array('neq' => ''))
                   ->addWebsiteFilter($websiteCode)
                   ->addWebsiteNamesToResult();
