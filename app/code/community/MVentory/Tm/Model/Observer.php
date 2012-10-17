@@ -293,20 +293,28 @@ class MVentory_Tm_Model_Observer {
     $storeId = Mage::app()->getStore()->getId();
     $code = 'site_version_' . $storeId;
 
+    $session = Mage::getSingleton('core/session');
+
+    $cookieValue = Mage::getModel('core/cookie')->get($code);
+    $sessionValue = $session->getData($code);
+
+    $identifier = 'desktop_footer_links_';
+
     // check current site version
-    if (Mage::getModel('core/cookie')->get($code) == 'mobile' ||
-        (Mage::getModel('core/cookie')->get($code) === false &&
-         Mage::getSingleton('core/session')->getData($code) == 'mobile')) {
-      Mage::getSingleton('core/session')->unsetData('site_version_' . $storeId);
-      $identifier = 'mobile_footer_links_' . $storeId;
-    } else {
-      $identifier = 'desktop_footer_links_' . $storeId;
+    if ($cookieValue == 'mobile'
+        || ($cookieValue === false && $sessionValue == 'mobile')) {
+      $session->unsetData($code);
+
+      $identifier = 'mobile_footer_links_';
     }
+
+    $identifier .= $storeId;
 
     // append cms block to the footer
     $block = $layout
                ->createBlock('cms/block')
                ->setBlockId($identifier);
+
     $layout->getBlock('footer')->append($block);
   }
 }
