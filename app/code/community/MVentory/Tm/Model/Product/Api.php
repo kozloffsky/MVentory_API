@@ -226,10 +226,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $collection = Mage::getModel('sales/order')->getCollection();
     $collection
       ->getSelect()
-      ->reset(Zend_Db_Select::COLUMNS);
-    $collection
-      ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
-      ->addFieldToFilter('store_id', $storeId);
+      ->columns('SUM(grand_total) as sum');
+    $collection->addFieldToFilter('store_id', $storeId);
     $totalSales = trim($collection
                     ->load()
                     ->getFirstItem()
