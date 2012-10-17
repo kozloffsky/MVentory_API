@@ -19,6 +19,7 @@
           <product_view_tabs>MVentory_Tm_Block_Product_View_Tabs</product_view_tabs>
         </rewrite>
       </catalog>
+
       <adminhtml>
         <rewrite>
           <dashboard_grids>MVentory_Tm_Block_Adminhtml_Dashboard_Grids</dashboard_grids>
@@ -126,6 +127,7 @@
             <class>mventory_tm/observer</class>
             <method>addProductNameRebuildMassaction</method>
           </mventory_tm_product_name_rebuild>
+
           <mventory_tm_product_attributes_populate>
             <type>singleton</type>
             <class>mventory_tm/observer</class>
