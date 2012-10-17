@@ -48,10 +48,10 @@ class MVentory_Tm_Model_Observer {
           ->addError($result);
     }
   }
-  
+
   public function productSaveBefore ($observer) {
     $event = $observer->getEvent();
-                
+
     // populate product attributes
     Mage::getSingleton('mventory_tm/product_action')
       ->populateAttributes(array($event->getProduct()), null, false);
@@ -80,7 +80,7 @@ class MVentory_Tm_Model_Observer {
                   ->addWebsiteNamesToResult();
 
     //If customer exists and loaded add price data to the product collection
-    //filtered by customer's group ID 
+    //filtered by customer's group ID
     if ($customer->getId())
       $products->addPriceData($customer->getGroupId());
 
@@ -236,10 +236,10 @@ class MVentory_Tm_Model_Observer {
       ->getMassactionBlock()
       ->addItem('namerebuild', compact('label', 'url'));
   }
-  
+
   /**
    * Add action "Populate product attributes" to admin product manage grid
-   */   
+   */
   public function addProductAttributesPopulateMassaction ($observer) {
     $block = $observer->getBlock();
 
@@ -286,28 +286,27 @@ class MVentory_Tm_Model_Observer {
 
     $block->addTab('tm', compact('label', 'content'));
   }
-  
+
   public function addSiteSwitcher ($observer) {
     $layout = $observer->getEvent()->getLayout();
 
     $storeId = Mage::app()->getStore()->getId();
     $code = 'site_version_' . $storeId;
-    
+
     // check current site version
-    if (Mage::getModel('core/cookie')->get($code) == 'mobile' || 
+    if (Mage::getModel('core/cookie')->get($code) == 'mobile' ||
         (Mage::getModel('core/cookie')->get($code) === false &&
          Mage::getSingleton('core/session')->getData($code) == 'mobile')) {
-      Mage::getSingleton('core/session')
-        ->unsetData('site_version_' . $storeId);
+      Mage::getSingleton('core/session')->unsetData('site_version_' . $storeId);
       $identifier = 'mobile_footer_links_' . $storeId;
-    } else {  
+    } else {
       $identifier = 'desktop_footer_links_' . $storeId;
-    }  
-      
+    }
+
     // append cms block to the footer
     $block = $layout
                ->createBlock('cms/block')
-               ->setBlockId($identifier); 
-    $layout->getBlock('footer')->append($block);               
+               ->setBlockId($identifier);
+    $layout->getBlock('footer')->append($block);
   }
 }
