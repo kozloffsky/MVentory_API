@@ -52,7 +52,7 @@ class MVentory_Tm_Model_Observer {
   public function productSaveBefore ($observer) {
     $event = $observer->getEvent();
 
-    // populate product attributes
+    //Populate product attributes
     Mage::getSingleton('mventory_tm/product_action')
       ->populateAttributes(array($event->getProduct()), null, false);
   }
@@ -205,11 +205,11 @@ class MVentory_Tm_Model_Observer {
 
     $category = $product->getCategory();
 
-    // Return if last visited vategory was not used
+    //Return if last visited vategory was not used
     if ($category && $category->getId() != $lastId)
       return;
 
-    // Return if categories are same, nothing to change
+    //Return if categories are same, nothing to change
     if ($lastId == $categoryId)
       return;
 
@@ -300,7 +300,7 @@ class MVentory_Tm_Model_Observer {
 
     $identifier = 'desktop_footer_links_';
 
-    // check current site version
+    //Check current site version
     if ($cookieValue == 'mobile'
         || ($cookieValue === false && $sessionValue == 'mobile')) {
       $session->unsetData($code);
@@ -310,7 +310,7 @@ class MVentory_Tm_Model_Observer {
 
     $identifier .= $storeId;
 
-    // append cms block to the footer
+    //Append cms block to the footer
     $block = $layout
                ->createBlock('cms/block')
                ->setBlockId($identifier);
