@@ -79,16 +79,6 @@
     </resources>
 
     <events>
-      <catalog_product_save_after>
-        <observers>
-          <mventory_tm_product_save_after>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>productSaveAfter</method>
-          </mventory_tm_product_save_after>
-        </observers>
-      </catalog_product_save_after>
-
       <catalog_product_save_before>
         <observers>
           <mventory_tm_product_save_before>
@@ -119,6 +109,16 @@
           </mventory_tm_product_init>
         </observers>
       </catalog_controller_product_init>
+
+      <checkout_type_onepage_save_order_after>
+        <observers>
+          <mventory_tm_save_order_after>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>removeListingFromTm</method>
+          </mventory_tm_save_order_after>
+        </observers>
+      </checkout_type_onepage_save_order_after>
 
       <adminhtml_catalog_product_grid_prepare_massaction>
         <observers>

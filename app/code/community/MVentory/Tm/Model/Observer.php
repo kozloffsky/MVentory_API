@@ -8,44 +8,46 @@ class MVentory_Tm_Model_Observer {
     IMAGETYPE_PNG => 'png'
   );
 
-  public function productSaveAfter ($observer) {
-    $event = $observer->getEvent();
+  public function removeListingFromTm ($observer) {
+    Mage::log('removeListingFromTm');
 
-    $product = Mage::getModel('catalog/product')
-                 ->load($event->getProduct()->getId());
+    $order = $observer
+               ->getEvent()
+               ->getOrder();
 
-    $stock = Mage::getModel('cataloginventory/stock_item')
-               ->loadByProduct($product);
+    $items = $order->getAllItems();
 
-    //$mventoryCategoryId = Mage::app()
-    //                        ->getRequest()
-    //                        ->getParam('mventory_category');
+    foreach ($items as $item) {
+      $productId = (int) $item->getProductId();
 
-    //$category = Mage::getModel('catalog/category')
-    //              ->getCollection()
-    //              ->addAttributeToSelect('mventory_tm_category')
-    //              ->addFieldToFilter('entity_id',
-    //                                 array('in' => $product->getCategoryIds()))
-    //              ->getFirstItem();
+      $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
 
-    //$category->setMventoryTmCategory($mventoryCategoryId);
-    //$category->save();
+      //We can use default store ID because the attribute is global
+      $listingId
+        = Mage::getResourceModel('catalog/product')
+            ->getAttributeRawValue($productId, 'tm_listing_id', $storeId);
 
-    if ($stock->getManageStock() && $stock->getQty() == 0
-        && $product->getTmListingId()) {
+      if (!$listingId)
+        continue;
+
+      $stockItem = Mage::getModel('cataloginventory/stock_item')
+                     ->loadByProduct($productId);
+
+      if (!($stockItem->getManageStock() && $stockItem->getQty() == 0))
+        continue;
 
       $connector = Mage::getModel('mventory_tm/connector');
+
       $result = $connector->remove($product);
 
-      if ($result === true) {
-        Mage::getSingleton('adminhtml/session')
-          ->addSuccess(Mage::helper('catalog')->__('Removed!'));
+      if ($result !== true)
+        continue;
 
-        $product->setTmListingId(0);
-        $product->save();
-      } else
-        Mage::getSingleton('adminhtml/session')
-          ->addError($result);
+      $productId = array($productId);
+      $attribute = array('tm_listing_id' => 0);
+
+      Mage::getResourceSingleton('catalog/product_action')
+        ->updateAttributes($productId, $attribute, $storeId);
     }
   }
 
