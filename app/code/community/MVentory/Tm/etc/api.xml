@@ -147,6 +147,18 @@
           </fullInfo>
         </methods>
       </sales_order>
+      
+      <sales_order_shipment translate="title" module="sales">
+        <model>mventory_tm/order_shipment_api</model>
+        <acl>sales/order</acl>
+        
+        <methods>
+          <createShipmentWithTracking translate="title" module="sales">
+            <title>Create shipment with track and retrieve order information</title>
+            <acl>sales/order</acl>
+          </createShipmentWithTracking>
+        </methods>
+      </sales_order_shipment>
     </resources>
   </api>
 </config>
