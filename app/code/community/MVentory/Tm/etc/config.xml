@@ -5,7 +5,7 @@
       <version>3</version>
     </MVentory_Tm>
   </modules>
-  
+
   <global>
     <blocks>
       <mventory_tm>
@@ -25,7 +25,7 @@
         </rewrite>
       </adminhtml>
     </blocks>
-    
+
     <models>
       <mventory_tm>
         <class>MVentory_Tm_Model</class>
@@ -48,12 +48,12 @@
           <product_url>MVentory_Tm_Model_Product_Url</product_url>
         </rewrite>
       </catalog>
-      
+
       <core>
         <rewrite>
           <design_package>MVentory_Tm_Model_Design_Package</design_package>
         </rewrite>
-      </core>            
+      </core>
     </models>
 
     <helpers>
@@ -77,33 +77,33 @@
       </mventory_tm_setup>
     </resources>
 
-    <events>     
-      <catalog_product_save_after>      
-        <observers>     
-          <mventory_tm_product_save_after>     
-            <type>singleton</type>  
-            <class>mventory_tm/observer</class>   
-            <method>productSaveAfter</method>  
+    <events>
+      <catalog_product_save_after>
+        <observers>
+          <mventory_tm_product_save_after>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>productSaveAfter</method>
           </mventory_tm_product_save_after>
-        </observers>  
+        </observers>
       </catalog_product_save_after>
-      
-      <catalog_product_save_before>      
-        <observers>     
-          <mventory_tm_product_save_before>     
-            <type>singleton</type>  
-            <class>mventory_tm/observer</class>   
-            <method>productSaveBefore</method>  
+
+      <catalog_product_save_before>
+        <observers>
+          <mventory_tm_product_save_before>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>productSaveBefore</method>
           </mventory_tm_product_save_before>
-        </observers>  
+        </observers>
       </catalog_product_save_before>
 
       <!-- Requires M. >= 1.7 -->
       <catalog_product_media_save_before>
         <observers>
           <mventory_tm_media_save_before>
-            <type>singleton</type>  
-            <class>mventory_tm/observer</class>   
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
             <method>mediaSaveBefore</method>
           </mventory_tm_media_save_before>
         </observers>
@@ -112,8 +112,8 @@
       <catalog_controller_product_init>
         <observers>
           <mventory_tm_product_init>
-            <type>singleton</type>  
-            <class>mventory_tm/observer</class>   
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
             <method>productInit</method>
           </mventory_tm_product_init>
         </observers>
@@ -122,13 +122,13 @@
       <adminhtml_catalog_product_grid_prepare_massaction>
         <observers>
           <mventory_tm_product_name_rebuild>
-            <type>singleton</type>  
-            <class>mventory_tm/observer</class>   
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
             <method>addProductNameRebuildMassaction</method>
           </mventory_tm_product_name_rebuild>
           <mventory_tm_product_attributes_populate>
-            <type>singleton</type>  
-            <class>mventory_tm/observer</class>   
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
             <method>addProductAttributesPopulateMassaction</method>
           </mventory_tm_product_attributes_populate>
         </observers>
@@ -139,7 +139,7 @@
       <mventory_tm_qr_get>
         <from><![CDATA[#^/sku/#]]></from>
         <to><![CDATA[/mventory_tm/qr/scan/sku/]]></to>
-      </mventory_tm_qr_get> 
+      </mventory_tm_qr_get>
     </rewrite>
 
     <cache>
@@ -151,10 +151,10 @@
         </tm>
       </types>
     </cache>
-  </global>    
-  
+  </global>
+
   <frontend>
-    <events>  
+    <events>
       <controller_action_layout_generate_blocks_after>
         <observers>
           <tm_add_switcher>
@@ -164,8 +164,8 @@
           </tm_add_switcher>
         </observers>
       </controller_action_layout_generate_blocks_after>
-    </events>  
-  </frontend>      
+    </events>
+  </frontend>
 
   <admin>
     <routers>
@@ -178,7 +178,7 @@
       </mventory_tm_adminhtml>
     </routers>
   </admin>
-  
+
   <frontend>
     <routers>
       <mventory_tm>
@@ -198,7 +198,7 @@
       </updates>
     </layout>
   </frontend>
-  
+
   <adminhtml>
     <acl>
       <resources>
@@ -224,8 +224,8 @@
       <adminhtml_catalog_category_tabs>
         <observers>
           <mventory_tm_add_category_tab>
-            <type>singleton</type>  
-            <class>mventory_tm/observer</class>   
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
             <method>addCategoryTab</method>
           </mventory_tm_add_category_tab>
         </observers>
@@ -250,7 +250,7 @@
       </updates>
     </layout>
   </adminhtml>
-  
+
   <default>
     <mventory_tm>
       <settings>
