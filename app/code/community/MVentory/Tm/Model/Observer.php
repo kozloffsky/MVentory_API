@@ -315,6 +315,8 @@ class MVentory_Tm_Model_Observer {
                ->createBlock('cms/block')
                ->setBlockId($identifier);
 
-    $layout->getBlock('footer')->append($block);
+    //Check if footer block exists. It doesn't exist in AJAX requests
+    if ($footer = $layout->getBlock('footer'))
+      $footer->append($block);
   }
 }
