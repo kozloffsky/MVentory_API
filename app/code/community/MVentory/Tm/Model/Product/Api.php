@@ -184,9 +184,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $collection = Mage::getModel('sales/order')->getCollection();
     $collection
       ->getSelect()
-      ->reset(Zend_Db_Select::COLUMNS);
+      ->columns('SUM(grand_total) as sum');
     $collection
-      ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
       ->addFieldToFilter('store_id', $storeId)
       ->addFieldToFilter('created_at', array(
         'from' => $dayStart));
@@ -198,9 +197,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $collection = Mage::getModel('sales/order')->getCollection();
     $collection
       ->getSelect()
-      ->reset(Zend_Db_Select::COLUMNS);
+      ->columns('SUM(grand_total) as sum');
     $collection
-      ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
       ->addFieldToFilter('store_id', $storeId)
       ->addFieldToFilter('created_at', array(
         'from' => $weekStart->toString('YYYY-MM-dd 00:00:00')));
@@ -212,9 +210,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $collection = Mage::getModel('sales/order')->getCollection();
     $collection
       ->getSelect()
-      ->reset(Zend_Db_Select::COLUMNS);
+      ->columns('SUM(grand_total) as sum');
     $collection
-      ->addExpressionFieldToSelect('sum', 'SUM(grand_total)')
       ->addFieldToFilter('store_id', $storeId)
       ->addFieldToFilter('created_at', array(
         'from' => $monthStart->toString('YYYY-MM-dd 00:00:00')));
@@ -315,11 +312,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                      ->getData('loaded');
     // End of Products info
 
-    return array('day_sales' => $daySales, 'week_sales' => $weekSales,
-                 'month_sales' => $monthSales, 'total_sales' => $totalSales,
-                 'total_stock_qty' => $totalStockQty,
-                 'total_stock_value' => $totalStockValue,
-                 'day_loaded' => $dayLoaded, 'week_loaded' => $weekLoaded,
-                 'month_loaded' => $monthLoaded);
+    return array('day_sales' => (double)$daySales,
+                 'week_sales' => (double)$weekSales,
+                 'month_sales' => (double)$monthSales,
+                 'total_sales' => (double)$totalSales,
+                 'total_stock_qty' => (double)$totalStockQty,
+                 'total_stock_value' => (double)$totalStockValue,
+                 'day_loaded' => (double)$dayLoaded,
+                 'week_loaded' => (double)$weekLoaded,
+                 'month_loaded' => (double)$monthLoaded);
   }
 }
