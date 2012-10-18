@@ -38,6 +38,10 @@ class MVentory_Tm_Model_Observer {
 
       $connector = Mage::getModel('mventory_tm/connector');
 
+      //!!!FIXME: temporarely load the whole product object, but need only
+      //a couple of attributes.
+      $product = Mage::getModel('catalog/product')->load($productId);
+
       $result = $connector->remove($product);
 
       if ($result !== true)
