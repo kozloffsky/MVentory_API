@@ -63,6 +63,17 @@ class MVentory_Tm_Model_Observer {
       ->populateAttributes(array($event->getProduct()), null, false);
   }
 
+  public function saveProductCreateDate ($observer) {
+    $product = $observer
+                 ->getEvent()
+                 ->getProduct();
+
+    if ($product->getId())
+      return;
+
+    $product->setData('mv_created_date', time());
+  }
+
   public function sync ($schedule) {
     //Get cron job config
     $jobsRoot = Mage::getConfig()->getNode('default/crontab/jobs');
