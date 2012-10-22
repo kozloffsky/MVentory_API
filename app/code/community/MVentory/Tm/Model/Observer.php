@@ -55,7 +55,7 @@ class MVentory_Tm_Model_Observer {
     }
   }
 
-  public function productSaveBefore ($observer) {
+  public function populateAttributes ($observer) {
     $event = $observer->getEvent();
 
     //Populate product attributes

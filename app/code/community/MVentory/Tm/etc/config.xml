@@ -84,7 +84,7 @@
           <mventory_tm_product_save_before>
             <type>singleton</type>
             <class>mventory_tm/observer</class>
-            <method>productSaveBefore</method>
+            <method>populateAttributes</method>
           </mventory_tm_product_save_before>
         </observers>
       </catalog_product_save_before>
