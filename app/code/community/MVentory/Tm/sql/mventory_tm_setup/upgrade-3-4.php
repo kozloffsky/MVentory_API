@@ -29,3 +29,23 @@ $attributeData = array(
 $this
   ->addAttribute($entityTypeId, $name, $attributeData)
   ->addAttributeToGroup($entityTypeId, $setId, $groupId, $name);
+
+$name = 'mv_created_userid';
+
+$attributeData = array(
+  //Global settings
+  'type' => 'int',
+  'input' => 'text',
+  'label' => 'User ID',
+  'required' => false,
+  'user_defined' => false,
+  'default' => -1,
+  'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
+
+  //Catalogue setting
+  'is_configurable' => false
+);
+
+$this
+  ->addAttribute($entityTypeId, $name, $attributeData)
+  ->addAttributeToGroup($entityTypeId, $setId, $groupId, $name);

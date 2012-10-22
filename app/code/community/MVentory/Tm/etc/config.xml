@@ -92,6 +92,12 @@
             <class>mventory_tm/observer</class>
             <method>saveProductCreateDate</method>
           </mventory_tm_save_product_create_date>
+
+          <mventory_tm_save_api_user_id>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>saveApiUserId</method>
+          </mventory_tm_save_api_user_id>
         </observers>
       </catalog_product_save_before>
 

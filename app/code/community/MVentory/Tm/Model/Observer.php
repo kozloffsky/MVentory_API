@@ -72,6 +72,26 @@ class MVentory_Tm_Model_Observer {
     $product->setData('mv_created_date', time());
   }
 
+  public function saveApiUserId ($observer) {
+    $session = Mage::getSingleton('api/session');
+
+    if (!$session->getSessionId())
+      return;
+
+    $product = $observer
+                 ->getEvent()
+                 ->getProduct();
+
+    if ($product->getId())
+      return;
+
+    $userId = $session
+                ->getUser()
+                ->getId();
+
+    $product->setData('mv_created_userid', $userId);
+  }
+
   public function sync ($schedule) {
     //Get cron job config
     $jobsRoot = Mage::getConfig()->getNode('default/crontab/jobs');
