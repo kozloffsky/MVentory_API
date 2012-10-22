@@ -9,8 +9,6 @@ class MVentory_Tm_Model_Observer {
   );
 
   public function removeListingFromTm ($observer) {
-    Mage::log('removeListingFromTm');
-
     $order = $observer
                ->getEvent()
                ->getOrder();
