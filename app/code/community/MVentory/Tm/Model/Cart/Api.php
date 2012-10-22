@@ -189,13 +189,11 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     $orderId = $this->createOrder($quoteId, $storeId);
     
 	//create shipment and invoice to complete order
-    $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
-    
     $shipment = Mage::getModel('sales/order_shipment_api');
     $shipment->create($orderId);
     
     $invoice = Mage::getModel('sales/order_invoice_api');
-    $invoice->create($orderId,null);
+    $invoice->create($orderId, null);
        
     //Save transaction ID and orderId pair. So, it will return existing order
     //to API client if it will try to create order with same transaction ID
