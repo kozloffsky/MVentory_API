@@ -25,27 +25,18 @@
           <sort_order>1</sort_order>
 
           <fields>
-            <key translate="label">
-              <label>API Key</label>
-              <frontend_type>text</frontend_type>
+            <accounts translate="label comment">
+              <label>Accounts</label>
+              <comment>First account is default</comment>
+              <frontend_model>mventory_tm/system_config_form_field_accounts</frontend_model>
+              <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
 
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
               <sort_order>1</sort_order>
-            </key>
-
-            <secret translate="label">
-              <label>API Secret</label>
-              <frontend_type>text</frontend_type>
-
-              <show_in_default>1</show_in_default>
-              <show_in_website>1</show_in_website>
-              <show_in_store>0</show_in_store>
-
-              <sort_order>2</sort_order>
-            </secret>
+            </accounts>
 
             <sandbox translate="label">
               <label>Sandbox</label>
@@ -56,7 +47,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>3</sort_order>
+              <sort_order>2</sort_order>
             </sandbox>
 
             <cron translate="label comment">
@@ -69,7 +60,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>4</sort_order>
+              <sort_order>3</sort_order>
             </cron>
 
             <footer translate="label">
@@ -80,7 +71,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>5</sort_order>
+              <sort_order>4</sort_order>
             </footer>
 
             <allow_buy_now translate="label">
@@ -92,7 +83,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>6</sort_order>
+              <sort_order>5</sort_order>
             </allow_buy_now>
 
             <relist_if_not_sold translate="label">
@@ -104,7 +95,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>7</sort_order>
+              <sort_order>6</sort_order>
             </relist_if_not_sold>
 
             <add_tm_fees translate="label">
@@ -116,7 +107,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>8</sort_order>
+              <sort_order>7</sort_order>
             </add_tm_fees>
 
             <shipping_type translate="label">
@@ -128,7 +119,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>9</sort_order>
+              <sort_order>8</sort_order>
             </shipping_type>
 
             <buyer translate="label">
@@ -140,7 +131,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>10</sort_order>
+              <sort_order>9</sort_order>
             </buyer>
           </fields>
         </settings>
