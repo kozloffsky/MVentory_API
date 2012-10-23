@@ -46,6 +46,24 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     return $id === false ? null : $id;
   }
 
+  /**
+   * Retrieve attribute's raw value from DB for specified product's ID.
+   *
+   * @param int $productId 
+   * @param int|string|array $attribute atrribute's IDs or codes
+   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
+   * 
+   * @return bool|string|array
+   */
+  public function getAttributeValue ($productId, $attribute, $website) {
+    $store = Mage::app()
+               ->getWebsite($website)
+               ->getDefaultStore();
+
+    return Mage::getResourceModel('catalog/product')
+             ->getAttributeRawValue($productId, $attribute, $store);
+  }
+
   public function getConfig ($path, $website) {
     $website = Mage::app()->getWebsite($website);
 
