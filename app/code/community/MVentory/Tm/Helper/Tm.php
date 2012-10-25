@@ -83,7 +83,7 @@ class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
 
       //Calculate final price
       if (isset($_fee['rate']))
-        $_price /= 1 - $_fee['rate']; 
+        $_price /= 1 - $_fee['rate'];
 
       //Return final price if there's no min/max for the fee value
       if (!(isset($_fee['min']) || isset($_fee['max'])))
