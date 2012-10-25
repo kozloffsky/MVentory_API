@@ -259,6 +259,11 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           && isset($this->_requestData['tm'])) {
 
         $data = $this->_requestData['tm'];
+
+        $data['relist'] = isset($this->_requestData['product']['tm_relist'])
+                        ? $this->_requestData['product']['tm_relist']
+                          : null;
+
         $categoryId = $data['category'];
       }
 
