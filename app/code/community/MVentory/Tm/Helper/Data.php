@@ -55,13 +55,30 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
    * 
    * @return bool|string|array
    */
-  public function getAttributeValue ($productId, $attribute, $website) {
+  public function getAttributesValue ($productId, $attribute, $website) {
     $store = Mage::app()
                ->getWebsite($website)
                ->getDefaultStore();
 
-    return Mage::getResourceModel('catalog/product')
+    return Mage::getResourceModel('mventory_tm/product')
              ->getAttributeRawValue($productId, $attribute, $store);
+  }
+
+  /**
+   * Update attribute values for product per website
+   *
+   * @param int $productId
+   * @param array $attrData
+   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
+   */
+  public function setAttributesValue ($productId, $attrData, $website) {
+    $storeId = Mage::app()
+                 ->getWebsite($website)
+                 ->getDefaultStore()
+                 ->getId();
+
+    Mage::getResourceSingleton('catalog/product_action')
+      ->updateAttributes(array($productId), $attrData, $storeId);
   }
 
   public function getConfig ($path, $website) {
