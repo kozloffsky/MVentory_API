@@ -2,6 +2,8 @@
 
 class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
 
+  const XML_PATH_ACCOUNTS = 'mventory_tm/settings/accounts';
+
   //TM fees description.
   //Available fields:
   // * from - Min product price for the fee (value is included in comparision)
@@ -100,5 +102,49 @@ class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
     }
 
     return $price;
+  }
+
+  /**
+   * Retrieve array of accounts for specified website. Returns accounts from
+   * default scope when parameter is omitted
+   *
+   * @param mixin $websiteId
+   *
+   * @return array List of accounts
+   */
+  public function getAccounts ($website) {
+    $value = Mage::helper('mventory_tm')
+               ->getConfig(self::XML_PATH_ACCOUNTS, $website);
+
+    $value = unserialize($value);
+
+    return $value !== false ? $value : array();
+  }
+
+  /**
+   * Return account ID used for listing specified product on TM
+   *
+   * @param int $productId
+   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
+   *
+   * @return string Account ID
+   */
+  public function getAccountId ($productId, $website) {
+    return Mage::helper('mventory_tm')
+             ->getAttributesValue($productId, 'tm_account_id', $website);
+  }
+
+  /**
+   * Set account ID used for listing specified product on TM
+   *
+   * @param int $productId
+   * @param string $accountId
+   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
+   */
+  public function setAccountId ($productId, $accountId, $website) {
+    $attrData = array('tm_account_id' => $accountId);
+
+    Mage::helper('mventory_tm')
+      ->setAttributesValue($productId, $attrData, $website);
   }
 }
