@@ -23,6 +23,10 @@
             <title>Get info about new products, sales and stock</title>
             <acl>catalog/product/info</acl>
           </statistics>
+          <submitToTM translate="title" module="catalog">
+            <title>Send product to TM</title>
+            <acl>catalog/product/info</acl>
+          </submitToTM>
         </methods>
       </catalog_product>
 

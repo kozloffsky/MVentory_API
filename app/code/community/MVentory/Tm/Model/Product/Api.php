@@ -37,7 +37,9 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
 
   public function fullInfo ($id = null, $sku = null) {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
+    $tm_helper = Mage::helper('mventory_tm');
+
+    $storeId = $tm_helper->getCurrentStoreId();
 
     $product = Mage::getModel('catalog/product');
 
@@ -47,6 +49,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $id = (int) $id;
 
     $result = $this->info($id, $storeId, null, 'id');
+    $product = $product->load($id);
 
     $stockItem = Mage::getModel('mventory_tm/stock_item_api');
 
@@ -79,6 +82,53 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     foreach ($result['categories'] as $i => $categoryId)
       $result['categories'][$i] = $category->info($categoryId, $storeId);
+
+    //TM specific details start here
+    $buy_now_path = MVentory_Tm_Model_Connector::BUY_NOW_PATH;
+    $tm_fees_path = MVentory_Tm_Model_Connector::ADD_TM_FEES_PATH;
+    $shipping_type_path = MVentory_Tm_Model_Connector::SHIPPING_TYPE_PATH;
+    $relist_if_not_sold_path = MVentory_Tm_Model_Connector::RELIST_IF_NOT_SOLD_PATH;
+
+    $listing_id = $product->getTmListingId();
+    $website = $tm_helper->getWebsiteIdFromProduct($product);
+
+    $result['tm_options'] = array();
+    $result['tm_options']['allow_buy_now'] = $tm_helper->getConfig($buy_now_path, $website);
+    $result['tm_options']['add_tm_fees'] = $tm_helper->getConfig($tm_fees_path, $website);
+    $result['tm_options']['shipping_type'] = $tm_helper->getConfig($shipping_type_path, $website);
+    $result['tm_options']['relist'] = $tm_helper->getConfig($relist_if_not_sold_path, $website);
+
+    if ($listing_id) {
+      $result['tm_options']['tm_listing_id'] = $listing_id;
+    }
+
+    $shippingTypes
+      = Mage::getModel('mventory_tm/system_config_source_shippingtype')
+        ->toOptionArray();
+
+    $result['tm_options']['shipping_types_list'] = $shippingTypes;
+
+    if (!count($result['category_ids'])) {
+      $result['tm_options']['preselected_categories'] = null;
+    } else {
+      $mage_category = Mage::getModel('catalog/category')->load($result['category_ids'][0]);
+
+      $tm_assigned_category_ids = $mage_category->getTmAssignedCategories();
+
+      if ($tm_assigned_category_ids && is_string($tm_assigned_category_ids)) {
+        $tm_assigned_category_ids = explode(',', $tm_assigned_category_ids);
+        $result['tm_options']['preselected_categories'] = array();
+        $tm_all_categories = Mage::getModel('mventory_tm/connector')->getTmCategories();
+
+        foreach ($tm_assigned_category_ids as $id) {
+          if (isset($tm_all_categories[$id])) {
+            $result['tm_options']['preselected_categories'][$id] = $tm_all_categories[$id]['path'];
+          }
+        }
+      } else {
+        $result['tm_options']['preselected_categories'] = null;
+      }
+    }
 
     return $result;
   }
@@ -321,5 +371,32 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                  'day_loaded' => (double)$dayLoaded,
                  'week_loaded' => (double)$weekLoaded,
                  'month_loaded' => (double)$monthLoaded);
+  }
+
+  public function submitToTM ($productId, $tmData) {
+    $product = Mage::getModel('catalog/product')->load($productId);
+
+    if (is_null($product->getId())) {
+      $this->_fault('product_not_exists');
+    }
+
+    $connector = Mage::getModel('mventory_tm/connector');
+
+    $connector_result = $connector->send($product, $tmData['tm_category_id'], $tmData);
+
+    if (is_int($connector_result)) {
+      $product
+        ->setTmListingId($connector_result)
+        ->save();
+    }
+
+    $result = $this->fullInfo($productId, null);
+
+    if (!is_int($connector_result))
+    {
+      $result['tm_error'] = $connector_result;
+    }
+
+    return $result;
   }
 }
