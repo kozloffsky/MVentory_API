@@ -15,6 +15,7 @@ $_allowBuyNow = $this->getAllowBuyNow();
 $_addTmFees = $this->getAddTmFees();
 $_shippingOptions = $this->getShippingOptions();
 $_relist = $this->getRelist();
+$_accounts = $this->getAccounts();
 
 ?>
 
@@ -31,6 +32,15 @@ $_relist = $this->getRelist();
 
 <div class="entry-edit">
   <fieldset>
+    <label class="tm-option">
+      <?php echo $this->__('Account: '); ?>
+      <select class="select" name="tm[account_id]">
+        <?php foreach ($_accounts as $acc): ?>
+        <option value="<?php echo $acc['value']; ?>" <?php if ($acc['selected']) echo 'selected="selected"'; ?>><?php echo $acc['label'] ?></option>
+        <?php endforeach; ?>
+      </select>
+    </label>
+
     <label class="tm-option">
       <?php echo $this->__('Shipping type: '); ?>
       <select class="select" name="tm[shipping_type]">

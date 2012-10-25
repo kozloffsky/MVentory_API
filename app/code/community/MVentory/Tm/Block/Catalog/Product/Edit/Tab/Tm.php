@@ -244,5 +244,28 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     return $options;
   }
+
+  public function getAccounts () {
+    $product = $this->getProduct();
+
+    $website = Mage::helper('mventory_tm')
+                 ->getWebsiteIdFromProduct($product);
+
+    $tmHelper = Mage::helper('mventory_tm/tm');
+
+    $accountId = $tmHelper->getAccountId($product->getId(), $website);
+    $accounts = $tmHelper->getAccounts($website);
+
+    $_accounts = array();
+
+    foreach ($accounts as $id => $account)
+      $_accounts[] = array(
+        'value' => $id,
+        'label' => $account['name'],
+        'selected' => $accountId === $id
+      );
+
+    return $_accounts;
+  }
 }
 
