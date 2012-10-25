@@ -20,7 +20,13 @@ class MVentory_Tm_Adminhtml_IndexController
                         ? $params['product']['tm_relist']
                           : null;
 
-    $product = Mage::getModel('catalog/product')->load($productId);
+    //Get website which the product is assigned to
+    $website = $helper->getWebsite($productId);
+
+    //Load product with website scope (with website's default store scope)
+    $product = Mage::getModel('catalog/product')
+                 ->setStoreId($website->getDefaultStore()->getId())
+                 ->load($productId);
 
     if (!$product->getId()) {
       Mage::getSingleton('adminhtml/session')

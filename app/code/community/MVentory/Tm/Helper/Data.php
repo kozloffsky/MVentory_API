@@ -81,6 +81,25 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
       ->updateAttributes(array($productId), $attrData, $storeId);
   }
 
+  /**
+   * Return website which the product are assigned to
+   *
+   * @param Mage_Catalog_Model_Product|int $product
+   *
+   * @return Mage_Core_Model_Website
+   */
+  public function getWebsite ($product) {
+    if ($product instanceof Mage_Catalog_Model_Product)
+      $ids = $product->getWebsiteIds();
+    else
+      $ids = Mage::getResourceModel('catalog/product')
+               ->getWebsiteIds($product);
+
+    for ($id = reset($ids); $id && $id == 1; $id = next($ids));
+
+    return Mage::app()->getWebsite($id === false ? null : $id);
+  }
+
   public function getConfig ($path, $website) {
     $website = Mage::app()->getWebsite($website);
 

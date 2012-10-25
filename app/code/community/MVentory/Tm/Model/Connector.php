@@ -425,12 +425,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       if ($xml) {
         if ((string)$xml->Success == 'true') {
-          $product->setTmRelist($data['relist']);
-
-          $productId = $product->getId();
-
-          Mage::helper('mventory_tm/tm')
-            ->setAccountId($productId, $this->_accountId, $this->_website);
+          $product
+            ->setTmRelist($data['relist'])
+            ->setTmAccountId($this->_accountId);
 
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
