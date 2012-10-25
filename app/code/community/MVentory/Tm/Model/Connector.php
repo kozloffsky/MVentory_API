@@ -3,8 +3,7 @@
 class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   const ACCESS_TOKEN_PATH = 'mventory_tm/settings/accept_token';
-  const KEY_PATH = 'mventory_tm/settings/key';
-  const SECRET_PATH = 'mventory_tm/settings/secret';
+  const ACCOUNTS_PATH = 'mventory_tm/settings/accounts';
   const SANDBOX_PATH = 'mventory_tm/settings/sandbox';
   const FOOTER_PATH = 'mventory_tm/settings/footer';
   const BUY_NOW_PATH = 'mventory_tm/settings/allow_buy_now';
@@ -33,6 +32,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   private $_categories = array();
 
   private $_website = null;
+
+  private $_accountId = null;
+  private $_accountData = null;
 
   private $_attrTypes = array(
     0 => 'None',
@@ -76,8 +78,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
                         => 'https://secure.' . $host . '.co.nz/Oauth/Authorize',
       'accessTokenUrl'
                => 'https://secure.' . $host . '.co.nz/Oauth/AccessToken',
-      'consumerKey' => $this->_getConfig(self::KEY_PATH),
-      'consumerSecret' => $this->_getConfig(self::SECRET_PATH)
+      'consumerKey' => $this->_accountData['key'],
+      'consumerSecret' => $this->_accountData['secret']
     );
 
     $request = Mage::app()->getRequest();
@@ -102,6 +104,24 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $this->_website = $websiteId;
   }
 
+  public function setAccountId ($data) {
+    if (is_array($data))
+      $this->_accountId = isset($data['account_id'])
+                            ? $data['account_id']
+                              : null;
+    else
+      $this->_accountId = $data;
+
+    $accounts = Mage::helper('mventory_tm/tm')->getAccounts($this->_website);
+
+    if ($this->_accountId)
+      $this->_accountData = $accounts[$this->_accountId];
+    else {
+      $this->_accountId = key($accounts);
+      $this->_accountData = current($accounts);
+    }
+  }
+
   private function saveAccessToken ($token = '') {
     $scope = 'default';
     $scopeId = 0;
@@ -111,8 +131,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $scopeId = $this->_website;
     }
 
+    $path = self::ACCESS_TOKEN_PATH . '_' . $this->_accountId;
+
     Mage::getConfig()
-      ->saveConfig(self::ACCESS_TOKEN_PATH, $token, $scope, $scopeId)
+      ->saveConfig($path, $token, $scope, $scopeId)
       ->reinit();
 
     Mage::app()->reinitStores();
@@ -128,7 +150,16 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function auth () {
-    $accessTokenData = $this->_getConfig(self::ACCESS_TOKEN_PATH);
+    $accessTokenData = $this->_getConfig(self::ACCESS_TOKEN_PATH
+                                         . '_'
+                                         . $this->_accountId);
+
+    //Try to load global access token (used before multiple TM accounts)
+    //if there's  no access token for current accout ID.
+    //It allows non-interactive code (such as cron task)
+    //to work without re-authenticating with TM
+    if (!$accessTokenData)
+      $accessTokenData = $this->_getConfig(self::ACCESS_TOKEN_PATH);
 
     $request = Mage::app()->getRequest();
     
@@ -200,6 +231,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   public function send ($product, $categoryId, $data) {
     $this->getWebsiteId($product);
+    $this->setAccountId($data);
 
     $return = 'Error';
 
@@ -242,7 +274,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       if (file_exists($imagePath)) {
         $imagePathInfo = pathinfo($imagePath);
 
-        $signature = md5($this->_getConfig(self::KEY_PATH)
+        $signature = md5($this->_accountData['key']
                            . $imagePathInfo['filename']
                            . $imagePathInfo['extension']
                            . 'False'
@@ -390,6 +422,11 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         if ((string)$xml->Success == 'true') {
           $product->setTmRelist($data['relist']);
 
+          $productId = $product->getId();
+
+          Mage::helper('mventory_tm/tm')
+            ->setAccountId($productId, $this->_accountId, $this->_website);
+
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
           $return = (string)$xml->ErrorDescription;
@@ -404,6 +441,11 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   public function remove($product) {
     $this->getWebsiteId($product);
+
+    $accountId = Mage::helper('mventory_tm/tm')
+                   ->getAccountId($product->getId(), $this->_website);
+
+    $this->setAccountId($accountId);
 
     if ($accessTokenData = $this->auth()) {
       $error = false;
@@ -523,6 +565,11 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   public function relist ($product) {
     $this->getWebsiteId($product);
+
+    $accountId = Mage::helper('mventory_tm/tm')
+                   ->getAccountId($product->getId(), $this->_website);
+
+    $this->setAccountId($accountId);
 
     if (!$listingId = $product->getTmListingId())
       return;

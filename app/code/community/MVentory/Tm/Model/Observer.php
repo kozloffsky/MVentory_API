@@ -106,59 +106,78 @@ class MVentory_Tm_Model_Observer {
 
     $customer = Mage::getModel('customer/customer')->load($customerId);
 
-    $products = Mage::getModel('catalog/product')
-                  ->getCollection()
-                  ->addAttributeToSelect('tm_relist')
-                  ->addAttributeToSelect('price')
-                  ->addFieldToFilter('tm_listing_id', array('neq' => ''))
-                  ->addWebsiteFilter($website)
-                  ->addWebsiteNamesToResult();
+    //Load TM accounts which are used in specified website 
+    $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
 
-    //If customer exists and loaded add price data to the product collection
-    //filtered by customer's group ID
-    if ($customer->getId())
-      $products->addPriceData($customer->getGroupId());
+    //Add tempararely account with empty ID, it needs to load products that
+    //were submitted before implementing TM multiple accounts because
+    //tm_account_id attribute is empty in such products. Also it triggers code
+    //to use default TM account (first in the list of accounts)
+    $accounts[''] = true;
 
-    $connector = Mage::getModel('mventory_tm/connector');
+    foreach ($account as $accountId => $accountData) {
+      $products = Mage::getModel('catalog/product')
+                    ->getCollection()
+                    ->addAttributeToSelect('tm_relist')
+                    ->addAttributeToSelect('tm_account_id')
+                    ->addAttributeToSelect('price')
+                    ->addFieldToFilter('tm_listing_id', array('neq' => ''))
+                    ->addFieldToFilter('tm_account_id',
+                                       array('eq' => $accountId))
+                    ->addWebsiteFilter($website)
+                    ->addWebsiteNamesToResult();
 
-    $connector->setWebsiteId($website->getId());
+      //If customer exists and loaded add price data to the product collection
+      //filtered by customer's group ID
+      if ($customer->getId())
+        $products->addPriceData($customer->getGroupId());
 
-    $result = $connector->massCheck($products);
-
-    if (!$result)
-      return;
-
-    foreach ($products as $product) {
-      if ($product->getIsSelling())
+      //Continue if there're products assigned to current TM account
+      if (!count($products))
         continue;
 
-      $result = $connector->check($product);
+      $connector = Mage::getModel('mventory_tm/connector');
+
+      $connector->setWebsiteId($website->getId());
+      $connector->setAccountId($accountId);
+
+      $result = $connector->massCheck($products);
 
       if (!$result)
-        continue;
+        return;
 
-      if ($result == 1 && $product->getTmRelist())
-        $product->setTmListingId($connector->relist($product));
+      foreach ($products as $product) {
+        if ($product->getIsSelling())
+          continue;
 
-      if ($result == 2) {
-        $sku = $product->getSku();
-        $price = $product->getPrice();
-        $qty = 1;
+        $result = $connector->check($product);
 
-        //API function for creating order requires curren store to be set
-        Mage::app()->setCurrentStore($website->getDefaultStore());
+        if (!$result)
+          continue;
 
-        //Set global flag to enable our dummy shipping method
-        Mage::register('tm_allow_dummyshipping', true);
+        if ($result == 1 && $product->getTmRelist())
+          $product->setTmListingId($connector->relist($product));
 
-        //Make order for the product
-        Mage::getModel('mventory_tm/cart_api')
-          ->createOrderForProduct($sku, $price, $qty, $customerId);
+        if ($result == 2) {
+          $sku = $product->getSku();
+          $price = $product->getPrice();
+          $qty = 1;
 
-        $product->setTmListingId(0);
+          //API function for creating order requires curren store to be set
+          Mage::app()->setCurrentStore($website->getDefaultStore());
+
+          //Set global flag to enable our dummy shipping method
+          Mage::register('tm_allow_dummyshipping', true);
+
+          //Make order for the product
+          Mage::getModel('mventory_tm/cart_api')
+            ->createOrderForProduct($sku, $price, $qty, $customerId);
+
+          $product->setTmListingId(0);
+        }
+
+        $product->save();
       }
-
-      $product->save();
     }
   }
 
