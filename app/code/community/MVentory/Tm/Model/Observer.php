@@ -124,8 +124,7 @@ class MVentory_Tm_Model_Observer {
                     ->addFieldToFilter('tm_listing_id', array('neq' => ''))
                     ->addFieldToFilter('tm_account_id',
                                        array('eq' => $accountId))
-                    ->addWebsiteFilter($website)
-                    ->addWebsiteNamesToResult();
+                    ->addStoreFilter($website->getDefaultStore());
 
       //If customer exists and loaded add price data to the product collection
       //filtered by customer's group ID
