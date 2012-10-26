@@ -129,10 +129,11 @@ class MVentory_Tm_Model_Observer {
                                        array('eq' => $accountId))
                     ->addStoreFilter($store);
 
+      //!!!Commented to allow loading out of stock products
       //If customer exists and loaded add price data to the product collection
       //filtered by customer's group ID
-      if ($customer->getId())
-        $products->addPriceData($customer->getGroupId());
+      //if ($customer->getId())
+      //  $products->addPriceData($customer->getGroupId());
 
       //Continue if there're products assigned to current TM account
       if (!count($products))
@@ -159,8 +160,12 @@ class MVentory_Tm_Model_Observer {
 
         $newListingId = $product->getTmListingId();
 
-        if ($result == 1 && $product->getTmRelist())
-          $newListingId = $connector->relist($product);
+        if ($result == 1)
+          if ($product->getTmRelist()
+              && $product->getStockItem()->getIsInStock())
+            $newListingId = $connector->relist($product);
+          else
+            $newListingId = 0;
 
         if ($result == 2) {
           $sku = $product->getSku();
