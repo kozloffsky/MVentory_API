@@ -100,6 +100,9 @@ class MVentory_Tm_Model_Observer {
     //Get website from the job config
     $website = Mage::app()->getWebsite((string) $jobConfig->website);
 
+    //Get website's default store
+    $store = $website->getDefaultStore();
+
     //Get default customer ID for TM sells (TM buyer)
     $path = MVentory_Tm_Model_Connector::BUYER_PATH;
     $customerId = Mage::helper('mventory_tm')->getConfig($path, $website);
@@ -124,7 +127,7 @@ class MVentory_Tm_Model_Observer {
                     ->addFieldToFilter('tm_listing_id', array('neq' => ''))
                     ->addFieldToFilter('tm_account_id',
                                        array('eq' => $accountId))
-                    ->addStoreFilter($website->getDefaultStore());
+                    ->addStoreFilter($store);
 
       //If customer exists and loaded add price data to the product collection
       //filtered by customer's group ID
@@ -163,7 +166,7 @@ class MVentory_Tm_Model_Observer {
           $qty = 1;
 
           //API function for creating order requires curren store to be set
-          Mage::app()->setCurrentStore($website->getDefaultStore());
+          Mage::app()->setCurrentStore($store);
 
           //Set global flag to enable our dummy shipping method
           Mage::register('tm_allow_dummyshipping', true);
