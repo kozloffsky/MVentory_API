@@ -157,8 +157,10 @@ class MVentory_Tm_Model_Observer {
         if (!$result)
           continue;
 
+        $newListingId = $product->getTmListingId();
+
         if ($result == 1 && $product->getTmRelist())
-          $product->setTmListingId($connector->relist($product));
+          $newListingId = $connector->relist($product);
 
         if ($result == 2) {
           $sku = $product->getSku();
@@ -175,10 +177,12 @@ class MVentory_Tm_Model_Observer {
           Mage::getModel('mventory_tm/cart_api')
             ->createOrderForProduct($sku, $price, $qty, $customerId);
 
-          $product->setTmListingId(0);
+          $newListingId = 0;
         }
 
-        $product->save();
+        $product
+          ->setTmListingId($newListingId)
+          ->save();
       }
     }
   }
