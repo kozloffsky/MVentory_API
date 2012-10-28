@@ -24,6 +24,7 @@ $_accounts = $this->getAccounts();
 <div class="entry-edit">
   <fieldset>
     <label class="tm-option">
+      <input type="hidden" value="0" name="product[tm_relist]" />
       <input type="checkbox" value="1" name="product[tm_relist]" <?php if ($_relist) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Relist if not sold'); ?>
     </label>
