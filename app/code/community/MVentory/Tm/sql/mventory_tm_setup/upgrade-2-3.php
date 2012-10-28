@@ -14,7 +14,7 @@ $attributeData = array(
   'required' => false,
   'user_defined' => false,
   'default' => -1,
-  'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_WEBSITE,
+  'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
 
   //Catalogue setting
   'visible' => false,
