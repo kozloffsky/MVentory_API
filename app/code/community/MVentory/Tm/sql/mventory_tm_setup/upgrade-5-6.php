@@ -8,7 +8,7 @@ $name = 'tm_avoid_withdrawal';
 
 $attributeData = array(
   //Global settings
-  'type' => Varien_Db_Ddl_Table::TYPE_SMALLINT,
+  'type' => 'int',
   'input' => 'hidden',
   'label' => 'TM Avoid withdraw',
   'required' => false,
