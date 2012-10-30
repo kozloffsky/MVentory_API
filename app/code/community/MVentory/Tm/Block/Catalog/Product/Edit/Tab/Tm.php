@@ -228,6 +228,20 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return $helper->getConfig($path, $website);
   }
 
+  public function getAvoidWithdrawal () {
+    $product = $this->getProduct();
+
+    if ($product->getTmAvoidWithdrawal() != null)
+      return $product->getTmAvoidWithdrawal();
+
+    $helper = Mage::helper('mventory_tm');
+
+    $path = MVentory_Tm_Model_Connector::AVOID_WITHDRAWAL_PATH;
+    $website = $helper->getWebsiteIdFromProduct($product);
+
+    return $helper->getConfig($path, $website);
+  }
+
   public function getShippingOptions () {
     $helper = Mage::helper('mventory_tm');
 

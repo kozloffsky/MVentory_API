@@ -15,6 +15,7 @@ $_allowBuyNow = $this->getAllowBuyNow();
 $_addTmFees = $this->getAddTmFees();
 $_shippingOptions = $this->getShippingOptions();
 $_relist = $this->getRelist();
+$_avoidWithdrawal = $this->getAvoidWithdrawal();
 $_accounts = $this->getAccounts();
 
 ?>
@@ -27,6 +28,12 @@ $_accounts = $this->getAccounts();
       <input type="hidden" value="0" name="product[tm_relist]" />
       <input type="checkbox" value="1" name="product[tm_relist]" <?php if ($_relist) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Relist if not sold'); ?>
+    </label>
+
+    <label class="tm-option">
+      <input type="hidden" value="0" name="product[tm_avoid_withdrawal]" />
+      <input type="checkbox" value="1" name="product[tm_avoid_withdrawal]" <?php if ($_avoidWithdrawal) echo 'checked="checked"'; ?> />
+      <?php echo $this->__('Avoid withdrawal'); ?>
     </label>
   </fieldset>
 </div>
