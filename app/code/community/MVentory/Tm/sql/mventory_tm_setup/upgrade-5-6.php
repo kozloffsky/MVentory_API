@@ -4,13 +4,13 @@ $entityTypeId = $this->getEntityTypeId('catalog_product');
 $setId = $this->getDefaultAttributeSetId($entityTypeId);
 $groupId = $this->getDefaultAttributeGroupId($entityTypeId, $setId);
 
-$name = 'tm_withdraw';
+$name = 'tm_avoid_withdrawal';
 
 $attributeData = array(
   //Global settings
   'type' => Varien_Db_Ddl_Table::TYPE_SMALLINT,
   'input' => 'hidden',
-  'label' => 'TM Withdraw',
+  'label' => 'TM Avoid withdraw',
   'required' => false,
   'user_defined' => false,
   'default' => -1,
@@ -22,5 +22,6 @@ $attributeData = array(
 );
 
 $this
+  ->removeAttribute($entityTypeId, 'tm_withdraw')
   ->addAttribute($entityTypeId, $name, $attributeData)
   ->addAttributeToGroup($entityTypeId, $setId, $groupId, $name);
