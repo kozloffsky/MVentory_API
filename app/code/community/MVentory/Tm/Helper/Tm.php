@@ -56,6 +56,30 @@ class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
   }
 
   /**
+   * Returns URL to the listing on TM which specified product is assigned to
+   *
+   * @param Mage_Catalog_Model_Product|int $product
+   *
+   * @return string URL to the listing
+   */
+  public function getListingUrl ($product) {
+    $helper = Mage::helper('mventory_tm');
+
+    $website = $helper->getWebsite($product);
+
+    $domain = $helper->isSandboxMode($website)
+                ? 'tmsandbox'
+                  : 'trademe';
+
+    $id = $product->getTmListingId();
+
+    return 'http://www.'
+           . $domain
+           . '.co.nz/Browse/Listing.aspx?id='
+           . $id;
+  }
+
+  /**
    * Add TM fees to the product
    *
    * @param float $price
