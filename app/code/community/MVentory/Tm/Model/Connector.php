@@ -163,7 +163,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $accessTokenData = $this->_getConfig(self::ACCESS_TOKEN_PATH);
 
     $request = Mage::app()->getRequest();
-    
+
     $oAuthToken = $request->getParam('oauth_token');
 
     $session = Mage::getSingleton('core/session');
@@ -193,7 +193,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
           //Auth failed, so we don't need data stored earlier
           $session->unsetData('original_request_data');
-          
+
           return false;
         }
       } elseif ($request->getParam('denied'))
