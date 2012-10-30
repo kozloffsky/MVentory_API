@@ -40,10 +40,33 @@ class MVentory_Tm_Model_Observer {
       //a couple of attributes.
       $product = Mage::getModel('catalog/product')->load($productId);
 
-      $result = $connector->remove($product);
+      //Try to increase price of selling listing on TM if it's allowed,
+      //otherwise try to withdraw listing
+      if ($product->getTmAvoidWithdrawal()
+          /*!!! && !$result = $connector->update($product, $newPrice)*/)
+        $result = $connector->remove($product);
 
-      if ($result !== true)
+      if ($result !== true) {
+        //Send email with error message to website's general contact address
+
+        $helper = Mage::helper('mventory_tm/product');
+
+        $website = $helper->getWebsite($product);
+
+        $productUrl = $helper->getUrl($product);
+        $listingId = Mage::helper('mventory_tm/tm')->getListingUrl($product);
+
+        $subject = 'TM: error on removing listing';
+        $message = 'Error on increasing price or withdrawing listing ('
+                   . $listingId
+                   . ') linked to product ('
+                   . $productUrl
+                   . ')';
+
+        $helper->sendEmail($subject, $message, $website);
+
         continue;
+      }
 
       $productId = array($productId);
       $attribute = array('tm_listing_id' => 0);
