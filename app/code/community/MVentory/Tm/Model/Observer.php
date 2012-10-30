@@ -109,7 +109,7 @@ class MVentory_Tm_Model_Observer {
 
     $customer = Mage::getModel('customer/customer')->load($customerId);
 
-    //Load TM accounts which are used in specified website 
+    //Load TM accounts which are used in specified website
     $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
 
     //Add tempararely account with empty ID, it needs to load products that
