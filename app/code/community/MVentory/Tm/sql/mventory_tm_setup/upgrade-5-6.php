@@ -22,6 +22,5 @@ $attributeData = array(
 );
 
 $this
-  ->removeAttribute($entityTypeId, 'tm_withdraw')
   ->addAttribute($entityTypeId, $name, $attributeData)
   ->addAttributeToGroup($entityTypeId, $setId, $groupId, $name);
