@@ -35,7 +35,7 @@ $name = 'mv_created_userid';
 $attributeData = array(
   //Global settings
   'type' => 'int',
-  'input' => 'text',
+  'input' => 'varchar',
   'label' => 'User ID',
   'required' => false,
   'user_defined' => false,

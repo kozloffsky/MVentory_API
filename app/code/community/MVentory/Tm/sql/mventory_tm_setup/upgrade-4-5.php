@@ -8,7 +8,7 @@ $name = 'tm_account_id';
 
 $attributeData = array(
   //Global settings
-  'type' => Varien_Db_Ddl_Table::TYPE_TEXT,
+  'type' => 'varchar',
   'input' => 'hidden',
   'label' => 'TM Account ID',
   'required' => false,
