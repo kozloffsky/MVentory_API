@@ -131,4 +131,26 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
       
     return false;
   }
+
+  /**
+   * Sends email to website's general contant address
+   *
+   * @param string $subject
+   * @param string $message
+   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
+   */
+  public function sendEmail ($subject, $message, $website) {
+    $email = $this->getConfig('trans_email/ident_general/email', $website);
+    $name = $this->getConfig('trans_email/ident_general/name', $website);
+
+    $host = $_SERVER['SERVER_NAME'];
+
+    Mage::getModel('core/email')
+      ->setToName($name)
+      ->setToEmail($email)
+      ->setBody($message)
+      ->setSubject($subject)
+      ->setFromEmail('magento@' . $host)
+      ->send();
+  }
 }
