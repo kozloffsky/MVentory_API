@@ -184,7 +184,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
         continue;
       }
-  
+
       $name = strtolower($attribute['Name']);
 
       if ($product->hasData($name) || $product->hasData($name . '_'))
