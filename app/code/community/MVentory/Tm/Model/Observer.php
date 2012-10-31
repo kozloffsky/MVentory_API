@@ -188,7 +188,7 @@ class MVentory_Tm_Model_Observer {
         $newListingId = $product->getTmListingId();
 
         if ($result == 1)
-          if ($product->getTmRelist()
+          if ($product->getTmRelist() == 1
               && $product->getStockItem()->getIsInStock())
             $newListingId = $connector->relist($product);
           else
