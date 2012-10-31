@@ -141,7 +141,7 @@ class MVentory_Tm_Model_Observer {
     //to use default TM account (first in the list of accounts)
     $accounts[''] = true;
 
-    foreach ($account as $accountId => $accountData) {
+    foreach ($accounts as $accountId => $accountData) {
       $products = Mage::getModel('catalog/product')
                     ->getCollection()
                     ->addAttributeToSelect('tm_relist')
