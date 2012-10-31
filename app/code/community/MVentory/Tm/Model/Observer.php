@@ -145,12 +145,16 @@ class MVentory_Tm_Model_Observer {
       $products = Mage::getModel('catalog/product')
                     ->getCollection()
                     ->addAttributeToSelect('tm_relist')
-                    ->addAttributeToSelect('tm_account_id')
                     ->addAttributeToSelect('price')
                     ->addFieldToFilter('tm_listing_id', array('neq' => ''))
-                    ->addFieldToFilter('tm_account_id',
-                                       array('eq' => $accountId))
                     ->addStoreFilter($store);
+
+      //Add filtering by account's ID if it's not empty
+      //Workaround for products which were submitted before implementing
+      //TM multiple accounts because value of 'tm_account_id' attribute is null
+      //in such products
+      if ($accountId)
+        $products->addFieldToFilter('tm_account_id', array('eq' => $accountId));
 
       //!!!Commented to allow loading out of stock products
       //If customer exists and loaded add price data to the product collection
