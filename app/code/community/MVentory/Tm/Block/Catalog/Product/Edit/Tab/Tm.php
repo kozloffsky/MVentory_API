@@ -12,9 +12,6 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
   private $_selectedCategories = null;
 
-  private $_tmListingUrl = null;
-  private $_productUrl = null;
-
   public function __construct() {
     parent::__construct();
 
@@ -23,22 +20,6 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
   public function getProduct () {
     return Mage::registry('current_product');
-  }
-
-  public function getCategory () {
-    $categories = $this
-                    ->getProduct()
-                    ->getCategoryIds();
-
-    if (!count($categories))
-      return null;
-
-    $category = Mage::getModel('catalog/category')->load($categories[0]);
-
-    if ($category->getId())
-      return $category;
-
-    return null;
   }
 
   public function getCategories () {
@@ -52,7 +33,8 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $this->_selectedCategories = array();
 
-    $category = $this->getCategory();
+    $category = Mage::helper('mventory_tm/product')
+                  ->getCategory($this->getProduct());
 
     if ($category) {
       $categories = $category->getTmAssignedCategories();
@@ -74,43 +56,6 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
         $cols = count($category['name']);
 
     return $cols;
-  }
-
-  public function getTmListingUrl () {
-    if ($this->_tmListingUrl)
-      return $this->_tmListingUrl;
-
-    $helper = Mage::helper('mventory_tm');
-    $product = $this->getProduct();
-
-    $websiteId = $helper->getWebsiteIdFromProduct($product);
-
-    $domain = $helper->isSandboxMode($websiteId)
-                ? 'tmsandbox'
-                  : 'trademe';
-
-    $id = $product->getTmListingId();
-
-    return $this->_tmListingUrl = 'http://www.'
-                                  . $domain
-                                  . '.co.nz/Browse/Listing.aspx?id='
-                                  . $id;
-  }
-
-  public function getProductUrl () {
-    if ($this->_productUrl)
-      return $this->_productUrl;
-
-    $helper = Mage::helper('mventory_tm');
-    $product = $this->getProduct();
-
-    $baseUrl = Mage::app()
-                 ->getWebsite($helper->getWebsiteIdFromProduct($product))
-                 ->getConfig('web/unsecure/base_url');
-
-    return $this->_productUrl = rtrim($baseUrl, '/')
-                                . '/'
-                                . $product->getUrlPath($this->getCategory());
   }
 
   public function getTmUrl () {

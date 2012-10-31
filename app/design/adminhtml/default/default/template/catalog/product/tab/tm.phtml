@@ -9,6 +9,7 @@ $_multiple = count($_selectedCategories) > 1;
 
 $_cols = $this->getColsNumber() - 1;
 
+$_productUrl = Mage::helper('mventory_tm/product')->getUrl($_product);
 $_tmUrl = $this->getTmUrl();
 
 $_allowBuyNow = $this->getAllowBuyNow();
@@ -20,7 +21,7 @@ $_accounts = $this->getAccounts();
 
 ?>
 
-<p><?php echo $this->__('Product URL'); ?>: <a target="_blank" href="<?php echo $this->getProductUrl(); ?>"><?php echo $this->getProductUrl(); ?></a></p>
+<p><?php echo $this->__('Product URL'); ?>: <a target="_blank" href="<?php echo $_productUrl; ?>"><?php echo $_productUrl; ?></a></p>
 
 <div class="entry-edit">
   <fieldset>
@@ -76,8 +77,9 @@ $_accounts = $this->getAccounts();
       <td>
         <?php if ($_product->getTmListingId()): ?>
           <?php echo $this->__('Listing URL'); ?>:
-        <a target="_blank" href="<?php echo $this->getTmListingUrl(); ?>">
-          <?php echo $this->getTmListingUrl(); ?>
+          <?php $_listingUrl = Mage::helper('mventory_tm/tm')->getListingUrl($_product); ?>
+        <a target="_blank" href="<?php echo $_listingUrl ?>">
+          <?php echo $_listingUrl ?>
         </a>
         (<?php echo $this->__('ID'); ?>: <?php echo $_product->getTmListingId(); ?>  )
         <?php endif; ?>
