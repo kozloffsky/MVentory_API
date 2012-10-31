@@ -182,7 +182,7 @@ class MVentory_Tm_Model_Observer {
 
         $result = $connector->check($product);
 
-        if (!$result)
+        if (!$result || $result == 3)
           continue;
 
         $newListingId = $product->getTmListingId();
