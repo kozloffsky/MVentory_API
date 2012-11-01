@@ -524,6 +524,115 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return 1;
   }
 
+  public function update($product,$parameters=null,$formData=null){
+    $this->getWebsiteId($product);
+    $this->setAccountId($formData);
+      
+  	$listingId = $product->getTmListingId();
+  	$this->getWebsiteId($product);
+  	$return = 'Error';
+  	
+  	if ($accessTokenData = $this->auth()) {
+      $accessTokenData = unserialize($accessTokenData);
+
+      $accessToken = new Zend_Oauth_Token_Access();
+      $accessToken->setToken($accessTokenData[0]);
+      $accessToken->setTokenSecret($accessTokenData[1]);
+	  $client = $accessToken->getHttpClient($this->getConfig());
+      
+	  $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Edit.json');
+	  $client->setMethod(Zend_Http_Client::POST);
+      $json = $this->_loadTmListingDetails($listingId);
+
+      $tmHelper = Mage::helper('mventory_tm/tm');
+      $helper = Mage::helper('mventory_tm');
+      
+      if (!$json){
+      	$helper->sendEmail('Unable to retrieve data for TM listing '
+      	  .$listingId,$return,$this->_website);
+      	return 'Unable to retrieve data from TM';
+      }
+        
+      $item = $this->_parseTmListingDetails($json);
+      
+      if(!isset($parameters['Title'])) $parameters['Title'] = $product->getName();
+      
+      //set price
+      if(!isset($parameters['StartPrice'])) 
+        $parameters['StartPrice'] = isset($formData['add_tm_fees']) && $formData['add_tm_fees']
+          ? $tmHelper->addFees($product->getPrice())
+          : $product->getPrice();
+      if(!isset($parameters['ReservePrice']))
+        $parameters['ReservePrice'] = $parameters['StartPrice'];
+      if(!isset($parameters['BuyNowPrice']) && isset($formData['allow_buy_now'])
+        && $formData['allow_buy_now'])
+          $parameters['BuyNowPrice'] = $parameters['StartPrice'];
+      
+      //set description
+      if(!isset($parameters['Description'])) {
+      	$descriptionTmpl = $this->_getConfig(self::FOOTER_PATH);
+
+        $description = '';
+
+        if ($descriptionTmpl) {
+          $description = $this->processDescription($descriptionTmpl, $product);
+          $description = htmlspecialchars($description);
+        }
+        $parameters['Description'] = array($description);
+      }
+      else {
+      	$parameters['Description'] = array($parameters['Description']);
+      }
+      //set Duration
+      $item['Duration'] = 7;
+      
+      //set pickup option
+      //  None = 0
+	  //  Allow = 1
+	  //  Demand = 2
+      //  Forbid = 3 
+      $item['Pickup'] = 1;
+      
+      //set Payment methods
+      //  None = 0
+	  //  BankDeposit = 1
+	  //  CreditCard = 2
+	  //  Cash = 4
+	  //  SafeTrader = 8
+	  //  Other = 16 
+      $item['PaymentMethods'] = array(1,2,4);
+	  
+      $item = array_merge($item,$parameters);
+      $client->setRawData(Zend_Json::encode($item), 'application/json');
+
+      $response = $client->request();
+      $jsonResponse = json_decode($response->getBody());
+      
+      if (isset($jsonResponse->Success) && $jsonResponse->Success == 'true') {
+        $return = (int)$jsonResponse->ListingId;
+      }
+      else {
+        if (isset($jsonResponse->Description) && (string)$jsonResponse->Description) {
+          $return = (string)$jsonResponse->Description;
+        } elseif (isset($jsonResponse->ErrorDescription) 
+            && (string)$jsonResponse->ErrorDescription) {
+            $return = (string)$jsonResponse->ErrorDescription;
+        }
+        $helper->sendEmail('Unable to update TM listing '.$listingId,$return,$this->_website);
+        Mage::log('TM: error on updating TM listing details '
+          . $listingId
+          );
+      }  
+  	}
+  	else{
+  	  $helper->sendEmail('Unable to auth TM',$return,$this->_website);
+  	  Mage::log('TM: Unable to auth when trying to update listing details '
+  	    . $listingId
+  	    );
+  	}  
+    return $return;
+  }
+  
   public function massCheck($products) {
     if (!$accessTokenData = $this->auth())
       return 0;

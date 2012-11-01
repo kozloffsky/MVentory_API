@@ -178,4 +178,37 @@ class MVentory_Tm_Adminhtml_IndexController
 
     $this->_redirect('adminhtml/catalog_product/edit/id/' . $id);
   }
+  public function updateAction(){
+  	$request = $this->getRequest();
+
+    $params = $request->getParams();
+  	$productId = $this->_request->getParam('id');
+  	$data = isset($params['tm']) ? $params['tm'] : array();
+    $product = Mage::getModel('catalog/product')->load($productId);
+
+    if (!$product->getId()) {
+      Mage::getSingleton('adminhtml/session')
+        ->addError($helper->__('Can\'t load product'));
+
+      $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
+
+      return;
+    }
+    $helper = Mage::helper('mventory_tm');
+    
+    $connector = Mage::getModel('mventory_tm/connector');
+    $result = $connector->update($product,null,$data);
+
+    if (!is_int($result)) {
+      Mage::getSingleton('adminhtml/session')->addError($helper->__($result));
+
+      $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
+
+      return;
+    }
+	Mage::getSingleton('adminhtml/session')
+            ->addSuccess($helper->__('Listing has been updated '));
+    $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
+    
+  }
 }

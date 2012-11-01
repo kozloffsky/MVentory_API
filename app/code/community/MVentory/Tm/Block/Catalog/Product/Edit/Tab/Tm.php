@@ -72,8 +72,10 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $categories = $this->getUrl('mventory_tm/adminhtml_tm/categories/',
                                 array('product_id' => $productId));
-
-    return Zend_Json::encode(compact('submit', 'categories'));
+    $update = $this->getUrl('mventory_tm/adminhtml_index/update/',
+                                array('id' => $productId));
+    
+    return Zend_Json::encode(compact('submit', 'categories','update'));
   }
 
   public function getSubmitButton () {
@@ -105,6 +107,12 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return $this->getButtonHtml($label, $onclick, '', 'tm_remove_button');
   }
 
+  public function getUpdateButton () {
+    $label = $this->__('Update');
+
+    return $this->getButtonHtml($label, null, '', 'tm_update_button');
+  }
+  
   public function getCategoriesButton () {
     $label = $this->__('Show all categories');
 
