@@ -493,7 +493,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   public function check ($product) {
     $listingId = $product->getTmListingId();
 
-    $json = $this->_loadTmListingDetails($listingId);
+    $this->getWebsiteId($product);
+    $this->setAccountId($product->getTmAccountId());
+
+    $json = $this->_loadTmListingDetailsAuth($listingId);
 
     if (!$json)
       return 'Error';
@@ -542,7 +545,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       
 	  $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Edit.json');
 	  $client->setMethod(Zend_Http_Client::POST);
-      $json = $this->_loadTmListingDetails($listingId);
+      $json = $this->_loadTmListingDetailsAuth($listingId);
 
       $tmHelper = Mage::helper('mventory_tm/tm');
       $helper = Mage::helper('mventory_tm');
@@ -842,6 +845,42 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     curl_close($curl);
 
     return $output;
+  }
+
+  public function _loadTmListingDetailsAuth ($listingId) {
+    if (!$accessTokenData = $this->auth())
+      return;
+
+    $accessTokenData = unserialize($accessTokenData);
+
+    $accessToken = new Zend_Oauth_Token_Access();
+
+    $accessToken->setToken($accessTokenData[0]);
+    $accessToken->setTokenSecret($accessTokenData[1]);
+
+    $client = $accessToken->getHttpClient($this->getConfig());
+
+    $url = 'http://api.'
+           . $this->_host
+           . '.co.nz/v1/Listings/'
+           . $listingId
+           . '.json';
+
+    $client->setUri($url);
+    $client->setMethod(Zend_Http_Client::GET);
+
+    $response = $client->request();
+
+    if ($response->getStatus() == '401') {
+      $this->reset();
+
+      return;
+    }
+
+    if ($response->getStatus() != 200)
+      return;
+
+    return $response->getBody();
   }
 
   public function _parseTmCategories (&$list, $categories, $names = array()) {
