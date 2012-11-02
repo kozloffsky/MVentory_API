@@ -26,6 +26,13 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const FREE = 3;
   const CUSTOM = 4;
 
+  //List of TM categories to ignore. Categories are selected by its number.
+  private $_ignoreTmCategories = array(
+    '0001-' => true, //Trade Me Motors
+    '5000-' => true, //Trade Me Jobs
+    '9374-' => true, //Travel, events & activities
+  );
+
   private $_helper = null;
 
   private $_config = null;
@@ -885,6 +892,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   public function _parseTmCategories (&$list, $categories, $names = array()) {
     foreach ($categories as $category) {
+      if (isset($this->_ignoreTmCategories[$category['Number']]))
+        continue;
+
       $_names = array_merge($names, array($category['Name']));
 
       $subCategories = $category['Subcategories'];
