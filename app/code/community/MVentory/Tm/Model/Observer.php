@@ -203,7 +203,7 @@ class MVentory_Tm_Model_Observer {
           Mage::app()->setCurrentStore($store);
 
           //Set global flag to enable our dummy shipping method
-          Mage::register('tm_allow_dummyshipping', true);
+          Mage::register('tm_allow_dummyshipping', true, true);
 
           //Make order for the product
           Mage::getModel('mventory_tm/cart_api')
