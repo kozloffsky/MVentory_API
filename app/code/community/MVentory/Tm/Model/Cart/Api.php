@@ -99,6 +99,14 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
             ->setIsInStock(1);
 
           $saveStockItem = true;
+        } else if (!$stockItem->getIsInStock()) {
+          //Change stock status if the qty is greater then zero but the product
+          //marked as out of stock, so it won't produce out of stock error
+          //on ordering.
+
+          $stockItem->setIsInStock(1);
+
+          $saveStockItem = true;
         }
 
         if ($qtyIsDecimal) {
