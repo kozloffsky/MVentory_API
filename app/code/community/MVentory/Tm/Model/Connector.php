@@ -158,10 +158,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function auth () {
-    $accessTokenData = $this->_getConfig(self::ACCESS_TOKEN_PATH
-                                         . '_'
-                                         . $this->_accountId);
-
     //Try to load global access token (used before multiple TM accounts)
     //if there's  no access token for current accout ID.
     //It allows non-interactive code (such as cron task)
@@ -177,6 +173,20 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     $requestToken = $session->getMventoryTmRequestToken();
 
+    if ($oAuthToken && $requestToken) {
+      //Restore original request data from session to use
+      //during interaction with TM
+      $this->_requestData
+        = $session->getData('original_request_data', true);
+
+      if (isset($this->_requestData['tm']))
+        $this->setAccountId($this->_requestData['tm']);
+    }
+
+    $accessTokenData = $this->_getConfig(self::ACCESS_TOKEN_PATH
+                                         . '_'
+                                         . $this->_accountId);
+
     if (!$accessTokenData) {
       $oAuth = new Zend_Oauth_Consumer($this->getConfig());
 
@@ -191,11 +201,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           $this->saveAccessToken($accessTokenData);
 
           $session->setMventoryTmRequestToken(null);
-
-          //Restore original request data from session to use
-          //during interaction with TM
-          $this->_requestData
-            = $session->getData('original_request_data', true);
         } catch(Exception $e) {
 
           //Auth failed, so we don't need data stored earlier
