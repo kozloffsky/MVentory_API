@@ -540,32 +540,34 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function update($product,$parameters=null,$formData=null){
+    $tmHelper = Mage::helper('mventory_tm/tm');
+    $helper = Mage::helper('mventory_tm');
+    
     $this->getWebsiteId($product);
-    $this->setAccountId($formData);
-      
-  	$listingId = $product->getTmListingId();
-  	$this->getWebsiteId($product);
-  	$return = 'Error';
-  	
-  	if ($accessTokenData = $this->auth()) {
+    
+    $accountId = $tmHelper->getAccountId($product->getId(), $this->_website);
+    $this->setAccountId($accountId);
+       
+    $listingId = $product->getTmListingId();
+    $return = 'Error';
+    
+    if ($accessTokenData = $this->auth()) {
       $accessTokenData = unserialize($accessTokenData);
 
       $accessToken = new Zend_Oauth_Token_Access();
       $accessToken->setToken($accessTokenData[0]);
       $accessToken->setTokenSecret($accessTokenData[1]);
-	  $client = $accessToken->getHttpClient($this->getConfig());
+      $client = $accessToken->getHttpClient($this->getConfig());
       
-	  $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Edit.json');
-	  $client->setMethod(Zend_Http_Client::POST);
-      $json = $this->_loadTmListingDetailsAuth($listingId);
-
-      $tmHelper = Mage::helper('mventory_tm/tm');
-      $helper = Mage::helper('mventory_tm');
+      $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Edit.json');
+      $client->setMethod(Zend_Http_Client::POST);
+      $json = $this->_loadTmListingDetails($listingId);
       
       if (!$json){
-      	$helper->sendEmail('Unable to retrieve data for TM listing '
-      	  .$listingId,$return,$this->_website);
-      	return 'Unable to retrieve data from TM';
+        $helper->sendEmail('Unable to retrieve data for TM listing ',
+          $return.' product id '.$product->getId().' listing id '.$listingId,
+            $this->_website);
+        return 'Unable to retrieve data from TM';
       }
         
       $item = $this->_parseTmListingDetails($json);
@@ -585,7 +587,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       
       //set description
       if(!isset($parameters['Description'])) {
-      	$descriptionTmpl = $this->_getConfig(self::FOOTER_PATH);
+        $descriptionTmpl = $this->_getConfig(self::FOOTER_PATH);
 
         $description = '';
 
@@ -596,27 +598,27 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         $parameters['Description'] = array($description);
       }
       else {
-      	$parameters['Description'] = array($parameters['Description']);
+        $parameters['Description'] = array($parameters['Description']);
       }
       //set Duration
       $item['Duration'] = 7;
       
       //set pickup option
       //  None = 0
-	  //  Allow = 1
-	  //  Demand = 2
+      //  Allow = 1
+      //  Demand = 2
       //  Forbid = 3 
       $item['Pickup'] = 1;
       
       //set Payment methods
       //  None = 0
-	  //  BankDeposit = 1
-	  //  CreditCard = 2
-	  //  Cash = 4
-	  //  SafeTrader = 8
-	  //  Other = 16 
+      //  BankDeposit = 1
+      //  CreditCard = 2
+      //  Cash = 4
+      //  SafeTrader = 8
+      //  Other = 16 
       $item['PaymentMethods'] = array(1,2,4);
-	  
+      
       $item = array_merge($item,$parameters);
       $client->setRawData(Zend_Json::encode($item), 'application/json');
 
@@ -633,18 +635,22 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
             && (string)$jsonResponse->ErrorDescription) {
             $return = (string)$jsonResponse->ErrorDescription;
         }
-        $helper->sendEmail('Unable to update TM listing '.$listingId,$return,$this->_website);
+        $helper->sendEmail('Unable to update TM listing ',
+          $return.' product id '.$product->getId().' listing id '.$listingId,
+            $this->_website);
         Mage::log('TM: error on updating TM listing details '
           . $listingId
           );
       }  
   	}
   	else{
-  	  $helper->sendEmail('Unable to auth TM',$return,$this->_website);
+  	  $helper->sendEmail('Unable to auth TM',
+        $return.' product id '.$product->getId().' listing id '.$listingId,
+          $this->_website);
   	  Mage::log('TM: Unable to auth when trying to update listing details '
   	    . $listingId
   	    );
-  	}  
+  	}
     return $return;
   }
   
