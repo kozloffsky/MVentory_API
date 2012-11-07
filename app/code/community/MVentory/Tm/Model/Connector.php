@@ -545,7 +545,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     
     $this->getWebsiteId($product);
     
-    $accountId = $tmHelper->getAccountId($product->getId(), $this->_website);
+    $accountId = $product->getTmAccountId();
     $this->setAccountId($accountId);
        
     $listingId = $product->getTmListingId();
