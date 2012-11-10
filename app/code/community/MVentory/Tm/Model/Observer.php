@@ -2,6 +2,12 @@
 
 class MVentory_Tm_Model_Observer {
 
+  const XML_PATH_CDN_ACCESS_KEY = 'mventory_tm/cdn/access_key';
+  const XML_PATH_CDN_SECRET_KEY = 'mventory_tm/cdn/secret_key';
+  const XML_PATH_CDN_BUCKET = 'mventory_tm/cdn/bucket';
+  const XML_PATH_CDN_PREFIX = 'mventory_tm/cdn/prefix';
+  const XML_PATH_CDN_DIMENSIONS = 'mventory_tm/cdn/resizing_dimensions';
+
   private $supportedImageTypes = array(
     IMAGETYPE_GIF => 'gif',
     IMAGETYPE_JPEG => 'jpeg',
@@ -401,7 +407,6 @@ class MVentory_Tm_Model_Observer {
     }
 
     $identifier .= $storeId;
-
     //Append cms block to the footer
     $block = $layout
                ->createBlock('cms/block')
@@ -410,5 +415,116 @@ class MVentory_Tm_Model_Observer {
     //Check if footer block exists. It doesn't exist in AJAX requests
     if ($footer = $layout->getBlock('footer'))
       $footer->append($block);
+  }
+
+  public function uploadImageToCdn ($observer) {
+    $product = $observer->getEvent()->getProduct();
+    $images = $observer->getEvent()->getImages();
+
+    $helper = Mage::helper('mventory_tm');
+
+    $website = $helper->getWebsite($product);
+
+    $accessKey = $helper->getConfig(self::XML_PATH_CDN_ACCESS_KEY, $website);
+    $secretKey = $helper->getConfig(self::XML_PATH_CDN_SECRET_KEY, $website);
+    $bucket = $helper->getConfig(self::XML_PATH_CDN_BUCKET, $website);
+    $prefix = $helper->getConfig(self::XML_PATH_CDN_PREFIX, $website);
+    $dimensions = $helper->getConfig(self::XML_PATH_CDN_DIMENSIONS, $website);
+
+    if (!($accessKey && $secretKey && $bucket && $prefix))
+      return;
+
+    $cdnPrefix = $bucket . '/' . $prefix . '/';
+
+    $dimensions = str_replace(', ', ',', $dimensions);
+    $dimensions = explode(',', $dimensions);
+
+    $meta = array(Zend_Service_Amazon_S3::S3_ACL_HEADER
+                    => Zend_Service_Amazon_S3::S3_ACL_PUBLIC_READ);
+
+    $config = Mage::getSingleton('catalog/product_media_config');
+
+    $tmpDir = $config->getBaseTmpMediaPath();
+
+    $s3 = new Zend_Service_Amazon_S3($accessKey, $secretKey);
+
+    foreach ($images['images'] as &$image) {
+      if (isset($image['value_id']))
+        continue;
+
+      $fileName = $image['file'];
+      $cdnPath = $cdnPrefix . 'full' . $fileName;
+
+      $file = $config->getMediaPath($fileName);
+
+      if ($s3->isObjectAvailable($cdnPath)) {
+        $position = strrpos($fileName, '.');
+
+        $name = substr($fileName, 0, $position);
+        $ext = substr($fileName, $position);
+
+        Mage::log($name . ' ' . $ext);
+
+        $_key = $prefix .'/full' . $name . '_';
+
+        $keys = $s3->getObjectsByBucket($bucket, array('prefix' => $_key));
+
+        $index = 1;
+
+        if (count($keys)) {
+          $extLength = strlen($ext);
+
+          $_keys = array();
+
+          foreach ($keys as $key)
+            $_keys[substr($key, 0, -$extLength)] = true;
+
+          while(isset($_keys[$_key . $index]))
+            ++$index;
+
+          unset($_keys);
+        }
+
+        $fileName = $name . '_' . $index . $ext;
+        $cdnPath = $cdnPrefix . 'full' . $fileName;
+
+        $_file = $config->getMediaPath($fileName);
+
+        rename($file, $_file);
+
+        $image['file'] = $fileName;
+        $file = $_file;
+
+        unset($_file);
+      }
+
+      if (!$s3->putFile($file, $cdnPath, $meta)) {
+        $msg = 'Can\'t upload original image (' . $file . ') to S3 with '
+               . $cdnPath . ' key';
+
+        throw new Mage_Core_Exception($msg);
+      }
+
+      if (!count($dimensions))
+        continue;
+
+      foreach ($dimensions as $dimension) {
+        $newFile = Mage::getModel('catalog/product_image')
+                     ->setSize($dimension)
+                     ->setBaseFile($fileName)
+                     ->resize()
+                     ->saveFile()
+                     ->getNewFile();
+
+        $newCdnPath = $cdnPrefix . $dimension . $fileName;
+
+        if (!$s3->putFile($newFile, $newCdnPath, $meta)) {
+          $msg = 'Can\'t upload resized (' . $dimension . ') image (' . $file
+                 . ') to S3 with ' . $cdnPath . ' key';
+
+          throw new Mage_Core_Exception($msg);
+        }
+      }
+    }
   }
 }

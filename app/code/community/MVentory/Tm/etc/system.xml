@@ -314,6 +314,75 @@
             </copies>
           </fields>
         </qr>
+
+        <cdn translate="label">
+          <label>Product Images CDN</label>
+          <frontend_type>text</frontend_type>
+
+          <show_in_default>1</show_in_default>
+          <show_in_website>1</show_in_website>
+          <show_in_store>0</show_in_store>
+
+          <sort_order>5</sort_order>
+
+          <fields>
+            <access_key translate="label">
+              <label>Access Key</label>
+              <frontend_type>text</frontend_type>
+
+              <show_in_default>1</show_in_default>
+              <show_in_website>0</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>1</sort_order>
+            </access_key>
+
+            <secret_key translate="label">
+              <label>Secret Key</label>
+              <frontend_type>password</frontend_type>
+
+              <show_in_default>1</show_in_default>
+              <show_in_website>0</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>2</sort_order>
+            </secret_key>
+
+            <bucket translate="label">
+              <label>Bucket name</label>
+              <frontend_type>text</frontend_type>
+
+              <show_in_default>1</show_in_default>
+              <show_in_website>0</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>3</sort_order>
+            </bucket>
+
+            <prefix translate="label">
+              <label>Website Prefix</label>
+              <frontend_type>text</frontend_type>
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>4</sort_order>
+            </prefix>
+
+            <resizing_dimensions translate="label comment">
+              <label>Resizing Dimensions</label>
+              <comment>Example: 300x300, 256x, x500</comment>
+              <frontend_type>text</frontend_type>
+
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>5</sort_order>
+            </resizing_dimensions>
+          </fields>
+        </cdn>
       </groups>
     </mventory_tm>
   </sections>
