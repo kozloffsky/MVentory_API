@@ -474,8 +474,6 @@ class MVentory_Tm_Model_Observer {
         $name = substr($fileName, 0, $position);
         $ext = substr($fileName, $position);
 
-        Mage::log($name . ' ' . $ext);
-
         //Search key
         $_key = $prefix .'/full' . $name . '_';
 
