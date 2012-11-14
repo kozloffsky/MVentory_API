@@ -449,9 +449,6 @@ class MVentory_Tm_Model_Observer {
 
     $config = Mage::getSingleton('catalog/product_media_config');
 
-    //Directory for storing temporary file on resizing
-    $tmpDir = $config->getBaseTmpMediaPath();
-
     $s3 = new Zend_Service_Amazon_S3($accessKey, $secretKey);
 
     foreach ($images['images'] as &$image) {
