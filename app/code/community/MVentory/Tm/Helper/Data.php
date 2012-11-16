@@ -88,7 +88,14 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
    *
    * @return Mage_Core_Model_Website
    */
-  public function getWebsite ($product) {
+  public function getWebsite ($product = null) {
+    if ($product == null) {
+      $product = Mage::registry('product');
+
+      if (!$product)
+        return Mage::app()->getWebsite();
+    }
+
     if ($product instanceof Mage_Catalog_Model_Product)
       $ids = $product->getWebsiteIds();
     else
