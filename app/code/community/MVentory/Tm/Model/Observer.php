@@ -180,7 +180,7 @@ class MVentory_Tm_Model_Observer {
       $result = $connector->massCheck($products);
 
       if (!$result)
-        return;
+        continue;
 
       foreach ($products as $product) {
         if ($product->getIsSelling())
