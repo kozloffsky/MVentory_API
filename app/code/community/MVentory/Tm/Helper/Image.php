@@ -16,23 +16,20 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
         && $bkThumbnail)
       return $bkThumbnail . '&zoom=' . ($destSubdir == 'image' ? 1 : 5);
 
-    if ($this->getImageFile()) {
+    if ($this->getImageFile())
       $imageFileName = $this->getImageFile();
-    } else {
+    else
       $imageFileName = $this->getProduct()->getData($destSubdir);
-    }
 
     if ($imageFileName == 'no_selection')
-    {
       $imageFileName = '/no_selection';
-    }
 
-    $dimensions = $this->_getModel()->getWidth()."x".$this->_getModel()->getHeight();
+    $dimensions = $this->_getModel()->getWidth()
+                  . 'x'
+                  . $this->_getModel()->getHeight();
 
-    if ($dimensions == "x")
-    {
-      $dimensions = "full";
-    }
+    if ($dimensions == 'x')
+      $dimensions = 'full';
 
     $cdnBaseUrl = Mage::getBaseUrl('media');
 
