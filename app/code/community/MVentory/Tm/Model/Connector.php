@@ -277,6 +277,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
                         ? $this->_requestData['product']['tm_relist']
                           : null;
 
+        $data['avoid_withdrawal'] = isset($this->_requestData['product']['tm_avoid_withdrawal'])
+                        ? $this->_requestData['product']['tm_avoid_withdrawal']
+                          : null;
+
         $categoryId = $data['category'];
       }
 
@@ -442,6 +446,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
             ->setTmRelist($data['relist'])
             ->setTmAccountId($this->_accountId);
 
+          if (isset($data['avoid_withdrawal']))
+          {
+            $product
+              ->setTmAvoidWithdrawal($data['avoid_withdrawal']);
+          }
+
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
           $return = (string)$xml->ErrorDescription;
@@ -581,10 +591,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           : $product->getPrice();
       if(!isset($parameters['ReservePrice']))
         $parameters['ReservePrice'] = $parameters['StartPrice'];
-      if(!isset($parameters['BuyNowPrice']) && isset($formData['allow_buy_now'])
-        && $formData['allow_buy_now'])
+      if(!isset($parameters['BuyNowPrice']) && ((isset($formData['allow_buy_now'])
+        && $formData['allow_buy_now'])) || isset($item['BuyNowPrice']))
           $parameters['BuyNowPrice'] = $parameters['StartPrice'];
-      
+
       //set description
       if(!isset($parameters['Description'])) {
         $descriptionTmpl = $this->_getConfig(self::FOOTER_PATH);

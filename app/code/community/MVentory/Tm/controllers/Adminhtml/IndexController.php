@@ -20,6 +20,11 @@ class MVentory_Tm_Adminhtml_IndexController
                         ? $params['product']['tm_relist']
                           : null;
 
+    //Remember value of avoid withdrawal attribute
+    $data['avoid_withdrawal'] = isset($params['product']['tm_avoid_withdrawal'])
+                        ? $params['product']['tm_avoid_withdrawal']
+                          : null;
+
     //Get website which the product is assigned to
     $website = $helper->getWebsite($productId);
 

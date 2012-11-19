@@ -48,9 +48,41 @@ class MVentory_Tm_Model_Observer {
 
       //Try to increase price of selling listing on TM if it's allowed,
       //otherwise try to withdraw listing
-      if ($product->getTmAvoidWithdrawal()
-          /*!!! && !$result = $connector->update($product, $newPrice)*/)
-        $result = $connector->remove($product);
+      $doRemoveFromTM = false;
+      if ($product->getTmAvoidWithdrawal())
+      {
+        /* Take the default value of addTMFees flag from the config.*/
+        $tmDataHelper = Mage::helper('mventory_tm');
+        $tmFeesPath = MVentory_Tm_Model_Connector::ADD_TM_FEES_PATH;
+        $website = $tmDataHelper->getWebsiteIdFromProduct($product);
+        $addTMFees = $tmDataHelper->getConfig($tmFeesPath, $website);
+
+        $newPrice = $product->getPrice()*5;
+
+        if ($addTMFees)
+        {
+          $tmTmHelper = Mage::helper('mventory_tm/tm');
+          $newPrice = $tmTmHelper->addFees($newPrice);
+        }
+
+        if (is_int($connector->update($product, array('StartPrice' => $newPrice), null)))
+        {
+          $result = true;
+        }
+        else
+        {
+          $doRemoveFromTM = true;
+        }
+      }
+      else
+      {
+        $doRemoveFromTM = true;
+      }
+
+      if ($doRemoveFromTM)
+      {
+        $result = $connector->remove($product);        
+      }
 
       if ($result !== true) {
         //Send email with error message to website's general contact address
