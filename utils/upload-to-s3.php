@@ -81,6 +81,21 @@ $config = Mage::getSingleton('catalog/product_media_config');
 
 $destSubdirs = array('image', 'small_image', 'thumbnail');
 
+foreach ($destSubdirs as $destSubdir) {
+  $placeholder = Mage::getModel('catalog/product_image')
+                   ->setDestinationSubdir($destSubdir)
+                   ->setBaseFile(null)
+                   ->getBaseFile();
+
+  $result = copy($placeholder, $config->getMediaPath(basename($placeholder)));
+
+  if ($result === true)
+    $images[] = '/' . basename($placeholder);
+  else
+    Mage::log('Error on copy ' . $placeholder . ' to media folder',
+              null, 's3.log');
+}
+
 $s3 = new Zend_Service_Amazon_S3($accessKey, $secretKey);
 
 $imageNumber = 1;

@@ -21,8 +21,14 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
     else
       $imageFileName = $this->getProduct()->getData($destSubdir);
 
-    if ($imageFileName == 'no_selection')
-      $imageFileName = '/no_selection';
+    if ($imageFileName == 'no_selection') {
+      $placeholder = Mage::getModel('catalog/product_image')
+                       ->setDestinationSubdir($destSubdir)
+                       ->setBaseFile(null)
+                       ->getBaseFile();
+
+      $imageFileName = '/' . basename($placeholder);
+    }
 
     $dimensions = $this->_getModel()->getWidth()
                   . 'x'
