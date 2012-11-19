@@ -34,7 +34,8 @@ class MVentory_Tm_Model_Stock_Item_Api
           'sku' => $product->getSku(),
           'qty' => $product->getStockItem()->getQty(),
           'is_in_stock' => $product->getStockItem()->getIsInStock(),
-          'manage_stock' => $product->getStockItem()->getManageStock()
+          'manage_stock' => $product->getStockItem()->getManageStock(),
+          'is_qty_decimal' => $product->getStockItem()->getIsQtyDecimal()
         );
 
     return $result;
