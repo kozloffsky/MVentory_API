@@ -13,28 +13,28 @@ class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
   // * min - Min fee value
   // * max - Max fee value
   private $_fees = array(
-    //Up to $200 : 7.5% of sale price (50c minimum)
+    //Up to $200 : 7.9% of sale price (50c minimum)
     array(
       'from' => 0,
-      'to' => 199,
-      'rate' => 0.075,
+      'to' => 200,
+      'rate' => 0.079,
       'fixed' => 0,
-      'min' => 0.5,
+      'min' => 0.5
     ),
 
-    //$200 - $1500 : $15.00 + 4.5% of sale price over $200
+    //$200 - $1500 : $15.80 + 4.9% of sale price over $200
     array(
       'from' => 200,
       'to' => 1500,
-      'rate' => 0.045,
-      'fixed' => 15,
+      'rate' => 0.049,
+      'fixed' => 15.8,
     ),
 
-    //Over $1500 : $73.50 + 1.9% of sale price over $1500 (max fee = $149)
+    //Over $1500 : $79.50 + 1.9% of sale price over $1500 (max fee = $149)
     array(
-      'from' => 1501,
+      'from' => 1500,
       'rate' => 0.019,
-      'fixed' => 73.5,
+      'fixed' => 79.5,
       'max' => 149
     ),
   );
@@ -86,45 +86,55 @@ class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
    * @return float Product's price with calculated fees
    */
   public function addFees ($price) {
+
+    /* What we need to calculate here is the price to be used for TM listing.
+       The value of that price after subtracting TM fees must be equal to the
+       sell price from magento (which is the price passed as an argument to
+       this function) */
+
+    /* This should never happen. */
+    if ($price < 0)
+      return $price;
+
+    /* First we need to figure out in which range the final TM listing price
+       is going to be. */
     foreach ($this->_fees as $_fee) {
-      //Check if price of the product is in the range of the fee
-      $from = isset($_fee['from'])
-                ? $price >= $_fee['from']
-                  : true;
 
-      $to = isset($_fee['to'])
-              ? $price <= $_fee['to']
-                : true;
+      /* If a range doesn't have the upper bound then we are in the last range so no
+         no need to check anything and we are just gonna use that range. */
+      if (isset($_fee['to']))
+      {
+        /* Max fee value we can add to the price not to exceed the from..to range */
+        $maxFee = $_fee['to'] - $price;
 
-      //Price of the product is not the range of the fee
-      if (!($from && $to))
-        continue;
+        /* If cannot add any fees then we are in the wrong range. */
+        if ($maxFee < 0)
+          continue;
+       
+        /* Fee for the maximum price that still fits in the current range. */
+        $feeForTheMaxPrice = $_fee['fixed'] + (($_fee['to']) - $_fee['from']) * $_fee['rate'];
 
-      //Add fixed part of the fee
-      $_price = isset($_fee['fixed'])
-                   ? $price + $_fee['fixed']
-                     : $price;
+        /* If the maximum fees we can apply not to exceed the from..to range
+         are still not enough then we are in the wrong range. */
+        if ($maxFee < $feeForTheMaxPrice)
+          continue;
+      }
+      
+      /* Calculate the fee for the range selected. */
+      $fee = ( $_fee['fixed']+($price-$_fee['from'])*$_fee['rate'] )/( 1-$_fee['rate'] );
 
-      //Calculate final price
-      if (isset($_fee['rate']))
-        $_price /= 1 - $_fee['rate'];
-
-      //Return final price if there's no min/max for the fee value
-      if (!(isset($_fee['min']) || isset($_fee['max'])))
-        return round($_price, 2);
-
-      $fee = $_price - $price;
-
-      //Check for min and max values of the calculated fee
+      /* Take into account the min and max values. */
       if (isset($_fee['min']) && $fee < $_fee['min'])
         $fee = $_fee['min'];
 
       if (isset($_fee['max']) && $fee > $_fee['max'])
         $fee = $_fee['max'];
 
+      /* Return the sale price with fees added. */
       return round($price + $fee, 2);
     }
 
+    /* This should never happen. */
     return $price;
   }
 
