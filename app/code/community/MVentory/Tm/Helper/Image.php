@@ -37,17 +37,17 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
     if ($dimensions == 'x')
       $dimensions = 'full';
 
-    $cdnBaseUrl = Mage::getBaseUrl('media');
-
     $helper = Mage::helper('mventory_tm');
     $website = $helper->getWebsite($this->getProduct());
 
-    $bucket = $helper->getConfig(MVentory_Tm_Model_Observer::XML_PATH_CDN_BUCKET, $website);
-    $prefix = $helper->getConfig(MVentory_Tm_Model_Observer::XML_PATH_CDN_PREFIX, $website);
+    $prefix = $helper
+                ->getConfig(MVentory_Tm_Model_Observer::XML_PATH_CDN_PREFIX,
+                            $website);
 
-    $cdnPrefix = $bucket . '/' . $prefix . '/';
-    $cdnPath = $cdnPrefix . $dimensions . $imageFileName;
-
-    return $cdnBaseUrl . $cdnPath;
+    return Mage::getBaseUrl('media')
+           . $prefix
+           . '/'
+           . $dimensions
+           . $imageFileName;
   }
 }
