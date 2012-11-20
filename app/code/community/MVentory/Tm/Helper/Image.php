@@ -16,9 +16,7 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
         && $bkThumbnail)
       return $bkThumbnail . '&zoom=' . ($destSubdir == 'image' ? 1 : 5);
 
-    if ($this->getImageFile())
-      $imageFileName = $this->getImageFile();
-    else
+    if (!$imageFileName = $this->getImageFile())
       $imageFileName = $this->getProduct()->getData($destSubdir);
 
     if ($imageFileName == 'no_selection') {
