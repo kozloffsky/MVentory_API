@@ -293,6 +293,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $imagePath = Mage::getBaseDir('media') . DS . 'catalog' . DS . 'product'
                      . $product->getImage();
 
+      if (!Mage::helper('mventory_tm/s3')->download($imagePath))
+        return 'Downloading image from S3 failed';
+
       if (file_exists($imagePath)) {
         $imagePathInfo = pathinfo($imagePath);
 
@@ -786,8 +789,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $replace[] = $fullDescription && strlen($fullDescription) > 5
                    ? $fullDescription
                      : '';
-
-    Mage::register('product', $product);
 
     $_attrs = Mage::app()
               ->getLayout()
