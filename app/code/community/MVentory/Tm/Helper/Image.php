@@ -2,6 +2,57 @@
 
 class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
 
+  /**
+   * Initialize Helper to work with Image
+   *
+   * @param Mage_Catalog_Model_Product $product
+   * @param string $attributeName
+   * @param mixed $imageFile
+   * @return Mage_Catalog_Helper_Image
+  */
+  public function init (Mage_Catalog_Model_Product $product, $attributeName,
+                        $imageFile = null) {
+
+    $this->_reset();
+
+    $this->_setModel(new Varien_Object());
+
+    $this->_getModel()->setDestinationSubdir($attributeName);
+    $this->setProduct($product);
+
+    $path = 'design/watermark/' . $attributeName . '_';
+
+    $this->watermark(
+      Mage::getStoreConfig($path . 'image'),
+      Mage::getStoreConfig($path . 'position'),
+      Mage::getStoreConfig($path . 'size'),
+      Mage::getStoreConfig($path . 'imageOpacity')
+    );
+
+    if ($imageFile)
+      $this->setImageFile($imageFile);
+
+    return $this;
+  }
+
+  /**
+   * Retrieve original image height
+   *
+   * @return int|null
+   */
+  public function getOriginalHeight () {
+    return null;
+  }
+
+  /**
+   * Retrieve original image width
+   *
+   * @return int|null
+   */
+  public function getOriginalWidth () {
+    return null;
+  }
+
   public function __toString() {
     $destSubdir = $this->_getModel()->getDestinationSubdir();
 
