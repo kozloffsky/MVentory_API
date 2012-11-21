@@ -2,6 +2,8 @@
 
 class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
 
+  protected $_baseMediaUrl = null;
+
   public function getCurrentWebsite () {
     $params =  Mage::registry('application_params');
 
@@ -105,6 +107,30 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     for ($id = reset($ids); $id && $id == 1; $id = next($ids));
 
     return Mage::app()->getWebsite($id === false ? null : $id);
+  }
+
+  /**
+   * Return website's base media URL
+   *
+   * @param Mage_Core_Model_Website $wesite
+   *
+   * @return string Base media URL
+   */
+  public function getBaseMediaUrl ($website) {
+    if ($this->_baseMediaUrl)
+      return $this->_baseMediaUrl;
+
+    $type = Mage_Core_Model_Store::URL_TYPE_MEDIA;
+
+    $secureFlag = Mage::app()->getStore()->isCurrentlySecure()
+                    ? 'secure'
+                      : 'unsecure';
+
+    $path = 'web/' . $secureFlag . '/base_' . $type . '_url';
+
+    $this->_baseMediaUrl = $this->getConfig($path, $website);
+
+    return $this->_baseMediaUrl;
   }
 
   public function getConfig ($path, $website) {

@@ -42,7 +42,7 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
                 ->getConfig(MVentory_Tm_Model_Observer::XML_PATH_CDN_PREFIX,
                             $website);
 
-    return Mage::getBaseUrl('media')
+    return $helper->getBaseMediaUrl($website)
            . $prefix
            . '/'
            . $dimensions
