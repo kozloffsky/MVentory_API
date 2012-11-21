@@ -19,7 +19,8 @@ class MVentory_Tm_Helper_S3 extends MVentory_Tm_Helper_Data {
    * @return bool
    */
   public function download ($path) {
-    mkdir(dirname($path), 0777, true);
+    if (!file_exists(dirname($path)))
+      mkdir(dirname($path), 0777, true);
 
     $result = $this
                 ->_getS3()
