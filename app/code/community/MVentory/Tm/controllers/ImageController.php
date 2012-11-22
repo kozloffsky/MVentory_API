@@ -18,8 +18,11 @@ class MVentory_Tm_ImageController
 
     $media = Mage::getModel('catalog/product_media_config');
 
-    if (!file_exists($media->getMediaPath($fileName)))
-      return;
+    $path = $media->getMediaPath($fileName);
+
+    if (!file_exists($path))
+      Mage::helper('mventory_tm/s3')
+        ->download($path);
 
     $tokens = explode('.', $fileName);
 
@@ -45,7 +48,7 @@ class MVentory_Tm_ImageController
         ->resize()
         ->saveFile();
 
-      $fileName = $image->getNewFile();
+      $path = $image->getNewFile();
     }
 
     $this
@@ -53,7 +56,7 @@ class MVentory_Tm_ImageController
       ->setHeader('Pragma', '', true)
       ->setHeader('Expires', '', true)
       ->setHeader('Content-Type', 'image/' . $type , true)
-      ->setHeader('Content-Length', filesize($fileName), true)
-      ->setBody(file_get_contents($fileName));
+      ->setHeader('Content-Length', filesize($path), true)
+      ->setBody(file_get_contents($path));
   }
 }
