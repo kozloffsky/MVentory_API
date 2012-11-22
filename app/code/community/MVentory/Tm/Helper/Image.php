@@ -79,11 +79,13 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
       $imageFileName = '/' . basename($placeholder);
     }
 
-    $dimensions = $this->_getModel()->getWidth()
-                  . 'x'
-                  . $this->_getModel()->getHeight();
+    $width = $this->_getModel()->getWidth();
+    $height = $this->_getModel()->getHeight();
 
-    if ($dimensions == 'x')
+    if ($width == $height)
+      $height = null;
+
+    if (($dimensions = $width . 'x' . $height) == 'x')
       $dimensions = 'full';
 
     $helper = Mage::helper('mventory_tm');
