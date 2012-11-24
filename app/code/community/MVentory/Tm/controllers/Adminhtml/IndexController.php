@@ -200,7 +200,7 @@ class MVentory_Tm_Adminhtml_IndexController
       return;
     }
     $helper = Mage::helper('mventory_tm');
-    
+
     $connector = Mage::getModel('mventory_tm/connector');
     $result = $connector->update($product,null,$data);
 
@@ -214,6 +214,6 @@ class MVentory_Tm_Adminhtml_IndexController
 	Mage::getSingleton('adminhtml/session')
             ->addSuccess($helper->__('Listing has been updated '));
     $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
-    
+
   }
 }
