@@ -229,25 +229,25 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     return $this->fullInfo($id);
   }
-  
+
   /**
-   * Get info about new products, sales and stock      
-   *      
-   * @return array     
+   * Get info about new products, sales and stock
+   *
+   * @return array
    */
   public function statistics () {
     $storeId    = Mage::helper('mventory_tm')->getCurrentStoreId();
     $store      = Mage::app()->getStore($storeId);
 
     $date       = new Zend_Date();
-    
+
     $dayStart   = $date->toString('yyyy-MM-dd 00:00:00');
-    
+
     $weekStart  = new Zend_Date($date->getTimestamp() - 7 * 24 * 3600);
-    
+
     $monthStart = new Zend_Date($date->getTimestamp() - 30 * 24 * 3600);
 
-    // Get Sales info   
+    // Get Sales info
     $collection = Mage::getModel('sales/order')->getCollection();
     $collection
       ->getSelect()
@@ -260,7 +260,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                   ->load()
                   ->getFirstItem()
                   ->getData('sum'), 0);
-    
+
     $collection = Mage::getModel('sales/order')->getCollection();
     $collection
       ->getSelect()
@@ -273,7 +273,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                    ->load()
                    ->getFirstItem()
                    ->getData('sum'), 0);
-    
+
     $collection = Mage::getModel('sales/order')->getCollection();
     $collection
       ->getSelect()
@@ -286,7 +286,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                     ->load()
                     ->getFirstItem()
                     ->getData('sum'), 0);
-    
+
     $collection = Mage::getModel('sales/order')->getCollection();
     $collection
       ->getSelect()
@@ -297,22 +297,22 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                     ->getFirstItem()
                     ->getData('sum'), 0);
     // End of Sales info
-    
+
     // Get Stock info
     $collection = Mage::getModel('catalog/product')->getCollection();
 
     if (Mage::helper('catalog')->isModuleEnabled('Mage_CatalogInventory')) {
       $collection
-        ->joinField('qty', 
-                    'cataloginventory/stock_item', 
-                    'qty', 'product_id=entity_id', 
+        ->joinField('qty',
+                    'cataloginventory/stock_item',
+                    'qty', 'product_id=entity_id',
                     '{{table}}.stock_id=1 AND {{table}}.is_in_stock=1
                     AND {{table}}.manage_stock=1 AND {{table}}.qty>0', 'left');
     }
     if ($storeId) {
       //$collection->setStoreId($store->getId());
       $collection->addStoreFilter($store);
-      
+
       $collection->joinAttribute(
         'price',
         'catalog_product/price',
@@ -324,21 +324,21 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     } else {
       $collection->addAttributeToSelect('price');
     }
-      
+
     $collection
       ->getSelect()
-      ->columns(array('SUM(at_qty.qty) AS total_qty', 
+      ->columns(array('SUM(at_qty.qty) AS total_qty',
                       'SUM(at_qty.qty*at_price.value) AS total_value'));
     $result = $collection
                 ->load()
                 ->getFirstItem()
                 ->getData();
-      
+
     $totalStockQty = trim($result['total_qty'], 0);
     $totalStockValue = trim($result['total_value'], 0);
     // End of Stock info
-    
-    // Get Products info       
+
+    // Get Products info
     $collection = Mage::getModel('catalog/product')->getCollection();
     $collection
       ->getSelect()
@@ -351,7 +351,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                    ->load()
                    ->getFirstItem()
                    ->getData('loaded');
-    
+
     $collection = Mage::getModel('catalog/product')->getCollection();
     $collection
       ->getSelect()
@@ -359,12 +359,12 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $collection
       ->addStoreFilter($store)
       ->addFieldToFilter('created_at', array(
-        'from' => $weekStart->toString('YYYY-MM-dd 00:00:00')));                                                 
+        'from' => $weekStart->toString('YYYY-MM-dd 00:00:00')));
     $weekLoaded  = $collection
                      ->load()
                      ->getFirstItem()
                      ->getData('loaded');
-    
+
     $collection = Mage::getModel('catalog/product')->getCollection();
     $collection
       ->getSelect()
