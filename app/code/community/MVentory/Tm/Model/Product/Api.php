@@ -39,14 +39,17 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   public function fullInfo ($id = null, $sku = null) {
     $tmDataHelper = Mage::helper('mventory_tm');
 
-    $storeId = $tmDataHelper->getCurrentStoreId();
-
     $product = Mage::getModel('catalog/product');
 
     if (! $id)
       $id = $product->getResource()->getIdBySku($sku);
 
     $id = (int) $id;
+
+    $website = $tmDataHelper->getWebsite($id);
+    $storeId = $website
+                 ->getDefaultStore()
+                 ->getId();
 
     $result = $this->info($id, $storeId, null, 'id');
     $product = $product->load($id);
@@ -76,7 +79,19 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $productAttributeMedia
       = Mage::getModel('catalog/product_attribute_media_api');
 
-    $result['images'] = $productAttributeMedia->items($id, $storeId, 'id');
+    $baseUrlPath = Mage_Core_Model_Store::XML_PATH_UNSECURE_BASE_URL;
+
+    $mediaPath = Mage::getStoreConfig($baseUrlPath, $storeId)
+                 . 'media/'
+                 . Mage::getSingleton('catalog/product_media_config')
+                     ->getBaseMediaUrlAddition();
+
+    $images = $productAttributeMedia->items($id, $storeId, 'id');
+
+    foreach ($images as &$image)
+      $image['url'] = $mediaPath . $image['file'];
+
+    $result['images'] = $images;
 
     $category = Mage::getModel('catalog/category_api');
 
@@ -90,7 +105,6 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $relistIfNotSoldPath = MVentory_Tm_Model_Connector::RELIST_IF_NOT_SOLD_PATH;
 
     $listingId = $product->getTmListingId();
-    $website = $tmDataHelper->getWebsiteIdFromProduct($product);
 
     $result['tm_options'] = array();
     $result['tm_options']['allow_buy_now'] = $tmDataHelper->getConfig($buyNowPath, $website);
