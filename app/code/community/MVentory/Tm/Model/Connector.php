@@ -295,7 +295,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $imagePath = Mage::getBaseDir('media') . DS . 'catalog' . DS . 'product'
                      . $product->getImage();
 
-      if (!$tmHelper->download($imagePath))
+      if (!$tmHelper->download($imagePath, $this->_website))
         return 'Downloading image from S3 failed';
 
       if (file_exists($imagePath)) {
