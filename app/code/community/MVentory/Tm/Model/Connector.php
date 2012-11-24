@@ -288,14 +288,15 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         return 'Product doesn\'t have matched tm category';
       }
 
-      $tmHelper = Mage::helper('mventory_tm/tm');
-
       $photoId = null;
 
       $imagePath = Mage::getBaseDir('media') . DS . 'catalog' . DS . 'product'
                      . $product->getImage();
 
-      if (!$tmHelper->download($imagePath, $this->_website))
+      $downloadResult = Mage::helper('mventory_tm/tm')
+                          ->download($imagePath, $this->_website);
+
+      if (!$downloadResult)
         return 'Downloading image from S3 failed';
 
       if (file_exists($imagePath)) {
@@ -350,6 +351,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         $description = $this->processDescription($descriptionTmpl, $product);
         $description = htmlspecialchars($description);
       }
+
+      $tmHelper = Mage::helper('mventory_tm/tm');
 
       //Apply fees to price of the product if it's allowed
       $price = isset($data['add_tm_fees']) && $data['add_tm_fees']
