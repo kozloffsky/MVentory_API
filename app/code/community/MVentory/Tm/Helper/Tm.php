@@ -104,7 +104,7 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
         /* If cannot add any fees then we are in the wrong range. */
         if ($maxFee < 0)
           continue;
-       
+
         /* Fee for the maximum price that still fits in the current range. */
         $feeForTheMaxPrice = $_fee['fixed'] + (($_fee['to']) - $_fee['from']) * $_fee['rate'];
 
@@ -113,7 +113,7 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
         if ($maxFee < $feeForTheMaxPrice)
           continue;
       }
-      
+
       /* Calculate the fee for the range selected. */
       $fee = ( $_fee['fixed']+($price-$_fee['from'])*$_fee['rate'] )/( 1-$_fee['rate'] );
 
