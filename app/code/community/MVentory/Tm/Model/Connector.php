@@ -288,12 +288,14 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         return 'Product doesn\'t have matched tm category';
       }
 
+      Mage::register('product', $product);
+
       $photoId = null;
 
       $imagePath = Mage::getBaseDir('media') . DS . 'catalog' . DS . 'product'
                      . $product->getImage();
 
-      $downloadResult = Mage::helper('mventory_tm/tm')
+      $downloadResult = Mage::helper('mventory_tm/s3')
                           ->download($imagePath, $this->_website);
 
       if (!$downloadResult)

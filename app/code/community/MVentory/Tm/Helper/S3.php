@@ -62,7 +62,7 @@ class MVentory_Tm_Helper_S3 extends MVentory_Tm_Helper_Data {
     if ($website === null)
       $website = $this->getWebsite();
     else
-      $website = Mage::app()->getWebsite($website)
+      $website = Mage::app()->getWebsite($website);
 
     $accessKeyPath = MVentory_Tm_Model_Observer::XML_PATH_CDN_ACCESS_KEY;
     $secretKeyPath = MVentory_Tm_Model_Observer::XML_PATH_CDN_SECRET_KEY;

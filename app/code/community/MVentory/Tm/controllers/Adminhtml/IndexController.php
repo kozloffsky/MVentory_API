@@ -42,8 +42,6 @@ class MVentory_Tm_Adminhtml_IndexController
       return;
     }
 
-    Mage::register('product', $product);
-
     $stock = Mage::getModel('cataloginventory/stock_item')
                ->loadByProduct($product);
 
