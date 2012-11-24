@@ -105,7 +105,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       'allow_buy_now' => $helper->getConfig($buyNowPath, $website),
       'add_tm_fees' => $helper->getConfig($tmFeesPath, $website),
       'shipping_type' => $helper->getConfig($shippingTypePath, $website),
-      'relist' => $helper->getConfig($relistIfNotSoldPath, $website)
+      'relist' => $helper->getConfig($relistIfNotSoldPath, $website),
+      'preselected_categories' => null
     );
 
     if ($listingId = $helper->getAccountId($id, $website))
@@ -122,15 +123,13 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     foreach ($helper->getAccounts($website) as $id => $account)
       $tmOptions['tm_accounts'][$id] = $account['name'];
 
-    if (!count($result['category_ids']))
-      $tmOptions['preselected_categories'] = null;
-    else {
+    if (count($result['category_ids'])) {
       $mageCategory = Mage::getModel('catalog/category')
                         ->load($result['category_ids'][0]);
 
       $tmAssignedCategoryIds = $mageCategory->getTmAssignedCategories();
 
-      if ($tmAssignedCategoryIds && is_string($tmAssignedCategoryIds)) {
+      if (is_string($tmAssignedCategoryIds) && strlen($tmAssignedCategoryIds)) {
         $tmAssignedCategoryIds = explode(',', $tmAssignedCategoryIds);
         $tmOptions['preselected_categories'] = array();
         $tmAllCategories = Mage::getModel('mventory_tm/connector')
@@ -140,8 +139,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
           if (isset($tmAllCategories[$id]))
             $tmOptions['preselected_categories'][$id]
               = $tmAllCategories[$id]['path'];
-      } else
-        $tmOptions['preselected_categories'] = null;
+      }
     }
 
     $result['tm_options'] = $tmOptions;
