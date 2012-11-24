@@ -15,15 +15,16 @@ class MVentory_Tm_Helper_S3 extends MVentory_Tm_Helper_Data {
    * Downloads image from S3 by its absolute path on FS.
    *
    * @param string $path Absolute path to image
+   * @param int|string|Mage_Core_Model_Website Website for settings
    *
    * @return bool
    */
-  public function download ($path) {
+  public function download ($path, $website = null) {
     if (!file_exists(dirname($path)))
       mkdir(dirname($path), 0777, true);
 
     $result = $this
-                ->_getS3()
+                ->_getS3($website)
                 ->getObjectStream($this->_getObject($path), $path);
 
     return $result ? true : false;
@@ -34,28 +35,34 @@ class MVentory_Tm_Helper_S3 extends MVentory_Tm_Helper_Data {
    *
    * @param string $from Absolute path to source image
    * @param string $path Absolute path to create S3 object name
+   * @param int|string|Mage_Core_Model_Website Website for settings
    *
    * @return bool
    */
-  public function upload ($from, $path) {
+  public function upload ($from, $path, $website = null) {
     //Prepare meta data for uploading. All uploaded images are public
     $meta = array(Zend_Service_Amazon_S3::S3_ACL_HEADER
                     => Zend_Service_Amazon_S3::S3_ACL_PUBLIC_READ);
 
     return $this
-             ->_getS3()
+             ->_getS3($website)
              ->putFileStream($from, $this->_getObject($path), $meta);
   }
 
   /**
    * Returns configured S3 object.
-   * Uses website which current product is asssigned to or current website
-   * to get wesbite's prefix on S3
+   * Uses passed website or wesbite which current product is asssigned to
+   * or current website to get wesbite's prefix on S3
+   *
+   * @param int|string|Mage_Core_Model_Website Website for settings
    *
    * @return Zend_Service_Amazon_S3
    */
-  protected function _getS3 () {
-    $website = $this->getWebsite();
+  protected function _getS3 ($website = null) {
+    if ($website === null)
+      $website = $this->getWebsite();
+    else
+      $website = Mage::app()->getWebsite($website)
 
     $accessKeyPath = MVentory_Tm_Model_Observer::XML_PATH_CDN_ACCESS_KEY;
     $secretKeyPath = MVentory_Tm_Model_Observer::XML_PATH_CDN_SECRET_KEY;
