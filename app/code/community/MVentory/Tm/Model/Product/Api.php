@@ -39,10 +39,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   public function fullInfo ($id = null, $sku = null) {
     $tmDataHelper = Mage::helper('mventory_tm');
 
-    $product = Mage::getModel('catalog/product');
-
     if (! $id)
-      $id = $product->getResource()->getIdBySku($sku);
+      $id = Mage::getResourceModel('catalog/product')->getIdBySku($sku);
 
     $id = (int) $id;
 
@@ -52,7 +50,6 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                  ->getId();
 
     $result = $this->info($id, $storeId, null, 'id');
-    $product = $product->load($id);
 
     $stockItem = Mage::getModel('mventory_tm/stock_item_api');
 
@@ -104,15 +101,15 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $shippingTypePath = MVentory_Tm_Model_Connector::SHIPPING_TYPE_PATH;
     $relistIfNotSoldPath = MVentory_Tm_Model_Connector::RELIST_IF_NOT_SOLD_PATH;
 
-    $listingId = $product->getTmListingId();
-
     $result['tm_options'] = array();
     $result['tm_options']['allow_buy_now'] = $tmDataHelper->getConfig($buyNowPath, $website);
     $result['tm_options']['add_tm_fees'] = $tmDataHelper->getConfig($tmFeesPath, $website);
     $result['tm_options']['shipping_type'] = $tmDataHelper->getConfig($shippingTypePath, $website);
     $result['tm_options']['relist'] = $tmDataHelper->getConfig($relistIfNotSoldPath, $website);
 
-    if ($listingId) {
+    $tmTmHelper = Mage::helper('mventory_tm/tm');
+
+    if ($listingId = $tmTmHelper->getAccountId($id, $website)) {
       $result['tm_options']['tm_listing_id'] = $listingId;
     }
 
@@ -122,7 +119,6 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $result['tm_options']['shipping_types_list'] = $shippingTypes;
 
-    $tmTmHelper = Mage::helper('mventory_tm/tm');
     $result['tm_options']['tm_accounts'] = array();
     foreach ($tmTmHelper->getAccounts($website) as $id => $account) {
       $result['tm_options']['tm_accounts'][$id] = $account['name'];
