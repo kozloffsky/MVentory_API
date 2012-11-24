@@ -37,14 +37,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
 
   public function fullInfo ($id = null, $sku = null) {
-    $tmDataHelper = Mage::helper('mventory_tm');
-
     if (! $id)
       $id = Mage::getResourceModel('catalog/product')->getIdBySku($sku);
 
     $id = (int) $id;
 
-    $website = $tmDataHelper->getWebsite($id);
+    $helper = Mage::helper('mventory_tm/tm');
+
+    $website = $helper->getWebsite($id);
     $storeId = $website
                  ->getDefaultStore()
                  ->getId();
@@ -102,14 +102,12 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $relistIfNotSoldPath = MVentory_Tm_Model_Connector::RELIST_IF_NOT_SOLD_PATH;
 
     $result['tm_options'] = array();
-    $result['tm_options']['allow_buy_now'] = $tmDataHelper->getConfig($buyNowPath, $website);
-    $result['tm_options']['add_tm_fees'] = $tmDataHelper->getConfig($tmFeesPath, $website);
-    $result['tm_options']['shipping_type'] = $tmDataHelper->getConfig($shippingTypePath, $website);
-    $result['tm_options']['relist'] = $tmDataHelper->getConfig($relistIfNotSoldPath, $website);
+    $result['tm_options']['allow_buy_now'] = $helper->getConfig($buyNowPath, $website);
+    $result['tm_options']['add_tm_fees'] = $helper->getConfig($tmFeesPath, $website);
+    $result['tm_options']['shipping_type'] = $helper->getConfig($shippingTypePath, $website);
+    $result['tm_options']['relist'] = $helper->getConfig($relistIfNotSoldPath, $website);
 
-    $tmTmHelper = Mage::helper('mventory_tm/tm');
-
-    if ($listingId = $tmTmHelper->getAccountId($id, $website)) {
+    if ($listingId = $helper->getAccountId($id, $website)) {
       $result['tm_options']['tm_listing_id'] = $listingId;
     }
 
@@ -120,7 +118,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $result['tm_options']['shipping_types_list'] = $shippingTypes;
 
     $result['tm_options']['tm_accounts'] = array();
-    foreach ($tmTmHelper->getAccounts($website) as $id => $account) {
+    foreach ($helper->getAccounts($website) as $id => $account) {
       $result['tm_options']['tm_accounts'][$id] = $account['name'];
     }
 
