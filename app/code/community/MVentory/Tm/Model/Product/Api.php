@@ -108,9 +108,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       'relist' => $helper->getConfig($relistIfNotSoldPath, $website)
     );
 
-    if ($listingId = $helper->getAccountId($id, $website)) {
+    if ($listingId = $helper->getAccountId($id, $website))
       $tmOptions['tm_listing_id'] = $listingId;
-    }
 
     $shippingTypes
       = Mage::getModel('mventory_tm/system_config_source_shippingtype')
@@ -119,30 +118,30 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $tmOptions['shipping_types_list'] = $shippingTypes;
 
     $tmOptions['tm_accounts'] = array();
-    foreach ($helper->getAccounts($website) as $id => $account) {
-      $tmOptions['tm_accounts'][$id] = $account['name'];
-    }
 
-    if (!count($result['category_ids'])) {
+    foreach ($helper->getAccounts($website) as $id => $account)
+      $tmOptions['tm_accounts'][$id] = $account['name'];
+
+    if (!count($result['category_ids']))
       $tmOptions['preselected_categories'] = null;
-    } else {
-      $mageCategory = Mage::getModel('catalog/category')->load($result['category_ids'][0]);
+    else {
+      $mageCategory = Mage::getModel('catalog/category')
+                        ->load($result['category_ids'][0]);
 
       $tmAssignedCategoryIds = $mageCategory->getTmAssignedCategories();
 
       if ($tmAssignedCategoryIds && is_string($tmAssignedCategoryIds)) {
         $tmAssignedCategoryIds = explode(',', $tmAssignedCategoryIds);
         $tmOptions['preselected_categories'] = array();
-        $tmAllCategories = Mage::getModel('mventory_tm/connector')->getTmCategories();
+        $tmAllCategories = Mage::getModel('mventory_tm/connector')
+                             ->getTmCategories();
 
-        foreach ($tmAssignedCategoryIds as $id) {
-          if (isset($tmAllCategories[$id])) {
-            $tmOptions['preselected_categories'][$id] = $tmAllCategories[$id]['path'];
-          }
-        }
-      } else {
+        foreach ($tmAssignedCategoryIds as $id)
+          if (isset($tmAllCategories[$id]))
+            $tmOptions['preselected_categories'][$id]
+              = $tmAllCategories[$id]['path'];
+      } else
         $tmOptions['preselected_categories'] = null;
-      }
     }
 
     $result['tm_options'] = $tmOptions;
