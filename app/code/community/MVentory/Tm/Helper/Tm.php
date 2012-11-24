@@ -1,6 +1,6 @@
 <?php
 
-class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
+class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
   const XML_PATH_ACCOUNTS = 'mventory_tm/settings/accounts';
 
@@ -63,20 +63,14 @@ class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
    * @return string URL to the listing
    */
   public function getListingUrl ($product) {
-    $helper = Mage::helper('mventory_tm');
-
-    $website = $helper->getWebsite($product);
-
-    $domain = $helper->isSandboxMode($website)
+    $domain = $this->isSandboxMode($this->getWebsite($product))
                 ? 'tmsandbox'
                   : 'trademe';
-
-    $id = $product->getTmListingId();
 
     return 'http://www.'
            . $domain
            . '.co.nz/Browse/Listing.aspx?id='
-           . $id;
+           . $product->getTmListingId();
   }
 
   /**
@@ -147,10 +141,7 @@ class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
    * @return array List of accounts
    */
   public function getAccounts ($website) {
-    $value = Mage::helper('mventory_tm')
-               ->getConfig(self::XML_PATH_ACCOUNTS, $website);
-
-    $value = unserialize($value);
+    $value = unserialize($this->getConfig(self::XML_PATH_ACCOUNTS, $website));
 
     return $value !== false ? $value : array();
   }
@@ -164,8 +155,7 @@ class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
    * @return string Account ID
    */
   public function getAccountId ($productId, $website) {
-    return Mage::helper('mventory_tm')
-             ->getAttributesValue($productId, 'tm_account_id', $website);
+    return $this->getAttributesValue($productId, 'tm_account_id', $website);
   }
 
   /**
@@ -178,7 +168,6 @@ class MVentory_Tm_Helper_Tm extends Mage_Core_Helper_Abstract {
   public function setAccountId ($productId, $accountId, $website) {
     $attrData = array('tm_account_id' => $accountId);
 
-    Mage::helper('mventory_tm')
-      ->setAttributesValue($productId, $attrData, $website);
+    $this->setAttributesValue($productId, $attrData, $website);
   }
 }
