@@ -124,21 +124,24 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $tmOptions['tm_accounts'][$id] = $account['name'];
 
     if (count($result['category_ids'])) {
-      $mageCategory = Mage::getModel('catalog/category')
+      $category = Mage::getModel('catalog/category')
                         ->load($result['category_ids'][0]);
 
-      $tmAssignedCategoryIds = $mageCategory->getTmAssignedCategories();
+      $assigned = $category->getTmAssignedCategories();
 
-      if (is_string($tmAssignedCategoryIds) && strlen($tmAssignedCategoryIds)) {
-        $tmAssignedCategoryIds = explode(',', $tmAssignedCategoryIds);
-        $tmOptions['preselected_categories'] = array();
-        $tmAllCategories = Mage::getModel('mventory_tm/connector')
-                             ->getTmCategories();
+      if (is_string($assigned) && strlen($assigned)) {
+        $assigned = explode(',', $assigned);
 
-        foreach ($tmAssignedCategoryIds as $id)
-          if (isset($tmAllCategories[$id]))
-            $tmOptions['preselected_categories'][$id]
-              = $tmAllCategories[$id]['path'];
+        $tmCategories = Mage::getModel('mventory_tm/connector')
+                          ->getTmCategories();
+
+        $preselected = array();
+
+        foreach ($assigned as $id)
+          if (isset($tmCategories[$id]))
+            $preselected[$id] = $tmCategories[$id]['path'];
+
+        $tmOptions['preselected_categories'] = $preselected;
       }
     }
 
