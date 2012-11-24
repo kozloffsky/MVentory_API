@@ -101,29 +101,30 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $shippingTypePath = MVentory_Tm_Model_Connector::SHIPPING_TYPE_PATH;
     $relistIfNotSoldPath = MVentory_Tm_Model_Connector::RELIST_IF_NOT_SOLD_PATH;
 
-    $result['tm_options'] = array();
-    $result['tm_options']['allow_buy_now'] = $helper->getConfig($buyNowPath, $website);
-    $result['tm_options']['add_tm_fees'] = $helper->getConfig($tmFeesPath, $website);
-    $result['tm_options']['shipping_type'] = $helper->getConfig($shippingTypePath, $website);
-    $result['tm_options']['relist'] = $helper->getConfig($relistIfNotSoldPath, $website);
+    $tmOptions = array(
+      'allow_buy_now' => $helper->getConfig($buyNowPath, $website),
+      'add_tm_fees' => $helper->getConfig($tmFeesPath, $website),
+      'shipping_type' => $helper->getConfig($shippingTypePath, $website),
+      'relist' => $helper->getConfig($relistIfNotSoldPath, $website)
+    );
 
     if ($listingId = $helper->getAccountId($id, $website)) {
-      $result['tm_options']['tm_listing_id'] = $listingId;
+      $tmOptions['tm_listing_id'] = $listingId;
     }
 
     $shippingTypes
       = Mage::getModel('mventory_tm/system_config_source_shippingtype')
         ->toOptionArray();
 
-    $result['tm_options']['shipping_types_list'] = $shippingTypes;
+    $tmOptions['shipping_types_list'] = $shippingTypes;
 
-    $result['tm_options']['tm_accounts'] = array();
+    $tmOptions['tm_accounts'] = array();
     foreach ($helper->getAccounts($website) as $id => $account) {
-      $result['tm_options']['tm_accounts'][$id] = $account['name'];
+      $tmOptions['tm_accounts'][$id] = $account['name'];
     }
 
     if (!count($result['category_ids'])) {
-      $result['tm_options']['preselected_categories'] = null;
+      $tmOptions['preselected_categories'] = null;
     } else {
       $mageCategory = Mage::getModel('catalog/category')->load($result['category_ids'][0]);
 
@@ -131,18 +132,20 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
       if ($tmAssignedCategoryIds && is_string($tmAssignedCategoryIds)) {
         $tmAssignedCategoryIds = explode(',', $tmAssignedCategoryIds);
-        $result['tm_options']['preselected_categories'] = array();
+        $tmOptions['preselected_categories'] = array();
         $tmAllCategories = Mage::getModel('mventory_tm/connector')->getTmCategories();
 
         foreach ($tmAssignedCategoryIds as $id) {
           if (isset($tmAllCategories[$id])) {
-            $result['tm_options']['preselected_categories'][$id] = $tmAllCategories[$id]['path'];
+            $tmOptions['preselected_categories'][$id] = $tmAllCategories[$id]['path'];
           }
         }
       } else {
-        $result['tm_options']['preselected_categories'] = null;
+        $tmOptions['preselected_categories'] = null;
       }
     }
+
+    $result['tm_options'] = $tmOptions;
 
     return $result;
   }
