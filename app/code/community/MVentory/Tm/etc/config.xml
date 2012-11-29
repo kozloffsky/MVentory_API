@@ -56,6 +56,12 @@
           <design_package>MVentory_Tm_Model_Design_Package</design_package>
         </rewrite>
       </core>
+
+      <catalog>
+        <rewrite>
+          <layer_filter_attribute>MVentory_Tm_Model_Layer_Filter_Attribute</layer_filter_attribute>
+        </rewrite>
+      </catalog>
     </models>
 
     <helpers>
