@@ -81,7 +81,7 @@ class MVentory_Tm_Model_Observer {
 
       if ($doRemoveFromTM)
       {
-        $result = $connector->remove($product);        
+        $result = $connector->remove($product);
       }
 
       if ($result !== true) {
