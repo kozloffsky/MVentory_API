@@ -15,6 +15,9 @@ class MVentory_Tm_Model_Observer {
   );
 
   public function removeListingFromTm ($observer) {
+    if (Mage::registry('tm_disable_withdrawal'))
+      return;
+
     $order = $observer
                ->getEvent()
                ->getOrder();
@@ -239,6 +242,11 @@ class MVentory_Tm_Model_Observer {
 
           //API function for creating order requires curren store to be set
           Mage::app()->setCurrentStore($store);
+
+          //Set global flag to prevent removing product from TM during order
+          //creating. No need to remove it because it was bought on TM.
+          //The flas is used in removeListingFromTm() method
+          Mage::register('tm_disable_withdrawal', true, true);
 
           //Set global flag to enable our dummy shipping method
           Mage::register('tm_allow_dummyshipping', true, true);
