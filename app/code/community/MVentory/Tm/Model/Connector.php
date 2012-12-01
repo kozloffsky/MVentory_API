@@ -610,6 +610,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         $description = '';
 
         if ($descriptionTmpl) {
+          //Set current product in Magento registry, it's required by the block
+          //which shows product's attributes
+          Mage::register('product', $product, true);
+
           $description = $this->processDescription($descriptionTmpl, $product);
           $description = htmlspecialchars($description);
         }
