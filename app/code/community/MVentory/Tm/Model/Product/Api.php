@@ -109,7 +109,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       'preselected_categories' => null
     );
 
-    if ($listingId = $helper->getAccountId($id, $website))
+    if ($listingId = Mage::helper('mventory_tm/product')->getListingId($id))
       $tmOptions['tm_listing_id'] = $listingId;
 
     $shippingTypes
