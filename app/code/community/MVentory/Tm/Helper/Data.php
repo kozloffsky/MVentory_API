@@ -57,7 +57,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
    * 
    * @return bool|string|array
    */
-  public function getAttributesValue ($productId, $attribute, $website) {
+  public function getAttributesValue ($productId, $attribute, $website = 0) {
     $store = Mage::app()
                ->getWebsite($website)
                ->getDefaultStore();
@@ -73,7 +73,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
    * @param array $attrData
    * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
    */
-  public function setAttributesValue ($productId, $attrData, $website) {
+  public function setAttributesValue ($productId, $attrData, $website = 0) {
     $storeId = Mage::app()
                  ->getWebsite($website)
                  ->getDefaultStore()
