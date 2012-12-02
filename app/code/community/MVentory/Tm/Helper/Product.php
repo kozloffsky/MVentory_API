@@ -39,4 +39,28 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
            . '/'
            . $product->getUrlPath($this->getCategory($product));
   }
+
+  /**
+   * Returns TM listing ID linked to the product
+   *
+   * @param int $productId Product's ID
+   *
+   * @return string Listing ID
+   */
+  public function getListingId ($productId) {
+    return $this->getAttributesValue($productId, 'tm_listing_id');
+  }
+
+  /**
+   * Sets value of TM listing ID attribute in the product
+   *
+   * @param int|string $listingId Listing ID
+   * @param int $productId Product's ID
+   *
+   */
+  public function setListingId ($listingId, $productId) {
+    $attribute = array('tm_listing_id' => $listingId);
+
+    $this->setAttributesValue($productId, $attribute);
+  }
 }
