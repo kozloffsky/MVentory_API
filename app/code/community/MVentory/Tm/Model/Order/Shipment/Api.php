@@ -18,14 +18,14 @@ class MVentory_Tm_Model_Order_Shipment_Api extends Mage_Sales_Model_Order_Shipme
   	$includeComment = false;
   	
     if(is_array($params)) {
-      if(array_key_exists('itemsQty'))
+      if(array_key_exists('itemsQty', $params))
         $itemsQty = $params['itemsQty'];
-      if(array_key_exists('comment'))
-        $itemsQty = $params['comment'];
-      if(array_key_exists('email'))
-        $itemsQty = $params['email'];
-      if(array_key_exists('includeComment'))
-        $itemsQty = $params['includeComment'];
+      if(array_key_exists('comment', $params))
+        $comment = $params['comment'];
+      if(array_key_exists('email', $params))
+        $email = $params['email'];
+      if(array_key_exists('includeComment', $params))
+        $includeComment = $params['includeComment'];
     }
   	
     $shipmentId = $this->create($orderIncrementId,$itemsQty,$comment,$email,
