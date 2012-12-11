@@ -106,6 +106,8 @@ $_accounts = $this->getAccounts();
       <?php for ($n = 0; $n <= $_cols; ++$n): ?>
       <col />
       <?php endfor; ?>
+
+      <col width='1' />
     </colgroup>
 
     <tbody>
@@ -119,14 +121,19 @@ $_accounts = $this->getAccounts();
         <tr class="pointer">
           <td class="checkbox">
             <input type="radio" class="category-check" name="tm[category]"  value="<?php echo $id; ?>" <?php echo !$_multiple ? 'checked="checked"' : '' ?> />
-            <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $_categories[$id]['path']; ?>" />
           </td>
 
           <?php for ($n = 0; $n <= $_cols; ++$n): ?>
-          <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
+          <td>
             <?php echo isset($_categories[$id]['name'][$n]) ? $_categories[$id]['name'][$n] : ''; ?>
           </td>
           <?php endfor; ?>
+
+          <td class="last">
+            <a href="<?php echo $_tmUrl . $_categories[$id]['path']; ?>">
+              <?php echo $this->__('View'); ?>
+            </a>
+          </td>
         </tr>
 
           <?php $attrs = $this->getPreparedAttributes($id); ?>
@@ -134,7 +141,7 @@ $_accounts = $this->getAccounts();
           <?php if ($attrs): ?>
           <tr class="category-attrs">
             <td><?php echo $this->__('Attributes'); ?>:</td>
-            <td colspan=<?php echo $_cols + 1; ?> class="last">
+            <td colspan=<?php echo $_cols + 2; ?> class="last">
 
             <?php if (count($attrs['existing'])): ?>
               <?php foreach ($attrs['existing'] as $attr): ?>

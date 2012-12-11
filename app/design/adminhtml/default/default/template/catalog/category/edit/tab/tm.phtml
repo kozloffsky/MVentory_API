@@ -19,6 +19,8 @@ $_tmUrl = $this->getTmUrl();
       <?php for ($n = 0; $n <= $_cols; ++$n): ?>
       <col />
       <?php endfor; ?>
+
+      <col width='1' />
     </colgroup>
 
     <tbody>
@@ -27,14 +29,19 @@ $_tmUrl = $this->getTmUrl();
         <tr class="pointer">
           <td class="checkbox a-center">
             <input type="checkbox" class="category-check" value="<?php echo $id; ?>" checked="checked" />
-            <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $_categories[$id]['path']; ?>" />
           </td>
 
           <?php for ($n = 0; $n <= $_cols; ++$n): ?>
-          <td <?php echo $n == $_cols ? 'class="last"' : '' ?>>
+          <td>
             <?php echo isset($_categories[$id]['name'][$n]) ? $_categories[$id]['name'][$n] : ''; ?>
           </td>
           <?php endfor; ?>
+
+          <td class="last">
+            <a href="<?php echo $_tmUrl . $_categories[$id]['path']; ?>">
+              <?php echo $this->__('View'); ?>
+            </a>
+          </td>
         </tr>
 
           <?php $attrs = $_helper->getAttributes($id); ?>
@@ -42,7 +49,7 @@ $_tmUrl = $this->getTmUrl();
           <?php if ($attrs): ?>
           <tr class="category-attrs">
             <td><?php echo $this->__('Attributes'); ?>:</td>
-            <td colspan=<?php echo $_cols + 1; ?> class="last">
+            <td colspan=<?php echo $_cols + 2; ?> class="last">
             <?php foreach ($attrs as $attr): ?>
               <?php echo $attr['Name'] . ' (' . $attr['Type'] . '), '; ?>
             <?php endforeach; ?> 
