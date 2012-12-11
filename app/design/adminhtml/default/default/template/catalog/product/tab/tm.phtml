@@ -112,7 +112,7 @@ $_accounts = $this->getAccounts();
 
     <tbody>
       <tr id="tm_no_selected_message" class="even <?php echo count($_selectedCategories) ? 'no-display' : ''; ?>">
-        <td class="empty-text a-center last" colspan="10">
+        <td class="empty-text a-center last" colspan="<?php echo $_cols + 3; ?>">
           <?php echo $this->__('No category selected. Please, select category from the list below.'); ?>
         </td>
       </tr>
