@@ -65,6 +65,15 @@
 
             <footer translate="label">
               <label>Footer description</label>
+              <comment><![CDATA[
+                Available variables:
+                <ul style="list-style-type: disc; padding-left: 30px">
+                  <li><tt>{{url}}</tt> - Product URL</li>
+                  <li><tt>{{sd}}</tt> - Short description </li>
+                  <li><tt>{{fd}}</tt> - Description </li>
+                  <li><tt>{{attrs}}</tt> - Product attributes table</li>
+                </ul>
+              ]]></comment>
               <frontend_type>textarea</frontend_type>
 
               <show_in_default>1</show_in_default>
