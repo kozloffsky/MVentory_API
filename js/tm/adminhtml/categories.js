@@ -181,13 +181,13 @@ function tm_categories_for_product (url_templates) {
       .attr('action', url_templates['submit'])
       .submit();
   }
-  
+
   function update_handler () {
     $('#product_edit_form')
       .attr('action', url_templates['update'])
       .submit();
   }
-  
+
   function row_click_handler () {
     $(this)
       .find('> .checkbox > .category-check')
