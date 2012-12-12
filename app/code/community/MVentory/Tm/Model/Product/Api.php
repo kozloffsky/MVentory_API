@@ -327,7 +327,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $collection
       ->getSelect()
-      ->columns(array('SUM(at_qty.qty) AS total_qty',
+      ->columns(array('COUNT(at_qty.qty) AS total_qty',
                       'SUM(at_qty.qty*at_price.value) AS total_value'));
     $result = $collection
                 ->load()
