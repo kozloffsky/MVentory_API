@@ -145,8 +145,8 @@
 
             <buyer translate="label">
               <label>TM buyer</label>
-              <frontend_type>select</frontend_type>
-              <source_model>mventory_tm/system_config_source_customers</source_model>
+              <frontend_type>text</frontend_type>
+              <!--<source_model>mventory_tm/system_config_source_customers</source_model>-->  
 
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
