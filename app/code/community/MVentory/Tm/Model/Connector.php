@@ -26,6 +26,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const FREE = 3;
   const CUSTOM = 4;
 
+  const TITLE_MAX_LENGTH = 50;
+  const DESCRIPTION_MAX_LENGTH = 2048;
+
   //List of TM categories to ignore. Categories are selected by its number.
   private $_ignoreTmCategories = array(
     '0001-' => true, //Trade Me Motors
@@ -290,6 +293,20 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       Mage::register('product', $product);
 
+      $descriptionTmpl = $this->_getConfig(self::FOOTER_PATH);
+
+      $description = '';
+
+      if ($descriptionTmpl) {
+        $description = $this->processDescription($descriptionTmpl, $product);
+        $description = htmlspecialchars($description);
+      }
+
+      if (strlen($description) > self::DESCRIPTION_MAX_LENGTH)
+        return 'Length of the description exceeded the limit of '
+               .  self::DESCRIPTION_MAX_LENGTH
+               . ' characters';
+
       $photoId = null;
 
       $imagePath = Mage::getBaseDir('media') . DS . 'catalog' . DS . 'product'
@@ -345,13 +362,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling.xml');
       $client->setMethod(Zend_Http_Client::POST);
 
-      $descriptionTmpl = $this->_getConfig(self::FOOTER_PATH);
+      $title = $product->getName();
 
-      $description = '';
-
-      if ($descriptionTmpl) {
-        $description = $this->processDescription($descriptionTmpl, $product);
-        $description = htmlspecialchars($description);
+      if (strlen($title) > self::TITLE_MAX_LENGTH) {
+        $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
       }
 
       $tmHelper = Mage::helper('mventory_tm/tm');
@@ -382,7 +396,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
-<Title>' . $product->getName() . '</Title>
+<Title>' . $title . '</Title>
 <Description><Paragraph>' . $description . '</Paragraph></Description>
 <StartPrice>' . $price . '</StartPrice>
 <ReservePrice>' . $price . '</ReservePrice>'

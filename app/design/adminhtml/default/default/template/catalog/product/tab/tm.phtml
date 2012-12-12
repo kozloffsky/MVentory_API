@@ -186,5 +186,28 @@ $_accounts = $this->getAccounts();
 
 tm_categories_for_product(<?php echo $this->getUrlTemplates() ?>);
 
+jQuery(document).ready(function ($) {
+  var limit = <?php echo MVentory_Tm_Model_Connector::TITLE_MAX_LENGTH; ?>;
+
+  $('#product_edit_form').on('submit', function () {
+    var name = $(this).find('input[name="product[name]"]').val();
+
+    if (name.length <= limit)
+      return;
+
+    name = name.substring(0, limit - 3) + '...';
+
+    var msg = 'Product\'s name exceeded the limit of '
+              + limit
+              + ' symbols.\n'
+              + 'Please reduce its length or press OK to use '
+              + 'following truncated name "'
+              + name
+              + '"'
+
+    return confirm(msg);
+  });
+});
+
 //]]>
 </script>
