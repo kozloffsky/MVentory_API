@@ -940,10 +940,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $_names = array_merge($names, array($category['Name']));
 
-      $subCategories = $category['Subcategories'];
-
-      if (is_array($subCategories) && count($subCategories))
-        $this->_parseTmCategories($list, $subCategories, $_names);
+      if (isset($category['Subcategories']))
+        $this->_parseTmCategories($list, $category['Subcategories'], $_names);
       else {
         $id = explode('-', $category['Number']);
         $id = (int) $id[count($id) - 2];
