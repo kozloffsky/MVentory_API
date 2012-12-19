@@ -302,25 +302,28 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $photoId = null;
 
-      $imagePath = Mage::getBaseDir('media') . DS . 'catalog' . DS . 'product'
-                     . $product->getImage();
+      $imagePath = $product->getImage();
 
-      $downloadResult = Mage::helper('mventory_tm/s3')
-                          ->download($imagePath, $this->_website);
+      if ($imagePath && $imagePath != 'no_selection') {
+        $imagePath = Mage::getBaseDir('media') . DS . 'catalog' . DS . 'product'
+                       . $imagePath;
 
-      if (!$downloadResult)
-        return 'Downloading image from S3 failed';
+        $downloadResult = Mage::helper('mventory_tm/s3')
+                            ->download($imagePath, $this->_website);
 
-      if (file_exists($imagePath)) {
-        $imagePathInfo = pathinfo($imagePath);
+        if (!$downloadResult)
+          return 'Downloading image from S3 failed';
 
-        $signature = md5($this->_accountData['key']
+        if (file_exists($imagePath)) {
+          $imagePathInfo = pathinfo($imagePath);
+
+          $signature = md5($this->_accountData['key']
                            . $imagePathInfo['filename']
                            . $imagePathInfo['extension']
                            . 'False'
                            . 'False');
 
-        $xml = '<PhotoUploadRequest xmlns="http://api.trademe.co.nz/v1">
+          $xml = '<PhotoUploadRequest xmlns="http://api.trademe.co.nz/v1">
   <Signature>' . $signature . '</Signature>
   <PhotoData>' . base64_encode(file_get_contents($imagePath)) . '</PhotoData>
   <FileName>' . $imagePathInfo['filename'] . '</FileName>
@@ -329,24 +332,25 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   <IsUsernameAdded>' . 0 . '</IsUsernameAdded>
   </PhotoUploadRequest>';
 
-        $client = $accessToken->getHttpClient($this->getConfig());
-        $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Photos.xml');
-        $client->setMethod(Zend_Http_Client::POST);
-        $client->setRawData($xml, 'application/xml');
+          $client = $accessToken->getHttpClient($this->getConfig());
+          $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Photos.xml');
+          $client->setMethod(Zend_Http_Client::POST);
+          $client->setRawData($xml, 'application/xml');
 
-        $response = $client->request();
+          $response = $client->request();
 
-        if ($response->getStatus() == '401') {
-          $this->reset();
-        }
+          if ($response->getStatus() == '401') {
+            $this->reset();
+          }
 
-        $startPos = strpos($response->getBody(), '<');
-        $endPos = strrpos($response->getBody(), '>') + 1;
-        $xml = simplexml_load_string(substr($response->getBody(), $startPos, $endPos - $startPos));
+          $startPos = strpos($response->getBody(), '<');
+          $endPos = strrpos($response->getBody(), '>') + 1;
+          $xml = simplexml_load_string(substr($response->getBody(), $startPos, $endPos - $startPos));
 
-        if ($xml) {
-          if ((string)$xml->Status == 'Success') {
-            $photoId = (int)$xml->PhotoId;
+          if ($xml) {
+            if ((string)$xml->Status == 'Success') {
+              $photoId = (int)$xml->PhotoId;
+            }
           }
         }
       }
