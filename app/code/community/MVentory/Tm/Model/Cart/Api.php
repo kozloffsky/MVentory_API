@@ -18,7 +18,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     //its ID. It prevents from double ordering in case data lost during
     //communication
     if ($transactionId !== null) {
-      $transactionId = (float) $transactionId;
+      $transactionId = (int) $transactionId;
 
       $orderId = Mage::getResourceModel('mventory_tm/order_transaction')
                    ->getOrderIdByTransaction($transactionId);
@@ -211,7 +211,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
       $transaction
         ->setOrderId((int) $orderId)
-        ->setTransactionId((float) $transactionId)
+        ->setTransactionId((int) $transactionId)
         ->save();
     }
 
