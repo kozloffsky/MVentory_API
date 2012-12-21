@@ -131,15 +131,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     }
   }
 
-  public function reset () {
-    $this->saveAccessToken();
-
-    Mage::app()->getResponse()->setRedirect(Mage::helper('core/url')->getCurrentUrl());
-    Mage::app()->getResponse()->sendResponse();
-
-    exit();
-  }
-
   public function auth () {
     $path = self::ACCESS_TOKEN_PATH . '_' . $this->_accountId;
     $data = $this->_getConfig($path);
@@ -231,10 +222,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           $client->setRawData($xml, 'application/xml');
 
           $response = $client->request();
-
-          if ($response->getStatus() == '401') {
-            $this->reset();
-          }
 
           $startPos = strpos($response->getBody(), '<');
           $endPos = strrpos($response->getBody(), '>') + 1;
@@ -347,10 +334,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $client->setRawData($xml, 'application/xml');
       $response = $client->request();
 
-      if ($response->getStatus() == '401') {
-        $this->reset();
-      }
-
       $xml = simplexml_load_string($response->getBody());
 
       if ($xml) {
@@ -400,10 +383,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $client->setRawData($xml, 'application/xml');
       $response = $client->request();
-
-      if ($response->getStatus() == '401') {
-        $this->reset();
-      }
 
       $xml = simplexml_load_string($response->getBody());
 
@@ -586,12 +565,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     $response = $client->request();
 
-    if ($response->getStatus() == 401) {
-      $this->reset();
-
-      return;
-    }
-
     if ($response->getStatus() != 200)
       return;
 
@@ -629,12 +602,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $client->setRawData(Zend_Json::encode($data), 'application/json');
 
     $response = $client->request();
-
-    if ($response->getStatus() == '401') {
-      $this->reset();
-
-      return;
-    }
 
     if ($response->getStatus() != 200)
       return;
@@ -781,12 +748,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $client->setMethod(Zend_Http_Client::GET);
 
     $response = $client->request();
-
-    if ($response->getStatus() == '401') {
-      $this->reset();
-
-      return;
-    }
 
     if ($response->getStatus() != 200)
       return;
