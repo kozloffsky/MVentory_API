@@ -31,6 +31,15 @@ class MVentory_Tm_Block_System_Config_Form_Field_Accounts
     $this->_addAfter = false;
     $this->_addButtonLabel = $helper->__('Add account');
 
+    $this->setTemplate('system/config/form/field/accounts.phtml');
+
     parent::__construct();
+  }
+
+  public function getAuthorizeUrl () {
+    $route = 'mventory_tm/adminhtml_tm/authenticateaccount';
+    $params = array('website' => $this->getRequest()->getParam('website', ''));
+
+    return $this->getUrl($route, $params);
   }
 }
