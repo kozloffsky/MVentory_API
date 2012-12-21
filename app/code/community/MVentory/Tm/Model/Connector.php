@@ -58,9 +58,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     6 => 'StayPeriod'
   );
 
-  //Restored original request data, used only after auth process
-  private $_requestData = null;
-
   protected function _construct () {
     $this->_helper = Mage::helper('mventory_tm');
   }
@@ -134,24 +131,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     }
   }
 
-  private function saveAccessToken ($token = '') {
-    $scope = 'default';
-    $scopeId = 0;
-
-    if ($this->_website) {
-      $scope = 'websites';
-      $scopeId = $this->_website;
-    }
-
-    $path = self::ACCESS_TOKEN_PATH . '_' . $this->_accountId;
-
-    Mage::getConfig()
-      ->saveConfig($path, $token, $scope, $scopeId)
-      ->reinit();
-
-    Mage::app()->reinitStores();
-  }
-
   public function reset () {
     $this->saveAccessToken();
 
@@ -162,81 +141,15 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function auth () {
-    $request = Mage::app()->getRequest();
+    $path = self::ACCESS_TOKEN_PATH . '_' . $this->_accountId;
+    $data = $this->_getConfig($path);
 
-    $oAuthToken = $request->getParam('oauth_token');
+    if (!$data)
+      return null;
 
-    $session = Mage::getSingleton('core/session');
+    $token = new Zend_Oauth_Token_Access();
 
-    $requestToken = $session->getMventoryTmRequestToken();
-
-    if ($oAuthToken && $requestToken) {
-      //Restore original request data from session to use
-      //during interaction with TM
-      $this->_requestData
-        = $session->getData('original_request_data', true);
-
-      if (isset($this->_requestData['tm']))
-        $this->setAccountId($this->_requestData['tm']);
-    }
-
-    $accessTokenData = $this->_getConfig(self::ACCESS_TOKEN_PATH
-                                         . '_'
-                                         . $this->_accountId);
-
-    if (!$accessTokenData) {
-      $oAuth = new Zend_Oauth_Consumer($this->getConfig());
-
-      if ($oAuthToken && $requestToken) {
-        try {
-          $accessToken= $oAuth->getAccessToken($request->getParams(),
-                                                    unserialize($requestToken));
-
-          $accessTokenData = serialize(array($accessToken->getToken(),
-                                               $accessToken->getTokenSecret()));
-
-          $this->saveAccessToken($accessTokenData);
-
-          $session->setMventoryTmRequestToken(null);
-        } catch(Exception $e) {
-
-          //Auth failed, so we don't need data stored earlier
-          $session->unsetData('original_request_data');
-
-          return false;
-        }
-      } elseif ($request->getParam('denied'))
-        return false;
-      else
-        try {
-          $requestToken = $oAuth->getRequestToken();
-
-          $session->setMventoryTmRequestToken(serialize($requestToken));
-
-          //Store original request data in session for using after
-          //auth success
-          $session->setData('original_request_data', $request->getParams());
-
-          $requestToken = explode('=', str_replace('&', '=', $requestToken));
-
-          $response = Mage::app()->getResponse();
-
-          $response
-            ->setRedirect(
-              'https://secure.'
-              . $this->_host
-              . '.co.nz/Oauth/Authorize?scope=MyTradeMeRead,MyTradeMeWrite&oauth_token='
-              . $requestToken[1]);
-
-          $response->sendResponse();
-
-          exit;
-        } catch(Exception $e) {
-          return false;
-        }
-    }
-
-    return $accessTokenData;
+    return $token->setParams(unserialize($data));
   }
 
   public function send ($product, $categoryId, $data) {
@@ -245,12 +158,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     $return = 'Error';
 
-    if ($accessTokenData = $this->auth()) {
-      $accessTokenData = unserialize($accessTokenData);
-
-      $accessToken = new Zend_Oauth_Token_Access();
-      $accessToken->setToken($accessTokenData[0]);
-      $accessToken->setTokenSecret($accessTokenData[1]);
+    if ($accessToken = $this->auth()) {
 
       //$categories = Mage::getModel('catalog/category')->getCollection()
       //    ->addAttributeToSelect('mventory_tm_category')
@@ -264,22 +172,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       //    break;
       //  }
       //}
-
-      if (!$categoryId && $this->_requestData
-          && isset($this->_requestData['tm'])) {
-
-        $data = $this->_requestData['tm'];
-
-        $data['relist'] = isset($this->_requestData['product']['tm_relist'])
-                        ? $this->_requestData['product']['tm_relist']
-                          : null;
-
-        $data['avoid_withdrawal'] = isset($this->_requestData['product']['tm_avoid_withdrawal'])
-                        ? $this->_requestData['product']['tm_avoid_withdrawal']
-                          : null;
-
-        $categoryId = $data['category'];
-      }
 
       if (!$categoryId) {
         return 'Product doesn\'t have matched tm category';
@@ -493,14 +385,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     $this->setAccountId($accountId);
 
-    if ($accessTokenData = $this->auth()) {
+    if ($accessToken = $this->auth()) {
       $error = false;
-
-      $accessTokenData = unserialize($accessTokenData);
-
-      $accessToken = new Zend_Oauth_Token_Access();
-      $accessToken->setToken($accessTokenData[0]);
-      $accessToken->setTokenSecret($accessTokenData[1]);
 
       $client = $accessToken->getHttpClient($this->getConfig());
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Withdraw.xml');
@@ -582,12 +468,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $listingId = $product->getTmListingId();
     $return = 'Error';
 
-    if ($accessTokenData = $this->auth()) {
-      $accessTokenData = unserialize($accessTokenData);
-
-      $accessToken = new Zend_Oauth_Token_Access();
-      $accessToken->setToken($accessTokenData[0]);
-      $accessToken->setTokenSecret($accessTokenData[1]);
+    if ($accessToken = $this->auth()) {
       $client = $accessToken->getHttpClient($this->getConfig());
 
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Edit.json');
@@ -690,20 +571,13 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function massCheck($products) {
-    if (!$accessTokenData = $this->auth())
+    if (!$accessToken = $this->auth())
       return 0;
 
     if ($products instanceof Mage_Catalog_Model_Product) {
       $collection = new Varien_Data_Collection();
       $products = $collection->addItem($products);
     }
-
-    $accessTokenData = unserialize($accessTokenData);
-
-    $accessToken = new Zend_Oauth_Token_Access();
-
-    $accessToken->setToken($accessTokenData[0]);
-    $accessToken->setTokenSecret($accessTokenData[1]);
 
     $client = $accessToken->getHttpClient($this->getConfig());
     $client->setUri('https://api.' . $this->_host . '.co.nz/v1/MyTradeMe/SellingItems/All.json');
@@ -742,15 +616,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     if (!$listingId = $product->getTmListingId())
       return;
 
-    if (!$accessTokenData = $this->auth())
+    if (!$accessToken = $this->auth())
       return;
-
-    $accessTokenData = unserialize($accessTokenData);
-
-    $accessToken = new Zend_Oauth_Token_Access();
-
-    $accessToken->setToken($accessTokenData[0]);
-    $accessToken->setTokenSecret($accessTokenData[1]);
 
     $client = $accessToken->getHttpClient($this->getConfig());
 
@@ -899,15 +766,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function _loadTmListingDetailsAuth ($listingId) {
-    if (!$accessTokenData = $this->auth())
+    if (!$accessToken = $this->auth())
       return;
-
-    $accessTokenData = unserialize($accessTokenData);
-
-    $accessToken = new Zend_Oauth_Token_Access();
-
-    $accessToken->setToken($accessTokenData[0]);
-    $accessToken->setTokenSecret($accessTokenData[1]);
 
     $client = $accessToken->getHttpClient($this->getConfig());
 
