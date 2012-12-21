@@ -148,9 +148,9 @@ var arrayRow<?php echo $_htmlId ?> = {
                     if (response.ajaxRedirect) {
                         setLocation(response.ajaxRedirect);
                     }
+                } else {
+                  alert('<?php echo $this->__('An error occured while retrieving response'); ?>');
                 }
-
-                alert('<?php echo $this->__('An error occured while retrieving response'); ?>');
             },
             onFailure: function() {
                 alert('<?php echo $this->__('An error occured while retrieving response'); ?>');
