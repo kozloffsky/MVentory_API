@@ -69,13 +69,18 @@ class MVentory_Tm_Model_Tm_Auth extends MVentory_Tm_Model_Tm {
 
     $token = $consumer->getAccessToken($data, unserialize($requestToken));
 
+    $data = array(
+      Zend_Oauth_Token::TOKEN_PARAM_KEY => $token->getToken(),
+      Zend_Oauth_Token::TOKEN_SECRET_PARAM_KEY => $token->getTokenSecret()
+    );
+
     $path = self::ACCESS_TOKEN_PATH . '_' . $this->_accountId;
     $websiteId = Mage::app()
                    ->getWebsite($this->_website)
                    ->getId();
 
     Mage::getConfig()
-      ->saveConfig($path, serialize($token), 'websites', $websiteId)
+      ->saveConfig($path, serialize($data), 'websites', $websiteId)
       ->reinit();
 
     Mage::app()->reinitStores();
