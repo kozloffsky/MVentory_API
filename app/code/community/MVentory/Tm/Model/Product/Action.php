@@ -42,8 +42,7 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
 
       $productResource = $product->getResource();
 
-      $search = array();
-      $replace = array();
+      $mapping = array();
 
       foreach ($productData as $code => $value) {
         //If field is an attribute...
@@ -62,11 +61,15 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
           $value = '';
         }
 
-        $search[] = $code;
-        $replace[] = $value;
+        $mapping[$code] = $value;
       }
 
-      $name = str_replace($search, $replace, $templates[$attributeSetId]);
+      //Sort array by key length (desc)
+      uksort($mapping, function ($a, $b) { return strlen($a) < strlen($b); });
+
+      $name = str_replace(array_keys($mappping),
+                          $mapping,
+                          $templates[$attributeSetId]);
 
       if ($name == $templates[$attributeSetId])
         continue;
