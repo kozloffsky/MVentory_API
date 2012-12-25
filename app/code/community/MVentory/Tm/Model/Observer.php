@@ -259,7 +259,7 @@ class MVentory_Tm_Model_Observer {
 
           //Set global flag to prevent removing product from TM during order
           //creating. No need to remove it because it was bought on TM.
-          //The flas is used in removeListingFromTm() method
+          //The flag is used in removeListingFromTm() method
           Mage::register('tm_disable_withdrawal', true, true);
 
           //Set global flag to enable our dummy shipping method
