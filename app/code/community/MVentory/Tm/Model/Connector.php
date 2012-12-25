@@ -587,10 +587,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $this->setAccountId($accountId);
 
     if (!$listingId = $product->getTmListingId())
-      return;
+      return false;
 
     if (!$accessToken = $this->auth())
-      return;
+      return false;
 
     $client = $accessToken->getHttpClient($this->getConfig());
 
@@ -604,7 +604,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $response = $client->request();
 
     if ($response->getStatus() != 200)
-      return;
+      return false;
 
     $response = Zend_Json::decode($response->getBody());
 
@@ -615,7 +615,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
                 . $response['Description']
                 . ')');
 
-      return null;
+      return false;
     }
 
     return $response['ListingId'];
