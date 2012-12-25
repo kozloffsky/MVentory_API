@@ -182,6 +182,8 @@ class MVentory_Tm_Model_Observer {
     //to use default TM account (first in the list of accounts)
     $accounts[''] = true;
 
+    $helper = Mage::helper('mventory_tm/product');
+
     foreach ($accounts as $accountId => $accountData) {
       $products = Mage::getModel('catalog/product')
                     ->getCollection()
@@ -228,12 +230,24 @@ class MVentory_Tm_Model_Observer {
 
         $newListingId = $product->getTmListingId();
 
-        if ($result == 1)
+        if ($result == 1) {
+
+          //Check if the product can be relisted and is in stock
           if ($product->getTmRelist() == 1
-              && $product->getStockItem()->getIsInStock())
-            $newListingId = $connector->relist($product);
+              && $product->getStockItem()->getIsInStock()) {
+
+            //Try to relist it
+            $relistResult = $connector->relist($product);
+
+            //Don't overwrite current listing ID if relisting failed
+            if ($relistResult === false)
+              continue;
+
+            $newListingId = $relistResult;
+          }
           else
             $newListingId = 0;
+        }
 
         if ($result == 2) {
           $sku = $product->getSku();
@@ -258,9 +272,7 @@ class MVentory_Tm_Model_Observer {
           $newListingId = 0;
         }
 
-        $product
-          ->setTmListingId($newListingId)
-          ->save();
+        $helper->setListingId($newListingId, $product->getId());
       }
     }
   }
