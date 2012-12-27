@@ -1,6 +1,17 @@
 <config>
   <api>
     <resources>
+      <mventory_tm_dataflow translate="title" module="mventory_tm">
+        <title>Dataflow API</title>
+        <model>mventory_tm/dataflow_api</model>
+        <acl>mventory_tm/dataflow</acl>
+        <methods>
+          <getProfilesList translate="title" module="mventory_tm">
+            <title>Get a list of profiles</title>
+            <acl>mventory_tm/dataflow</acl>
+          </getProfilesList>
+        </methods>
+      </mventory_tm_dataflow>    
       <catalog_product translate="title" module="catalog">
         <title>Product API</title>
         <model>mventory_tm/product_api</model>
