@@ -1,5 +1,5 @@
 <_>
-   <form_key>TXQXhj1DlSbNjqB8</form_key>
+   <form_key>j6dMADrZVuftkPgZ</form_key>
    <name>MVentory_Tm</name>
    <channel>community</channel>
    <version_ids>
@@ -9,24 +9,21 @@
    <description>MVentory_Tm</description>
    <license>OSL v3.0</license>
    <license_uri/>
-   <version>0.0.0-r788</version>
+   <version>0.0.0-r1037</version>
    <stability>devel</stability>
    <notes>Development releases</notes>
    <authors>
       <name>
-         <name>Jakub</name>
          <name>Anatoly A. Kazantsev</name>
       </name>
       <user>
-         <user>bronar</user>
          <user>jimcrow</user>
       </user>
       <email>
-         <email>bronar@gmail.com</email>
          <email>anatoly@zetaprints.com</email>
       </email>
    </authors>
-   <depends_php_min>5.2.0</depends_php_min>
+   <depends_php_min>5.3.0</depends_php_min>
    <depends_php_max>6.0.0</depends_php_max>
    <depends>
       <package>
@@ -43,7 +40,7 @@
             <max/>
          </max>
          <files>
-            <files>                                                                                                      </files>
+            <files>                                                                                                                                </files>
          </files>
       </package>
       <extension>
@@ -76,6 +73,7 @@
          <target>magedesign</target>
          <target>mageweb</target>
          <target>mageweb</target>
+         <target>magedesign</target>
       </target>
       <path>
          <path/>
@@ -94,6 +92,7 @@
          <path>adminhtml/default/default/template/tm/</path>
          <path>js/jquery/jquery-min.js</path>
          <path>js/jquery/jquery-uitablefilter.js</path>
+         <path>adminhtml/default/default/template/system/config/form/field/accounts.phtml</path>
       </path>
       <type>
          <type>file</type>
@@ -110,6 +109,7 @@
          <type>file</type>
          <type>dir</type>
          <type>dir</type>
+         <type>file</type>
          <type>file</type>
          <type>file</type>
       </type>
@@ -130,8 +130,10 @@
          <include/>
          <include/>
          <include/>
+         <include/>
       </include>
       <ignore>
+         <ignore/>
          <ignore/>
          <ignore/>
          <ignore/>
