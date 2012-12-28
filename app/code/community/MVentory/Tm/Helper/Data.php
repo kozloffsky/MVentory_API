@@ -2,6 +2,8 @@
 
 class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
 
+  const ADD_TO_WEBSITES_PATH = 'mventory_tm/api/add_to_websites';
+
   protected $_baseMediaUrl = null;
 
   public function getCurrentWebsite () {
@@ -27,15 +29,16 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
              ? $website->getDefaultStore()->getId() : true;
   }
 
-  public function getWebsitesForProduct ($storeId) {
-    $data = Mage::getStoreConfig("mventory_tm/api/add_to_websites", $storeId);
+  public function getWebsitesForProduct () {
+    $website = $this->getCurrentWebsite();
 
-    $websites = explode(',', $data);
+    $websites = $this->getConfig(self::ADD_TO_WEBSITES_PATH, $website);
+    $websites = explode(',', $websites);
 
-    $currentWebsiteId = $this->getCurrentWebsite()->getId();
+    $website = $website->getId();
 
-    if (!in_array($currentWebsiteId, $websites))
-      $websites[] = $currentWebsiteId;
+    if (!in_array($website, $websites))
+      $websites[] = $website;
 
     return $websites;
   }

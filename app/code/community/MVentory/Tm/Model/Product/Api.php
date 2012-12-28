@@ -211,9 +211,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     if (! $id) {
       $helper = Mage::helper('mventory_tm');
 
-      $storeId = $helper->getCurrentStoreId($storeId);
-
-      $productData['website_ids'] = $helper->getWebsitesForProduct($storeId);
+      $productData['website_ids'] = $helper->getWebsitesForProduct();
 
       //Set visibility to "Catalog, Search" value
       $productData['visibility'] = 4;

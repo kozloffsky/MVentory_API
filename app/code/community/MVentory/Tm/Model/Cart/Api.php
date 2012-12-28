@@ -50,7 +50,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
                                              $helper->getCurrentWebsite());
 
       $product
-        ->setWebsiteIds($helper->getWebsitesForProduct($storeId))
+        ->setWebsiteIds($helper->getWebsitesForProduct())
         ->setAttributeSetId($product->getDefaultAttributeSetId())
         ->setTypeId('simple')
         ->setStatus(Mage_Catalog_Model_Product_Status::STATUS_ENABLED)

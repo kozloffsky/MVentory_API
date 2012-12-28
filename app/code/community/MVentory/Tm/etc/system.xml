@@ -185,7 +185,7 @@
 
               <frontend_type>multiselect</frontend_type>
               <source_model>adminhtml/system_config_source_website</source_model>
-              <backend_model>mventory_tm/config_data_websites</backend_model>
+              <!--<backend_model>mventory_tm/config_data_websites</backend_model>-->
 
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
