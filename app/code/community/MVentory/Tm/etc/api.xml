@@ -10,6 +10,10 @@
             <title>Get a list of profiles</title>
             <acl>mventory_tm/dataflow</acl>
           </getProfilesList>
+          <executeProfile translate="title" module="mventory_tm">
+            <title>Execute a profile</title>
+            <acl>mventory_tm/dataflow</acl>
+          </executeProfile>
         </methods>
       </mventory_tm_dataflow>    
       <catalog_product translate="title" module="catalog">

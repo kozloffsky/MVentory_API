@@ -62,6 +62,12 @@
           <layer_filter_attribute>MVentory_Tm_Model_Layer_Filter_Attribute</layer_filter_attribute>
         </rewrite>
       </catalog>
+      
+      <core>
+        <rewrite>
+          <convert>MVentory_Tm_Model_Core_Convert</convert>
+        </rewrite>
+      </core>
     </models>
 
     <helpers>
