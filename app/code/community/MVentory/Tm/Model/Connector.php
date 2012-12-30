@@ -348,6 +348,15 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
               ->setTmAvoidWithdrawal($data['avoid_withdrawal']);
           }
 
+          if (isset($data['shipping_type']))
+            $product->setTmShippingType($data['shipping_type']);
+
+          if (isset($data['allow_buy_now']))
+            $product->setTmAllowBuyNow($data['allow_buy_now']);
+
+          if (isset($data['add_tm_fees']))
+            $product->setTmAddFees($data['add_tm_fees']);
+
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
           $return = (string)$xml->ErrorDescription;
