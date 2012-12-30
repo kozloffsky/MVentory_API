@@ -60,11 +60,13 @@ $_accounts = $this->getAccounts();
     </label>
 
     <label class="tm-option">
+      <input type="hidden" value="0" name="tm[allow_buy_now]" />
       <input type="checkbox" value="1" name="tm[allow_buy_now]" <?php if ($_allowBuyNow) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Allow Buy Now'); ?>
     </label>
 
     <label class="tm-option">
+      <input type="hidden" value="0" name="tm[add_tm_fees]" />
       <input type="checkbox" value="1" name="tm[add_tm_fees]" <?php if ($_addTmFees) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Add TM fees'); ?>
     </label>
