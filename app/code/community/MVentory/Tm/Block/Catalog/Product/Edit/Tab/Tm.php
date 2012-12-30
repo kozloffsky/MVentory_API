@@ -10,10 +10,15 @@
 class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   extends Mage_Adminhtml_Block_Widget {
 
+  private $_helper = null;
+  private $_website = null;
   private $_selectedCategories = null;
 
   public function __construct() {
     parent::__construct();
+
+    $this->_helper = Mage::helper('mventory_tm');
+    $this->_website = $this->_helper->getWebsite($this->getProduct());
 
     $this->setTemplate('catalog/product/tab/tm.phtml');
   }
@@ -234,5 +239,15 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     return $_accounts;
   }
+
+  protected function _getAttributeValue ($code, $path) {
+    $product = $this->getProduct();
+
+    if (($value = $product->getData($code)) != '-1')
+      return $value;
+
+    return $this->_helper->getConfig($path, $this->_website);
+  }
+
 }
 
