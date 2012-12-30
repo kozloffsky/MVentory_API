@@ -215,7 +215,9 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   protected function _getAttributeValue ($code, $path) {
     $product = $this->getProduct();
 
-    if (($value = $product->getData($code)) != '-1')
+    $value = $product->getData($code);
+
+    if (!($value == '-1' || $value === null))
       return $value;
 
     return $this->_helper->getConfig($path, $this->_website);
