@@ -340,7 +340,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         if ((string)$xml->Success == 'true') {
           $product
             ->setTmRelist($data['relist'])
-            ->setTmAccountId($this->_accountId);
+            ->setTmAccountId($this->_accountId)
+            ->setTmCategory($categoryId);
 
           if (isset($data['avoid_withdrawal']))
           {
