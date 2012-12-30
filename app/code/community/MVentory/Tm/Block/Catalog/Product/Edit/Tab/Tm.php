@@ -193,15 +193,12 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getAccounts () {
-    $product = $this->getProduct();
-
-    $website = Mage::helper('mventory_tm')
-                 ->getWebsiteIdFromProduct($product);
-
     $tmHelper = Mage::helper('mventory_tm/tm');
 
-    $accountId = $tmHelper->getAccountId($product->getId(), $website);
-    $accounts = $tmHelper->getAccounts($website);
+    $accountId
+      = $tmHelper->getAccountId($this->getProduct()->getId(), $this->_website);
+
+    $accounts = $tmHelper->getAccounts($this->_website);
 
     $_accounts = array();
 
