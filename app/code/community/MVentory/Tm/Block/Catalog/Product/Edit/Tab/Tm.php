@@ -155,58 +155,33 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getAllowBuyNow () {
-    $helper = Mage::helper('mventory_tm');
-
     $path = MVentory_Tm_Model_Connector::BUY_NOW_PATH;
-    $website = $helper->getWebsiteIdFromProduct($this->getProduct());
 
-    return $helper->getConfig($path, $website);
+    return (bool) $this->_getAttributeValue('tm_allow_buy_now', $path);
   }
 
   public function getAddTmFees () {
-    $helper = Mage::helper('mventory_tm');
-
     $path = MVentory_Tm_Model_Connector::ADD_TM_FEES_PATH;
-    $website = $helper->getWebsiteIdFromProduct($this->getProduct());
 
-    return $helper->getConfig($path, $website);
+    return (bool) $this->_getAttributeValue('tm_add_fees', $path);
   }
 
   public function getRelist () {
-    $product = $this->getProduct();
-
-    if ($product->getTmRelist() != null)
-      return $product->getTmRelist();
-
-    $helper = Mage::helper('mventory_tm');
-
     $path = MVentory_Tm_Model_Connector::RELIST_IF_NOT_SOLD_PATH;
-    $website = $helper->getWebsiteIdFromProduct($product);
 
-    return $helper->getConfig($path, $website);
+    return (bool) $this->_getAttributeValue('tm_relist', $path);
   }
 
   public function getAvoidWithdrawal () {
-    $product = $this->getProduct();
-
-    if ($product->getTmAvoidWithdrawal() != null)
-      return $product->getTmAvoidWithdrawal();
-
-    $helper = Mage::helper('mventory_tm');
-
     $path = MVentory_Tm_Model_Connector::AVOID_WITHDRAWAL_PATH;
-    $website = $helper->getWebsiteIdFromProduct($product);
 
-    return $helper->getConfig($path, $website);
+    return (bool) $this->_getAttributeValue('tm_avoid_withdrawal', $path);
   }
 
   public function getShippingOptions () {
-    $helper = Mage::helper('mventory_tm');
-
     $path = MVentory_Tm_Model_Connector::SHIPPING_TYPE_PATH;
-    $website = $helper->getWebsiteIdFromProduct($this->getProduct());
 
-    $shippingType = $helper->getConfig($path, $website);
+    $shippingType = (int) $this->_getAttributeValue('tm_shipping_type', $path);
 
     $options = Mage::getModel('mventory_tm/system_config_source_shippingtype')
                  ->toOptionArray();
