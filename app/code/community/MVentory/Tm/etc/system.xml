@@ -144,7 +144,7 @@
             </shipping_type>
 
             <buyer translate="label">
-              <label>TM buyer</label>
+              <label>TM buyer ID</label>
               <frontend_type>text</frontend_type>
               <!--<source_model>mventory_tm/system_config_source_customers</source_model>-->  
 
