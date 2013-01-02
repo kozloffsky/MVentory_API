@@ -7,56 +7,56 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Catalog_Model_Api_Resource {
   const PROFILE_ERR_EMAIL_ERROR = 2;
   const PROFILE_ERR_REPORT_TOO_BIG = 3;
   const PROFILE_ERR_SUCCESS = 4;
-	
+
   private function getCurrentTimestamp()
   {
     list($usec, $sec) = explode(" ", microtime());
     return  $sec . ($usec * 1000000);
   }
-  
+
   private function getProfileErrorMessage($errorConstant, $profile, $user, $additionalInfo = null, $exception = null)
   {
     $profileName = null;
     $profileID = 0;
-  	if (!is_int($profile))
-  	{
-  	  $profileName = substr($profile['name'], 1);
-  	  $profileID = $profile->getID();
-  	}
-  	else
-  	{
+    if (!is_int($profile))
+    {
+      $profileName = substr($profile['name'], 1);
+      $profileID = $profile->getID();
+    }
+    else
+    {
       $profileID = $profile;
-  	}
-  	
-  	$userEmail = $user->getEmail();
-  	$userID = $user->getID();
-  	
-  	$logMessage = "";
-  	
-  	if ($errorConstant == self::PROFILE_ERR_SUCCESS)
-  	{
-  	  $logMessage = "Profile execution finished (success), ";
-  	}
-  	else
-  	{
-  	  $logMessage = "Profile execution finished (failure), ";
-  	}
-  	
-  	$logMessage .= "userID = " . $userID . ", ";
-  	$logMessage .= "profileID = " . $profileID . ", ";
-  	
-  	if ($additionalInfo != null)
-  	{
-  		$logMessage .= "additionalInfo = " . $additionalInfo . ", ";
-  	}
-  	
+    }
+    
+    $userEmail = $user->getEmail();
+    $userID = $user->getID();
+    
+    $logMessage = "";
+    
+    if ($errorConstant == self::PROFILE_ERR_SUCCESS)
+    {
+      $logMessage = "Profile execution finished (success), ";
+    }
+    else
+    {
+      $logMessage = "Profile execution finished (failure), ";
+    }
+    
+    $logMessage .= "userID = " . $userID . ", ";
+    $logMessage .= "profileID = " . $profileID . ", ";
+    
+    if ($additionalInfo != null)
+    {
+      $logMessage .= "additionalInfo = " . $additionalInfo . ", ";
+    }
+    
     if ($exception != null && $exception->getMessage() != null)
-  	{
-  		$logMessage .= "exception->getMessage() = " . $exception->getMessage() . ", ";
-  	}
-  	
-  	Mage::log($logMessage);
-  	
+    {
+      $logMessage .= "exception->getMessage() = " . $exception->getMessage() . ", ";
+    }
+    
+    Mage::log($logMessage);
+    
     switch($errorConstant)
     {
     case self::PROFILE_ERR_INVALID:
@@ -71,18 +71,18 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Catalog_Model_Api_Resource {
       return "Report \"" . $profileName . "\" was sent to " . $userEmail;
     }
   }
-  
-  public function executeProfile($id) {
 
-  	$session = $this->_getSession();
-  	$user = $session->getUser();
-  	$userEmail = $user->getEmail();
-  	
+  public function executeProfile($id)
+  {
+    $session = $this->_getSession();
+    $user = $session->getUser();
+    $userEmail = $user->getEmail();
+    
     $logMessage = "Executing a profile, ";
-  	$logMessage .= "userID = " . $user->getID() . ", ";
-  	$logMessage .= "profileID = " . $id . ", ";
-  	Mage::log($logMessage);
-  	
+    $logMessage .= "userID = " . $user->getID() . ", ";
+    $logMessage .= "profileID = " . $id . ", ";
+    Mage::log($logMessage);
+    
     $profile = Mage::getModel("dataflow/profile")->load($id);
 
     if (is_null($profile->getId()))
@@ -210,10 +210,10 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Catalog_Model_Api_Resource {
     return $this->getProfileErrorMessage(self::PROFILE_ERR_SUCCESS, $profile, $user);
   }
 
-  public function getProfilesList () {
+  public function getProfilesList ()
+  {
+    $result = array();
 
-  	$result = array();
-  	
     $collection = Mage::getResourceModel('dataflow/profile_collection');
     $collection->load();
 
@@ -224,7 +224,7 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Catalog_Model_Api_Resource {
         $resultItem = array();
         $resultItem['profile_id'] = $item['profile_id'];
         $resultItem['name'] = substr($item['name'], 1); 
-		
+
         $result[] = $resultItem;
       }
     }
