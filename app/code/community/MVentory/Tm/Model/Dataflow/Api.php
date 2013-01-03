@@ -1,6 +1,6 @@
 <?php
 
-class MVentory_Tm_Model_Dataflow_Api extends Mage_Catalog_Model_Api_Resource {
+class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
 
   const PROFILE_ERR_INVALID = 0;
   const PROFILE_ERR_FAILED = 1;
@@ -132,6 +132,18 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Catalog_Model_Api_Resource {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_FAILED, $profile, $user, "Last action is an IO action but does not save data into a file.");
     }
     
+    $currentStoreID = Mage::helper('mventory_tm')->getCurrentStoreId();
+    
+    foreach($actions as $action)
+    {
+      $container = $action->getContainer();
+      
+      if ($container->getVar("store", $currentStoreID) != $currentStoreID)
+      {
+        $container->setVar("store", $currentStoreID);
+      }
+    }
+
     $outputFileName = $profile['name'] . "_" . getCurrentTimestamp();
     $outputFileExtension = ".csv";
     $outputZippedFileExtension = ".zip";
