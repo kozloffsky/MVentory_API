@@ -28,6 +28,11 @@ class MVentory_Tm_Block_System_Config_Form_Field_Accounts
       'style' => 'width:80px',
     ));
 
+    $this->addColumn('max_listings', array(
+      'label' => $helper->__('MAX Listings'),
+      'style' => 'width:70px',
+    ));
+
     $this->_addAfter = false;
     $this->_addButtonLabel = $helper->__('Add account');
 
