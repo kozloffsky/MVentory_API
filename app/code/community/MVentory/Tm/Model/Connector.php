@@ -143,9 +143,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return $token->setParams(unserialize($data));
   }
 
-  public function send ($product, $categoryId, $data) {
+  public function send ($product, $categoryId, $tmData) {
     $this->getWebsiteId($product);
-    $this->setAccountId($data);
+    $this->setAccountId($tmData);
 
     $return = 'Error';
 
@@ -248,7 +248,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $tmHelper = Mage::helper('mventory_tm/tm');
 
       //Apply fees to price of the product if it's allowed
-      $price = isset($data['add_tm_fees']) && $data['add_tm_fees']
+      $price = isset($tmData['add_tm_fees']) && $tmData['add_tm_fees']
                   ? $tmHelper->addFees($product->getPrice())
                     : $product->getPrice();
 
@@ -256,15 +256,15 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $buyNow = '';
 
-      if (isset($data['allow_buy_now']) && $data['allow_buy_now'])
+      if (isset($tmData['allow_buy_now']) && $tmData['allow_buy_now'])
         $buyNow = '<BuyNowPrice>' . $price . '</BuyNowPrice>';
 
       $shippingTypes
         = Mage::getModel('mventory_tm/system_config_source_shippingtype')
             ->toArray();
 
-      $shippingType = isset($data['shipping_type'])
-                        ? $data['shipping_type']
+      $shippingType = isset($tmData['shipping_type'])
+                        ? $tmData['shipping_type']
                           : self::UNKNOWN;
       $shippingType
         = $shippingTypes[$shippingType];
@@ -339,24 +339,24 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       if ($xml) {
         if ((string)$xml->Success == 'true') {
           $product
-            ->setTmRelist($data['relist'])
+            ->setTmRelist($tmData['relist'])
             ->setTmAccountId($this->_accountId)
             ->setTmCategory($categoryId);
 
-          if (isset($data['avoid_withdrawal']))
+          if (isset($tmData['avoid_withdrawal']))
           {
             $product
-              ->setTmAvoidWithdrawal($data['avoid_withdrawal']);
+              ->setTmAvoidWithdrawal($tmData['avoid_withdrawal']);
           }
 
-          if (isset($data['shipping_type']))
-            $product->setTmShippingType($data['shipping_type']);
+          if (isset($tmData['shipping_type']))
+            $product->setTmShippingType($tmData['shipping_type']);
 
-          if (isset($data['allow_buy_now']))
-            $product->setTmAllowBuyNow($data['allow_buy_now']);
+          if (isset($tmData['allow_buy_now']))
+            $product->setTmAllowBuyNow($tmData['allow_buy_now']);
 
-          if (isset($data['add_tm_fees']))
-            $product->setTmAddFees($data['add_tm_fees']);
+          if (isset($tmData['add_tm_fees']))
+            $product->setTmAddFees($tmData['add_tm_fees']);
 
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
