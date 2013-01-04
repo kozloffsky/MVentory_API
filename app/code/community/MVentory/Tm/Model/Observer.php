@@ -230,24 +230,8 @@ class MVentory_Tm_Model_Observer {
 
         $newListingId = $product->getTmListingId();
 
-        if ($result == 1) {
-
-          //Check if the product can be relisted and is in stock
-          if ($product->getTmRelist() == 1
-              && $product->getStockItem()->getIsInStock()) {
-
-            //Try to relist it
-            $relistResult = $connector->relist($product);
-
-            //Don't overwrite current listing ID if relisting failed
-            if ($relistResult === false)
-              continue;
-
-            $newListingId = $relistResult;
-          }
-          else
-            $newListingId = 0;
-        }
+        if ($result == 1)
+          $newListingId = 0;
 
         if ($result == 2) {
           $sku = $product->getSku();
