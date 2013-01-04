@@ -206,7 +206,7 @@ class MVentory_Tm_Model_Observer {
       //  $products->addPriceData($customer->getGroupId());
 
       //Continue if there're products assigned to current TM account
-      if (!count($products))
+      if (!$numberOfListings = count($products))
         continue;
 
       $connector = Mage::getModel('mventory_tm/connector');
@@ -228,10 +228,7 @@ class MVentory_Tm_Model_Observer {
         if (!$result || $result == 3)
           continue;
 
-        $newListingId = $product->getTmListingId();
-
-        if ($result == 1)
-          $newListingId = 0;
+        --$numberOfListings;
 
         if ($result == 2) {
           $sku = $product->getSku();
@@ -252,11 +249,9 @@ class MVentory_Tm_Model_Observer {
           //Make order for the product
           Mage::getModel('mventory_tm/cart_api')
             ->createOrderForProduct($sku, $price, $qty, $customerId);
-
-          $newListingId = 0;
         }
 
-        $helper->setListingId($newListingId, $product->getId());
+        $helper->setListingId(0, $product->getId());
       }
     }
   }
