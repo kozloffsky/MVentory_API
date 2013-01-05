@@ -168,6 +168,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         return 'Product doesn\'t have matched tm category';
       }
 
+      Mage::unregister('product');
       Mage::register('product', $product);
 
       $descriptionTmpl = $this->_getConfig(self::FOOTER_PATH);
