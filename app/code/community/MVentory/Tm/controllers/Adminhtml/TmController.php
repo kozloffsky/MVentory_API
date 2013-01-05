@@ -128,7 +128,7 @@ class MVentory_Tm_Adminhtml_TmController
 
     $result = $auth->authorize($request->getParams());
 
-    if (true) {
+    if ($result) {
       $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
       $accountName = $accounts[$accountId]['name'];
 
