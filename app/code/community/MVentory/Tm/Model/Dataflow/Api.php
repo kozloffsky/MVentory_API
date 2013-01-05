@@ -103,7 +103,7 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     $convertProfile = null;
     try {
       $convertProfile = Mage::getModel('core/convert')
-        ->importXml($xml)
+       ->importXml($xml)
        ->getProfile('default');
     }
     catch (Exception $e) {
@@ -144,7 +144,7 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
       }
     }
 
-    $outputFileName = $profile['name'] . "_" . getCurrentTimestamp();
+    $outputFileName = $profile['name'] . "_" . $this->getCurrentTimestamp();
     $outputFileExtension = ".csv";
     $outputZippedFileExtension = ".zip";
     
