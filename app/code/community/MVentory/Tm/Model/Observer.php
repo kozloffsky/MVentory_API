@@ -253,6 +253,59 @@ class MVentory_Tm_Model_Observer {
 
         $helper->setListingId(0, $product->getId());
       }
+
+      $freeSlots = $accountData['max_listings'] - $numberOfListings;
+
+      if ($freeSlots <= 0)
+        continue;
+
+      $enabled = Mage_Catalog_Model_Product_Status::STATUS_ENABLED;
+
+      $products = Mage::getModel('catalog/product')
+                    ->getCollection()
+                    ->addFieldToFilter('tm_listing_id', '')
+                    ->addFieldToFilter('tm_relist', '1')
+                    ->addFieldToFilter('tm_account_id', $accountId)
+                    ->addFieldToFilter('status', $enabled)
+                    ->addStoreFilter($store);
+
+
+      Mage::getSingleton('cataloginventory/stock')
+        ->addInStockFilterToCollection($products);
+
+      if (!$poolSize = count($products))
+        continue;
+
+      $products = $products->getItems();
+
+      $ids = $freeSlots >= $poolSize
+               ? array_keys($products)
+                 : array_rand($products, $freeSlots);
+
+      foreach ($ids as $id) {
+        $product = Mage::getModel('catalog/product')
+                     ->setStoreId($store->getId())
+                     ->load($id);
+
+        if (!$product->getId())
+          continue;
+
+        $tmData = array(
+          'account_id' => $accountId,
+          'add_tm_fees' => $product->getTmAddFees(),
+          'allow_buy_now' => $product->getTmAllowBuyNow(),
+          'shipping_type' => $product->getTmShippingType(),
+          'relist' => $product->getTmRelist()
+        );
+
+        $listingId
+          = $connector->send($product, $product->getTmCategory(), $tmData);
+
+        if (is_int($listingId))
+          $product
+            ->setTmListingId($listingId)
+            ->save();
+      }
     }
   }
 
