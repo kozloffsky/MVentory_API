@@ -198,22 +198,26 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     }
      
     $host = $_SERVER['SERVER_NAME'];
-    
-    $mail = new Zend_Mail();
-    $mail->setFrom("magento@" . $host);
-    $mail->addTo($userEmail);
-    $mail->setSubject($profileName);
-    $mail->setBodyHtml("");
             
     $at = new Zend_Mime_Part(file_get_contents($outputZippedPath));
     $at->type = Zend_Mime::TYPE_OCTETSTREAM;
     $at->disposition = Zend_Mime::DISPOSITION_INLINE;
     $at->encoding    = Zend_Mime::ENCODING_BASE64;
     $at->filename    = "report.zip";
-    $mail->addAttachment($at);
+    
+    $mail = Mage::getModel("core/email_template");
+
+    $mail->setSenderName("magento");
+    $mail->setSenderEmail('magento@' . $host);
+    $mail->setTemplateSubject($profileName);
+    
+    $mail->getMail()->addAttachment($at);
     
     try {
-      $mail->send();
+      if ($mail->send($userEmail) == false)
+      {
+      	throw new Exception("email sending error");
+      }
     }
     catch (Exception $e) {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_EMAIL_ERROR, $profile, $user, "Unable to send email", $e);
