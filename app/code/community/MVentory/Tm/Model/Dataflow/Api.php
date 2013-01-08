@@ -201,7 +201,7 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
             
     $at = new Zend_Mime_Part(file_get_contents($outputZippedPath));
     $at->type = Zend_Mime::TYPE_OCTETSTREAM;
-    $at->disposition = Zend_Mime::DISPOSITION_INLINE;
+    $at->disposition = Zend_Mime::DISPOSITION_ATTACHMENT;
     $at->encoding    = Zend_Mime::ENCODING_BASE64;
     $at->filename    = "report.zip";
     
