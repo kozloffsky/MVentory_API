@@ -196,8 +196,6 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_REPORT_TOO_BIG, $profile, $user, "Report too big");
     }
-     
-    $host = $_SERVER['SERVER_NAME'];
             
     $at = new Zend_Mime_Part(file_get_contents($outputZippedPath));
     $at->type = Zend_Mime::TYPE_OCTETSTREAM;
@@ -207,8 +205,8 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     
     $mail = Mage::getModel("core/email_template");
 
-    $mail->setSenderName("magento");
-    $mail->setSenderEmail('magento@' . $host);
+    $mail->setSenderName(Mage::getConfig()->getNode('default/trans_email/ident_general/name'));
+    $mail->setSenderEmail(Mage::getConfig()->getNode('default/trans_email/ident_general/email'));
     $mail->setTemplateSubject($profileName);
     
     $mail->getMail()->addAttachment($at);
