@@ -80,7 +80,7 @@ class MVentory_Tm_Model_Product_Attribute_Set_Api
 
         if (strcmp($frontendLabel, $attributeSet->getAttributeSetName()) == 0)
         {
-          /* We found the formatting attribute. Check if it's label for the current storeview equals "~"
+          /* We found the formatting attribute. Check if its label for the current storeview equals "~"
            * and exclude the entire attribute set if this is true. */
           $storeLabels = $attributeModel->getStoreLabels();
           $storeLabel = isset($storeLabels[$storeId]) ? $storeLabels[$storeId] : '';
