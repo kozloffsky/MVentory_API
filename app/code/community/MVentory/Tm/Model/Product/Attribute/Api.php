@@ -45,7 +45,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
       $attribute = $this->info($_attribute['attribute_id']);
 
       $attribute['options']
-        = $this->options($attribute['attribute_id'], $storeId);
+        = $this->optionsPerStoreView($attribute['attribute_id'], $storeId);
 
       $attributes[] = $attribute;
     }
@@ -71,6 +71,42 @@ class MVentory_Tm_Model_Product_Attribute_Api
       $this->addOption($attribute, $data);
     } catch (Exception $e) {}
 
-    return $this->info($attribute);
+    $attributeRet = $this->info($attribute);
+
+    $attributeRet['options']
+      = $this->optionsPerStoreView($attribute, $storeId);
+
+    return $attributeRet;
+  }
+
+  private function optionsPerStoreView($attribute, $storeId)
+  {
+    $attributeModel = Mage::getResourceModel('catalog/eav_attribute')
+      ->setEntityTypeId(Mage::getModel('eav/entity')->setType('catalog_product')->getTypeId());
+
+    if (is_numeric($attribute)) {
+      $attributeModel->load(intval($attribute));
+    } else {
+      $attributeModel->load($attribute, 'attribute_code');
+    }
+
+    $attributeId = $attributeModel->getId();
+
+    $optionCollection = Mage::getResourceModel('eav/entity_attribute_option_collection')
+      ->setAttributeFilter($attributeId)
+      ->setStoreFilter($storeId, false)
+      ->load();
+
+    $values = array();
+
+    foreach ($optionCollection as $option) {
+      $value = array();
+
+      $value['value'] = $option->getId();
+      $value['label'] = $option->getValue();
+      $values[] = $value;
+    }
+
+    return $values;
   }
 }
