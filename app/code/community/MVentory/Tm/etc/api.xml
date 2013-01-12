@@ -15,7 +15,18 @@
             <acl>mventory_tm/dataflow</acl>
           </executeProfile>
         </methods>
-      </mventory_tm_dataflow>    
+      </mventory_tm_dataflow>
+      <catalog_category translate="title" module="catalog">
+        <title>Category API</title>
+        <model>mventory_tm/category_api</model>
+        <acl>catalog/product</acl>
+        <methods>
+          <treeActiveOnly translate="title" module="catalog">
+            <title>Retrieve product</title>
+            <acl>catalog/category/tree</acl>
+          </treeActiveOnly>
+        </methods>
+      </catalog_category>      
       <catalog_product translate="title" module="catalog">
         <title>Product API</title>
         <model>mventory_tm/product_api</model>
