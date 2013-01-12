@@ -34,8 +34,8 @@
 class MVentory_Tm_Model_Product_Attribute_Api
   extends Mage_Catalog_Model_Product_Attribute_Api {
 
-  public function fullInfoList ($setId, $storeId = null) {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId($storeId);
+  public function fullInfoList ($setId) {
+    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId(null);
 
     $_attributes = $this->items($setId);
 
@@ -53,8 +53,8 @@ class MVentory_Tm_Model_Product_Attribute_Api
     return $attributes;
   }
 
-  public function addOptionAndReturnInfo ($attribute, $value, $storeId = null) {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId($storeId);
+  public function addOptionAndReturnInfo ($attribute, $value) {
+    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId(null);
 
     $data = array(
               'label' => array(
