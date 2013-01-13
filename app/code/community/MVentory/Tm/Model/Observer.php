@@ -287,7 +287,7 @@ class MVentory_Tm_Model_Observer {
                      ->setStoreId($store->getId())
                      ->load($id);
 
-        if (!$product->getId())
+        if (!($product->getId() && $tmCategory = $product->getTmCategory()))
           continue;
 
         $tmData = array(
@@ -299,7 +299,7 @@ class MVentory_Tm_Model_Observer {
         );
 
         $listingId
-          = $connector->send($product, $product->getTmCategory(), $tmData);
+          = $connector->send($product, $tmCategory, $tmData);
 
         if (is_int($listingId))
           $product
