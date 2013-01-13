@@ -287,7 +287,8 @@ class MVentory_Tm_Model_Observer {
                      ->setStoreId($store->getId())
                      ->load($id);
 
-        if (!($product->getId() && $tmCategory = $product->getTmCategory()))
+        if (!($product->getId()
+              && ($tmCategory = $product->getTmCategory()) > 0))
           continue;
 
         $tmData = array(
