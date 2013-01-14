@@ -22,7 +22,7 @@
         <acl>catalog/product</acl>
         <methods>
           <treeActiveOnly translate="title" module="catalog">
-            <title>Retrieve product</title>
+            <title>Retrieve a tree of active categories</title>
             <acl>catalog/category/tree</acl>
           </treeActiveOnly>
         </methods>
