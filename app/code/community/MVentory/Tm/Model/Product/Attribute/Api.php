@@ -79,6 +79,22 @@ class MVentory_Tm_Model_Product_Attribute_Api
     return $attributeRet;
   }
 
+  private function getOptionLabels($storeId, $attributeId)
+  {
+    $values = array();
+
+    $valuesCollection = Mage::getResourceModel('eav/entity_attribute_option_collection')
+      ->setAttributeFilter($attributeId)
+      ->setStoreFilter($storeId, false)
+      ->load();
+
+    foreach ($valuesCollection as $item) {
+      $values[$item->getId()] = $item->getValue();
+    }
+
+    return $values;
+  }
+  
   private function optionsPerStoreView($attribute, $storeId)
   {
     $attributeModel = Mage::getResourceModel('catalog/eav_attribute')
@@ -92,21 +108,35 @@ class MVentory_Tm_Model_Product_Attribute_Api
 
     $attributeId = $attributeModel->getId();
 
-    $optionCollection = Mage::getResourceModel('eav/entity_attribute_option_collection')
+    if (!$attributeId) {
+      $this->_fault('not_exists');
+    }
+
+    $defaultOptionLabels = $this->getOptionLabels(0, $attributeId);
+    $optionLabels = $this->getOptionLabels($storeId, $attributeId);
+
+    $optionsCollection = Mage::getResourceModel('eav/entity_attribute_option_collection')
       ->setAttributeFilter($attributeId)
-      ->setStoreFilter($storeId, false)
+      ->setPositionOrder('desc', true)
       ->load();
 
     $values = array();
 
-    foreach ($optionCollection as $option) {
-      $value = array();
+    foreach ($optionsCollection as $option)
+    {
+      $optionLabel = '~';
 
-      $value['value'] = $option->getId();
-      $value['label'] = $option->getValue();
-      $values[] = $value;
+      if (isset($optionLabels[$option->getId()])) {
+        $optionLabel = $optionLabels[$option->getId()];
+      } else {
+        $optionLabel = $defaultOptionLabels[$option->getId()];
+      }
+
+      if (!is_null($optionLabel) && strcmp($optionLabel, '~') != 0) {
+        $values[] = array('value' => $option->getId(),
+                          'label' => $optionLabel);
+      }
     }
-
     return $values;
   }
 }

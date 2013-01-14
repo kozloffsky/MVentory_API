@@ -8,7 +8,7 @@ class MVentory_Tm_Model_Category_Api extends Mage_Catalog_Model_Category_Api
     foreach($tree['children'] as $idx => &$child)
     {
       if (isset($child['is_active']) && $child['is_active'] == 1) {
-        removeInactive($child);
+        $this->removeInactive($child);
       } else {
         unset($tree['children'][$idx]);
       }
@@ -23,7 +23,7 @@ class MVentory_Tm_Model_Category_Api extends Mage_Catalog_Model_Category_Api
     $model = Mage::getModel("catalog/category_api");
     $tree = $model->tree(null, $storeId);
 
-    removeInactive($tree);
+    $this->removeInactive($tree);
 
     return $tree;
   }
