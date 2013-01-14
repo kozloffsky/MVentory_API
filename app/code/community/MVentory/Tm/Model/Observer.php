@@ -176,12 +176,6 @@ class MVentory_Tm_Model_Observer {
     //Load TM accounts which are used in specified website
     $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
 
-    //Add tempararely account with empty ID, it needs to load products that
-    //were submitted before implementing TM multiple accounts because
-    //tm_account_id attribute is empty in such products. Also it triggers code
-    //to use default TM account (first in the list of accounts)
-    $accounts[''] = true;
-
     $helper = Mage::helper('mventory_tm/product');
 
     foreach ($accounts as $accountId => $accountData) {
