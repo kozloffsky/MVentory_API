@@ -287,7 +287,7 @@ class MVentory_Tm_Model_Observer {
 
         $tmData = array(
           'account_id' => $accountId,
-          'add_tm_fees' => $product->getTmAddFees(),
+          'add_fees' => $product->getTmAddFees(),
           'allow_buy_now' => $product->getTmAllowBuyNow(),
           'shipping_type' => $product->getTmShippingType(),
           'relist' => $product->getTmRelist()

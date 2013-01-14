@@ -249,7 +249,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $tmHelper = Mage::helper('mventory_tm/tm');
 
       //Apply fees to price of the product if it's allowed
-      $price = isset($tmData['add_tm_fees']) && $tmData['add_tm_fees']
+      $price = isset($tmData['add_fees']) && $tmData['add_fees']
                   ? $tmHelper->addFees($product->getPrice())
                     : $product->getPrice();
 
@@ -356,8 +356,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           if (isset($tmData['allow_buy_now']))
             $product->setTmAllowBuyNow($tmData['allow_buy_now']);
 
-          if (isset($tmData['add_tm_fees']))
-            $product->setTmAddFees($tmData['add_tm_fees']);
+          if (isset($tmData['add_fees']))
+            $product->setTmAddFees($tmData['add_fees']);
 
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
@@ -478,7 +478,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       //set price
       if(!isset($parameters['StartPrice']))
-        $parameters['StartPrice'] = isset($formData['add_tm_fees']) && $formData['add_tm_fees']
+        $parameters['StartPrice'] = isset($formData['add_fees']) && $formData['add_fees']
           ? $tmHelper->addFees($product->getPrice())
           : $product->getPrice();
       if(!isset($parameters['ReservePrice']))
