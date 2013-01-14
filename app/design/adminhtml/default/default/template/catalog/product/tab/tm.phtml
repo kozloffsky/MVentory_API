@@ -4,9 +4,9 @@ $_product = $this->getProduct();
 
 $_category = $this->getCategory();
 $_categories = $this->getCategories();
-$_selectedCategories = $this->getSelectedCategories();
+$_preselectedCategories = $this->getPreselectedCategories();
 
-$_multiple = count($_selectedCategories) > 1;
+$_multiple = count($_preselectedCategories) > 1;
 
 $_cols = $this->getColsNumber() - 1;
 
@@ -117,12 +117,12 @@ $_accounts = $this->getAccounts();
     </colgroup>
 
     <tbody>
-      <tr id="tm_no_selected_message" class="even <?php echo count($_selectedCategories) ? 'no-display' : ''; ?>">
+      <tr id="tm_no_selected_message" class="even <?php echo count($_preselectedCategories) ? 'no-display' : ''; ?>">
         <td class="empty-text a-center last" colspan="<?php echo $_cols + 3; ?>">
           <?php echo $this->__('No category selected. Please, select category from the list below.'); ?>
         </td>
       </tr>
-      <?php foreach ($_selectedCategories as $id): ?>
+      <?php foreach ($_preselectedCategories as $id): ?>
         <?php if (isset($_categories[$id])): ?>
           <?php $_checked = $_category == $id || !$_multiple; ?>
 

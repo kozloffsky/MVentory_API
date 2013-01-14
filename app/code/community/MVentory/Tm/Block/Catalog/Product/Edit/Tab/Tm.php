@@ -12,7 +12,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
   private $_helper = null;
   private $_website = null;
-  private $_selectedCategories = null;
+  private $_preselectedCategories = null;
 
   public function __construct() {
     parent::__construct();
@@ -32,11 +32,11 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
              ->getTmCategories();
   }
 
-  public function getSelectedCategories () {
-    if ($this->_selectedCategories)
-      return $this->_selectedCategories;
+  public function getPreselectedCategories () {
+    if ($this->_preselectedCategories)
+      return $this->_preselectedCategories;
 
-    $this->_selectedCategories = array();
+    $this->_preselectedCategories = array();
 
     $category = Mage::helper('mventory_tm/product')
                   ->getCategory($this->getProduct());
@@ -45,10 +45,10 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
       $categories = $category->getTmAssignedCategories();
 
       if ($categories && is_string($categories))
-        $this->_selectedCategories = explode(',', $categories);
+        $this->_preselectedCategories = explode(',', $categories);
     }
 
-    return $this->_selectedCategories;
+    return $this->_preselectedCategories;
   }
 
   public function getColsNumber () {
@@ -85,7 +85,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
   public function getSubmitButton () {
     $label = $this->__('Submit');
-    $class = count($this->getSelectedCategories()) != 1
+    $class = count($this->getPreselectedCategories()) != 1
                ? 'disabled'
                  : '';
 
