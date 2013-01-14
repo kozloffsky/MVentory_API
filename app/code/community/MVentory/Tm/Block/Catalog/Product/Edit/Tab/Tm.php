@@ -84,10 +84,13 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getSubmitButton () {
+    $preselectedCategories = $this->getPreselectedCategories();
+
+    $enabled = count($preselectedCategories) == 1
+               || in_array($this->getCategory(), $preselectedCategories);
+
     $label = $this->__('Submit');
-    $class = count($this->getPreselectedCategories()) != 1
-               ? 'disabled'
-                 : '';
+    $class = $enabled ? '' : 'disabled';
 
     return $this->getButtonHtml($label, null, $class, 'tm_submit_button');
   }
