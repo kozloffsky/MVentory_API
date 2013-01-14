@@ -22,18 +22,23 @@ $_accounts = $this->getAccounts();
 
 ?>
 
+<div class="hidden">
+  <input type="hidden" value="0" name="product[tm_relist]" />
+  <input type="hidden" value="0" name="product[tm_avoid_withdrawal]" />
+  <input type="hidden" value="0" name="tm[allow_buy_now]" />
+  <input type="hidden" value="0" name="tm[add_tm_fees]" />
+</div>
+
 <p><?php echo $this->__('Product URL'); ?>: <a target="_blank" href="<?php echo $_productUrl; ?>"><?php echo $_productUrl; ?></a></p>
 
 <div class="entry-edit">
   <fieldset>
     <label class="tm-option">
-      <input type="hidden" value="0" name="product[tm_relist]" />
       <input type="checkbox" value="1" name="product[tm_relist]" <?php if ($_relist) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Relist if not sold'); ?>
     </label>
 
     <label class="tm-option">
-      <input type="hidden" value="0" name="product[tm_avoid_withdrawal]" />
       <input type="checkbox" value="1" name="product[tm_avoid_withdrawal]" <?php if ($_avoidWithdrawal) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Avoid withdrawal'); ?>
     </label>
@@ -61,13 +66,11 @@ $_accounts = $this->getAccounts();
     </label>
 
     <label class="tm-option">
-      <input type="hidden" value="0" name="tm[allow_buy_now]" />
       <input type="checkbox" value="1" name="tm[allow_buy_now]" <?php if ($_allowBuyNow) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Allow Buy Now'); ?>
     </label>
 
     <label class="tm-option">
-      <input type="hidden" value="0" name="tm[add_tm_fees]" />
       <input type="checkbox" value="1" name="tm[add_tm_fees]" <?php if ($_addTmFees) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Add TM fees'); ?>
     </label>
