@@ -154,6 +154,10 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return compact('existing', 'missing', 'optional');
   }
 
+  public function getCategory () {
+    return $this->_getAttributeValue('tm_category');
+  }
+
   public function getAllowBuyNow () {
     $path = MVentory_Tm_Model_Connector::BUY_NOW_PATH;
 
@@ -212,7 +216,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return $_accounts;
   }
 
-  protected function _getAttributeValue ($code, $path) {
+  protected function _getAttributeValue ($code, $path = null) {
     $product = $this->getProduct();
 
     $value = $product->getData($code);
@@ -220,7 +224,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     if (!($value == '-1' || $value === null))
       return $value;
 
-    return $this->_helper->getConfig($path, $this->_website);
+    return $path ? $this->_helper->getConfig($path, $this->_website) : null;
   }
 
 }
