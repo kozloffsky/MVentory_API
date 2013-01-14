@@ -25,6 +25,8 @@ class MVentory_Tm_Adminhtml_IndexController
                         ? $params['product']['tm_avoid_withdrawal']
                           : null;
 
+    $session = Mage::getSingleton('adminhtml/session');
+
     //Get website which the product is assigned to
     $website = $helper->getWebsite($productId);
 
@@ -34,8 +36,7 @@ class MVentory_Tm_Adminhtml_IndexController
                  ->load($productId);
 
     if (!$product->getId()) {
-      Mage::getSingleton('adminhtml/session')
-        ->addError($helper->__('Can\'t load product'));
+      $session->addError($helper->__('Can\'t load product'));
 
       $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
 
@@ -47,8 +48,7 @@ class MVentory_Tm_Adminhtml_IndexController
 
     if ($stock->getManageStock() && $stock->getQty() == 0
         && !$product->getTmListingId()) {
-      Mage::getSingleton('adminhtml/session')
-        ->addError($helper->__('Item is not available in inventory'));
+      $session->addError($helper->__('Item is not available in inventory'));
 
       $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
 
@@ -57,10 +57,11 @@ class MVentory_Tm_Adminhtml_IndexController
 
     $connector = Mage::getModel('mventory_tm/connector');
 
-    $result = $connector->send($product, $categoryId, $data);
+    //$result = $connector->send($product, $categoryId, $data);
+    $result = 'No';
 
     if (!is_int($result)) {
-      Mage::getSingleton('adminhtml/session')->addError($helper->__($result));
+      $session->addError($helper->__($result));
 
       $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
 
@@ -75,8 +76,7 @@ class MVentory_Tm_Adminhtml_IndexController
 
     $link = '<a href="' . $url . '">' . $url . '</a>';
 
-    Mage::getSingleton('adminhtml/session')
-      ->addSuccess($helper->__('Listing URL') . ': ' . $link);
+    $session->addSuccess($helper->__('Listing URL') . ': ' . $link);
 
     $product
       ->setTmListingId($result)
