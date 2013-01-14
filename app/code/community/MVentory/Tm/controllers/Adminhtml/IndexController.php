@@ -57,8 +57,7 @@ class MVentory_Tm_Adminhtml_IndexController
 
     $connector = Mage::getModel('mventory_tm/connector');
 
-    //$result = $connector->send($product, $categoryId, $data);
-    $result = 'No';
+    $result = $connector->send($product, $categoryId, $data);
 
     if (!is_int($result)) {
       $session->addError($helper->__($result));
