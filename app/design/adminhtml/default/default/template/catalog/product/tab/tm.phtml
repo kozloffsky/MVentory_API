@@ -2,6 +2,7 @@
 
 $_product = $this->getProduct();
 
+$_category = $this->getCategory();
 $_categories = $this->getCategories();
 $_selectedCategories = $this->getSelectedCategories();
 
@@ -120,9 +121,11 @@ $_accounts = $this->getAccounts();
       </tr>
       <?php foreach ($_selectedCategories as $id): ?>
         <?php if (isset($_categories[$id])): ?>
+          <?php $_checked = $_category == $id || !$_multiple; ?>
+
         <tr class="pointer">
           <td class="checkbox">
-            <input type="radio" class="category-check" name="tm[category]"  value="<?php echo $id; ?>" <?php echo !$_multiple ? 'checked="checked"' : '' ?> />
+            <input type="radio" class="category-check" name="tm[category]"  value="<?php echo $id; ?>" <?php echo $_checked ? 'checked="checked"' : '' ?> />
           </td>
 
           <?php for ($n = 0; $n <= $_cols; ++$n): ?>
