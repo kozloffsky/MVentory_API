@@ -58,7 +58,6 @@ $_cols = $this->getColsNumber() - 1;
     <tr class="<?php echo $classes ?>">
       <td class="checkbox">
         <input type="checkbox" class="category-check" value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> />
-        <input type="hidden" class="category-url" value="<?php echo $_tmUrl . $category['path']; ?>" />
       </td>
 
       <?php for ($n = 0; $n <= $_cols; ++$n): ?>
