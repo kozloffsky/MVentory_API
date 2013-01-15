@@ -141,9 +141,23 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
    * @return array List of accounts
    */
   public function getAccounts ($website) {
-    $value = unserialize($this->getConfig(self::XML_PATH_ACCOUNTS, $website));
+    $website = Mage::app()->getWebsite($website);
 
-    return $value !== false ? $value : array();
+    $configData = Mage::getSingleton('adminhtml/config_data')
+                    ->setWebsite($website->getCode())
+                    ->setSection('mventory_tm');
+
+    $configData->load();
+
+    $groups = $configData->getConfigDataValue('mventory_tm')->asArray();
+
+    $accounts = array();
+
+    foreach ($groups as $id => $fields)
+      if (strpos($id, 'account_', 0) === 0)
+        $accounts[$id] = $fields;
+
+    return $accounts;
   }
 
   /**
