@@ -18,7 +18,7 @@
           <label>TM Settings</label>
           <frontend_type>text</frontend_type>
 
-          <show_in_default>1</show_in_default>
+          <show_in_default>0</show_in_default>
           <show_in_website>1</show_in_website>
           <show_in_store>0</show_in_store>
 
@@ -31,7 +31,7 @@
               <frontend_model>mventory_tm/system_config_form_field_accounts</frontend_model>
               <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
 
-              <show_in_default>1</show_in_default>
+              <show_in_default>0</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
