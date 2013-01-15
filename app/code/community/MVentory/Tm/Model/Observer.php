@@ -629,4 +629,104 @@ class MVentory_Tm_Model_Observer {
       }
     }
   }
+
+  public function restoreNewAccountInConfig ($observer) {
+    $configData = $observer->getObject();
+
+    if ($configData->getSection() != 'mventory_tm')
+      return;
+
+    $groups = $configData->getGroups();
+
+    $accounts = array();
+
+    foreach ($groups as $id => $group)
+      if (strpos($id, 'account_', 0) === 0)
+        if ($group['fields']['name']['value']
+            && $group['fields']['key']['value']
+            && $group['fields']['secret']['value']
+            && $group['fields']['max_listings']['value'])
+          $accounts[$id] = $group['fields']['name']['value'];
+        else
+          unset($groups[$id]);
+
+    $configData->setGroups($groups);
+
+    Mage::register('tm_config_accounts', $accounts);
+  }
+
+  public function addAccountsToConfig ($observer) {
+    if (Mage::app()->getRequest()->getParam('section') != 'mventory_tm')
+      return;
+
+    $settings = $observer
+                  ->getConfig()
+                  ->getNode('sections')
+                  ->mventory_tm
+                  ->groups
+                  ->settings;
+
+    $template = $settings
+                  ->account_template
+                  ->asArray();
+
+    if (!$accounts = Mage::registry('tm_config_accounts')) {
+      $groups = Mage::getSingleton('adminhtml/config_data')
+                  ->getConfigDataValue('mventory_tm');
+
+      $accounts = array();
+
+      foreach ($groups->children() as $id => $account)
+        if (strpos($id, 'account_', 0) === 0)
+          $accounts[$id] = (string) $account->name;
+
+      unset($id);
+      unset($account);
+
+      $accounts['account_' . str_replace('.', '_', microtime(true))]
+        = '+ Add account';
+    }
+
+    $noAccounts = count($accounts) == 1;
+
+    $position = 0;
+
+    foreach ($accounts as $id => $account) {
+      $group = $settings
+                 ->fields
+                 ->addChild($id);
+
+      $group->addAttribute('type', 'group');
+      $group->addChild('frontend_model',
+                       'mventory_tm/system_config_form_fieldset_account');
+      $group->addChild('label', $account);
+      $group->addChild('show_in_default', 0);
+      $group->addChild('show_in_website', 1);
+      $group->addChild('show_in_store', 0);
+      $group->addChild('expanded', (int) $noAccounts);
+      $group->addChild('sort_order', $position++);
+
+      $fields = $group->addChild('fields');
+
+      foreach ($template as $name => $field) {
+        $node = $fields->addChild($name);
+
+        if (isset($field['@'])) {
+          foreach ($field['@'] as $key => $value)
+            $node->addAttribute($key, $value);
+
+          unset($field['@']);
+
+          unset($key);
+          unset($value);
+        }
+
+        foreach ($field as $key => $value)
+          $node->addChild($key, $value);
+
+        unset($key);
+        unset($value);
+      }
+    }
+  }
 }

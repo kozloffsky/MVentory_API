@@ -16,7 +16,7 @@
       <groups>
         <settings translate="label">
           <label>TM Settings</label>
-          <frontend_type>text</frontend_type>
+          <frontend_model>mventory_tm/system_config_form_fieldset_settings</frontend_model>
 
           <show_in_default>0</show_in_default>
           <show_in_website>1</show_in_website>
@@ -24,44 +24,122 @@
 
           <sort_order>1</sort_order>
 
-          <fields>
-            <accounts translate="label comment">
-              <label>Accounts</label>
-              <comment>First account is default</comment>
-              <frontend_model>mventory_tm/system_config_form_field_accounts</frontend_model>
-              <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+          <account_template>
+            <name translate="label">
+              <label>Name</label>
+              <frontend_type>text</frontend_type>
 
               <show_in_default>0</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
               <sort_order>1</sort_order>
-            </accounts>
+            </name>
 
-            <sandbox translate="label">
-              <label>Sandbox</label>
-              <frontend_type>select</frontend_type>
-              <source_model>adminhtml/system_config_source_yesno</source_model>
+            <key translate="label">
+              <label>API Key</label>
+              <frontend_type>text</frontend_type>
 
-              <show_in_default>1</show_in_default>
+              <show_in_default>0</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
               <sort_order>2</sort_order>
-            </sandbox>
+            </key>
 
-            <cron translate="label comment">
-              <label>Cron interval (in minutes)</label>
-              <comment>Zero = no cron</comment>
+            <secret translate="label">
+              <label>API Secret</label>
               <frontend_type>text</frontend_type>
-              <backend_model>mventory_tm/system_config_backend_cron</backend_model>
 
-              <show_in_default>1</show_in_default>
+              <show_in_default>0</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
               <sort_order>3</sort_order>
-            </cron>
+            </secret>
+
+            <max_listings translate="label">
+              <label>Max Number of Listings</label>
+              <frontend_type>text</frontend_type>
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>4</sort_order>
+            </max_listings>
+
+            <allow_buy_now translate="label">
+              <label>Allow Buy Now</label>
+              <frontend_type>select</frontend_type>
+              <source_model>adminhtml/system_config_source_yesno</source_model>
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>5</sort_order>
+            </allow_buy_now>
+
+            <relist_if_not_sold translate="label">
+              <label>Relist if not sold</label>
+              <frontend_type>select</frontend_type>
+              <source_model>adminhtml/system_config_source_yesno</source_model>
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>6</sort_order>
+            </relist_if_not_sold>
+
+            <avoid_withdrawal translate="label">
+              <label>Avoid withdrawal</label>
+              <frontend_type>select</frontend_type>
+              <source_model>adminhtml/system_config_source_yesno</source_model>
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>7</sort_order>
+            </avoid_withdrawal>
+
+            <add_fees translate="label">
+              <label>Add TM fees</label>
+              <frontend_type>select</frontend_type>
+              <source_model>adminhtml/system_config_source_yesno</source_model>
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>8</sort_order>
+            </add_fees>
+
+            <shipping_type translate="label">
+              <label>Shipping type</label>
+              <frontend_type>select</frontend_type>
+              <source_model>mventory_tm/system_config_source_shippingtype</source_model>
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>9</sort_order>
+            </shipping_type>
+
+            <buyer translate="label">
+              <label>TM buyer ID</label>
+              <frontend_type>text</frontend_type>
+              <!--<source_model>mventory_tm/system_config_source_customers</source_model>-->  
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>10</sort_order>
+            </buyer>
 
             <footer translate="label">
               <label>Footer description</label>
@@ -76,15 +154,17 @@
               ]]></comment>
               <frontend_type>textarea</frontend_type>
 
-              <show_in_default>1</show_in_default>
+              <show_in_default>0</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>4</sort_order>
+              <sort_order>11</sort_order>
             </footer>
+          </account_template>
 
-            <allow_buy_now translate="label">
-              <label>Allow Buy Now</label>
+          <fields>
+            <sandbox translate="label">
+              <label>Sandbox</label>
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
 
@@ -92,68 +172,21 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>5</sort_order>
-            </allow_buy_now>
+              <sort_order>102</sort_order>
+            </sandbox>
 
-            <relist_if_not_sold translate="label">
-              <label>Relist if not sold</label>
-              <frontend_type>select</frontend_type>
-              <source_model>adminhtml/system_config_source_yesno</source_model>
-
-              <show_in_default>1</show_in_default>
-              <show_in_website>1</show_in_website>
-              <show_in_store>0</show_in_store>
-
-              <sort_order>6</sort_order>
-            </relist_if_not_sold>
-
-            <avoid_withdrawal translate="label">
-              <label>Avoid withdrawal</label>
-              <frontend_type>select</frontend_type>
-              <source_model>adminhtml/system_config_source_yesno</source_model>
-
-              <show_in_default>1</show_in_default>
-              <show_in_website>1</show_in_website>
-              <show_in_store>0</show_in_store>
-
-              <sort_order>7</sort_order>
-            </avoid_withdrawal>
-
-            <add_tm_fees translate="label">
-              <label>Add TM fees</label>
-              <frontend_type>select</frontend_type>
-              <source_model>adminhtml/system_config_source_yesno</source_model>
-
-              <show_in_default>1</show_in_default>
-              <show_in_website>1</show_in_website>
-              <show_in_store>0</show_in_store>
-
-              <sort_order>8</sort_order>
-            </add_tm_fees>
-
-            <shipping_type translate="label">
-              <label>Shipping type</label>
-              <frontend_type>select</frontend_type>
-              <source_model>mventory_tm/system_config_source_shippingtype</source_model>
-
-              <show_in_default>1</show_in_default>
-              <show_in_website>1</show_in_website>
-              <show_in_store>0</show_in_store>
-
-              <sort_order>9</sort_order>
-            </shipping_type>
-
-            <buyer translate="label">
-              <label>TM buyer ID</label>
+            <cron translate="label comment">
+              <label>Cron interval (in minutes)</label>
+              <comment>Zero = no cron</comment>
               <frontend_type>text</frontend_type>
-              <!--<source_model>mventory_tm/system_config_source_customers</source_model>-->  
+              <backend_model>mventory_tm/system_config_backend_cron</backend_model>
 
-              <show_in_default>1</show_in_default>
+              <show_in_default>0</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>10</sort_order>
-            </buyer>
+              <sort_order>103</sort_order>
+            </cron>
           </fields>
         </settings>
 

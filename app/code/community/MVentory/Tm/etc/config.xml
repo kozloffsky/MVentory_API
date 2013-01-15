@@ -267,6 +267,26 @@
           </tm-add-tab-to-product>
         </observers>
       </core_block_abstract_prepare_layout_after>
+
+      <adminhtml_init_system_config>
+        <observers>
+          <tm-add-accounts-to-config>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>addAccountsToConfig</method>
+          </tm-add-accounts-to-config>
+        </observers>
+      </adminhtml_init_system_config>
+
+      <model_config_data_save_before>
+        <observers>
+          <tm-restore-new-account-in-config>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>restoreNewAccountInConfig</method>
+          </tm-restore-new-account-in-config>
+        </observers>
+      </model_config_data_save_before>
     </events>
 
     <layout>
