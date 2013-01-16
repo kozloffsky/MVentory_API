@@ -463,6 +463,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       }
 
       $item = $this->_parseTmListingDetails($json);
+      $item = $this->_listingDetailsToEditingRequest($item);
 
       if(!isset($parameters['Title'])) $parameters['Title'] = $product->getName();
 
@@ -788,6 +789,19 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     if (!isset($details['BidCount']))
       $details['BidCount'] = 0;
+
+    return $details;
+  }
+
+  public function _listingDetailsToEditingRequest ($details) {
+
+    //Prepare attached photos for editing request
+    if (isset($details['Photos']) && $photos = $details['Photos']) {
+      foreach ($photos as $photo)
+        $details['PhotoIds'][] = $photo['Key'];
+
+      unset($details['Photos']);
+    }
 
     return $details;
   }
