@@ -54,11 +54,16 @@ class MVentory_Tm_Model_Observer {
       $doRemoveFromTM = false;
       if ($product->getTmAvoidWithdrawal())
       {
-        /* Take the default value of addTMFees flag from the config.*/
-        $tmDataHelper = Mage::helper('mventory_tm');
-        $tmFeesPath = MVentory_Tm_Model_Connector::ADD_TM_FEES_PATH;
-        $website = $tmDataHelper->getWebsiteIdFromProduct($product);
-        $addTMFees = $tmDataHelper->getConfig($tmFeesPath, $website);
+        $addTMFees = false;
+
+        $accountId = $product->getAccountId();
+
+        if ($accountId) {
+          $website = Mage::helper('mventory_tm')->getWebsite($product);
+          $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
+
+          $addTMFees = $accounts[$accountId]['add_fees'];
+        }
 
         $newPrice = $product->getPrice()*5;
 

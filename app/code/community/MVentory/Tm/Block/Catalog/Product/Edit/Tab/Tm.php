@@ -14,11 +14,28 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   private $_website = null;
   private $_preselectedCategories = null;
 
+  private $_accounts = null;
+  private $_accountId = null;
+
   public function __construct() {
     parent::__construct();
 
+    $product = $this->getProduct();
+
     $this->_helper = Mage::helper('mventory_tm');
-    $this->_website = $this->_helper->getWebsite($this->getProduct());
+    $this->_website = $this->_helper->getWebsite($product);
+
+    $productId = $product->getId();
+
+    $tmHelper = Mage::helper('mventory_tm/tm');
+
+    $this->accountId = $tmHelper->getAccountId($productId, $this->_website);
+    $this->_accounts = $tmHelper->getAccounts($this->_website);
+
+    //Use first account from the list as default
+    //if product doesn't have an account_id value
+    if (!$this->accountId)
+      $this->_accountId = key($this->_accounts);
 
     $this->setTemplate('catalog/product/tab/tm.phtml');
   }
@@ -162,33 +179,32 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getAllowBuyNow () {
-    $path = MVentory_Tm_Model_Connector::BUY_NOW_PATH;
+    $attr = 'tm_allow_buy_now';
+    $field = 'allow_buy_now';
 
-    return (bool) $this->_getAttributeValue('tm_allow_buy_now', $path);
+    return (bool) $this->_getAttributeValue($attr, $field);
   }
 
   public function getAddTmFees () {
-    $path = MVentory_Tm_Model_Connector::ADD_TM_FEES_PATH;
-
-    return (bool) $this->_getAttributeValue('tm_add_fees', $path);
+    return (bool) $this->_getAttributeValue('tm_add_fees', 'add_fees');
   }
 
   public function getRelist () {
-    $path = MVentory_Tm_Model_Connector::RELIST_IF_NOT_SOLD_PATH;
-
-    return (bool) $this->_getAttributeValue('tm_relist', $path);
+    return (bool) $this->_getAttributeValue('tm_relist', 'relist');
   }
 
   public function getAvoidWithdrawal () {
-    $path = MVentory_Tm_Model_Connector::AVOID_WITHDRAWAL_PATH;
+    $attr = 'tm_avoid_withdrawal';
+    $field = 'avoid_withdrawal';
 
-    return (bool) $this->_getAttributeValue('tm_avoid_withdrawal', $path);
+    return (bool) $this->_getAttributeValue($attr, $field);
   }
 
   public function getShippingOptions () {
-    $path = MVentory_Tm_Model_Connector::SHIPPING_TYPE_PATH;
+    $attr = 'tm_shipping_type';
+    $field = 'shipping_type';
 
-    $shippingType = (int) $this->_getAttributeValue('tm_shipping_type', $path);
+    $shippingType = (int) $this->_getAttributeValue($attr, $field);
 
     $options = Mage::getModel('mventory_tm/system_config_source_shippingtype')
                  ->toOptionArray();
@@ -200,26 +216,19 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getAccounts () {
-    $tmHelper = Mage::helper('mventory_tm/tm');
-
-    $accountId
-      = $tmHelper->getAccountId($this->getProduct()->getId(), $this->_website);
-
-    $accounts = $tmHelper->getAccounts($this->_website);
-
     $_accounts = array();
 
-    foreach ($accounts as $id => $account)
+    foreach ($this->_accounts as $id => $account)
       $_accounts[] = array(
         'value' => $id,
         'label' => $account['name'],
-        'selected' => $accountId === $id
+        'selected' => $this->_accountId === $id
       );
 
     return $_accounts;
   }
 
-  protected function _getAttributeValue ($code, $path = null) {
+  protected function _getAttributeValue ($code, $field = null) {
     $product = $this->getProduct();
 
     $value = $product->getData($code);
@@ -227,7 +236,10 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     if (!($value == '-1' || $value === null))
       return $value;
 
-    return $path ? $this->_helper->getConfig($path, $this->_website) : null;
+    if (!($this->_accountId && isset($this->_accounts[$this->_accountId])))
+      return null;
+
+    return $field ? $this->_accounts[$this->_accountId][$field] : null;
   }
 
 }

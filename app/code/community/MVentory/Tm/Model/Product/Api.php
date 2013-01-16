@@ -96,16 +96,21 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $result['categories'][$i] = $category->info($categoryId, $storeId);
 
     //TM specific details start here
-    $buyNowPath = MVentory_Tm_Model_Connector::BUY_NOW_PATH;
-    $tmFeesPath = MVentory_Tm_Model_Connector::ADD_TM_FEES_PATH;
-    $shippingTypePath = MVentory_Tm_Model_Connector::SHIPPING_TYPE_PATH;
-    $relistIfNotSoldPath = MVentory_Tm_Model_Connector::RELIST_IF_NOT_SOLD_PATH;
+
+    $tmAccountId = isset($result['tm_account_id'])
+                     ? $result['tm_account_id']
+                       : null;
+
+    $tmAccounts = $helper->getAccounts($website);
+
+    if (!$tmAccountId)
+      $tmAccountId = key($tmAccounts);
 
     $tmOptions = array(
-      'allow_buy_now' => $helper->getConfig($buyNowPath, $website),
-      'add_tm_fees' => $helper->getConfig($tmFeesPath, $website),
-      'shipping_type' => $helper->getConfig($shippingTypePath, $website),
-      'relist' => $helper->getConfig($relistIfNotSoldPath, $website),
+      'allow_buy_now' => $tmAccounts[$tmAccountId]['allow_buy_now'],
+      'add_tm_fees' => $tmAccounts[$tmAccountId]['add_fees'],
+      'shipping_type' => $tmAccounts[$tmAccountId]['shipping_type'],
+      'relist' => $tmAccounts[$tmAccountId]['relist'],
       'preselected_categories' => null
     );
 
@@ -120,7 +125,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $tmOptions['tm_accounts'] = array();
 
-    foreach ($helper->getAccounts($website) as $id => $account)
+    foreach ($tmAccounts as $id => $account)
       $tmOptions['tm_accounts'][$id] = $account['name'];
 
     if (count($result['category_ids'])) {

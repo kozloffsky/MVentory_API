@@ -74,7 +74,7 @@ class MVentory_Tm_Model_Tm_Auth extends MVentory_Tm_Model_Tm {
       Zend_Oauth_Token::TOKEN_SECRET_PARAM_KEY => $token->getTokenSecret()
     );
 
-    $path = self::ACCESS_TOKEN_PATH . '_' . $this->_accountId;
+    $path = 'mventory_tm/' . $this->_accountId . '/access_token';
     $websiteId = Mage::app()
                    ->getWebsite($this->_website)
                    ->getId();

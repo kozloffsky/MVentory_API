@@ -2,15 +2,7 @@
 
 class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
-  const ACCESS_TOKEN_PATH = 'mventory_tm/settings/accept_token';
-  const ACCOUNTS_PATH = 'mventory_tm/settings/accounts';
   const SANDBOX_PATH = 'mventory_tm/settings/sandbox';
-  const FOOTER_PATH = 'mventory_tm/settings/footer';
-  const BUY_NOW_PATH = 'mventory_tm/settings/allow_buy_now';
-  const ADD_TM_FEES_PATH = 'mventory_tm/settings/add_tm_fees';
-  const SHIPPING_TYPE_PATH = 'mventory_tm/settings/shipping_type';
-  const RELIST_IF_NOT_SOLD_PATH = 'mventory_tm/settings/relist_if_not_sold';
-  const AVOID_WITHDRAWAL_PATH = 'mventory_tm/settings/avoid_withdrawal';
   const BUYER_PATH = 'mventory_tm/settings/buyer';
 
   const CACHE_TYPE_TM = 'tm';
@@ -132,10 +124,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function auth () {
-    $path = self::ACCESS_TOKEN_PATH . '_' . $this->_accountId;
-    $data = $this->_getConfig($path);
-
-    if (!$data)
+    if (!(isset($this->_accountData['access_token'])
+          && $data = $this->_accountData['access_token']))
       return null;
 
     $token = new Zend_Oauth_Token_Access();
@@ -171,7 +161,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       Mage::unregister('product');
       Mage::register('product', $product);
 
-      $descriptionTmpl = $this->_getConfig(self::FOOTER_PATH);
+      $descriptionTmpl = $this->_accountData['footer'];
 
       $description = '';
 
@@ -489,7 +479,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       //set description
       if(!isset($parameters['Description'])) {
-        $descriptionTmpl = $this->_getConfig(self::FOOTER_PATH);
+        $descriptionTmpl = $this->_accountData['footer'];
 
         $description = '';
 
