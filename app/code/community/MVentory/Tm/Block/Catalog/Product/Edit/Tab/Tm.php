@@ -29,12 +29,12 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $tmHelper = Mage::helper('mventory_tm/tm');
 
-    $this->accountId = $tmHelper->getAccountId($productId, $this->_website);
+    $this->_accountId = $tmHelper->getAccountId($productId, $this->_website);
     $this->_accounts = $tmHelper->getAccounts($this->_website);
 
     //Use first account from the list as default
     //if product doesn't have an account_id value
-    if (!$this->accountId)
+    if (!$this->_accountId)
       $this->_accountId = key($this->_accounts);
 
     $this->setTemplate('catalog/product/tab/tm.phtml');
