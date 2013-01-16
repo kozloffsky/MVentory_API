@@ -649,8 +649,7 @@ class MVentory_Tm_Model_Observer {
       if (strpos($id, 'account_', 0) === 0)
         if ($group['fields']['name']['value']
             && $group['fields']['key']['value']
-            && $group['fields']['secret']['value']
-            && $group['fields']['max_listings']['value'])
+            && $group['fields']['secret']['value'])
           $accounts[$id] = $group['fields']['name']['value'];
         else
           unset($groups[$id]);
