@@ -127,6 +127,16 @@
             <method>createOrderForProduct</method>
             <acl>cart/order</acl>
           </createOrderForProduct>
+          <addToCart translate="title" module="mventory_tm">
+            <title>Add an item to cart</title>
+            <method>addToCart</method>
+            <acl>cart/item</acl>
+          </addToCart>
+          <getCart translate="title" module="mventory_tm">
+            <title>Get contents of the whole cart</title>
+            <method>getCart</method>
+            <acl>cart/item</acl>
+          </getCart>
         </methods>
         <faults module="checkout">
           <!-- Checkout Cart Customer Api faults -->

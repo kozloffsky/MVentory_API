@@ -2,7 +2,7 @@
 <config>
   <modules>
     <MVentory_Tm>
-      <version>8</version>
+      <version>9</version>
     </MVentory_Tm>
   </modules>
 
@@ -40,6 +40,9 @@
           <order_transaction>
             <table>mventory_order_transaction</table>
           </order_transaction>
+          <cart_item>
+            <table>mventory_cart_item</table>
+          </cart_item>
         </entities>
       </mventory_tm_resources>
 
@@ -320,6 +323,7 @@
         <products-number-to-fetch>50</products-number-to-fetch>
         <add_to_websites>1</add_to_websites>
         <tax_class>0</tax_class>
+        <cart-item-lifetime>1440</cart-item-lifetime>
       </api>
     </mventory_tm>
 
