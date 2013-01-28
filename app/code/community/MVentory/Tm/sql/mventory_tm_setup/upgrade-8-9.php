@@ -9,7 +9,6 @@ $table = $this
                        Varien_Db_Ddl_Table::TYPE_BIGINT,
                        null,
                        array(
-                         'identity' => true,
                          'unsigned' => true,
                          'nullable' => false,
                          'primary' => true,
