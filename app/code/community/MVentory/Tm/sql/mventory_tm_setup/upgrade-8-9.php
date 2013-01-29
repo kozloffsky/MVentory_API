@@ -91,10 +91,10 @@ $this->endSetup();
 
 
 $sql = <<<____SQL
-CREATE PROCEDURE GetCart(IN deleteBefore datetime)
+CREATE PROCEDURE GetCart(IN deleteBefore datetime, IN storeId smallint)
 BEGIN
   DELETE FROM ##table_name## WHERE date_time < deleteBefore;
-  SELECT * FROM ##table_name## ORDER BY date_time DESC;
+  SELECT * FROM ##table_name## WHERE store_id = storeId ORDER BY date_time DESC;
 END;
 ____SQL;
 

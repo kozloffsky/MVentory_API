@@ -254,8 +254,9 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
   {
     $cartItemLifeTime = Mage::getStoreConfig('mventory_tm/api/cart-item-lifetime');
     $deleteBeforeTimestamp = time() - $cartItemLifeTime*60;
+    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId(null);
     
     return Mage::getResourceModel('mventory_tm/cart_item')
-      ->getCart($deleteBeforeTimestamp);
+      ->getCart($deleteBeforeTimestamp, $storeId);
   }
 }

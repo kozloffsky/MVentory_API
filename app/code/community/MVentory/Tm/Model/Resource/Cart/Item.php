@@ -8,9 +8,9 @@ class MVentory_Tm_Model_Resource_Cart_Item
     $this->_isPkAutoIncrement = false;
   }
   
-  public function getCart($deleteBeforeTimestamp) {
+  public function getCart($deleteBeforeTimestamp, $storeId) {
   	$date = date('Y-m-d H:i:s', $deleteBeforeTimestamp);
-  	$sql = 'call GetCart(\''. $date.'\')';
+  	$sql = 'call GetCart(\''. $date.'\', '.$storeId.')';
   	
     return $this->getReadConnection()->fetchAll($sql);
   }
