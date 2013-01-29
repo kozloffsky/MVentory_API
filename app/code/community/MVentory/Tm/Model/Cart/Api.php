@@ -241,12 +241,18 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
   
   function addToCart($data)
   {
+  	$session = $this->_getSession();
+    $user = $session->getUser();
+    
+    $data['user_name'] = $user->getFirstname() . " " . $user->getLastname();
+    $data['store_id'] = Mage::helper('mventory_tm')->getCurrentStoreId(null);
+    
     Mage::getModel('mventory_tm/cart_item')->setData($data)->save();
   }
   
   function getCart()
   {
-  	$cartItemLifeTime = Mage::getStoreConfig('mventory_tm/api/cart-item-lifetime');
+    $cartItemLifeTime = Mage::getStoreConfig('mventory_tm/api/cart-item-lifetime');
     $deleteBeforeTimestamp = time() - $cartItemLifeTime*60;
     
     return Mage::getResourceModel('mventory_tm/cart_item')
