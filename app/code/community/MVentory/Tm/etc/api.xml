@@ -127,6 +127,11 @@
             <method>createOrderForProduct</method>
             <acl>cart/order</acl>
           </createOrderForProduct>
+          <createOrderForMultipleProducts translate="title" module="mventory_tm">
+            <title>Create order for multiple products</title>
+            <method>createOrderForMultipleProducts</method>
+            <acl>cart/order</acl>
+          </createOrderForMultipleProducts>
           <addToCart translate="title" module="mventory_tm">
             <title>Add an item to cart</title>
             <method>addToCart</method>
@@ -168,6 +173,20 @@
             <code>1023</code>
             <message>Quote could not be saved during adding product(s) operation.</message>
           </add_product_quote_save_fault>
+          
+          <!-- createOrderForMultipleProducts faults -->
+          <product_not_exists>
+            <code>10001</code>
+            <message>Product doesn't exist</message>
+          </product_not_exists>
+          <invalid_params>
+            <code>10002</code>
+            <message>Invalid parameters</message>
+          </invalid_params>
+          <transaction_not_exists>
+            <code>10003</code>
+            <message>No such transaction ID</message>
+          </transaction_not_exists>
         </faults>
       </cart>
 
