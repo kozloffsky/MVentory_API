@@ -22,6 +22,13 @@ $table = $this
                          'nullable' => false
                     ),
                        'Product ID')
+           ->addColumn('sku',
+                       Varien_Db_Ddl_Table::TYPE_TEXT,
+                       64,
+                       array(
+                         'nullable'  => false
+                    ),
+                       'SKU')
            ->addColumn('customer_id',
                        Varien_Db_Ddl_Table::TYPE_INTEGER,
                        null,
