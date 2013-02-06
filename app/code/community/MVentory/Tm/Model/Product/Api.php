@@ -152,6 +152,29 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $result['tm_options'] = $tmOptions;
 
+    //Add shipping rate if product's shipping type is 'tab_ShipTransport'
+    if (isset($result['mv_shipping_'])) {
+      $do = false;
+
+      //Iterate over all attributes...
+      foreach ($result['set_attributes'] as $attribute)
+        //... to find attribute with shipping type info, then...
+        if ($attribute['attribute_code'] == 'mv_shipping_')
+          //... iterate over all its options...
+          foreach ($attribute['options'] as $option)
+            //... to find option with same value as in product and with
+            //label equals 'tab_ShipTransport'
+            if ($option['value'] == $result['mv_shipping_']
+                && $do = ($option['label'] == 'tab_ShipTransport'))
+              break 2;
+
+      if ($do)
+        $result['shipping_rate']
+          = $helper->getShippingRate(new Varien_Object($result),
+                                     $tmAccounts[$tmAccountId]['name'],
+                                     $website);
+    }
+
     return $result;
   }
 

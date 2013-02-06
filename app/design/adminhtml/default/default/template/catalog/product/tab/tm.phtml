@@ -19,6 +19,7 @@ $_shippingOptions = $this->getShippingOptions();
 $_relist = $this->getRelist();
 $_avoidWithdrawal = $this->getAvoidWithdrawal();
 $_accounts = $this->getAccounts();
+$_shippingRate = $this->getShippingRate();
 
 ?>
 
@@ -76,6 +77,13 @@ $_accounts = $this->getAccounts();
     </label>
   </fieldset>
 </div>
+
+<?php if ($_shippingRate): ?>
+<p>
+  Total price: $<?php echo $_product->getPrice() + $_shippingRate; ?>
+  ($<?php echo $_product->getPrice(); ?> + $<?php echo $_shippingRate; ?> (shipping))
+</p>
+<?php endif; ?>
 
 <table cellspacing="0" class="actions">
   <tbody>

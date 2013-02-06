@@ -242,5 +242,17 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return $field ? $this->_accounts[$this->_accountId][$field] : null;
   }
 
+  public function getShippingRate () {
+    $helper = Mage::helper('mventory_tm/tm');
+
+    $product = $this->getProduct();
+
+    if ($helper->getShippingType($product) != 'tab_ShipTransport')
+      return;
+
+    $regionName = $this->_accounts[$this->_accountId]['name'];
+
+    return $helper->getShippingRate($product, $regionName, $this->_website);
+  }
 }
 

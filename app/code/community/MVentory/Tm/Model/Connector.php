@@ -238,10 +238,22 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $tmHelper = Mage::helper('mventory_tm/tm');
 
+      $price = $product->getPrice();
+
+      //Add shipping rate if product's shipping type is 'tab_ShipTransport'
+      if ($tmHelper->getShippingType($product) == 'tab_ShipTransport') {
+        $regionName = $this->_accountData['name'];
+        $website = Mage::app()->getWebsite($this->_website);
+
+        $price += $tmHelper->getShippingRate($product, $regionName, $website);
+
+        unset($regionName, $website);
+      }
+
       //Apply fees to price of the product if it's allowed
       $price = isset($tmData['add_fees']) && $tmData['add_fees']
-                  ? $tmHelper->addFees($product->getPrice())
-                    : $product->getPrice();
+                  ? $tmHelper->addFees($price)
+                    : $price;
 
       unset($tmHelper);
 

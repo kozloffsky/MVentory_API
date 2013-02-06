@@ -4,6 +4,8 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
   const XML_PATH_ACCOUNTS = 'mventory_tm/settings/accounts';
 
+  const COUNTRY_CODE = 'NZ';
+
   //TM fees description.
   //Available fields:
   // * from - Min product price for the fee (value is included in comparision)
@@ -133,6 +135,69 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
   }
 
   /**
+   * Calculates shippign rate for product by region ID.
+   * Uses 'tablerate' carrier (Table rates shipping method)
+   *
+   * @param Mage_Catalog_Model_Product $product
+   * @param string $regionName
+   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
+   *
+   * @return float Calculated shipping rate
+   */
+  public function getShippingRate ($product, $regionName, $website) {
+    $destRegion = Mage::getModel('directory/region')
+                    ->loadByName($regionName, self::COUNTRY_CODE);
+
+    if (!$destRegionId = $destRegion->getId())
+      return;
+
+    $store = $website->getDefaultStore();
+
+    $path = Mage_Shipping_Model_Shipping::XML_PATH_STORE_REGION_ID;
+
+    //Ignore when destionation region similar to origin one
+    if (($origRegionId = Mage::getStoreConfig($path, $store)) == $destRegionId)
+      return;
+
+    $request = Mage::getModel('shipping/rate_request')
+                 ->setCountryId(self::COUNTRY_CODE)
+                 ->setRegionId($origRegionId)
+                 ->setDestCountryId(self::COUNTRY_CODE)
+                 ->setDestRegionId($destRegionId)
+                 ->setPackageValue($product->getPrice())
+                 ->setPackageWeight($product->getWeight())
+                 ->setFreeMethodWeight($product->getWeight())
+                 ->setPackageQty(1)
+                 ->setStoreId($store->getId())
+                 ->setStore($store)
+                 ->setWebsiteId($website->getId())
+                 ->setBaseCurrency($website->getBaseCurrency())
+                 ->setPackageCurrency($store->getCurrentCurrency())
+
+                 //Calculate rate using product's weight
+                 ->setConditionName('package_weight')
+
+                 //We're using only tablerate carrier
+                 ->setLimitCarrier('tablerate')
+
+                 //Show that we have origin country and region in the request
+                 ->setOrig(true);
+
+    $result = Mage::getModel('shipping/shipping')
+                ->collectRates($request)
+                ->getResult();
+
+    if (!$result)
+      return;
+
+    //Expect only one rate
+    if (!$rate = $result->getRateById(0))
+      return;
+
+    return $rate->getPrice();
+  }
+
+  /**
    * Retrieve array of accounts for specified website. Returns accounts from
    * default scope when parameter is omitted
    *
@@ -183,5 +248,22 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
     $attrData = array('tm_account_id' => $accountId);
 
     $this->setAttributesValue($productId, $attrData, $website);
+  }
+
+  /**
+   * Returns value of mv_shipping_ attribute from specified product
+   *
+   * @param Mage_Catalog_Model_Product $product
+   *
+   * @return mixin Value of the attribute
+   */
+  public function getShippingType ($product) {
+    $attributes = $product->getAttributes();
+
+    $attributeCode = 'mv_shipping_';
+
+    return isset($attributes[$attributeCode])
+             ? $attributes[$attributeCode]->getFrontend()->getValue($product)
+               : null;
   }
 }
