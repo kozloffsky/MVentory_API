@@ -246,6 +246,9 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
   
   public function createOrderForMultipleProducts ($productsToOrder) {
 
+  	$apiResult = array();
+  	$apiResult['qtys'] = array(); 
+  	
     $orderApi = Mage::getModel('mventory_tm/order_api');
 
     $helper = Mage::helper('mventory_tm');
@@ -269,8 +272,10 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
                    ->getOrderIdByTransaction($transactionId);
 
       if ($orderId) {
-      	return $orderApi->fullInfo($orderId);
+        $apiResult['order_details'] = $orderApi->fullInfo($orderId);
+        return $apiResult;
       }
+      
     } else {
         $this->_fault('invalid_params');
     }
@@ -331,7 +336,9 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
       if ($stockItem->getManageStock()) {
         $productQty = (float) $stockItem->getQty();
-
+        
+        $apiResult['qtys'][$product->getSku()] = "" . ($productQty - $qty); 
+        
         $saveStockItem = false;
 
         if ($productQty <= 0) {
@@ -492,7 +499,9 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
       Mage::getModel('mventory_tm/cart_item')->setId($productData['transaction_id'])->delete();
     }
 
-    return $orderApi->fullInfo($orderId);
+    $apiResult['order_details'] = $orderApi->fullInfo($orderId);
+    
+    return $apiResult;
   }
   
   function addToCart($data)
