@@ -21,7 +21,7 @@ $attributeData = array(
   'searchable' => true,
   'visible_on_front' => true,
   'visible_in_advanced_search' => true,
-  'used_in_product_listing' => true,
+  'used_in_product_listing' => false,
   'used_for_sort_by' => true,
   'is_configurable' => false
 );
