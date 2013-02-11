@@ -591,6 +591,16 @@ class MVentory_Tm_Model_Observer {
         //Rename file uploaded to Magento
         rename($file, $_file);
 
+        //Update values of media attribute in the product after renaming
+        //uploaded image if the image was marked as 'image', 'small_image'
+        //or 'thumbnail' in the product
+        foreach ($product->getMediaAttributes() as $mediaAttribute) {
+          $code = $mediaAttribute->getAttributeCode();
+
+          if ($product->getData($code) == $image['file'])
+            $product->setData($code, $fileName);
+        }
+
         //Save its new name in Magento
         $image['file'] = $fileName;
         $file = $_file;
