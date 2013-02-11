@@ -29,6 +29,10 @@ class MVentory_Tm_Block_Product_View_Attributes
 
     array_unshift($data, $productIdData);
 
+    //Round value of weight attribute
+    if (isset($data['weight']) && is_numeric($data['weight']['value']))
+      $data['weight']['value'] = round($data['weight']['value'], 2);
+
     return $data;
   }
 }
