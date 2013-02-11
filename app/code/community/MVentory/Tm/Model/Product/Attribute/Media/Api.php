@@ -68,7 +68,10 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
     if (!$hasThumbnail)
       $data['types'][] = 'thumbnail';
 
-    
+    //Exclude uploaded image from additional images on product page
+    //if it's a first uploaded image of a product
+    if (!count($images))
+      $data['exclude'] = 1;
 
     $this->create($productId, $data, $storeId, $identifierType);
 
