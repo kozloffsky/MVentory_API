@@ -243,6 +243,9 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getShippingRate () {
+    if (!($this->_accountId && isset($this->_accounts[$this->_accountId])))
+      return;
+
     $helper = Mage::helper('mventory_tm/tm');
 
     $product = $this->getProduct();
