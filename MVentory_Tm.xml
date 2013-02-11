@@ -1,5 +1,5 @@
 <_>
-   <form_key>u16X4cdUs9ZazH1w</form_key>
+   <form_key>3OfUsKG9ySE9Cs7w</form_key>
    <name>MVentory_Tm</name>
    <channel>community</channel>
    <version_ids>
@@ -9,7 +9,7 @@
    <description>MVentory_Tm</description>
    <license>OSL v3.0</license>
    <license_uri/>
-   <version>0.0.0-r1119</version>
+   <version>0.0.0-r1276</version>
    <stability>devel</stability>
    <notes>Development releases</notes>
    <authors>
@@ -40,7 +40,7 @@
             <max/>
          </max>
          <files>
-            <files>                                                                                                                                       </files>
+            <files>                                                                                                                                         </files>
          </files>
       </package>
       <extension>
@@ -73,6 +73,7 @@
          <target>magedesign</target>
          <target>mageweb</target>
          <target>mageweb</target>
+         <target>magelocale</target>
       </target>
       <path>
          <path/>
@@ -91,6 +92,7 @@
          <path>adminhtml/default/default/template/tm/</path>
          <path>js/jquery/jquery-min.js</path>
          <path>js/jquery/jquery-uitablefilter.js</path>
+         <path>en_NZ/template/email/</path>
       </path>
       <type>
          <type>file</type>
@@ -109,6 +111,7 @@
          <type>dir</type>
          <type>file</type>
          <type>file</type>
+         <type>dir</type>
       </type>
       <include>
          <include/>
@@ -127,8 +130,10 @@
          <include/>
          <include/>
          <include/>
+         <include/>
       </include>
       <ignore>
+         <ignore/>
          <ignore/>
          <ignore/>
          <ignore/>
