@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Grid of the volume based carrier rates for CSV generation
+ *
+ * @category   MVentory
+ * @package    MVentory_Tm
+ * @author     MVentory <???@mventory.com>
+ */
+
 class MVentory_Tm_Block_Carrier_Volumerate_Grid
   extends Mage_Adminhtml_Block_Widget_Grid {
 

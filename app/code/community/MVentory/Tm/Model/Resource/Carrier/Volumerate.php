@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Resource class for the volume based shipping carrier model
+ *
+ * @category   MVentor
+ * @package    MVentory_Tm
+ */
+
 class MVentory_Tm_Model_Resource_Carrier_Volumerate
   extends Mage_Shipping_Model_Resource_Carrier_Tablerate {
 

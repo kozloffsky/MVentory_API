@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Volume based shipping carrier model
+ *
+ * @category   MVentor
+ * @package    MVentory_Tm
+ */
+
 class MVentory_Tm_Model_Carrier_Volumerate
   extends Mage_Shipping_Model_Carrier_Abstract
   implements Mage_Shipping_Model_Carrier_Interface {

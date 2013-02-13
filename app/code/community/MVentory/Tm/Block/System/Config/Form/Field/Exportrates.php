@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Button for exporting rates in CSV format for the volume based shipping
+ * carrier
+ *
+ * @category   MVentory
+ * @package    MVentory_Tm
+ * @author     MVentory <???@mventory.com>
+ */
+
 class MVentory_Tm_Block_System_Config_Form_Field_Exportrates
   extends Mage_Adminhtml_Block_System_Config_Form_Field {
 
