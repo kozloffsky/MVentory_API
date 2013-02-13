@@ -347,7 +347,7 @@
         <sallowspecific>0</sallowspecific>
         <model>mventory_tm/carrier_volumerate</model>
         <name>Volume/Weight Rate</name>
-        <title>Best Way Bla Bla</title>
+        <title>Best Way</title>
         <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
       </volumerate>
     </carriers>
