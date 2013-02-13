@@ -2,7 +2,7 @@
 <config>
   <modules>
     <MVentory_Tm>
-      <version>9</version>
+      <version>10</version>
     </MVentory_Tm>
   </modules>
 
@@ -43,6 +43,10 @@
           <cart_item>
             <table>mventory_cart_item</table>
           </cart_item>
+
+          <carrier_volumerate>
+            <table>mventory_carrier_volumerate</table>
+          </carrier_volumerate>
         </entities>
       </mventory_tm_resources>
 
@@ -337,6 +341,15 @@
         <title>Dummy Shipping</title>
         <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
       </dummyshipping>
+
+      <volumerate>
+        <active>0</active>
+        <sallowspecific>0</sallowspecific>
+        <model>mventory_tm/carrier_volumerate</model>
+        <name>Volume/Weight Rate</name>
+        <title>Best Way Bla Bla</title>
+        <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
+      </volumerate>
     </carriers>
 
     <payment>
