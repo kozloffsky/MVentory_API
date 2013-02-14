@@ -452,7 +452,7 @@
     <carriers>
       <groups>
         <volumerate translate="label">
-          <label>Volume/Weight Rates</label>
+          <label>Volume/Weight Based Rate</label>
           <frontend_type>text</frontend_type>
 
           <show_in_default>1</show_in_default>

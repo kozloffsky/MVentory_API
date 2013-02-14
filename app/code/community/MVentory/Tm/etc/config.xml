@@ -346,8 +346,8 @@
         <active>0</active>
         <sallowspecific>0</sallowspecific>
         <model>mventory_tm/carrier_volumerate</model>
-        <name>Volume/Weight Rate</name>
-        <title>Best Way</title>
+        <name>Shipping Rate</name>
+        <title>Volume/Weight Based Rate</title>
         <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
       </volumerate>
     </carriers>
