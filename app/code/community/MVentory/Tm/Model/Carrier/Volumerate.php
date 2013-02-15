@@ -170,7 +170,8 @@ class MVentory_Tm_Model_Carrier_Volumerate
       $volume = 1;
 
       foreach ($dimensions as $dimension)
-        $volume *= $dimension;
+        //!!!FIXME: Harcoded convertion from milimetres to metres
+        $volume *= ($dimension / 1000);
 
       break;
     }
