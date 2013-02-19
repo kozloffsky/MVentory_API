@@ -51,7 +51,8 @@ class MVentory_Tm_Model_Carrier_Volumerate
                    ->setData('product',   null)
                    ->getProduct();
 
-      $request->setWeight($product->getWeight());
+      //Convert weight from kilogrammes to tones
+      $request->setWeight($product->getWeight() / 1000);
 
       //Calculate volume if volume condition is allowed
       if (isset($conditions[self::VOLUME_CONDITION]))
@@ -68,6 +69,10 @@ class MVentory_Tm_Model_Carrier_Volumerate
         $request->setConditionName($condition);
 
         $_rate = $this->getRate($request);
+
+        //Rate is per unit of condition value.
+        //So we have to multiply it by number of units.
+        $_rate['price'] *= $request->getData($condition);
 
         if (!empty($_rate) && $_rate['price'] > $itemRate)
           $itemRate = $_rate['price'];
