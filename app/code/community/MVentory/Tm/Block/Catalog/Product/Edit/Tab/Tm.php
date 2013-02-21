@@ -65,6 +65,10 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
         $this->_preselectedCategories = explode(',', $categories);
     }
 
+    if (($category = $this->getCategory())
+        && !in_array($category, $this->_preselectedCategories))
+      $this->_preselectedCategories[] = $category;
+
     return $this->_preselectedCategories;
   }
 
