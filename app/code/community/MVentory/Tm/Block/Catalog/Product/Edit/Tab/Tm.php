@@ -37,6 +37,9 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     if (!$this->_accountId)
       $this->_accountId = key($this->_accounts);
 
+    if (count($this->_accounts))
+      $this->_calculateShippingRates();
+
     $this->setTemplate('catalog/product/tab/tm.phtml');
   }
 
@@ -247,9 +250,42 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getShippingRate () {
-    if (!($this->_accountId && isset($this->_accounts[$this->_accountId])))
-      return;
+    return isset($this->_accounts[$this->_accountId]['shipping_rate'])
+             ? $this->_accounts[$this->_accountId]['shipping_rate']
+               : null;
+  }
 
+  public function prepareDataForJs () {
+    $product = $this->getProduct();
+
+    $data = array(
+      'product' => array(
+        'price' => $product->getPrice()
+      ),
+      'accounts' => $this->_accounts
+    );
+
+    foreach ($product->getData() as $key => $value)
+      if (strpos($key, 'tm_') === 0)
+        $data['product'][substr($key, 3)] = $value;
+
+    foreach ($data['accounts'] as &$account) {
+      $account['relist'] = $account['relist_if_not_sold'];
+      $account['add_fees'] = $account['add_tm_fees'];
+
+      unset(
+        $account['key'],
+        $account['secret'],
+        $account['access_token'],
+        $account['relist_if_not_sold'],
+        $account['add_tm_fees']
+      );
+    }
+
+    return $data;
+  }
+
+  protected function _calculateShippingRates () {
     $helper = Mage::helper('mventory_tm/tm');
 
     $product = $this->getProduct();
@@ -257,9 +293,9 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     if ($helper->getShippingType($product) != 'tab_ShipTransport')
       return;
 
-    $regionName = $this->_accounts[$this->_accountId]['name'];
-
-    return $helper->getShippingRate($product, $regionName, $this->_website);
+    foreach ($this->_accounts as &$account)
+      $account['shipping_rate']
+        = $helper->getShippingRate($product, $account['name'], $this->_website);
   }
 }
 

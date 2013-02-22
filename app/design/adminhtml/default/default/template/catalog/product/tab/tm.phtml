@@ -50,7 +50,7 @@ $_shippingRate = $this->getShippingRate();
   <fieldset>
     <label class="tm-option">
       <?php echo $this->__('Account: '); ?>
-      <select class="select" name="tm[account_id]">
+      <select id="tm_account" class="select" name="tm[account_id]">
         <?php foreach ($_accounts as $acc): ?>
         <option value="<?php echo $acc['value']; ?>" <?php if ($acc['selected']) echo 'selected="selected"'; ?>><?php echo $acc['label'] ?></option>
         <?php endforeach; ?>
@@ -80,8 +80,8 @@ $_shippingRate = $this->getShippingRate();
 
 <?php if ($_shippingRate): ?>
 <p>
-  Total price: $<?php echo $_product->getPrice() + $_shippingRate; ?>
-  ($<?php echo $_product->getPrice(); ?> + $<?php echo $_shippingRate; ?> (shipping))
+  Total price: $<span id="tm_total_price"><?php echo $_product->getPrice() + $_shippingRate; ?></span>
+  ($<?php echo $_product->getPrice(); ?> + $<span id="tm_shipping_rate"><?php echo $_shippingRate; ?></span> (shipping))
 </p>
 <?php endif; ?>
 
@@ -203,7 +203,13 @@ $_shippingRate = $this->getShippingRate();
 tm_categories_for_product(<?php echo $this->getUrlTemplates() ?>);
 
 jQuery(document).ready(function ($) {
+  var tm_data = <?php echo Zend_Json::encode($this->prepareDataForJs()) ?>;
   var limit = <?php echo MVentory_Tm_Model_Connector::TITLE_MAX_LENGTH; ?>;
+
+  var $options = $('#product_info_tabs_tm_content')
+                   .find('.tm-option')
+                   .children()
+                   .filter(':input');
 
   $('#product_edit_form').on('submit', function () {
     var name = $(this).find('input[name="product[name]"]').val();
@@ -222,6 +228,25 @@ jQuery(document).ready(function ($) {
               + '"'
 
     return confirm(msg);
+  });
+
+  $('#tm_account').on('change', function () {
+    var account = tm_data['accounts'][$(this).val()];
+
+    for (var key in account) {
+      var $option = $options.filter('[name*="' + key + '"]')
+
+      if ($option.is(':checkbox'))
+        $option.prop('checked', account[key] == true);
+      else
+        $option.val(account[key]);
+    }
+
+    var price = parseFloat(tm_data['product']['price']);
+    var shipping_rate = parseFloat(account['shipping_rate']);
+
+    $('#tm_shipping_rate').html(shipping_rate);
+    $('#tm_total_price').html((price + shipping_rate).toFixed(2));
   });
 });
 
