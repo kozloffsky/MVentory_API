@@ -73,11 +73,14 @@ class MVentory_Tm_Model_Carrier_Volumerate
 
         $_rate = $this->getRate($request);
 
+        if (!isset($_rate['price']))
+          continue;
+
         //Rate is per unit of condition value.
         //So we have to multiply it by number of units.
         $_rate['price'] *= $request->getData($condition);
 
-        if (!empty($_rate) && $_rate['price'] > $itemRate)
+        if ($_rate['price'] > $itemRate)
           $itemRate = $_rate['price'];
       }
 
