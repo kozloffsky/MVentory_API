@@ -10,6 +10,7 @@ $attributeData = array(
   'input' => 'select',
   'label' => 'Unit (quantity)',
   'required' => false,
+  'user_defined' => true,
 
   //Catalogue setting
   'used_in_product_listing' => true,
