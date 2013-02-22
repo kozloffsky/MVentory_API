@@ -47,9 +47,12 @@ class MVentory_Tm_Model_Carrier_Volumerate
     $rate = 0;
 
     foreach ($request->getAllItems() as $item) {
-      $product = $item
-                   ->setData('product',   null)
-                   ->getProduct();
+      if ($item instanceof Mage_Catalog_Model_Product)
+        $product = $item->setQty(1);
+      else
+        $product = $item
+                     ->setData('product',   null)
+                     ->getProduct();
 
       //Convert weight from kilogrammes to tones
       $request->setWeight($product->getWeight() / 1000);
