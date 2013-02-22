@@ -14,6 +14,9 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   private $_website = null;
   private $_preselectedCategories = null;
 
+  //TM options from the session
+  private $_session = null;
+
   private $_accounts = null;
   private $_accountId = null;
 
@@ -27,9 +30,19 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $productId = $product->getId();
 
+    //Get TM parameters from the session
+    $session = Mage::getSingleton('adminhtml/session');
+
+    $this->_session = $session->getData('tm_params');
+    $session->unsetData('tm_params');
+
     $tmHelper = Mage::helper('mventory_tm/tm');
 
-    $this->_accountId = $tmHelper->getAccountId($productId, $this->_website);
+    $this->_accountId = isset($this->_session['account_id'])
+                          ? $this->_session['account_id']
+                            : $tmHelper
+                                ->getAccountId($productId, $this->_website);
+
     $this->_accounts = $tmHelper->getAccounts($this->_website);
 
     //Use first account from the list as default
@@ -182,7 +195,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getCategory () {
-    return $this->_getAttributeValue('tm_category');
+    return $this->_getAttributeValue('tm_category', 'category');
   }
 
   public function getAllowBuyNow () {
@@ -236,17 +249,24 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   protected function _getAttributeValue ($code, $field = null) {
-    $product = $this->getProduct();
+    $sources = array();
 
-    $value = $product->getData($code);
+    if ($field)
+      $sources[$field] = $this->_session;
 
-    if (!($value == '-1' || $value === null))
-      return $value;
+    $sources[$code] = $this->getProduct()->getData();
 
-    if (!($this->_accountId && isset($this->_accounts[$this->_accountId])))
-      return null;
+    foreach ($sources as $key => $source)
+      if (isset($source[$key])) {
+        $value = $source[$key];
 
-    return $field ? $this->_accounts[$this->_accountId][$field] : null;
+        if (!($value == '-1' || $value === null))
+          return $value;
+      }
+
+    return isset($this->_accounts[$this->_accountId][$field])
+             ? $this->_accounts[$this->_accountId][$field]
+               : null;
   }
 
   public function getShippingRate () {

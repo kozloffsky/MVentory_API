@@ -27,6 +27,10 @@ class MVentory_Tm_Adminhtml_IndexController
 
     $session = Mage::getSingleton('adminhtml/session');
 
+    //Store TM params in session to use them on mVentory tab
+    //when submit is failed
+    $session->setData('tm_params', $data);
+
     //Get website which the product is assigned to
     $website = $helper->getWebsite($productId);
 
@@ -80,6 +84,9 @@ class MVentory_Tm_Adminhtml_IndexController
     $product
       ->setTmListingId($result)
       ->save();
+
+    //Remove TM options from the session on successful submit
+    $session->unsetData('tm_params');
 
     $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
   }
