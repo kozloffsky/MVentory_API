@@ -315,7 +315,9 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     foreach ($this->_accounts as &$account)
       $account['shipping_rate']
-        = $helper->getShippingRate($product, $account['name'], $this->_website);
+        = (float) $helper->getShippingRate($product,
+                                           $account['name'],
+                                           $this->_website);
   }
 }
 

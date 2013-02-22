@@ -164,21 +164,15 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
                  ->setRegionId($origRegionId)
                  ->setDestCountryId(self::COUNTRY_CODE)
                  ->setDestRegionId($destRegionId)
-                 ->setPackageValue($product->getPrice())
-                 ->setPackageWeight($product->getWeight())
-                 ->setFreeMethodWeight($product->getWeight())
-                 ->setPackageQty(1)
                  ->setStoreId($store->getId())
                  ->setStore($store)
                  ->setWebsiteId($website->getId())
                  ->setBaseCurrency($website->getBaseCurrency())
                  ->setPackageCurrency($store->getCurrentCurrency())
-
-                 //Calculate rate using product's weight
-                 ->setConditionName('package_weight')
+                 ->setAllItems(array($product))
 
                  //We're using only tablerate carrier
-                 ->setLimitCarrier('tablerate')
+                 ->setLimitCarrier('volumerate')
 
                  //Show that we have origin country and region in the request
                  ->setOrig(true);
