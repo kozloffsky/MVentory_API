@@ -37,54 +37,53 @@ class MVentory_Tm_Model_Carrier_Volumerate
     //Clone conditions for futher using
     $conditions = $this->_conditions;
 
-    $attributes = $this->_getVolumeAttributes();
+    $volumeAttributes = $this->_getVolumeAttributes();
 
     //Unset volume condition if volume attributes are not specified in
     //carrier config
-    if (!$attributes)
+    if (!$volumeAttributes)
       unset($conditions[self::VOLUME_CONDITION]);
 
-    $rate = 0;
+    $totalWeight = null;
+    $totalVolume = null;
 
     foreach ($request->getAllItems() as $item) {
-      if ($item instanceof Mage_Catalog_Model_Product)
-        $product = $item->setQty(1);
-      else
-        $product = $item
-                     ->setData('product',   null)
-                     ->getProduct();
+      $product = $this->_getProduct($item);
+      $qty = $item->getQty();
 
       //Convert weight from kilogrammes to tones
-      $request->setWeight($product->getWeight() / 1000);
+      $totalWeight += $product->getWeight() / 1000 * $qty;
 
       //Calculate volume if volume condition is allowed
       if (isset($conditions[self::VOLUME_CONDITION]))
-        $request->setVolume($this->_calculateVolume($product, $attributes));
+        $totalVolume += $this->_calculateVolume($product, $volumeAttributes)
+                        * $qty;
+    }
 
-      $itemRate = 0;
+    $request
+      ->setWeight($totalWeight)
+      ->setVolume($totalVolume);
 
-      foreach ($conditions as $condition) {
+    $rate = 0;
 
-        //Ignore condition if its value is null
-        if ($request->getData($condition) === null)
-          continue;
+    foreach ($conditions as $condition) {
+      //Ignore condition if its value is null
+      if ($request->getData($condition) === null)
+        continue;
 
-        $request->setConditionName($condition);
+      $request->setConditionName($condition);
 
-        $_rate = $this->getRate($request);
+      $_rate = $this->getRate($request);
 
-        if (!isset($_rate['price']))
-          continue;
+      if (!isset($_rate['price']))
+        continue;
 
-        //Rate is per unit of condition value.
-        //So we have to multiply it by number of units.
-        $_rate['price'] *= $request->getData($condition);
+      //Rate is per unit of condition value.
+      //So we have to multiply it by number of units.
+      $_rate['price'] *= $request->getData($condition);
 
-        if ($_rate['price'] > $itemRate)
-          $itemRate = $_rate['price'];
-      }
-
-      $rate += $itemRate * $item->getQty();
+      if ($_rate['price'] > $rate)
+        $rate = $_rate['price'];
     }
 
     $minimalRate = (float) $this->getConfigData('minimal_rate');
@@ -94,7 +93,7 @@ class MVentory_Tm_Model_Carrier_Volumerate
 
     $result = Mage::getModel('shipping/rate_result');
 
-    if ($rate >= 0) {
+    if ($rate > 0) {
       $method = Mage::getModel('shipping/rate_result_method');
 
       $method->setCarrier('volumerate');
@@ -193,5 +192,13 @@ class MVentory_Tm_Model_Carrier_Volumerate
     }
 
     return $volume;
+  }
+
+  protected function _getProduct ($item) {
+    return $item instanceof Mage_Catalog_Model_Product
+             ? $item->setQty(1)
+               : $item
+                   ->setData('product',   null)
+                   ->getProduct();
   }
 }
