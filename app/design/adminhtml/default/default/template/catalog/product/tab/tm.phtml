@@ -78,12 +78,10 @@ $_shippingRate = $this->getShippingRate();
   </fieldset>
 </div>
 
-<?php if ($_shippingRate): ?>
 <p>
   Total price: $<span id="tm_total_price"><?php echo $_product->getPrice() + $_shippingRate; ?></span>
   ($<?php echo $_product->getPrice(); ?> + $<span id="tm_shipping_rate"><?php echo $_shippingRate; ?></span> (shipping))
 </p>
-<?php endif; ?>
 
 <table cellspacing="0" class="actions">
   <tbody>
