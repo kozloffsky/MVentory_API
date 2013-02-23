@@ -87,6 +87,11 @@ class MVentory_Tm_Model_Carrier_Volumerate
       $rate += $itemRate * $item->getQty();
     }
 
+    $minimalRate = (float) $this->getConfigData('minimal_rate');
+
+    if ($minimalRate > $rate)
+      $rate = $minimalRate;
+
     $result = Mage::getModel('shipping/rate_result');
 
     if ($rate >= 0) {

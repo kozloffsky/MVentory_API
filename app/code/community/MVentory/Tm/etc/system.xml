@@ -507,6 +507,17 @@
               <sort_order>4</sort_order>
             </volume_attributes>
 
+            <minimal_rate translate="label">
+              <label>Minimal rate</label>
+              <frontend_type>text</frontend_type>
+
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>5</sort_order>
+            </minimal_rate>
+
             <import translate="label">
               <label>Import</label>
               <frontend_type>file</frontend_type>
@@ -516,7 +527,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>5</sort_order>
+              <sort_order>6</sort_order>
             </import>
 
             <export translate="label">
@@ -527,7 +538,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>6</sort_order>
+              <sort_order>7</sort_order>
             </export>
 
             <sort_order translate="label">
@@ -538,7 +549,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>7</sort_order>
+              <sort_order>8</sort_order>
             </sort_order>
 
             <sallowspecific translate="label">
@@ -551,7 +562,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>8</sort_order>
+              <sort_order>9</sort_order>
             </sallowspecific>
 
             <specificcountry translate="label">
@@ -564,7 +575,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>9</sort_order>
+              <sort_order>10</sort_order>
             </specificcountry>
 
             <showmethod translate="label">
@@ -576,7 +587,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>10</sort_order>
+              <sort_order>11</sort_order>
             </showmethod>
 
             <specificerrmsg translate="label">
@@ -587,7 +598,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>1</show_in_store>
 
-              <sort_order>11</sort_order>
+              <sort_order>12</sort_order>
             </specificerrmsg>
           </fields>
         </volumerate>
