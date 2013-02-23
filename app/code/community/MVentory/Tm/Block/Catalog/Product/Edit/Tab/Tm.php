@@ -289,18 +289,8 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
       if (strpos($key, 'tm_') === 0)
         $data['product'][substr($key, 3)] = $value;
 
-    foreach ($data['accounts'] as &$account) {
-      $account['relist'] = $account['relist_if_not_sold'];
-      $account['add_fees'] = $account['add_tm_fees'];
-
-      unset(
-        $account['key'],
-        $account['secret'],
-        $account['access_token'],
-        $account['relist_if_not_sold'],
-        $account['add_tm_fees']
-      );
-    }
+    foreach ($data['accounts'] as &$account)
+      unset($account['key'], $account['secret'], $account['access_token']);
 
     return $data;
   }
