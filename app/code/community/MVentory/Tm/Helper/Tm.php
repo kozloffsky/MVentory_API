@@ -76,12 +76,12 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
   }
 
   /**
-   * Add TM fees to the product
+   * Calculate TM fees for the product
    *
    * @param float $price
-   * @return float Product's price with calculated fees
+   * @return float Calculated fees
    */
-  public function addFees ($price) {
+  public function calculateFees ($price) {
 
     /* What we need to calculate here is the price to be used for TM listing.
        The value of that price after subtracting TM fees must be equal to the
@@ -90,7 +90,7 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
     /* This should never happen. */
     if ($price < 0)
-      return $price;
+      return 0;
 
     /* First we need to figure out in which range the final TM listing price
        is going to be. */
@@ -126,12 +126,21 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
       if (isset($_fee['max']) && $fee > $_fee['max'])
         $fee = $_fee['max'];
 
-      /* Return the sale price with fees added. */
-      return round($price + $fee, 2);
+      return $fee;
     }
 
     /* This should never happen. */
-    return $price;
+    return 0;
+  }
+
+  /**
+   * Add TM fees to the product's price
+   *
+   * @param float $price
+   * @return float Product's price with calculated fees
+   */
+  public function addFees ($price) {
+    return round($price + $this->calculateFees($price), 2);
   }
 
   /**
