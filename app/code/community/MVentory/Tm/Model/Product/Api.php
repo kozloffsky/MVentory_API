@@ -199,14 +199,27 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     }
 
     if ($name)
-      $collection->addAttributeToFilter(
+    {
+      if (ctype_digit((string)$name) && strlen((string)$name)>=5)
+      {
+        $collection->addAttributeToFilter(
+          array(
+              array('attribute'=> 'name','like' => "%{$name}%"),
+              array('attribute'=> 'sku','like' => "%{$name}%"),
+              array('attribute'=> 'product_barcode_','like' => "%{$name}%"))
+        );
+      }
+      else
+     {
+        $collection->addAttributeToFilter(
           array(
               array('attribute'=> 'name','like' => "%{$name}%"),
               array('attribute'=> 'sku','like' => "%{$name}%"))
-      );
+        );
+      }
+    }
 
     $collection
-      ->addAttributeToSelect('name')
       ->setPage($page, $limit);
 
     if (!$name)
