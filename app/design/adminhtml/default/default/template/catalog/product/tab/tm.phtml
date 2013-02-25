@@ -19,7 +19,10 @@ $_shippingOptions = $this->getShippingOptions();
 $_relist = $this->getRelist();
 $_avoidWithdrawal = $this->getAvoidWithdrawal();
 $_accounts = $this->getAccounts();
+
 $_shippingRate = $this->getShippingRate();
+$_tmFees = $this->getTmFees();
+$_totalPrice = round($_product->getPrice() + $_shippingRate + $_tmFees, 2);
 
 ?>
 
@@ -79,8 +82,11 @@ $_shippingRate = $this->getShippingRate();
 </div>
 
 <p>
-  Total price: $<span id="tm_total_price"><?php echo $_product->getPrice() + $_shippingRate; ?></span>
-  ($<?php echo $_product->getPrice(); ?> + $<span id="tm_shipping_rate"><?php echo $_shippingRate; ?></span> (shipping))
+  Total price: $<span id="tm_total_price"><?php echo $_totalPrice; ?></span>
+  ($<?php echo round($_product->getPrice(), 2); ?>
+  + $<span id="tm_shipping_rate"><?php echo round($_shippingRate, 2); ?></span> (shipping)
+  + $<span id="tm_fees"><?php echo round($_tmFees, 2); ?></span> (commission)
+  )
 </p>
 
 <table cellspacing="0" class="actions">
@@ -242,9 +248,11 @@ jQuery(document).ready(function ($) {
 
     var price = parseFloat(tm_data['product']['price']);
     var shipping_rate = parseFloat(account['shipping_rate']);
+    var tm_fees = parseFloat(account['fees']);
 
-    $('#tm_shipping_rate').html(shipping_rate);
-    $('#tm_total_price').html((price + shipping_rate).toFixed(2));
+    $('#tm_shipping_rate').html(shipping_rate.toFixed(2));
+    $('#tm_fees').html(tm_fees.toFixed(2));
+    $('#tm_total_price').html((price + shipping_rate + tm_fees).toFixed(2));
   });
 });
 

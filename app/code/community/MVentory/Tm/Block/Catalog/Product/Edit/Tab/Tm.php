@@ -50,8 +50,10 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     if (!$this->_accountId)
       $this->_accountId = key($this->_accounts);
 
-    if (count($this->_accounts))
+    if (count($this->_accounts)) {
       $this->_calculateShippingRates();
+      $this->_calculateTmFees();
+    }
 
     $this->setTemplate('catalog/product/tab/tm.phtml');
   }
@@ -275,6 +277,15 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
                : null;
   }
 
+  public function getTmFees () {
+    if (!$this->getAddTmFees())
+      return 0;
+
+    return Mage::helper('mventory_tm/tm')
+             ->calculateFees($this->getProduct()->getPrice()
+                             + $this->getShippingRate());
+  }
+
   public function prepareDataForJs () {
     $product = $this->getProduct();
 
@@ -308,6 +319,20 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
         = (float) $helper->getShippingRate($product,
                                            $account['name'],
                                            $this->_website);
+  }
+
+  protected function _calculateTmFees () {
+    $helper = Mage::helper('mventory_tm/tm');
+
+    $price = $this
+               ->getProduct()
+               ->getPrice();
+
+    foreach ($this->_accounts as &$account)
+      $account['fees']
+        = $account['add_fees']
+            ? $helper->calculateFees($price + $account['shipping_rate'])
+              : 0;
   }
 }
 
