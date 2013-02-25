@@ -36,11 +36,34 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   const FETCH_LIMIT_PATH = 'mventory_tm/api/products-number-to-fetch';
   const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
 
-  public function fullInfo ($id = null, $sku = null) {
+  public function fullInfo ($id = null, $sku = null, $searchByBarcode = false) {
     if (! $id)
       $id = Mage::getResourceModel('catalog/product')->getIdBySku($sku);
 
     $id = (int) $id;
+
+    if (!Mage::getModel('catalog/product')->load($id)->getId()) {
+      if ($searchByBarcode)
+      {
+        $barCode = $sku;
+
+        $currentStoreId = Mage::helper('mventory_tm')->getCurrentStoreId();
+
+        $collection = Mage::getModel('catalog/product')
+                      ->getCollection()
+                      ->addStoreFilter($currentStoreId);
+
+        $collection->addAttributeToFilter(
+          array(
+              array('attribute'=> 'product_barcode_','eq' => $barCode))
+        );
+        
+        if ($collection->count() > 0)
+        {
+          $id = $collection->getFirstItem()->getId();
+        }
+      }
+    }
 
     $helper = Mage::helper('mventory_tm/tm');
 
