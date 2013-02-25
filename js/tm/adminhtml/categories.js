@@ -257,8 +257,52 @@ function tm_categories_for_category (url_templates) {
   categories_table(url_templates, on_add, on_remove);
 }
 
+function update_total_price (price, data) {
+  var $price_parts = $('#tm_price_parts');
+
+  var price = parseFloat(price);
+  var shipping_rate = parseFloat(data['shipping_rate']);
+  var tm_fees = parseFloat(data['fees']);
+
+  var add_tm_fees = $('#tm_add_fees').is(':checked') && tm_fees;
+
+  if (!(shipping_rate || add_tm_fees)) {
+    $price_parts.hide();
+
+    return;
+  }
+
+  var $shipping_rate_wrapper = $price_parts
+                                 .children('#tm_shipping_rate_wrapper');
+
+  var $fees_wrapper = $price_parts.children('#tm_fees_wrapper');
+
+  if (shipping_rate) {
+    $shipping_rate_wrapper.show();
+
+    price += shipping_rate;
+  } else
+    $shipping_rate_wrapper.hide();
+
+  console.log($('#tm_add_fees').is(':checked'));
+
+  if (add_tm_fees) {
+    $fees_wrapper.show();
+
+    price += tm_fees;
+  } else
+    $fees_wrapper.hide();
+
+  $('#tm_shipping_rate').html(shipping_rate.toFixed(2));
+  $('#tm_fees').html(tm_fees.toFixed(2));
+  $('#tm_total_price').html((price).toFixed(2));
+
+  $price_parts.show();
+}
+
 //Export functions to global namespace
 window.tm_categories_for_product = tm_categories_for_product;
 window.tm_categories_for_category = tm_categories_for_category;
+window.tm_update_total_price = update_total_price;
 
 })(jQuery)

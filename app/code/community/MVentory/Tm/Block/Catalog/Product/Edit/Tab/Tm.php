@@ -328,11 +328,14 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
                ->getProduct()
                ->getPrice();
 
-    foreach ($this->_accounts as &$account)
+    foreach ($this->_accounts as &$account) {
+      $shippingRate = isset($account['shipping_rate'])
+                        ? $account['shipping_rate']
+                          : 0;
+
       $account['fees']
-        = $account['add_fees']
-            ? $helper->calculateFees($price + $account['shipping_rate'])
-              : 0;
+        = $helper->calculateFees($price + $shippingRate);
+    }
   }
 }
 

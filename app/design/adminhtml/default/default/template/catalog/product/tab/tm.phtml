@@ -75,7 +75,7 @@ $_totalPrice = round($_product->getPrice() + $_shippingRate + $_tmFees, 2);
     </label>
 
     <label class="tm-option">
-      <input type="checkbox" value="1" name="tm[add_fees]" <?php if ($_addTmFees) echo 'checked="checked"'; ?> />
+      <input id="tm_add_fees" type="checkbox" value="1" name="tm[add_fees]" <?php if ($_addTmFees) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Add TM fees'); ?>
     </label>
   </fieldset>
@@ -83,10 +83,17 @@ $_totalPrice = round($_product->getPrice() + $_shippingRate + $_tmFees, 2);
 
 <p>
   Total price: $<span id="tm_total_price"><?php echo $_totalPrice; ?></span>
-  ($<?php echo round($_product->getPrice(), 2); ?>
-  + $<span id="tm_shipping_rate"><?php echo round($_shippingRate, 2); ?></span> (shipping)
-  + $<span id="tm_fees"><?php echo round($_tmFees, 2); ?></span> (commission)
-  )
+  <span id="tm_price_parts"<?php if (!($_shippingRate || $_tmFees)) echo ' style="display: none;"'; ?>>
+    ($<?php echo round($_product->getPrice(), 2); ?>
+
+    <span id="tm_shipping_rate_wrapper"<?php if (!$_shippingRate) echo ' style="display: none;"'; ?>>
+      + $<span id="tm_shipping_rate"><?php echo round($_shippingRate, 2); ?></span> (shipping)
+    </span>
+
+    <span id="tm_fees_wrapper"<?php if (!$_tmFees) echo ' style="display: none;"'; ?>>
+      + $<span id="tm_fees"><?php echo round($_tmFees, 2); ?></span> (commission)
+    </span>)
+  </span>
 </p>
 
 <table cellspacing="0" class="actions">
@@ -246,14 +253,13 @@ jQuery(document).ready(function ($) {
         $option.val(account[key]);
     }
 
-    var price = parseFloat(tm_data['product']['price']);
-    var shipping_rate = parseFloat(account['shipping_rate']);
-    var tm_fees = parseFloat(account['fees']);
-
-    $('#tm_shipping_rate').html(shipping_rate.toFixed(2));
-    $('#tm_fees').html(tm_fees.toFixed(2));
-    $('#tm_total_price').html((price + shipping_rate + tm_fees).toFixed(2));
+    tm_update_total_price(tm_data['product']['price'], account);
   });
+
+  $('#tm_add_fees').on('change', function () {
+    tm_update_total_price(tm_data['product']['price'],
+                          tm_data['accounts'][$('#tm_account').val()]);
+  })
 });
 
 //]]>
