@@ -243,6 +243,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     }
 
     $collection
+      ->addAttributeToSelect('name')
       ->setPage($page, $limit);
 
     if (!$name)
