@@ -477,6 +477,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $item = $this->_parseTmListingDetails($json);
       $item = $this->_listingDetailsToEditingRequest($item);
 
+      if (!isset($parameters['Category']) && isset($formData['category'])
+          && $formData['category'])
+        $parameters['Category'] = $formData['category'];
+
       if(!isset($parameters['Title'])) $parameters['Title'] = $product->getName();
 
       //set price
