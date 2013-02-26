@@ -497,6 +497,11 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       else {
         $parameters['Description'] = array($parameters['Description']);
       }
+
+      if (!isset($parameters['ShippingOptions'])
+          && isset($formData['shipping_type']) && $formData['shipping_type'])
+        $parameters['ShippingOptions'][]['Type'] = $formData['shipping_type'];
+
       //set Duration
       $item['Duration'] = 7;
 
