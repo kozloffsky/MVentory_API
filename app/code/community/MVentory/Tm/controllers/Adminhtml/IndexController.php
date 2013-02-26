@@ -190,11 +190,11 @@ class MVentory_Tm_Adminhtml_IndexController
     $this->_redirect('adminhtml/catalog_product/edit/id/' . $id);
   }
   public function updateAction(){
-  	$request = $this->getRequest();
+    $request = $this->getRequest();
 
     $params = $request->getParams();
-  	$productId = $this->_request->getParam('id');
-  	$data = isset($params['tm']) ? $params['tm'] : array();
+    $productId = $this->_request->getParam('id');
+    $data = isset($params['tm']) ? $params['tm'] : array();
     $product = Mage::getModel('catalog/product')->load($productId);
 
     if (!$product->getId()) {
@@ -217,7 +217,7 @@ class MVentory_Tm_Adminhtml_IndexController
 
       return;
     }
-	Mage::getSingleton('adminhtml/session')
+    Mage::getSingleton('adminhtml/session')
             ->addSuccess($helper->__('Listing has been updated '));
     $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
 
