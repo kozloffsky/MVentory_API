@@ -341,25 +341,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       if ($xml) {
         if ((string)$xml->Success == 'true') {
-          $product
-            ->setTmRelist($tmData['relist'])
-            ->setTmAccountId($this->_accountId)
-            ->setTmCategory($categoryId);
+          $tmData['account_id'] = $this->_accountId;
 
-          if (isset($tmData['avoid_withdrawal']))
-          {
-            $product
-              ->setTmAvoidWithdrawal($tmData['avoid_withdrawal']);
-          }
-
-          if (isset($tmData['shipping_type']))
-            $product->setTmShippingType($tmData['shipping_type']);
-
-          if (isset($tmData['allow_buy_now']))
-            $product->setTmAllowBuyNow($tmData['allow_buy_now']);
-
-          if (isset($tmData['add_fees']))
-            $product->setTmAddFees($tmData['add_fees']);
+          $this->_updateProductAttributes($product, $tmData);
 
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
@@ -539,6 +523,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $jsonResponse = json_decode($response->getBody());
 
       if (isset($jsonResponse->Success) && $jsonResponse->Success == 'true') {
+        $this->_updateProductAttributes($product, $formData);
+
+        $product->save();
+
         $return = (int)$jsonResponse->ListingId;
       }
       else {
@@ -884,5 +872,26 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       return $this->_attrTypes[$id];
 
     return 'Unknown';
+  }
+
+  protected function _updateProductAttributes ($product, $data) {
+    $product
+      ->setTmRelist($data['relist'])
+      ->setTmCategory($data['category']);
+
+    if (isset($data['account_id']))
+      $product->setTmAccountId($data['account_id']);
+
+    if (isset($data['avoid_withdrawal']))
+      $product->setTmAvoidWithdrawal($data['avoid_withdrawal']);
+
+    if (isset($data['shipping_type']))
+      $product->setTmShippingType($data['shipping_type']);
+
+    if (isset($data['allow_buy_now']))
+      $product->setTmAllowBuyNow($data['allow_buy_now']);
+
+    if (isset($data['add_fees']))
+      $product->setTmAddFees($data['add_fees']);
   }
 }

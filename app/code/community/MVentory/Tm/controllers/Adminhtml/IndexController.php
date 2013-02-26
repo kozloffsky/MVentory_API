@@ -207,6 +207,16 @@ class MVentory_Tm_Adminhtml_IndexController
 
     $data = isset($params['tm']) ? $params['tm'] : array();
 
+    //Remember value of Relist if not sold attribute
+    $data['relist'] = isset($params['product']['tm_relist'])
+                        ? $params['product']['tm_relist']
+                          : null;
+
+    //Remember value of avoid withdrawal attribute
+    $data['avoid_withdrawal'] = isset($params['product']['tm_avoid_withdrawal'])
+                        ? $params['product']['tm_avoid_withdrawal']
+                          : null;
+
     $product = Mage::getModel('catalog/product')->load($params['id']);
 
     if (!$product->getId()) {
