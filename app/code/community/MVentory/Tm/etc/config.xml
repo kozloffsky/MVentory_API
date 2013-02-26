@@ -294,6 +294,16 @@
           </tm-restore-new-account-in-config>
         </observers>
       </model_config_data_save_before>
+
+      <api_user_authenticated>
+        <observers>
+          <tm_check_access_to_website>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>checkAccessToWebsite</method>
+          </tm_check_access_to_website>
+        </observers>
+      </api_user_authenticated>
     </events>
 
     <layout>

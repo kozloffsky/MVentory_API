@@ -743,4 +743,40 @@ class MVentory_Tm_Model_Observer {
       }
     }
   }
+
+  public function checkAccessToWebsite ($observer) {
+    $apiUser = $observer->getModel();
+
+    if (!$customerId = (int) $apiUser->getUsername()) {
+      $apiUser->setId(null);
+
+      return;
+    }
+
+    $customer = Mage::getModel('customer/customer')->load($customerId);
+
+    if (!$customer->getId()) {
+      $apiUser->setId(null);
+
+      return;
+    }
+
+    $request = Mage::getSingleton('api/server')
+                 ->getAdapter()
+                 ->getController()
+                 ->getRequest();
+
+    if (($scheme = $request->getScheme()) == 'http')
+      $path = Mage_Core_Model_Url::XML_PATH_UNSECURE_URL;
+    else
+      $path = Mage_Core_Model_Url::XML_PATH_SECURE_URL;
+
+    $websiteBaseUrl = Mage::helper('mventory_tm')
+                        ->getConfig($path, $customer->getWebsiteId());
+
+    $currentBaseUrl = $scheme . '://' . $request->getHttpHost() . '/';
+
+    if ($websiteBaseUrl != $currentBaseUrl)
+      $apiUser->setId(null);
+  }
 }
