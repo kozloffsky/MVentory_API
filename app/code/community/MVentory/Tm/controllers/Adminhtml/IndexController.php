@@ -189,37 +189,49 @@ class MVentory_Tm_Adminhtml_IndexController
 
     $this->_redirect('adminhtml/catalog_product/edit/id/' . $id);
   }
-  public function updateAction(){
+
+  public function updateAction () {
     $request = $this->getRequest();
+    $helper = Mage::helper('mventory_tm');
 
     $params = $request->getParams();
-    $productId = $this->_request->getParam('id');
+
+    if (!isset($params['id'])) {
+      Mage::getSingleton('adminhtml/session')
+        ->addError($helper->__('No product ID parameter'));
+
+      $this->_redirect('adminhtml/catalog_product/index');
+
+      return;
+    }
+
     $data = isset($params['tm']) ? $params['tm'] : array();
-    $product = Mage::getModel('catalog/product')->load($productId);
+
+    $product = Mage::getModel('catalog/product')->load($params['id']);
 
     if (!$product->getId()) {
       Mage::getSingleton('adminhtml/session')
         ->addError($helper->__('Can\'t load product'));
 
-      $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
+      $this->_redirect('adminhtml/catalog_product/edit/id/' . $params['id']);
 
       return;
     }
-    $helper = Mage::helper('mventory_tm');
 
-    $connector = Mage::getModel('mventory_tm/connector');
-    $result = $connector->update($product,null,$data);
+    $result = Mage::getModel('mventory_tm/connector')
+                ->update($product, null, $data);
 
     if (!is_int($result)) {
       Mage::getSingleton('adminhtml/session')->addError($helper->__($result));
 
-      $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
+      $this->_redirect('adminhtml/catalog_product/edit/id/' . $params['id']);
 
       return;
     }
-    Mage::getSingleton('adminhtml/session')
-            ->addSuccess($helper->__('Listing has been updated '));
-    $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
 
+    Mage::getSingleton('adminhtml/session')
+      ->addSuccess($helper->__('Listing has been updated '));
+
+    $this->_redirect('adminhtml/catalog_product/edit/id/' . $params['id']);
   }
 }
