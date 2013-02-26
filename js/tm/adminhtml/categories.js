@@ -269,6 +269,8 @@ function update_total_price (price, data) {
   if (!(shipping_rate || add_tm_fees)) {
     $price_parts.hide();
 
+    $('#tm_total_price').html((price).toFixed(2));
+
     return;
   }
 
@@ -283,8 +285,6 @@ function update_total_price (price, data) {
     price += shipping_rate;
   } else
     $shipping_rate_wrapper.hide();
-
-  console.log($('#tm_add_fees').is(':checked'));
 
   if (add_tm_fees) {
     $fees_wrapper.show();
