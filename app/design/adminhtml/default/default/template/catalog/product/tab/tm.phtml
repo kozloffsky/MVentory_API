@@ -22,7 +22,7 @@ $_accounts = $this->getAccounts();
 
 $_shippingRate = $this->getShippingRate();
 $_tmFees = $this->getTmFees();
-$_totalPrice = round($_product->getPrice() + $_shippingRate + $_tmFees, 2);
+$_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
 ?>
 
@@ -82,16 +82,16 @@ $_totalPrice = round($_product->getPrice() + $_shippingRate + $_tmFees, 2);
 </div>
 
 <p>
-  Total price: $<span id="tm_total_price"><?php echo $_totalPrice; ?></span>
+  Total price: $<span id="tm_total_price"><?php echo number_format($_totalPrice, 2); ?></span>
   <span id="tm_price_parts"<?php if (!($_shippingRate || $_tmFees)) echo ' style="display: none;"'; ?>>
-    ($<?php echo round($_product->getPrice(), 2); ?>
+    ($<?php echo number_format($_product->getPrice(), 2); ?>
 
     <span id="tm_shipping_rate_wrapper"<?php if (!$_shippingRate) echo ' style="display: none;"'; ?>>
-      + $<span id="tm_shipping_rate"><?php echo round($_shippingRate, 2); ?></span> (shipping)
+      + $<span id="tm_shipping_rate"><?php echo number_format($_shippingRate, 2); ?></span> (shipping)
     </span>
 
     <span id="tm_fees_wrapper"<?php if (!$_tmFees) echo ' style="display: none;"'; ?>>
-      + $<span id="tm_fees"><?php echo round($_tmFees, 2); ?></span> (commission)
+      + $<span id="tm_fees"><?php echo number_format($_tmFees, 2); ?></span> (commission)
     </span>)
   </span>
 </p>
