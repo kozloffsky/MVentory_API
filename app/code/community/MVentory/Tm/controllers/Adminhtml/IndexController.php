@@ -3,6 +3,16 @@
 class MVentory_Tm_Adminhtml_IndexController
   extends Mage_Adminhtml_Controller_Action {
 
+  protected $_tmParams = array(
+    'category',
+    'account_id',
+    'shipping_type',
+    'allow_buy_now',
+    'add_fees',
+    'relist',
+    'avoid_withdrawal'
+  );
+
   public function submitAction () {
     $helper = Mage::helper('mventory_tm');
     $request = $this->getRequest();
@@ -10,20 +20,14 @@ class MVentory_Tm_Adminhtml_IndexController
     $params = $request->getParams();
 
     $productId = isset($params['id']) ? $params['id'] : null;
-    $categoryId = isset($params['tm']['category'])
-                    ? $params['tm']['category']
-                      : null;
-    $data = isset($params['tm']) ? $params['tm'] : array();
 
-    //Remember value of Relist if not sold attribute
-    $data['relist'] = isset($params['product']['tm_relist'])
-                        ? $params['product']['tm_relist']
-                          : null;
+    $data = array();
 
-    //Remember value of avoid withdrawal attribute
-    $data['avoid_withdrawal'] = isset($params['product']['tm_avoid_withdrawal'])
-                        ? $params['product']['tm_avoid_withdrawal']
-                          : null;
+    if (isset($params['product']) && count($params['product']))
+      foreach ($this->_tmParams as $name)
+        $data[$name] = isset($params['product']['tm_' . $name])
+                         ? $params['product']['tm_' . $name]
+                           : null;
 
     $session = Mage::getSingleton('adminhtml/session');
 
@@ -61,7 +65,7 @@ class MVentory_Tm_Adminhtml_IndexController
 
     $connector = Mage::getModel('mventory_tm/connector');
 
-    $result = $connector->send($product, $categoryId, $data);
+    $result = $connector->send($product, $data['category'], $data);
 
     if (!is_int($result)) {
       $session->addError($helper->__($result));
@@ -205,17 +209,13 @@ class MVentory_Tm_Adminhtml_IndexController
       return;
     }
 
-    $data = isset($params['tm']) ? $params['tm'] : array();
+    $data = array();
 
-    //Remember value of Relist if not sold attribute
-    $data['relist'] = isset($params['product']['tm_relist'])
-                        ? $params['product']['tm_relist']
-                          : null;
-
-    //Remember value of avoid withdrawal attribute
-    $data['avoid_withdrawal'] = isset($params['product']['tm_avoid_withdrawal'])
-                        ? $params['product']['tm_avoid_withdrawal']
-                          : null;
+    if (isset($params['product']) && count($params['product']))
+      foreach ($this->_tmParams as $name)
+        $data[$name] = isset($params['product']['tm_' . $name])
+                         ? $params['product']['tm_' . $name]
+                           : null;
 
     $product = Mage::getModel('catalog/product')->load($params['id']);
 

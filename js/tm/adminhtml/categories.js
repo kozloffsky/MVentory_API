@@ -147,7 +147,7 @@ function tm_categories_for_product (url_templates) {
 
     $tr
       .find('> .checkbox > .category-check')
-      .prop('name', 'tm[category]')
+      .prop('name', 'product[tm_category]')
       .prop('type', 'radio');
 
     apply_table_handlers($tr, row_click_handler);
