@@ -44,6 +44,22 @@ class MVentory_Tm_Model_Product_Attribute_Api
     foreach ($_attributes as $_attribute) {
       $attribute = $this->info($_attribute['attribute_id']);
 
+      $excludeAttribute = false;
+      
+      foreach($attribute['frontend_label'] as $label)
+      {
+        if ($label['store_id'] == $storeId && strcmp($label['label'], '~') == 0)
+        {
+          $excludeAttribute = true;
+          break;
+        }
+      }
+      
+      if ($excludeAttribute)
+      {
+        continue;
+      }
+      
       $attribute['options']
         = $this->optionsPerStoreView($attribute['attribute_id'], $storeId);
 
