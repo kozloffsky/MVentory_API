@@ -113,4 +113,35 @@ class MVentory_Tm_Model_Order_Api extends Mage_Sales_Model_Order_Api {
 
     return $order;
   }
+
+  /**
+   * Initialize basic order model
+   *
+   * The function is redefined to check if api user has access to the order
+   *
+   * @param mixed $orderIncrementId
+   * @return Mage_Sales_Model_Order
+   */
+  protected function _initOrder ($orderIncrementId) {
+    $order = parent::_initOrder($orderIncrementId);
+
+    $userWebsite = Mage::helper('mventory_tm')->getApiUserWebsite();
+
+    if (!$userWebsite)
+      $this->_fault('access_denied');
+
+    $userWebsiteId = $userWebsite->getId();
+
+    if ($userWebsiteId == 0)
+      return $order;
+
+    $orderWebsiteId = $order
+                        ->getStore()
+                        ->getWebsiteId();
+
+    if ($orderWebsiteId != $userWebsiteId)
+      $this->_fault('access_denied');
+
+    return $order;
+  }
 }

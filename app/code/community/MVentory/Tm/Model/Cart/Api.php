@@ -8,7 +8,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
                                          $transactionId = null, $name = null,
                                          $taxClass = null) {
 
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory_tm/product');
 
     $storeId = $helper->getCurrentStoreId();
 
@@ -78,6 +78,9 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
         $updateProduct = true;
     } else {
+      if (!$helper->hasApiUserAccess($productId, 'id'))
+        $this->_fault('access_denied');
+
       $product->load($productId);
       $stockItem = $product->getStockItem();
 
@@ -251,7 +254,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
   	
     $orderApi = Mage::getModel('mventory_tm/order_api');
 
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory_tm/product');
 
     $storeId = $helper->getCurrentStoreId();
 
@@ -322,6 +325,9 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
       $product = Mage::getModel('catalog/product');
 
       $productId = (int) $productData['product_id'];
+
+      if (!$helper->hasApiUserAccess($productId, 'id'))
+        $this->_fault('access_denied');
     
       $product->load($productId);
       

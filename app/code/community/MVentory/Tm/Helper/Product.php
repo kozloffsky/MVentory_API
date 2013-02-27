@@ -63,4 +63,67 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
     $this->setAttributesValue($productId, $attribute);
   }
+
+  /**
+   * Try to get product's ID
+   * Code is taken from Mage_Catalog_Helper_Product::getProduct()
+   *
+   * @param  int|string $productId (SKU or ID)
+   * @param  string $identifierType
+   *
+   * @return int|null
+   */
+  public function getProductId ($productId, $identifierType = null) {
+    $expectedIdType = false;
+
+    if ($identifierType === null && is_string($productId)
+        && !preg_match("/^[+-]?[1-9][0-9]*$|^0$/", $productId))
+      $expectedIdType = 'sku';
+
+    if ($identifierType == 'sku' || $expectedIdType == 'sku') {
+      $idBySku = Mage::getResourceModel('catalog/product')
+                   ->getIdBySku($productId);
+
+      if ($idBySku)
+        $productId = $idBySku;
+      else if ($identifierType == 'sku')
+        return null;
+    }
+
+    if ($productId && is_numeric($productId))
+      return (int) $productId;
+
+    return null;
+  }
+
+  /**
+   * Check if api user has access to a product.
+   *
+   * Return true if current api users assigned to the Admin website
+   * or to the same website as the product
+   *
+   * @param  int|string $productId (SKU or ID)
+   * @param  string $identifierType
+   *
+   * @return boolean
+   */
+  public function hasApiUserAccess ($productId, $identifierType = null) {
+    $userWebsite = $this->getApiUserWebsite();
+
+    if (!$userWebsite)
+      return false;
+
+    $userWebsiteId = $userWebsite->getId();
+
+    if ($userWebsiteId == 0)
+      return true;
+
+    $id = $this->getProductId($productId, $identifierType);
+
+    $productWebsiteId = $this
+                          ->getWebsite($id)
+                          ->getId();
+
+    return $productWebsiteId == $userWebsiteId;
+  }
 }

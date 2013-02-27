@@ -80,4 +80,24 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
     return $productApi->fullInfo($identifierType == 'sku' ? null : $productId,
                                  $productId);
   }
+
+  /**
+   * Retrieve product
+   *
+   * The function is redefined to check if api user has access to the product
+   *
+   * @param int|string $productId
+   * @param string|int $store
+   * @param  string $identifierType
+   * @return Mage_Catalog_Model_Product
+   */
+  protected function _initProduct($productId, $store = null,
+                                  $identifierType = null) {
+
+    if (!Mage::helper('mventory_tm/product')
+           ->hasApiUserAccess($productId, $identifierType))
+      $this->_fault('access_denied');
+
+    return parent::_initProduct($productId, $store, $identifierType);
+  }
 }

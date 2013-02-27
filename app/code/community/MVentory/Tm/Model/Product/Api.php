@@ -454,6 +454,10 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   }
 
   public function submitToTM ($productId, $tmData) {
+    if (!Mage::helper('mventory_tm/product')
+           ->hasApiUserAccess($productId, 'id'))
+      $this->_fault('access_denied');
+
     $product = Mage::getModel('catalog/product')->load($productId);
 
     if (is_null($product->getId())) {
@@ -482,5 +486,25 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     }
 
     return $result;
+  }
+
+  /**
+   * Return loaded product instance
+   *
+   * The function is redefined to check if api user has access to the product
+   *
+   * @param  int|string $productId (SKU or ID)
+   * @param  int|string $store
+   * @param  string $identifierType
+   * @return Mage_Catalog_Model_Product
+   */
+  protected function _getProduct($productId, $store = null,
+                                 $identifierType = null) {
+
+    if (!Mage::helper('mventory_tm/product')
+           ->hasApiUserAccess($productId, $identifierType))
+      $this->_fault('access_denied');
+
+    return parent::_getProduct($productId, $store, $identifierType);
   }
 }

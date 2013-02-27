@@ -27,7 +27,30 @@ class MVentory_Tm_Model_Order_Shipment_Api extends Mage_Sales_Model_Order_Shipme
       if(array_key_exists('includeComment', $params))
         $includeComment = $params['includeComment'];
     }
-  	
+
+    $order = Mage::getModel('sales/order')
+               ->loadByIncrementId($orderIncrementId);
+
+    if (!$order->getId())
+      $this->_fault('order_not_exists');
+
+    $userWebsite = Mage::helper('mventory_tm')->getApiUserWebsite();
+
+    if (!$userWebsite)
+      $this->_fault('access_denied');
+
+    $userWebsiteId = $userWebsite->getId();
+
+    if ($userWebsiteId == 0)
+      return $order;
+
+    $orderWebsiteId = $order
+                        ->getStore()
+                        ->getWebsiteId();
+
+    if ($orderWebsiteId != $userWebsiteId)
+      $this->_fault('access_denied');
+
     $shipmentId = $this->create($orderIncrementId,$itemsQty,$comment,$email,
       $includeComment);
   	

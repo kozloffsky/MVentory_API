@@ -29,6 +29,31 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
              ? $website->getDefaultStore()->getId() : true;
   }
 
+  /**
+   * Retrieve website which current API user is assigned with
+   *
+   * @return null|Mage_Core_Model_Website
+   */
+  public function getApiUserWebsite () {
+    $session = Mage::getSingleton('api/session');
+
+    if (!$session->isLoggedIn())
+      return null;
+
+    if (!$customerId = (int) $session->getUser()->getUsername())
+      return null;
+
+    $customer = Mage::getModel('customer/customer')->load($customerId);
+
+    if (!$customer->getId())
+      return null;
+
+    if (($websiteId = $customer->getWebsiteId()) === null)
+      return null;
+
+    return Mage::app()->getWebsite($websiteId);
+  }
+
   public function getWebsitesForProduct () {
     $website = $this->getCurrentWebsite();
 

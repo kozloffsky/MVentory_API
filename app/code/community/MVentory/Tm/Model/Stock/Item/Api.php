@@ -20,9 +20,12 @@ class MVentory_Tm_Model_Stock_Item_Api
       if ($newId = $product->getIdBySku($productId))
         $productId = $newId;
 
+    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
+
     $collection = Mage::getModel('catalog/product')
                     ->getCollection()
                     ->setFlag('require_stock_items', true)
+                    ->addStoreFilter($storeId)
                     ->addFieldToFilter('entity_id', array('in' => $productIds));
 
     $result = array();
