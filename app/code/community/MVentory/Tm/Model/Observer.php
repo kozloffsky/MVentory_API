@@ -747,22 +747,18 @@ class MVentory_Tm_Model_Observer {
   public function checkAccessToWebsite ($observer) {
     $apiUser = $observer->getModel();
 
-    if (!$customerId = (int) $apiUser->getUsername()) {
-      $apiUser->setId(null);
+    $helper = Mage::helper('mventory_tm');
 
-      return;
-    }
+    $website = $helper->getApiUserWebsite($apiUser);
 
-    $customer = Mage::getModel('customer/customer')->load($customerId);
-
-    if (!$customer->getId()) {
+    if (!$website) {
       $apiUser->setId(null);
 
       return;
     }
 
     //Allow access to all websites for customers assigned to Admin website
-    if (($websiteId = $customer->getWebsiteId()) == 0)
+    if (($websiteId = $website->getId()) == 0)
       return;
 
     $request = Mage::getSingleton('api/server')
@@ -775,7 +771,7 @@ class MVentory_Tm_Model_Observer {
     else
       $path = Mage_Core_Model_Url::XML_PATH_SECURE_URL;
 
-    $websiteBaseUrl = Mage::helper('mventory_tm')->getConfig($path, $websiteId);
+    $websiteBaseUrl = $helper->getConfig($path, $websiteId);
 
     $currentBaseUrl = $scheme . '://' . $request->getHttpHost() . '/';
 
