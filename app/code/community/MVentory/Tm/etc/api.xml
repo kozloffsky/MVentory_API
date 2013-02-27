@@ -379,10 +379,15 @@
             <title>Sales</title>
             <sort_order>5</sort_order>
 
-            <info translate="title" module="mventory_tm">
-              <title>Retrieve orders full info</title>
+            <order translate="title" module="sales">
+              <title>Order</title>
               <sort_order>1</sort_order>
-            </info>
+
+              <info translate="title" module="mventory_tm">
+                <title>Retrieve orders full info</title>
+                <sort_order>1</sort_order>
+              </info>
+            </order>
 
             <shipment translate="title" module="sales">
               <title>Order shipments</title>
