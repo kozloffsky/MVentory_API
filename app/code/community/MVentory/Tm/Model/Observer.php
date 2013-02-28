@@ -761,21 +761,7 @@ class MVentory_Tm_Model_Observer {
     if (($websiteId = $website->getId()) == 0)
       return;
 
-    $request = Mage::getSingleton('api/server')
-                 ->getAdapter()
-                 ->getController()
-                 ->getRequest();
-
-    if (($scheme = $request->getScheme()) == 'http')
-      $path = Mage_Core_Model_Url::XML_PATH_UNSECURE_URL;
-    else
-      $path = Mage_Core_Model_Url::XML_PATH_SECURE_URL;
-
-    $websiteBaseUrl = $helper->getConfig($path, $websiteId);
-
-    $currentBaseUrl = $scheme . '://' . $request->getHttpHost() . '/';
-
-    if ($websiteBaseUrl != $currentBaseUrl)
+    if ($helper->getCurrentWebsite()->getId() != $websiteId)
       $apiUser->setId(null);
   }
 }
