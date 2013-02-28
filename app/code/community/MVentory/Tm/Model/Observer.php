@@ -764,4 +764,10 @@ class MVentory_Tm_Model_Observer {
     if ($helper->getCurrentWebsite()->getId() != $websiteId)
       $apiUser->setId(null);
   }
+
+  public function hideProductsWithoutSmallImages ($observer) {
+    $observer
+      ->getCollection()
+      ->addAttributeToFilter('small_image', array('neq' => 'no_selection'));
+  }
 }
