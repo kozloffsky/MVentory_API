@@ -8,6 +8,12 @@ class MVentory_Tm_Model_Observer {
   const XML_PATH_CDN_PREFIX = 'mventory_tm/cdn/prefix';
   const XML_PATH_CDN_DIMENSIONS = 'mventory_tm/cdn/resizing_dimensions';
 
+  const XML_PATH_CRON_INTERVAL = 'mventory_tm/settings/cron';
+
+  const SYNC_START_HOUR = 7;
+  const SYNC_END_HOUR = 23;
+  const SYNC_PERIOD_DAYS = 7;
+
   private $supportedImageTypes = array(
     IMAGETYPE_GIF => 'gif',
     IMAGETYPE_JPEG => 'jpeg',
@@ -183,6 +189,24 @@ class MVentory_Tm_Model_Observer {
 
     $helper = Mage::helper('mventory_tm/product');
 
+    //Get time with Magento timezone offset
+    $now = localtime(Mage::getModel('core/date')->timestamp(time()), true);
+
+    //Check if we are in allowed hours
+    $allowSubmit = $now['tm_hour'] >= self::SYNC_START_HOUR
+                   && $now['tm_hour'] < self::SYNC_END_HOUR;
+
+    if ($allowSubmit) {
+      $cronInterval
+        = (int) $helper->getConfig(self::XML_PATH_CRON_INTERVAL, $website);
+
+      //Calculate number of sync script runs during period
+      $runsNumber = $cronInterval
+                      ? (self::SYNC_END_HOUR - self::SYNC_START_HOUR) * 60
+                          * self::SYNC_PERIOD_DAYS / $cronInterval
+                        : 0;
+    }
+
     foreach ($accounts as $accountId => $accountData) {
       $products = Mage::getModel('catalog/product')
                     ->getCollection()
@@ -253,6 +277,9 @@ class MVentory_Tm_Model_Observer {
         $helper->setListingId(0, $product->getId());
       }
 
+      if (!($allowSubmit && $runsNumber))
+        continue;
+
       $freeSlots = $accountData['max_listings'] - $numberOfListings;
 
       if ($freeSlots <= 0)
@@ -275,11 +302,31 @@ class MVentory_Tm_Model_Observer {
       if (!$poolSize = count($products))
         continue;
 
+      if ($poolSize < $freeSlots) {
+        $freeSlots = round($poolSize / $runsNumber);
+      } else {
+        $freeSlots = round($freeSlots / $runsNumber);
+      }
+
+      //Calculate avaiable slots for current run of the sync script
+      $freeSlots = ($poolSize < $freeSlots)
+                     ? round($poolSize / $runsNumber)
+                       : round($freeSlots / $runsNumber);
+
+      //One product should be uploaded at least
+      if ($freeSlots < 1)
+        $freeSlots = 1;
+
       $products = $products->getItems();
 
       $ids = $freeSlots >= $poolSize
                ? array_keys($products)
                  : array_rand($products, $freeSlots);
+
+      //array_rand returns key in case $freeSlots = 1,
+      //wrap it with array
+      if (!is_array($ids))
+        $ids = array($ids);
 
       foreach ($ids as $id) {
         $product = Mage::getModel('catalog/product')
@@ -292,6 +339,7 @@ class MVentory_Tm_Model_Observer {
 
         $tmData = array(
           'account_id' => $accountId,
+          'category' => $tmCategory,
           'add_fees' => $product->getTmAddFees(),
           'allow_buy_now' => $product->getTmAllowBuyNow(),
           'shipping_type' => $product->getTmShippingType(),
