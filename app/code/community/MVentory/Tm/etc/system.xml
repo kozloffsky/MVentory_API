@@ -279,7 +279,13 @@
 
         <qr translate="label">
           <label>Labels</label>
-          <comment><![CDATA[<a target="_blank" href="/mventory_tm/qr/labels">Generator</a>]]></comment>
+          <comment><![CDATA[
+            <a target="_blank" href="/mventory_tm/qr/generate/labels/1">Generate labels</a><br />
+            <a target="_blank" href="/mventory_tm/qr/generate/links/1">Generate links</a><br />
+            <a target="_blank" href="/mventory_tm/qr/generate/links/1/codes/1">Generate links and codes</a><br />
+            <a target="_blank" href="/mventory_tm/qr/generate/images/1">Generate image links</a><br />
+            <a target="_blank" href="/mventory_tm/qr/generate/images/1/codes/1">Generate image links and codes</a><br />
+          ]]></comment>
           <frontend_type>text</frontend_type>
 
           <show_in_default>1</show_in_default>
