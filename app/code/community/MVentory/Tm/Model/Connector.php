@@ -190,39 +190,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           return 'Downloading image from S3 failed';
 
         if (file_exists($imagePath)) {
-          $imagePathInfo = pathinfo($imagePath);
-
-          $signature = md5($this->_accountData['key']
-                           . $imagePathInfo['filename']
-                           . $imagePathInfo['extension']
-                           . 'False'
-                           . 'False');
-
-          $xml = '<PhotoUploadRequest xmlns="http://api.trademe.co.nz/v1">
-  <Signature>' . $signature . '</Signature>
-  <PhotoData>' . base64_encode(file_get_contents($imagePath)) . '</PhotoData>
-  <FileName>' . $imagePathInfo['filename'] . '</FileName>
-  <FileType>' . $imagePathInfo['extension'] . '</FileType>
-  <IsWaterMarked>' . 0 . '</IsWaterMarked>
-  <IsUsernameAdded>' . 0 . '</IsUsernameAdded>
-  </PhotoUploadRequest>';
-
-          $client = $accessToken->getHttpClient($this->getConfig());
-          $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Photos.xml');
-          $client->setMethod(Zend_Http_Client::POST);
-          $client->setRawData($xml, 'application/xml');
-
-          $response = $client->request();
-
-          $startPos = strpos($response->getBody(), '<');
-          $endPos = strrpos($response->getBody(), '>') + 1;
-          $xml = simplexml_load_string(substr($response->getBody(), $startPos, $endPos - $startPos));
-
-          if ($xml) {
-            if ((string)$xml->Status == 'Success') {
-              $photoId = (int)$xml->PhotoId;
-            }
-          }
+          if (!is_int($photoId = $this->uploadImage($imagePath)))
+            return $photoId;
         }
       }
 
@@ -630,6 +599,50 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     }
 
     return $response['ListingId'];
+  }
+
+  public function uploadImage ($image) {
+    if (!$accessToken = $this->auth())
+      return;
+
+    $client = $accessToken->getHttpClient($this->getConfig());
+
+    $url = 'https://api.' . $this->_host . '.co.nz/v1/Photos.json';
+
+    $info = pathinfo($image);
+
+    $data = array(
+      'PhotoData' => base64_encode(file_get_contents($image)),
+      'FileName' => $info['filename'],
+      'FileType' => $info['extension'],
+    );
+
+    $client->setUri($url);
+    $client->setMethod(Zend_Http_Client::POST);
+    $client->setRawData(Zend_Json::encode($data), 'application/json');
+
+    $response = $client->request();
+
+    $result = Zend_Json::decode($response->getBody());
+
+    if ($response->getStatus() != 200)
+      return $result['ErrorDescription'];
+
+    if ($result['Status'] != 1) {
+      $msg = 'TM: error on image uploading ('
+             . $image
+             . '). Error description: '
+             . $result['Description'];
+
+      Mage::log($msg);
+
+      Mage::helper('mventory_tm')
+        ->sendEmail('Unable to upload image to TM', $msg, $this->_website);
+
+      return $result['Description'];
+    }
+
+    return $result['PhotoId'];
   }
 
   private function processDescription ($template, $product) {
