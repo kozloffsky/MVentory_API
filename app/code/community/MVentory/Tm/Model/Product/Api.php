@@ -499,25 +499,25 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
    *
    * @return boolean
    */
-    public function delete ($productId, $identifierType = null) {
-      $product = $this->_getProduct($productId, null, $identifierType);
+  public function delete ($productId, $identifierType = null) {
+    $product = $this->_getProduct($productId, null, $identifierType);
 
-      $name = $product->getName();
+    $name = $product->getName();
 
-      if (substr($name, -strlen('(DELETED)')) != '(DELETED)')
-        $name .= ' (DELETED)';
+    if (substr($name, -strlen('(DELETED)')) != '(DELETED)')
+      $name .= ' (DELETED)';
 
-      try {
-        $product
-          ->setName($name)
-          ->setStatus(Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
-          ->save();
-      } catch (Mage_Core_Exception $e) {
-        $this->_fault('not_deleted', $e->getMessage());
-      }
-
-      return true;
+    try {
+      $product
+        ->setName($name)
+        ->setStatus(Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
+        ->save();
+    } catch (Mage_Core_Exception $e) {
+      $this->_fault('not_deleted', $e->getMessage());
     }
+
+    return true;
+  }
 
   /**
    * Return loaded product instance
