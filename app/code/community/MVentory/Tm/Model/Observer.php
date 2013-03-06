@@ -675,6 +675,7 @@ class MVentory_Tm_Model_Observer {
         $newFile = Mage::getModel('catalog/product_image')
                      ->setSize($dimension)
                      ->setBaseFile($fileName)
+                     ->setKeepFrame(false)
                      ->resize()
                      ->saveFile()
                      ->getNewFile();
