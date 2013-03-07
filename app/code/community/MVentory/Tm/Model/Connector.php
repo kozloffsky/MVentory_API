@@ -18,6 +18,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const FREE = 3;
   const CUSTOM = 4;
 
+  const TM_MAX_IMAGE_SIZE = '670×502';
+
   const TITLE_MAX_LENGTH = 50;
   const DESCRIPTION_MAX_LENGTH = 2048;
 
@@ -177,22 +179,25 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $photoId = null;
 
-      $imagePath = $product->getImage();
+      $image = $product->getImage();
 
-      if ($imagePath && $imagePath != 'no_selection') {
-        $imagePath = Mage::getBaseDir('media') . DS . 'catalog' . DS . 'product'
-                       . $imagePath;
+      if ($image && $image != 'no_selection') {
+        $image = Mage::getSingleton('catalog/product_media_config')
+                   ->getMediaPath(self::TM_MAX_IMAGE_SIZE . $image);
 
-        $downloadResult = Mage::helper('mventory_tm/s3')
-                            ->download($imagePath, $this->_website);
+        if (!file_exists($image))
+          $image
+            = Mage::helper('mventory_tm/s3')
+                ->download($image, $this->_website, self::TM_MAX_IMAGE_SIZE);
 
-        if (!$downloadResult)
+        if (!$image)
           return 'Downloading image from S3 failed';
 
-        if (file_exists($imagePath)) {
-          if (!is_int($photoId = $this->uploadImage($imagePath)))
-            return $photoId;
-        }
+        if (!file_exists($image))
+          return 'Image doesn\'t exists';
+          
+        if (!is_int($photoId = $this->uploadImage($image)))
+          return $photoId;
       }
 
       $client = $accessToken->getHttpClient($this->getConfig());
