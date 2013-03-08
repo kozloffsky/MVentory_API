@@ -3,6 +3,8 @@
 require_once 'Gd2.php';
 require_once 'S3.php';
 
+define('MAX_TRIES', 10);
+
 //Settings
 $accessKey = '';
 $secretKey = '';
@@ -12,6 +14,8 @@ $dimensions = '';
 
 $redownloadImages = false;
 $overwriteThumbs = true;
+$recalculateThumbs = false;
+$compareThumbsBySize = false;
 
 //Prepare parameters
 $dimensions = parseDimensions($dimensions, $website);
@@ -35,6 +39,8 @@ echo 'Number of images: ', $totalImgs, "\n";
 if (!$totalImgs)
   exit('No images in the bucket');
 
+$_reuploadThumbs = $overwriteThumbs || $compareThumbsBySize;
+
 $images = array_keys($images);
 
 foreach ($images as $image) {
@@ -45,10 +51,19 @@ foreach ($images as $image) {
     //Create directories for the image
     createDirectory(substr($image, 0, $imgPathLen));
 
-    if ($s3->getObject($bucket, $image, $image) === false) {
-      echo 'Failed to download ', $image, "\n";
+    for ($i = 1; $i <= MAX_TRIES; $i++) {
+      if ($s3->getObject($bucket, $image, $image) !== false)
+        break;
 
-      continue;
+      if ($i == MAX_TRIES) {
+        echo 'Failed to download ', $image, "\n";
+
+        if (file_exists($image))
+          unlink($image);
+
+        //Go to next image
+        continue 2;
+      }
     }
   } else
     echo 'File ', $image, ' was already downloaded', "\n";
@@ -58,44 +73,63 @@ foreach ($images as $image) {
   foreach ($dimensions as $thumbPrefix => $dimension) {
     $thumb = $thumbPrefix . $dispersionPath;
 
+    $thumbInfo = $s3->getObjectInfo($bucket, $thumb, $compareThumbsBySize);
+
     //Check if thumb exists in the bucket
-    if (!$overwriteThumbs && $s3->getObjectInfo($bucket, $thumb, false)) {
+    if ($thumbInfo && !$_reuploadThumbs) {
       echo 'Thumb ', $thumb, ' exists', "\n";
 
       continue;
     }
 
-    //Create directories for the thumb
-    createDirectory(substr($thumb, 0, strlen($thumbPrefix) + 4));
+    if (!file_exists($thumb) || $recalculateThumbs) {
+      //Create directories for the thumb
+      createDirectory(substr($thumb, 0, strlen($thumbPrefix) + 4));
 
-    $adapter = new Varien_Image_Adapter_Gd2();
+      $adapter = new Varien_Image_Adapter_Gd2();
 
-    //Default settings from Mage
-    $adapter->keepAspectRatio(true);
-    $adapter->keepFrame(true);
-    $adapter->keepTransparency(true);
-    $adapter->constrainOnly(false);
-    $adapter->backgroundColor(array(255, 255, 255));
-    $adapter->quality(100);
+      //Default settings from Mage
+      $adapter->keepAspectRatio(true);
+      $adapter->keepFrame(false);
+      $adapter->keepTransparency(true);
+      $adapter->constrainOnly(true);
+      $adapter->backgroundColor(array(255, 255, 255));
+      $adapter->quality(100);
 
-    try {
-      $adapter->open($image);
-      $adapter->resize($dimension['width'], $dimension['height']);
-      $adapter->save($thumb);
-    } catch (Exception $e) {
-      echo 'Can\'t resize ', $image, ' (', $e->getMessage(), ')', "\n";
+      try {
+        $adapter->open($image);
+        $adapter->resize($dimension['width'], $dimension['height']);
+        $adapter->save($thumb);
+      } catch (Exception $e) {
+        echo 'Can\'t resize ', $image, ' (', $e->getMessage(), ')', "\n";
 
-      continue;
+        continue;
+      }
     }
 
-    //Upload thumb to the bucket
-    $result = $s3->putObject($s3->inputFile($thumb),
-                             $bucket,
-                             $thumb,
-                             S3::ACL_PUBLIC_READ);
+    if (file_exists($thumb)) {
+      if ($compareThumbsBySize && $thumbInfo
+          && filesize($thumb) == $thumbInfo['size']) {
 
-    if (!$result)
-      echo 'Failed to upload ', $thumb, "\n";
+        echo 'Thumb ', $thumb, ' has same size on S3. Ignoring', "\n";
+
+        continue;
+      }
+
+      for ($i = 1; $i <= MAX_TRIES; $i++) {
+        //Upload thumb to the bucket
+        $result = $s3->putObject($s3->inputFile($thumb),
+                                 $bucket,
+                                 $thumb,
+                                 S3::ACL_PUBLIC_READ);
+
+        if ($result)
+          break;
+
+        if ($i == MAX_TRIES)
+          echo 'Failed to upload ', $thumb, "\n";
+      }
+    }
   }
 }
 
