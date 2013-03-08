@@ -18,7 +18,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const FREE = 3;
   const CUSTOM = 4;
 
-  const TM_MAX_IMAGE_SIZE = '670×502';
+  const TM_MAX_IMAGE_SIZE = '670x502';
 
   const TITLE_MAX_LENGTH = 50;
   const DESCRIPTION_MAX_LENGTH = 2048;
