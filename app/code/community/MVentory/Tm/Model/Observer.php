@@ -676,6 +676,7 @@ class MVentory_Tm_Model_Observer {
                      ->setSize($dimension)
                      ->setBaseFile($fileName)
                      ->setKeepFrame(false)
+                     ->setConstrainOnly(true)
                      ->resize()
                      ->saveFile()
                      ->getNewFile();
