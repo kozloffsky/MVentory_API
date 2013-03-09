@@ -292,6 +292,65 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     return $this->fullInfo($id);
   }
+  
+  public function duplicateAndReturnInfo ($skuToDuplicate, $skuNew, $productData, $imagesCopyMode, $decreaseOriginalQTYBy) {
+
+    $id = (int) Mage::getModel('catalog/product')
+                  ->getResource()
+                  ->getIdBySku($skuNew);
+
+    if (!$id) {
+      $id = (int) Mage::getModel('catalog/product')
+                  ->getResource()
+                  ->getIdBySku($skuToDuplicate);
+
+      $oldProduct = Mage::getModel('catalog/product')->load($id);
+
+      if (is_null($oldProduct->getId())) {
+        $this->_fault('product_not_exists');
+      }
+
+      if ($decreaseOriginalQTYBy > 0) {
+        $stockItem = Mage::getModel('cataloginventory/stock_item')->loadByProduct($id);
+        
+        if (!is_null($stockItem->getId())) {
+          $stockItem->setData('qty', $stockItem->getData('qty') - $decreaseOriginalQTYBy);
+          $stockItem->save();
+        }
+      }
+
+      $newProduct = $oldProduct->duplicate();
+
+      $this->update($newProduct->getId(), $productData);
+
+      $images_api = Mage::getModel('catalog/product_attribute_media_api');
+
+      $items_old = $images_api->items($id);
+      $items_new = $images_api->items($newProduct->getId());
+
+      for($pos=0; $pos<count($items_old); $pos++) {
+
+        if ($pos >= count($items_new))
+          break;
+
+        $item_old = $items_old[$pos];
+        $item_new = $items_new[$pos];
+
+        if ((strcmp($imagesCopyMode, 'none') == 0) ||
+          ((strcmp($imagesCopyMode, 'main') == 0) && (!in_array('image', $item_old['types'])))) {
+          $images_api->remove($newProduct->getId(), $item_new['file']);
+        } else {
+          if (isset($item_old['types'])) {
+            $images_api->update($newProduct->getId(), $item_new['file'], array('types' => $item_old['types']));
+          }
+        }
+      }
+
+      $id = $newProduct->getId();
+    }
+    
+    return $this->fullInfo($id);
+  }
 
   /**
    * Get info about new products, sales and stock
