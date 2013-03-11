@@ -52,9 +52,9 @@
             <acl>mventory/catalog/product/create</acl>
           </createAndReturnInfo>
 
-          <duplicateAndReturnInfo translate="title" module="catalog">
+          <duplicateAndReturnInfo translate="title" module="mventory_tm">
             <title>Duplicate product</title>
-            <acl>catalog/product/create</acl>
+            <acl>mventory/catalog/product/create</acl>
           </duplicateAndReturnInfo>
 
           <statistics translate="title" module="mventory_tm">
