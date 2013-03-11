@@ -14,7 +14,7 @@
 
           <executeProfile translate="title" module="mventory_tm">
             <title>Execute a profile</title>
-            <acl>mventory_tm/dataflow</acl>
+            <acl>mventory/dataflow</acl>
           </executeProfile>
         </methods>
       </mventory_tm_dataflow>
