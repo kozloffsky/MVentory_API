@@ -245,7 +245,7 @@ jQuery(document).ready(function ($) {
     var account = tm_data['accounts'][$(this).val()];
 
     for (var key in account) {
-      var $option = $options.filter('[name*="' + key + '"]')
+      var $option = $options.filter('[name*="tm_' + key + '"]')
 
       //Ignore account options without corresponding fields on the page
       if (!$option.length)
