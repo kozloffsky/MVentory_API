@@ -195,10 +195,12 @@ class MVentory_Tm_Model_Carrier_Volumerate
   }
 
   protected function _getProduct ($item) {
-    return $item instanceof Mage_Catalog_Model_Product
-             ? $item->setQty(1)
-               : $item
-                   ->setData('product',   null)
-                   ->getProduct();
+    if ($item instanceof Mage_Sales_Model_Quote_Item_Abstract
+        || $item instanceof Mage_Sales_Model_Order_Item)
+      return $item
+               ->setData('product',   null)
+               ->getProduct();
+
+    return $item->setQty(1);
   }
 }
