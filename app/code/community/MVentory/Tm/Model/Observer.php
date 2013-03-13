@@ -361,6 +361,11 @@ class MVentory_Tm_Model_Observer {
     if (!function_exists('exif_read_data'))
       return;
 
+    //There's nothing to process because we're using images
+    //from original product in duplicated one
+    if ($observer->getProduct()->getIsDuplicate())
+      return;
+
     $value = $observer->getImages();
 
     $config = Mage::getSingleton('catalog/product_media_config');
@@ -551,6 +556,12 @@ class MVentory_Tm_Model_Observer {
 
   public function uploadImageToCdn ($observer) {
     $product = $observer->getEvent()->getProduct();
+
+    //There's nothing to process because we're using images
+    //from original product in duplicated one
+    if ($product->getIsDuplicate())
+      return;
+
     $images = $observer->getEvent()->getImages();
 
     $helper = Mage::helper('mventory_tm');
