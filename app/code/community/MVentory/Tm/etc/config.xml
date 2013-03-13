@@ -135,6 +135,12 @@
             <class>mventory_tm/observer</class>
             <method>mediaSaveBefore</method>
           </mventory_tm_media_save_before>
+
+          <mventory_tm_upload_image_to_cdn>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>uploadImageToCdn</method>
+          </mventory_tm_upload_image_to_cdn>
         </observers>
       </catalog_product_media_save_before>
 
@@ -173,16 +179,6 @@
           </mventory_tm_product_attributes_populate>
         </observers>
       </adminhtml_catalog_product_grid_prepare_massaction>
-
-      <catalog_product_media_save_before>
-        <observers>
-          <mventory_tm_upload_image_to_cdn>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>uploadImageToCdn</method>
-          </mventory_tm_upload_image_to_cdn>
-        </observers>
-      </catalog_product_media_save_before>
     </events>
 
     <rewrite>
