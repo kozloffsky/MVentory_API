@@ -300,13 +300,9 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                   ->getIdBySku($skuNew);
 
     if (!$id) {
-      $id = (int) Mage::getModel('catalog/product')
-                  ->getResource()
-                  ->getIdBySku($skuToDuplicate);
+      $oldProduct = $this->_getProduct($skuToDuplicate, null, 'sku');
 
-      $oldProduct = Mage::getModel('catalog/product')->load($id);
-
-      if (is_null($oldProduct->getId())) {
+      if (!$id = $oldProduct->getId()) {
         $this->_fault('product_not_exists');
       }
 
