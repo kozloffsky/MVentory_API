@@ -321,6 +321,9 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
       $newProduct = $oldProduct->duplicate();
 
+      if (!isset($productData['sku']))
+        $productData['sku'] = $skuNew;
+
       $this->update($newProduct->getId(), $productData);
 
       $images_api = Mage::getModel('catalog/product_attribute_media_api');
