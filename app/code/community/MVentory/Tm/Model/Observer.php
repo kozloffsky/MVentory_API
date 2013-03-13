@@ -820,4 +820,30 @@ class MVentory_Tm_Model_Observer {
       ->getCollection()
       ->addAttributeToFilter('small_image', array('neq' => 'no_selection'));
   }
+
+  /**
+   * Unset is_duplicate flag to prevent coping image files
+   * in Mage_Catalog_Model_Product_Attribute_Backend_Media::beforeSave() method
+   *
+   * @param Varien_Event_Observer $observer Event observer
+   */
+  public function unsetDuplicateFlagInProduct ($observer) {
+    $observer
+      ->getNewProduct()
+      ->setIsDuplicate(false)
+      ->setOrigIsDuplicate(true);
+  }
+
+  /**
+   * Restore is_duplicate flag to not affect other code, such as in
+   * Mage_Catalog_Model_Product_Attribute_Backend_Media::afterSave() method
+   *
+   * @param Varien_Event_Observer $observer Event observer
+   */
+  public function restoreDuplicateFlagInProduct ($observer) {
+    $product = $observer->getProduct();
+
+    if ($product->getOrigIsDuplicate())
+      $product->setIsDuplicate(true);
+  }
 }

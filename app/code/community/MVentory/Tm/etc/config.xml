@@ -111,9 +111,25 @@
         </observers>
       </catalog_product_save_before>
 
+      <catalog_model_product_duplicate>
+        <observers>
+          <tm_product_unset_duplicate_flag>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>unsetDuplicateFlagInProduct</method>
+          </tm_product_unset_duplicate_flag>
+        </observers>
+      </catalog_model_product_duplicate>
+
       <!-- Requires M. >= 1.7 -->
       <catalog_product_media_save_before>
         <observers>
+          <tm_product_restore_duplicate_flag>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>restoreDuplicateFlagInProduct</method>
+          </tm_product_restore_duplicate_flag>
+
           <mventory_tm_media_save_before>
             <type>singleton</type>
             <class>mventory_tm/observer</class>
