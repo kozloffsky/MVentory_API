@@ -362,7 +362,7 @@ class MVentory_Tm_Model_Observer {
       return;
 
     //There's nothing to process because we're using images
-    //from original product in duplicated one
+    //from original product in duplicate
     if ($observer->getProduct()->getIsDuplicate())
       return;
 
@@ -558,7 +558,7 @@ class MVentory_Tm_Model_Observer {
     $product = $observer->getEvent()->getProduct();
 
     //There's nothing to process because we're using images
-    //from original product in duplicated one
+    //from original product in duplicate
     if ($product->getIsDuplicate())
       return;
 
