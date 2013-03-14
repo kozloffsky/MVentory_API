@@ -288,9 +288,13 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     if (!$this->getAddTmFees())
       return 0;
 
-    return Mage::helper('mventory_tm/tm')
-             ->calculateFees($this->getProduct()->getPrice()
-                             + $this->getShippingRate());
+    $shippingType = $this
+                      ->getProduct()
+                      ->getTmShippingType();
+
+    return $shippingType == MVentory_Tm_Model_Connector::FREE
+             ? $this->_accounts[$this->_accountId]['free_shipping_fees']
+               : $this->_accounts[$this->_accountId]['fees'];
   }
 
   public function prepareDataForJs () {
