@@ -62,7 +62,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
     <label class="tm-option">
       <?php echo $this->__('Shipping type: '); ?>
-      <select class="select" name="product[tm_shipping_type]">
+      <select id="tm_shipping_type" class="select" name="product[tm_shipping_type]">
         <?php foreach ($_shippingOptions as $opt): ?>
         <option value="<?php echo $opt['value']; ?>" <?php if ($opt['selected']) echo 'selected="selected"'; ?>><?php echo $opt['label'] ?></option>
         <?php endforeach; ?>
@@ -260,7 +260,7 @@ jQuery(document).ready(function ($) {
     tm_update_total_price(tm_data['product']['price'], account);
   });
 
-  $('#tm_add_fees').on('change', function () {
+  $('#tm_add_fees, #tm_shipping_type').on('change', function () {
     tm_update_total_price(tm_data['product']['price'],
                           tm_data['accounts'][$('#tm_account').val()]);
   })

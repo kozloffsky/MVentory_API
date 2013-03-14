@@ -210,12 +210,20 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
       }
 
+      $shippingType = isset($tmData['shipping_type'])
+                        ? $tmData['shipping_type']
+                          : self::UNKNOWN;
+
       $tmHelper = Mage::helper('mventory_tm/tm');
 
       $price = $product->getPrice();
 
-      //Add shipping rate if product's shipping type is 'tab_ShipTransport'
-      if ($tmHelper->getShippingType($product) == 'tab_ShipTransport') {
+      if ($shippingType == self::FREE
+          && $this->_accountData['free_shipping_cost'] > 0) {
+        $price += (float) $this->_accountData['free_shipping_cost'];
+      } elseif ($tmHelper->getShippingType($product) == 'tab_ShipTransport') {
+        //Add shipping rate if product's shipping type is 'tab_ShipTransport'
+
         $regionName = $this->_accountData['name'];
         $website = Mage::app()->getWebsite($this->_website);
 
@@ -240,9 +248,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         = Mage::getModel('mventory_tm/system_config_source_shippingtype')
             ->toArray();
 
-      $shippingType = isset($tmData['shipping_type'])
-                        ? $tmData['shipping_type']
-                          : self::UNKNOWN;
       $shippingType
         = $shippingTypes[$shippingType];
 

@@ -129,6 +129,17 @@
               <sort_order>9</sort_order>
             </shipping_type>
 
+            <free_shipping_cost translate="label">
+              <label>Free shipping cost</label>
+              <frontend_type>text</frontend_type>
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+               <sort_order>10</sort_order>
+            </free_shipping_cost>
+
             <buyer translate="label">
               <label>TM buyer ID</label>
               <frontend_type>text</frontend_type>
@@ -138,7 +149,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>10</sort_order>
+              <sort_order>11</sort_order>
             </buyer>
 
             <footer translate="label">

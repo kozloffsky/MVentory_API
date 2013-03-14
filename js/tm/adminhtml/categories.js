@@ -261,8 +261,14 @@ function update_total_price (price, data) {
   var $price_parts = $('#tm_price_parts');
 
   var price = parseFloat(price);
-  var shipping_rate = parseFloat(data['shipping_rate']);
-  var tm_fees = parseFloat(data['fees']);
+
+  var shipping_rate = $('#tm_shipping_type').val() == 3 //Free shipping
+                        ? parseFloat(data['free_shipping_cost'])
+                          : parseFloat(data['shipping_rate']);
+
+  var tm_fees = $('#tm_shipping_type').val() == 3 //Free shipping
+                  ? parseFloat(data['free_shipping_fees'])
+                    : parseFloat(data['fees']);
 
   var add_tm_fees = $('#tm_add_fees').is(':checked') && tm_fees;
 
