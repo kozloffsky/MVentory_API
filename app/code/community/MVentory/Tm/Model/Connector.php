@@ -446,11 +446,40 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       if(!isset($parameters['Title'])) $parameters['Title'] = $product->getName();
 
+      if (!isset($parameters['ShippingOptions'])
+          && isset($formData['shipping_type']) && $formData['shipping_type'])
+        $parameters['ShippingOptions'][]['Type'] = $formData['shipping_type'];
+
       //set price
-      if(!isset($parameters['StartPrice']))
-        $parameters['StartPrice'] = isset($formData['add_fees']) && $formData['add_fees']
-          ? $tmHelper->addFees($product->getPrice())
-          : $product->getPrice();
+      if (!isset($parameters['StartPrice']) && isset($formData['shipping_type'])
+          && $formData['shipping_type']) {
+
+        $price = $product->getPrice();
+
+        if ($formData['shipping_type'] == self::FREE
+            && $this->_accountData['free_shipping_cost'] > 0) {
+          $price += (float) $this->_accountData['free_shipping_cost'];
+        } elseif ($tmHelper->getShippingType($product) == 'tab_ShipTransport') {
+          //Add shipping rate if product's shipping type is 'tab_ShipTransport'
+
+          $regionName = $this->_accountData['name'];
+          $website = Mage::app()->getWebsite($this->_website);
+
+          $price += $tmHelper->getShippingRate($product, $regionName, $website);
+
+          unset($regionName, $website);
+        }
+
+        //Apply fees to price of the product if it's allowed
+        $price = isset($formData['add_fees']) && $formData['add_fees']
+                   ? $tmHelper->addFees($price)
+                     : $price;
+
+        $parameters['StartPrice'] = $price;
+
+        unset($price);
+      }
+
       if(!isset($parameters['ReservePrice']))
         $parameters['ReservePrice'] = $parameters['StartPrice'];
       if(!isset($parameters['BuyNowPrice']) && ((isset($formData['allow_buy_now'])
@@ -476,10 +505,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       else {
         $parameters['Description'] = array($parameters['Description']);
       }
-
-      if (!isset($parameters['ShippingOptions'])
-          && isset($formData['shipping_type']) && $formData['shipping_type'])
-        $parameters['ShippingOptions'][]['Type'] = $formData['shipping_type'];
 
       //set Duration
       $item['Duration'] = 7;
