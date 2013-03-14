@@ -5,11 +5,11 @@ class MVentory_Tm_Model_System_Config_Source_Shippingtype {
   //TM shipping type mapping
   protected $_options = array(
     //MVentory_Tm_Model_Connector::NONE => 'None',
-    MVentory_Tm_Model_Connector::UNKNOWN => 'Unknown',
+    //MVentory_Tm_Model_Connector::UNKNOWN => 'Unknown',
     MVentory_Tm_Model_Connector::UNDECIDED => 'Undecided',
-    MVentory_Tm_Model_Connector::PICKUP => 'Pickup',
+    //MVentory_Tm_Model_Connector::PICKUP => 'Pickup',
     MVentory_Tm_Model_Connector::FREE => 'Free',
-    MVentory_Tm_Model_Connector::CUSTOM => 'Custom'
+    //MVentory_Tm_Model_Connector::CUSTOM => 'Custom'
   );
 
   /**

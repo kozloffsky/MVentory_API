@@ -11,12 +11,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   const CACHE_TM_CATEGORY_ATTRS = 'TM_CATEGORY_ATTRS';
 
   //TM shipping types
-  const UNKNOWN = 0;
-  const NONE = 0;
+  //const UNKNOWN = 0;
+  //const NONE = 0;
   const UNDECIDED = 1;
-  const PICKUP = 2;
+  //const PICKUP = 2;
   const FREE = 3;
-  const CUSTOM = 4;
+  //const CUSTOM = 4;
 
   const TM_MAX_IMAGE_SIZE = '670x502';
 
