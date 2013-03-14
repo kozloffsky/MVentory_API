@@ -412,13 +412,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function update($product,$parameters=null,$formData=null){
-    $tmHelper = Mage::helper('mventory_tm/tm');
-    $helper = Mage::helper('mventory_tm');
-
     $this->getWebsiteId($product);
 
     $accountId = $product->getTmAccountId();
     $this->setAccountId($accountId);
+
+    $helper = Mage::helper('mventory_tm/tm');
 
     $listingId = $product->getTmListingId();
     $return = 'Error';
@@ -459,20 +458,20 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         if ($formData['shipping_type'] == self::FREE
             && $this->_accountData['free_shipping_cost'] > 0) {
           $price += (float) $this->_accountData['free_shipping_cost'];
-        } elseif ($tmHelper->getShippingType($product) == 'tab_ShipTransport') {
+        } elseif ($helper->getShippingType($product) == 'tab_ShipTransport') {
           //Add shipping rate if product's shipping type is 'tab_ShipTransport'
 
           $regionName = $this->_accountData['name'];
           $website = Mage::app()->getWebsite($this->_website);
 
-          $price += $tmHelper->getShippingRate($product, $regionName, $website);
+          $price += $helper->getShippingRate($product, $regionName, $website);
 
           unset($regionName, $website);
         }
 
         //Apply fees to price of the product if it's allowed
         $price = isset($formData['add_fees']) && $formData['add_fees']
-                   ? $tmHelper->addFees($price)
+                   ? $helper->addFees($price)
                      : $price;
 
         $parameters['StartPrice'] = $price;
