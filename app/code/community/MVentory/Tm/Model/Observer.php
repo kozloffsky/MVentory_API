@@ -264,6 +264,9 @@ class MVentory_Tm_Model_Observer {
           //Set global flag to enable our dummy shipping method
           Mage::register('tm_allow_dummyshipping', true, true);
 
+          //Set customer ID for API access checks
+          Mage::register('tm_api_customer', $customerId, true);
+
           //Make order for the product
           Mage::getModel('mventory_tm/cart_api')
             ->createOrderForProduct($sku, $price, $qty, $customerId);

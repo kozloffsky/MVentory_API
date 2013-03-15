@@ -37,16 +37,25 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
    * @return null|Mage_Core_Model_Website
    */
   public function getApiUserWebsite ($user = null) {
-    if (!$user) {
-      $session = Mage::getSingleton('api/session');
+    $customerId = Mage::registry('tm_api_customer');
 
-      if (!$session->isLoggedIn())
-        return null;
+    if ($customerId === null) {
+      if (!$user) {
+        $session = Mage::getSingleton('api/session');
 
-      $user = $session->getUser();
+        if (!$session->isLoggedIn())
+          return null;
+
+        $user = $session->getUser();
+      }
+
+      $customerId = $user->getUsername();
     }
 
-    if (!$customerId = (int) $user->getUsername())
+    $customerId = (int) $customerId;
+
+    //Customer IDs begin from 1
+    if ($customerId < 1)
       return null;
 
     $customer = Mage::getModel('customer/customer')->load($customerId);
