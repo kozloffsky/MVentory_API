@@ -228,19 +228,19 @@ class MVentory_Tm_Model_Observer {
       //if ($customer->getId())
       //  $products->addPriceData($customer->getGroupId());
 
-      //Continue if there're products assigned to current TM account
-      if (!$numberOfListings = count($products))
-        continue;
-
       $connector = Mage::getModel('mventory_tm/connector');
 
       $connector->setWebsiteId($website->getId());
       $connector->setAccountId($accountId);
 
-      $result = $connector->massCheck($products);
+      //Check status of listings if there're products assigned
+      //to current TM account
+      if ($numberOfListings = count($products)) {
+        $result = $connector->massCheck($products);
 
-      if (!$result)
-        continue;
+        if (!$result)
+          continue;
+      }
 
       foreach ($products as $product) {
         if ($product->getIsSelling())
