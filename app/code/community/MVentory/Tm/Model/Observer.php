@@ -302,12 +302,6 @@ class MVentory_Tm_Model_Observer {
       if (!$poolSize = count($products))
         continue;
 
-      if ($poolSize < $freeSlots) {
-        $freeSlots = round($poolSize / $runsNumber);
-      } else {
-        $freeSlots = round($freeSlots / $runsNumber);
-      }
-
       //Calculate avaiable slots for current run of the sync script
       $freeSlots = ($poolSize < $freeSlots)
                      ? round($poolSize / $runsNumber)
