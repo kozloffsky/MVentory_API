@@ -178,12 +178,6 @@ class MVentory_Tm_Model_Observer {
     //Get website's default store
     $store = $website->getDefaultStore();
 
-    //Get default customer ID for TM sells (TM buyer)
-    $path = MVentory_Tm_Model_Connector::BUYER_PATH;
-    $customerId = Mage::helper('mventory_tm')->getConfig($path, $website);
-
-    $customer = Mage::getModel('customer/customer')->load($customerId);
-
     //Load TM accounts which are used in specified website
     $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
 
@@ -265,11 +259,11 @@ class MVentory_Tm_Model_Observer {
           Mage::register('tm_allow_dummyshipping', true, true);
 
           //Set customer ID for API access checks
-          Mage::register('tm_api_customer', $customerId, true);
+          Mage::register('tm_api_customer', $accountData['buyer'], true);
 
           //Make order for the product
           Mage::getModel('mventory_tm/cart_api')
-            ->createOrderForProduct($sku, $price, $qty, $customerId);
+            ->createOrderForProduct($sku, $price, $qty, $accountData['buyer']);
         }
 
         $helper->setListingId(0, $product->getId());

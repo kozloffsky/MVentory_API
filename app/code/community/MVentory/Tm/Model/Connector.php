@@ -3,7 +3,6 @@
 class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   const SANDBOX_PATH = 'mventory_tm/settings/sandbox';
-  const BUYER_PATH = 'mventory_tm/settings/buyer';
 
   const CACHE_TYPE_TM = 'tm';
   const CACHE_TAG_TM = 'TM';
