@@ -203,15 +203,20 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling.xml');
       $client->setMethod(Zend_Http_Client::POST);
 
-      $title = $product->getName();
-
-      if (strlen($title) > self::TITLE_MAX_LENGTH) {
-        $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
-      }
-
       $shippingType = isset($tmData['shipping_type'])
                         ? $tmData['shipping_type']
                           : self::UNKNOWN;
+
+      $title = $product->getName();
+
+      if (strlen($title) > self::TITLE_MAX_LENGTH)
+        $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
+      elseif ($shippingType == self::FREE) {
+        $freeShippingTitle = $title . ', free shipping';
+
+        if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
+          $title = $freeShippingTitle;
+      }
 
       $tmHelper = Mage::helper('mventory_tm/tm');
 
@@ -442,7 +447,21 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           && $formData['category'])
         $parameters['Category'] = $formData['category'];
 
-      if(!isset($parameters['Title'])) $parameters['Title'] = $product->getName();
+      if (!isset($parameters['Title'])) {
+        $title = $product->getName();
+
+        if (strlen($title) > self::TITLE_MAX_LENGTH)
+          $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
+        elseif (isset($formData['shipping_type'])
+                && $formData['shipping_type'] == self::FREE) {
+          $freeShippingTitle = $title . ', free shipping';
+
+          if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
+            $title = $freeShippingTitle;
+        }
+
+        $parameters['Title'] = $title;
+      }
 
       if (!isset($parameters['ShippingOptions'])
           && isset($formData['shipping_type']) && $formData['shipping_type'])
