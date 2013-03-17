@@ -159,6 +159,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         return 'Product doesn\'t have matched tm category';
       }
 
+      $shippingType = isset($tmData['shipping_type'])
+                        ? $tmData['shipping_type']
+                          : self::UNKNOWN;
+
       Mage::unregister('product');
       Mage::register('product', $product);
 
@@ -167,7 +171,18 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $description = '';
 
       if ($descriptionTmpl) {
-        $description = $this->processDescription($descriptionTmpl, $product);
+        $_data = $product->getData();
+
+        if ($shippingType == self::FREE)
+          $_data['free_shipping_text']
+            = isset($this->_accountData['free_shipping_text'])
+                ? $this->_accountData['free_shipping_text']
+                  : '';
+
+        $description = $this->processDescription($descriptionTmpl, $_data);
+
+        unset($_data);
+
         $description = htmlspecialchars($description);
       }
 
@@ -202,10 +217,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $client = $accessToken->getHttpClient($this->getConfig());
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling.xml');
       $client->setMethod(Zend_Http_Client::POST);
-
-      $shippingType = isset($tmData['shipping_type'])
-                        ? $tmData['shipping_type']
-                          : self::UNKNOWN;
 
       $title = $product->getName();
 
@@ -514,7 +525,19 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           //which shows product's attributes
           Mage::register('product', $product, true);
 
-          $description = $this->processDescription($descriptionTmpl, $product);
+          $_data = $product->getData();
+
+          if (isset($formData['shipping_type'])
+              && $formData['shipping_type'] == self::FREE)
+            $_data['free_shipping_text']
+              = isset($this->_accountData['free_shipping_text'])
+                  ? $this->_accountData['free_shipping_text']
+                    : '';
+
+          $description = $this->processDescription($descriptionTmpl, $_data);
+
+          unset($_data);
+
           $description = htmlspecialchars($description);
         }
         $parameters['Description'] = array($description);
@@ -700,7 +723,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return $result['PhotoId'];
   }
 
-  private function processDescription ($template, $product) {
+  private function processDescription ($template, $data) {
     $search = array();
     $replace = array();
 
@@ -708,21 +731,24 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $replace[] = rtrim($this->_getConfig('web/unsecure/base_url'), '/')
                  . '/'
                  . Mage::getModel('core/url')
-                     ->setRouteParams(array('sku' => $product->getSku()))
+                     ->setRouteParams(array('sku' => $data['sku']))
                      ->getRoutePath();
 
-    $shortDescription = $product->getShortDescription();
+    $shortDescription = isset($data['short_description'])
+                          ? $data['short_description']
+                            : '';
 
     $search[] = '{{sd}}';
-    $replace[] = $shortDescription && strlen($shortDescription) > 5
-                   ? $shortDescription
-                     : '';
+    $replace[] = strlen($shortDescription) > 5 ? $shortDescription : '';
 
-    $fullDescription = $product->getDescription();
+    $fullDescription = isset($data['description']) ? $data['description'] : '';
 
     $search[] = '{{fd}}';
-    $replace[] = $fullDescription && strlen($fullDescription) > 5
-                   ? $fullDescription
+    $replace[] = strlen($fullDescription) > 5 ? $fullDescription : '';
+
+    $search[] = '{{fs}}';
+    $replace[] = isset($data['free_shipping_text'])
+                   ? $data['free_shipping_text']
                      : '';
 
     $_attrs = Mage::app()

@@ -140,6 +140,17 @@
                <sort_order>10</sort_order>
             </free_shipping_cost>
 
+            <free_shipping_text translate="label">
+              <label>Free shipping text</label>
+              <frontend_type>text</frontend_type>
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+               <sort_order>11</sort_order>
+            </free_shipping_text>
+
             <buyer translate="label">
               <label>TM buyer ID</label>
               <frontend_type>text</frontend_type>
@@ -149,7 +160,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>11</sort_order>
+              <sort_order>12</sort_order>
             </buyer>
 
             <footer translate="label">
@@ -160,6 +171,7 @@
                   <li><tt>{{url}}</tt> - Product URL</li>
                   <li><tt>{{sd}}</tt> - Short description </li>
                   <li><tt>{{fd}}</tt> - Description </li>
+                  <li><tt>{{fs}}</tt> - Free shipping text</li>
                   <li><tt>{{attrs}}</tt> - Product attributes table</li>
                 </ul>
               ]]></comment>
