@@ -248,12 +248,12 @@
 
       <sales_order_shipment>
         <model>mventory_tm/order_shipment_api</model>
-        <acl>mventory/sales/shipmnent</acl>
+        <acl>mventory/sales/shipment</acl>
 
         <methods>
           <createShipmentWithTracking translate="title" module="mventory_tm">
             <title>Create shipment with tracking and retrieve full order information</title>
-            <acl>mventory/sales/shipmnent/create_with_tracking</acl>
+            <acl>mventory/sales/shipment/create_with_tracking</acl>
           </createShipmentWithTracking>
         </methods>
       </sales_order_shipment>
@@ -327,37 +327,37 @@
                   <sort_order>3</sort_order>
                 </remove>
               </media>
-            </product>
 
-            <attribute translate="title" module="catalog">
-              <title>Product Attributes</title>
-              <sort_order>3</sort_order>
+              <attribute translate="title" module="catalog">
+                <title>Product Attributes</title>
+                <sort_order>7</sort_order>
 
-              <read translate="title" module="mventory_tm">
-                <title>Retrieve full attribute data</title>
-                <sort_order>1</sort_order>
-              </read>
-
-              <option translate="title" module="catalog">
-                <title>Options</title>
-                <sort_order>2</sort_order>
-
-                  <add translate="title" module="mventory_tm">
-                    <title>Add and return full info</title>
-                    <sort_order>1</sort_order>
-                  </add>
-              </option>
-
-              <set translate="title" module="catalog">
-                <title>Attribute Sets</title>
-                <sort_order>3</sort_order>
-
-                <list translate="title" module="mventory_tm">
-                  <title>Full info list</title>
+                <read translate="title" module="mventory_tm">
+                  <title>Retrieve full attribute data</title>
                   <sort_order>1</sort_order>
-                </list>
-              </set>
-            </attribute>
+                </read>
+
+                <option translate="title" module="catalog">
+                  <title>Options</title>
+                  <sort_order>2</sort_order>
+
+                    <add translate="title" module="mventory_tm">
+                      <title>Add and return full info</title>
+                      <sort_order>1</sort_order>
+                    </add>
+                </option>
+
+                <set translate="title" module="catalog">
+                  <title>Attribute Sets</title>
+                  <sort_order>3</sort_order>
+
+                  <list translate="title" module="mventory_tm">
+                    <title>Full info list</title>
+                    <sort_order>1</sort_order>
+                  </list>
+                </set>
+              </attribute>
+            </product>
           </catalog>
 
           <cataloginventory translate="title" module="cataloginventory">
