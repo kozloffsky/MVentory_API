@@ -36,13 +36,7 @@ class MVentory_Tm_Adminhtml_IndexController
     //when submit is failed
     $session->setData('tm_params', $data);
 
-    //Get website which the product is assigned to
-    $website = $helper->getWebsite($productId);
-
-    //Load product with website scope (with website's default store scope)
-    $product = Mage::getModel('catalog/product')
-                 ->setStoreId($website->getDefaultStore()->getId())
-                 ->load($productId);
+    $product = Mage::getModel('catalog/product')->load($productId);
 
     if (!$product->getId()) {
       $session->addError($helper->__('Can\'t load product'));
