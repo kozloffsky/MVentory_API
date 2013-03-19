@@ -51,6 +51,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     6 => 'StayPeriod'
   );
 
+  private $_pickupValues = array(
+    1 => 'Allow',
+    2 => 'Demand',
+    3 => 'Forbid'
+  );
+
   protected function _construct () {
     $this->_helper = Mage::helper('mventory_tm');
   }
@@ -268,6 +274,14 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       unset($shippingTypes);
 
+      $pickup = isset($tmData['pickup'])
+                        ? $tmData['pickup']
+                          : MVentory_Tm_Model_Tm::PICKUP_ALLOW;
+
+      $pickup = isset($this->_pickupValues[$pickup])
+                  ? $this->_pickupValues[$pickup]
+                    : $this->_pickupValues[MVentory_Tm_Model_Tm::PICKUP_ALLOW];
+
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
 <Title>' . $title . '</Title>
@@ -276,7 +290,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 <ReservePrice>' . $price . '</ReservePrice>'
 . $buyNow .
 '<Duration>Seven</Duration>
-<Pickup>Allow</Pickup>';
+<Pickup>' . $pickup . '</Pickup>';
 
       if ($photoId) {
         $xml .= '<PhotoIds><PhotoId>' . $photoId . '</PhotoId></PhotoIds>';
@@ -549,12 +563,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       //set Duration
       $item['Duration'] = 7;
 
-      //set pickup option
-      //  None = 0
-      //  Allow = 1
-      //  Demand = 2
-      //  Forbid = 3
-      $item['Pickup'] = 1;
+      //Set pickup option
+      if (!isset($parameters['Pickup']) && isset($formData['pickup'])
+          && $formData['pickup'] > 0)
+        $parameters['Pickup'] = (int) $formData['pickup'];
 
       //set Payment methods
       //  None = 0
@@ -992,5 +1004,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     if (isset($data['add_fees']))
       $product->setTmAddFees($data['add_fees']);
+
+    if (isset($data['pickup']))
+      $product->setTmPickup($data['pickup']);
   }
 }

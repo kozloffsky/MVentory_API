@@ -16,6 +16,7 @@ $_tmUrl = $this->getTmUrl();
 $_allowBuyNow = $this->getAllowBuyNow();
 $_addTmFees = $this->getAddTmFees();
 $_shippingOptions = $this->getShippingOptions();
+$_pickupOptions = $this->getPickupOptions();
 $_relist = $this->getRelist();
 $_avoidWithdrawal = $this->getAvoidWithdrawal();
 $_accounts = $this->getAccounts();
@@ -77,6 +78,15 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
     <label class="tm-option">
       <input id="tm_add_fees" type="checkbox" value="1" name="product[tm_add_fees]" <?php if ($_addTmFees) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Add TM fees'); ?>
+    </label>
+
+    <label class="tm-option">
+      <?php echo $this->__('Pickup: '); ?>
+      <select class="select" name="product[tm_pickup]">
+        <?php foreach ($_pickupOptions as $opt): ?>
+        <option value="<?php echo $opt['value']; ?>" <?php if ($opt['selected']) echo 'selected="selected"'; ?>><?php echo $opt['label'] ?></option>
+        <?php endforeach; ?>
+      </select>
     </label>
   </fieldset>
 </div>

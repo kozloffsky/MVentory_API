@@ -2,7 +2,7 @@
 <config>
   <modules>
     <MVentory_Tm>
-      <version>11</version>
+      <version>12</version>
     </MVentory_Tm>
   </modules>
 
@@ -345,6 +345,7 @@
         <add_tm_fees>0</add_tm_fees>
         <shipping_type>1</shipping_type>
         <avoid_withdrawal>1</avoid_withdrawal>
+        <pickup>0</pickup>
       </settings>
 
       <qr>

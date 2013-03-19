@@ -10,7 +10,8 @@ class MVentory_Tm_Adminhtml_IndexController
     'allow_buy_now',
     'add_fees',
     'relist',
-    'avoid_withdrawal'
+    'avoid_withdrawal',
+    'pickup'
   );
 
   public function submitAction () {

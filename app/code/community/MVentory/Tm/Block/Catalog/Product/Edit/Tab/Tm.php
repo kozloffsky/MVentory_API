@@ -237,6 +237,21 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return $options;
   }
 
+  public function getPickupOptions () {
+    $attr = 'tm_pickup';
+    $field = 'pickup';
+
+    $shippingType = (int) $this->_getAttributeValue($attr, $field);
+
+    $options = Mage::getModel('mventory_tm/system_config_source_pickup')
+                 ->toOptionArray();
+
+    foreach ($options as &$option)
+      $option['selected'] = $shippingType == $option['value'];
+
+    return $options;
+  }
+
   public function getAccounts () {
     $_accounts = array();
 

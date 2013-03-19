@@ -329,7 +329,8 @@ class MVentory_Tm_Model_Observer {
           'add_fees' => $product->getTmAddFees(),
           'allow_buy_now' => $product->getTmAllowBuyNow(),
           'shipping_type' => $product->getTmShippingType(),
-          'relist' => $product->getTmRelist()
+          'relist' => $product->getTmRelist(),
+          'pickup' => $product->getTmPickup()
         );
 
         $listingId

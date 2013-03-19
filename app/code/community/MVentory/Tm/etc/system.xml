@@ -117,6 +117,26 @@
               <sort_order>8</sort_order>
             </add_fees>
 
+            <pickup translate="label">
+              <label>Pickup</label>
+              <comment><![CDATA[
+                <ul style="list-style-type: disc; padding-left: 30px">
+                  <!--<li><i>None</i> - The listing allows pick up, but does not require it</li>-->
+                  <li><i>Buyer can pickup</i> - The buyer can pickup if they so choose</li>
+                  <li><i>Buyer must pickup</i> - The buyer must pickup the item</li>
+                  <li><i>No pickups</i> - The buyer cannot pickup the item (delivery only)</li>
+                </ul>
+              ]]></comment>
+              <frontend_type>select</frontend_type>
+              <source_model>mventory_tm/system_config_source_pickup</source_model>
+
+              <show_in_default>0</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>9</sort_order>
+            </pickup>
+
             <shipping_type translate="label">
               <label>Shipping type</label>
               <frontend_type>select</frontend_type>
@@ -126,7 +146,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>9</sort_order>
+              <sort_order>10</sort_order>
             </shipping_type>
 
             <free_shipping_cost translate="label">
@@ -137,7 +157,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-               <sort_order>10</sort_order>
+               <sort_order>11</sort_order>
             </free_shipping_cost>
 
             <free_shipping_text translate="label">
@@ -148,7 +168,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-               <sort_order>11</sort_order>
+               <sort_order>12</sort_order>
             </free_shipping_text>
 
             <buyer translate="label">
@@ -160,7 +180,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>12</sort_order>
+              <sort_order>13</sort_order>
             </buyer>
 
             <footer translate="label">
