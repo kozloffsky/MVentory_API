@@ -47,6 +47,16 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
       <input type="checkbox" value="1" name="product[tm_avoid_withdrawal]" <?php if ($_avoidWithdrawal) echo 'checked="checked"'; ?> />
       <?php echo $this->__('Avoid withdrawal'); ?>
     </label>
+
+    <label class="tm-option">
+      <input type="checkbox" value="1" name="product[tm_allow_buy_now]" <?php if ($_allowBuyNow) echo 'checked="checked"'; ?> />
+      <?php echo $this->__('Allow Buy Now'); ?>
+    </label>
+
+    <label class="tm-option">
+      <input id="tm_add_fees" type="checkbox" value="1" name="product[tm_add_fees]" <?php if ($_addTmFees) echo 'checked="checked"'; ?> />
+      <?php echo $this->__('Add TM fees'); ?>
+    </label>
   </fieldset>
 </div>
 
@@ -68,16 +78,6 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
         <option value="<?php echo $opt['value']; ?>" <?php if ($opt['selected']) echo 'selected="selected"'; ?>><?php echo $opt['label'] ?></option>
         <?php endforeach; ?>
       </select>
-    </label>
-
-    <label class="tm-option">
-      <input type="checkbox" value="1" name="product[tm_allow_buy_now]" <?php if ($_allowBuyNow) echo 'checked="checked"'; ?> />
-      <?php echo $this->__('Allow Buy Now'); ?>
-    </label>
-
-    <label class="tm-option">
-      <input id="tm_add_fees" type="checkbox" value="1" name="product[tm_add_fees]" <?php if ($_addTmFees) echo 'checked="checked"'; ?> />
-      <?php echo $this->__('Add TM fees'); ?>
     </label>
 
     <label class="tm-option">
