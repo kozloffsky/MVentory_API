@@ -2,7 +2,7 @@
 <config>
   <modules>
     <MVentory_Tm>
-      <version>12</version>
+      <version>13</version>
     </MVentory_Tm>
   </modules>
 
@@ -47,6 +47,10 @@
           <carrier_volumerate>
             <table>mventory_carrier_volumerate</table>
           </carrier_volumerate>
+
+          <matching_rules>
+            <table>mventory_matching_rules</table>
+          </matching_rules>
         </entities>
       </mventory_tm_resources>
 
@@ -326,6 +330,16 @@
           </tm_check_access_to_website>
         </observers>
       </api_user_authenticated>
+
+      <controller_action_layout_render_before_adminhtml_catalog_product_set_edit>
+        <observers>
+          <tm_add_mathing_rules_block>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>addMatchingRulesBlock</method>
+          </tm_add_mathing_rules_block>
+        </observers>
+      </controller_action_layout_render_before_adminhtml_catalog_product_set_edit>
     </events>
 
     <layout>

@@ -54,7 +54,7 @@ function apply_table_handlers ($target, row_click_handler) {
     .on({
       click: function (event) {
         if (!$(event.target).is('a'))
-          row_click_handler.call(this);
+          row_click_handler.call(this, event);
       },
       mouseover: highlight_category,
       mouseout: dehighlight_category
@@ -310,5 +310,6 @@ function update_total_price (price, data) {
 window.tm_categories_for_product = tm_categories_for_product;
 window.tm_categories_for_category = tm_categories_for_category;
 window.tm_update_total_price = update_total_price;
+window.tm_apply_table_handlers = apply_table_handlers;
 
 })(jQuery)

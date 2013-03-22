@@ -844,4 +844,13 @@ class MVentory_Tm_Model_Observer {
     if ($product->getOrigIsDuplicate())
       $product->setIsDuplicate(true);
   }
+
+  public function addMatchingRulesBlock ($observer) {
+    Mage::app()
+      ->getFrontController()
+      ->getAction()
+      ->getLayout()
+      ->getBlock('content')
+      ->sortChildren(true);
+  }
 }
