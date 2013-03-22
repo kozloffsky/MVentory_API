@@ -10,6 +10,9 @@
 
 class MVentory_Tm_Block_Categories extends Mage_Core_Block_Template {
 
+  const TYPE_CHECKBOX = 'checkbox';
+  const TYPE_RADIO = 'radio';
+
   private $_selectedCategories = null;
 
   protected function _construct() {
@@ -77,5 +80,14 @@ class MVentory_Tm_Block_Categories extends Mage_Core_Block_Template {
         $cols = count($category['name']);
 
     return $cols;
+  }
+
+  public function setInputType ($type) {
+    if (!($type == self::TYPE_CHECKBOX || $type == self::TYPE_RADIO))
+      $type = self::TYPE_CHECKBOX;
+
+    $this->setData('input_type', $type);
+
+    return $this;
   }
 }

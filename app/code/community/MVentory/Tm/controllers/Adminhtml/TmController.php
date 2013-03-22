@@ -42,11 +42,17 @@ class MVentory_Tm_Adminhtml_TmController
                   ? Mage::getModel('catalog/category')->load($categoryId)
                     : null;
 
+    $request = $this->getRequest();
+
+    if (!$type = $request->getParam('type'))
+      $type = MVentory_Tm_Block_Categories::TYPE_CHECKBOX;
+
     $body = $this
               ->getLayout()
               ->createBlock('mventory_tm/categories')
               //Set category in loaded block for futher using
               ->setCategory($category)
+              ->setInputType($type)
               ->toHtml();
 
     $this->getResponse()->setBody($body);

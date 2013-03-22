@@ -15,6 +15,7 @@
 $_categories = $this->getCategories();
 $_selectedCategories = $this->getSelectedCategories();
 
+$_type = $this->getInputType();
 $_tmUrl = $this->getTmUrl();
 
 $_cols = $this->getColsNumber() - 1;
@@ -56,14 +57,12 @@ $_cols = $this->getColsNumber() - 1;
         $classes .= ' selected-row';
     ?>
     <tr class="<?php echo $classes ?>">
-      <td class="checkbox">
-        <input type="checkbox" class="category-check" value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> />
+      <td class="<?php echo $_type; ?>">
+        <input type="<?php echo $_type; ?>" class="category-check" <?php if ($_type == MVentory_Tm_Block_Categories::TYPE_RADIO) echo 'name="tm_category"'; ?>value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> />
       </td>
 
       <?php for ($n = 0; $n <= $_cols; ++$n): ?>
-      <td>
-        <?php echo isset($category['name'][$n]) ? $category['name'][$n] : ''; ?>
-      </td>
+      <td><?php echo isset($category['name'][$n]) ? $category['name'][$n] : ''; ?></td>
       <?php endfor; ?>
 
       <td class="last">
