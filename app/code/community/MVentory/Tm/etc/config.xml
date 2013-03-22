@@ -2,7 +2,7 @@
 <config>
   <modules>
     <MVentory_Tm>
-      <version>13</version>
+      <version>14</version>
     </MVentory_Tm>
   </modules>
 
@@ -112,6 +112,12 @@
             <class>mventory_tm/observer</class>
             <method>saveApiUserId</method>
           </mventory_tm_save_api_user_id>
+
+          <tm_match_category>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>matchCategory</method>
+          </tm_match_category>
         </observers>
       </catalog_product_save_before>
 

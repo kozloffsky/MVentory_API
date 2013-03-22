@@ -853,4 +853,17 @@ class MVentory_Tm_Model_Observer {
       ->getBlock('content')
       ->sortChildren(true);
   }
+
+  public function matchCategory ($observer) {
+    $product = $observer
+                 ->getEvent()
+                 ->getProduct();
+
+    $category = Mage::getModel('mventory_tm/rules')->match($product);
+
+    if ($category)
+      $product
+        ->setData('tm_match_id', $category['id'])
+        ->setData('tm_match_name', $category['name']);
+  }
 }
