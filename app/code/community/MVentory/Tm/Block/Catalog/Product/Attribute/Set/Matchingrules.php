@@ -26,10 +26,7 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
 
       $id = $attr->getId();
 
-      $this->_attrs[$id] = array(
-        'label' => $attr->getFrontendLabel(),
-        'type' => $type
-      );
+      $this->_attrs[$id] = array('label' => $attr->getFrontendLabel());
     }
 
     unset($attrs);

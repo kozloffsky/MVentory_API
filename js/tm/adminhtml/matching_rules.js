@@ -40,7 +40,6 @@ jQuery(document).ready(function ($) {
       var $values = $parent
                       .removeClass('tm-not-completed')
                       .find('> div > .tm-rule-value')
-                      .prop('multiple', attr.type == 'multiselect')
                       .empty();
 
       for (var i in attr.values)
