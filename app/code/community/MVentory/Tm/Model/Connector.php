@@ -351,7 +351,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         if ((string)$xml->Success == 'true') {
           $tmData['account_id'] = $this->_accountId;
 
-          $this->_updateProductAttributes($product, $tmData);
+          Mage::helper('mventory_tm/product')->setTmFields($product, $tmData);
 
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
@@ -584,7 +584,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $jsonResponse = json_decode($response->getBody());
 
       if (isset($jsonResponse->Success) && $jsonResponse->Success == 'true') {
-        $this->_updateProductAttributes($product, $formData);
+        Mage::helper('mventory_tm/product')->setTmFields($product, $formData);
 
         $product->save();
 
@@ -983,29 +983,5 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       return $this->_attrTypes[$id];
 
     return 'Unknown';
-  }
-
-  protected function _updateProductAttributes ($product, $data) {
-    $product
-      ->setTmRelist($data['relist'])
-      ->setTmCategory($data['category']);
-
-    if (isset($data['account_id']))
-      $product->setTmAccountId($data['account_id']);
-
-    if (isset($data['avoid_withdrawal']))
-      $product->setTmAvoidWithdrawal($data['avoid_withdrawal']);
-
-    if (isset($data['shipping_type']))
-      $product->setTmShippingType($data['shipping_type']);
-
-    if (isset($data['allow_buy_now']))
-      $product->setTmAllowBuyNow($data['allow_buy_now']);
-
-    if (isset($data['add_fees']))
-      $product->setTmAddFees($data['add_fees']);
-
-    if (isset($data['pickup']))
-      $product->setTmPickup($data['pickup']);
   }
 }

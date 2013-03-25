@@ -158,4 +158,19 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
     return $fields;
   }
+
+  /**
+   * Sets TM options in product
+   *
+   * @param Mage_Catalog_Model_Product|array $product Product
+   * @param array $fields TM options data
+   *
+   * @return MVentory_Tm_Helper_Product
+   */
+  public function setTmFields ($product, $fields) {
+    foreach ($fields as $name => $value)
+      $product->setData($this->_tmFields[$name], $value);
+
+    return $this;
+  }
 }
