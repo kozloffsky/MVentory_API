@@ -54,6 +54,18 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
    */
   protected function _prepareLayout () {
     $data = array(
+      'id' => 'tm-reset-rule-button',
+      'label' => Mage::helper('mventory_tm')->__('Reset rule')
+    );
+
+    $button = $this
+                ->getLayout()
+                ->createBlock('adminhtml/widget_button')
+                ->setData($data);
+
+    $this->setChild('reset_rule_button', $button);
+
+    $data = array(
       'id' => 'tm-save-rule-button',
       'class' => 'disabled',
       'label' => Mage::helper('mventory_tm')->__('Save rule')

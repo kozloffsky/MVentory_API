@@ -80,11 +80,15 @@ $_rules = $this->_getRules();
     </div>
   </div>
 
-  <div id="tm-matching-new-cat-name" class="tm-matching-rule-category">
-    <div class="tm-inner"><?php echo $this->getChildHtml('categories_button'); ?></div>
+  <div class="tm-matching-rule-category">
+    <div class="tm-inner">
+      <?php echo $this->getChildHtml('categories_button'); ?>
+      <span id="tm-matching-new-cat-name"></span>
+    </div>
   </div>
 
   <div id="tm-matching-new-rule-buttons">
+    <?php echo $this->getChildHtml('reset_rule_button'); ?>
     <?php echo $this->getChildHtml('save_rule_button'); ?>
   </div>
 </div>

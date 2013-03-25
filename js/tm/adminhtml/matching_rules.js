@@ -16,7 +16,7 @@ jQuery(document).ready(function ($) {
 
   var $rules = $('#tm-matching-rules')
   var $new_rule = $('#tm-matching-new-rule > .tm-inner');
-  var $new_cat_name = $('#tm-matching-new-cat-name > .tm-inner');
+  var $new_cat_name = $('#tm-matching-new-cat-name');
 
   var $rule_template = $('#tm-matching-rules').find('> .tm-template');
 
@@ -122,6 +122,13 @@ jQuery(document).ready(function ($) {
     update_save_rule_button_state();
   });
 
+  $('#tm-reset-rule-button').on('click', function () {
+    clear_attrs();
+    uncheck_category();
+
+    update_save_rule_button_state();
+  });
+
   $('#tm-categories-button').on('click', function () {
     $('#loading-mask').show();
 
@@ -131,7 +138,7 @@ jQuery(document).ready(function ($) {
       success: function (data, text_status, xhr) {
         $('#tm_categories_wrapper').html(data);
 
-        $('#tm-categories-button').hide();
+        $('#tm-categories-button').remove();
 
         var $table = $('#tm_categories');
 
