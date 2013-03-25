@@ -8,6 +8,7 @@
 
 jQuery(document).ready(function ($) {
   var new_rule = {
+    'id': null,
     'category': null,
     'attrs' : []
   };
@@ -75,11 +76,14 @@ jQuery(document).ready(function ($) {
     if ($save_rule_button.hasClass('disabled'))
       return;
 
+    new_rule.id = 'rule' + new Date().getTime();
+
     submit_rule(new_rule);
 
     var $rule = $rule_template
                   .clone()
                   .removeClass('tm-template')
+                  .attr('id', new_rule.id);
 
     var $list = $rule.find('> .tm-matching-rule-attrs > .tm-inner');
     var $attr_template = $list.find('> :first-child');

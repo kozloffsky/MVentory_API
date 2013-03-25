@@ -141,6 +141,7 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
   }
 
   protected function _prepareRule ($data) {
+    $id = $data['id'];
     $category = $data['category'];
 
     if (isset($this->_tmCategories[$category]))
@@ -167,6 +168,6 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
       $attrs[$_attr['label']] = $_attr['values'][$attr['value']];
     }
 
-    return compact('attrs', 'category');
+    return compact('id', 'category', 'attrs');
   }
 }

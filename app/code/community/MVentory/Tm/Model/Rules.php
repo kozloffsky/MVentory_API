@@ -25,7 +25,7 @@ class MVentory_Tm_Model_Rules
   public function append ($rule) {
     $all = $this->getData('rules');
 
-    $all[] = $rule;
+    $all[$rule['id']] = $rule;
 
     return $this->setData('rules', $all);
   }

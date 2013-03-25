@@ -6,10 +6,10 @@ $_rules = $this->_getRules();
 ?>
 <div id="tm-matching-rules">
 
-<?php foreach ($_rules as $_rule): ?>
+<?php foreach ($_rules as $id => $_rule): ?>
   <?php $rule = $this->_prepareRule($_rule); ?>
 
-  <div class="tm-matching-rule box clear">
+  <div id="<?php echo $id; ?>" class="tm-matching-rule box clear">
 
     <div class="tm-matching-rule-attrs">
       <div class="tm-inner">
