@@ -30,12 +30,8 @@ class MVentory_Tm_RuleController
 
     $rule = Mage::helper('core')->jsonDecode($rule);
 
-    $rules = Mage::getModel('mventory_tm/rules')->loadBySetId($setId);
-
-    if (!$rules->getId())
-      return 0;
-
-    $rules
+    Mage::getModel('mventory_tm/rules')
+      ->loadBySetId($setId)
       ->append($rule)
       ->save();
 
