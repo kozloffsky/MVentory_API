@@ -83,9 +83,13 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
         $this->_preselectedCategories = explode(',', $categories);
     }
 
-    if (($category = $this->getCategory())
+    if (($category = $this->_getAttributeValue('tm_category', 'category'))
         && !in_array($category, $this->_preselectedCategories))
       $this->_preselectedCategories[] = $category;
+
+    if (($matchedCategory = $this->_getAttributeValue('tm_match_id'))
+        && !in_array($matchedCategory, $this->_preselectedCategories))
+      $this->_preselectedCategories[] = $matchedCategory;
 
     return $this->_preselectedCategories;
   }
@@ -197,7 +201,10 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getCategory () {
-    return $this->_getAttributeValue('tm_category', 'category');
+    return ($category = $this->_getAttributeValue('tm_category', 'category'))
+             ? $category
+               : $this->_getAttributeValue('tm_match_id');
+    
   }
 
   public function getAllowBuyNow () {
