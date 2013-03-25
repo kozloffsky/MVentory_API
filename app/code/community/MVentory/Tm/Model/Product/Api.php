@@ -512,11 +512,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   }
 
   public function submitToTM ($productId, $tmData) {
-    if (!Mage::helper('mventory_tm/product')
-           ->hasApiUserAccess($productId, 'id'))
-      $this->_fault('access_denied');
-
-    $product = Mage::getModel('catalog/product')->load($productId);
+    $product = $this->_getProduct($productId, null, 'id');
 
     if (is_null($product->getId())) {
       $this->_fault('product_not_exists');
