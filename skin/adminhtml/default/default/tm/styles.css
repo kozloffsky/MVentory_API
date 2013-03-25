@@ -86,3 +86,13 @@
   border-top: 2px solid #D6D6D6;
   padding-top: 10px;
 }
+
+.tm-matching-new-attr-buttons a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tm-not-completed .tm-matching-new-attr-buttons a {
+  color: gray;
+  cursor: default;
+}

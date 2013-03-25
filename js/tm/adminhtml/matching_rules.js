@@ -22,8 +22,10 @@ jQuery(document).ready(function ($) {
 
   var $save_rule_button = $('#tm-save-rule-button');
 
-  $new_rule
-    .find('> .tm-matching-new-attr > div > .tm-rule-attr')
+  var $new_attr = $new_rule.find('> .tm-matching-new-attr');
+
+  $new_attr
+    .find('> div > .tm-rule-attr')
     .on('change', function () {
       var $this = $(this);
       var attr_id = $this.val();
@@ -36,6 +38,7 @@ jQuery(document).ready(function ($) {
         $new_rule.append(reset_attr(clone_attr()));
 
       var $values = $parent
+                      .removeClass('tm-not-completed')
                       .find('> div > .tm-rule-value')
                       .prop('multiple', attr.type == 'multiselect')
                       .empty();
@@ -46,11 +49,27 @@ jQuery(document).ready(function ($) {
       $values.change();
     });
 
-  $new_rule
-    .find('> .tm-matching-new-attr > div > .tm-rule-value')
+  $new_attr
+    .find('> div > .tm-rule-value')
     .on('change', function () {
       new_rule.attrs = get_attrs();
       update_save_rule_button_state();
+    });
+
+  $new_attr
+    .find('> .tm-matching-new-attr-buttons > .tm-remove-button')
+    .on('click', function () {
+      var $parent = $(this).parents('.tm-matching-new-attr');
+
+      if ($parent.hasClass('tm-not-completed'))
+        return false;
+
+      $parent.remove();
+
+      new_rule.attrs = get_attrs();
+      update_save_rule_button_state();
+
+      return false;
     });
 
   $save_rule_button.on('click', function () {
