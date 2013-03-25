@@ -2,6 +2,17 @@
 
 class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
+  protected $_tmFields = array(
+    'category' => 'tm_category',
+    'account_id' => 'tm_account_id',
+    'shipping_type' => 'tm_shipping_type',
+    'allow_buy_now' => 'tm_allow_buy_now',
+    'add_fees' => 'tm_add_fees',
+    'relist' => 'tm_relist',
+    'avoid_withdrawal' => 'tm_avoid_withdrawal',
+    'pickup' => 'tm_pickup'
+  );
+
   /**
    * Returns product's category
    *
@@ -125,5 +136,26 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
                           ->getId();
 
     return $productWebsiteId == $userWebsiteId;
+  }
+
+  /**
+   * Extracts data for TM options from product
+   *
+   * @param Mage_Catalog_Model_Product|array $product Product's data
+   *
+   * @return array TM options
+   */
+  public function getTmFields ($product) {
+    if ($product instanceof Mage_Catalog_Model_Product)
+      $product = $product->getData();
+
+    $fields = array();
+
+    foreach ($this->_tmFields as $name => $code)
+      $fields[$name] = isset($product[$code])
+                         ? $product[$code]
+                           : null;
+
+    return $fields;
   }
 }

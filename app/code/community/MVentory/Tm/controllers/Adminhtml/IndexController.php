@@ -3,32 +3,17 @@
 class MVentory_Tm_Adminhtml_IndexController
   extends Mage_Adminhtml_Controller_Action {
 
-  protected $_tmParams = array(
-    'category',
-    'account_id',
-    'shipping_type',
-    'allow_buy_now',
-    'add_fees',
-    'relist',
-    'avoid_withdrawal',
-    'pickup'
-  );
-
   public function submitAction () {
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory_tm/product');
     $request = $this->getRequest();
 
     $params = $request->getParams();
 
     $productId = isset($params['id']) ? $params['id'] : null;
 
-    $data = array();
-
-    if (isset($params['product']) && count($params['product']))
-      foreach ($this->_tmParams as $name)
-        $data[$name] = isset($params['product']['tm_' . $name])
-                         ? $params['product']['tm_' . $name]
-                           : null;
+    $data = isset($params['product']) && is_array($params['product'])
+              ? $helper->getTmFields($params['product'])
+                : array();
 
     $session = Mage::getSingleton('adminhtml/session');
 
@@ -191,7 +176,7 @@ class MVentory_Tm_Adminhtml_IndexController
 
   public function updateAction () {
     $request = $this->getRequest();
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory_tm/product');
 
     $params = $request->getParams();
 
@@ -204,13 +189,9 @@ class MVentory_Tm_Adminhtml_IndexController
       return;
     }
 
-    $data = array();
-
-    if (isset($params['product']) && count($params['product']))
-      foreach ($this->_tmParams as $name)
-        $data[$name] = isset($params['product']['tm_' . $name])
-                         ? $params['product']['tm_' . $name]
-                           : null;
+    $data = isset($params['product']) && is_array($params['product'])
+              ? $helper->getTmFields($params['product'])
+                : array();
 
     $product = Mage::getModel('catalog/product')->load($params['id']);
 

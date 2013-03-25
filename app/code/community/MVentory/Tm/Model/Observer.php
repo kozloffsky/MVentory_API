@@ -323,15 +323,7 @@ class MVentory_Tm_Model_Observer {
               && ($tmCategory = $product->getTmCategory()) > 0))
           continue;
 
-        $tmData = array(
-          'account_id' => $accountId,
-          'category' => $tmCategory,
-          'add_fees' => $product->getTmAddFees(),
-          'allow_buy_now' => $product->getTmAllowBuyNow(),
-          'shipping_type' => $product->getTmShippingType(),
-          'relist' => $product->getTmRelist(),
-          'pickup' => $product->getTmPickup()
-        );
+        $tmData = $helper->getTmFields($product);
 
         $listingId
           = $connector->send($product, $tmCategory, $tmData);
