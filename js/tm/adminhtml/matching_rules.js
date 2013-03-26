@@ -215,6 +215,19 @@ jQuery(document).ready(function ($) {
       return false;
     });
 
+  $rules.sortable({
+    items: '[id^="rule"]',
+    placeholder: 'tm-rule-placeholder box',
+    forcePlaceholderSize: true,
+    axis: 'y',
+    containment: 'parent',
+    revert: 200,
+    tolerance: 'pointer',
+    update: function () {
+      reorder_rules($rules.sortable('toArray'));
+    }
+  });
+
   function clone_attr () {
     return $new_rule
              .find('> .tm-matching-new-attr')
@@ -291,6 +304,19 @@ jQuery(document).ready(function ($) {
       url: tm_urls['remove'],
       type: 'POST',
       data: { rule_id: rule_id, form_key: FORM_KEY },
+      success: function (data, text_status, xhr) {
+        console.log(data);
+      },
+      complete: function (xhr, text_status) {
+      }
+    });
+  }
+
+  function reorder_rules (ids) {
+    $.ajax({
+      url: tm_urls['reorder'],
+      type: 'POST',
+      data: { ids: ids, form_key: FORM_KEY },
       success: function (data, text_status, xhr) {
         console.log(data);
       },

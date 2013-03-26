@@ -57,4 +57,24 @@ class MVentory_Tm_RuleController
 
     echo 1;
   }
+
+  /**
+   * Reorder rules action
+   */
+  public function reorderAction () {
+    $request = $this->getRequest();
+
+    $setId = $request->getParam('set_id');
+    $ids = $request->getParam('ids');
+
+    if (!($setId && $ids))
+      return 0;
+
+    Mage::getModel('mventory_tm/rules')
+      ->loadBySetId($setId)
+      ->reorder($ids)
+      ->save();
+
+    echo 1;
+  }
 }

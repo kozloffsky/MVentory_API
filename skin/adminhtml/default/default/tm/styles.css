@@ -22,6 +22,11 @@
   position: relative;
 }
 
+.tm-rule-placeholder {
+  border-style: dashed;
+  opacity: 0.5;
+}
+
 .tm-matching-rule .tm-remove-button {
   color: #EA7601;
   cursor: pointer;

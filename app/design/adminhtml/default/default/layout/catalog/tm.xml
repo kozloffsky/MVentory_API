@@ -32,6 +32,10 @@
 
     <reference name="head">
       <action method="addJs">
+        <script>jquery/jquery-ui-custom-min.js</script>
+      </action>
+
+      <action method="addJs">
         <script>tm/adminhtml/matching_rules.js</script>
       </action>
     </reference>

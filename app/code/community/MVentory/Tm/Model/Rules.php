@@ -47,6 +47,20 @@ class MVentory_Tm_Model_Rules
     return $this->setData('rules', $all);
   }
 
+  public function reorder ($ids) {
+    $_all = $this->getData('rules');
+
+    $all = array();
+
+    foreach ($ids as $id)
+      $all[$id] = $_all[$id];
+
+    if (isset($_all[self::DEFAULT_RULE_ID]))
+      $all[self::DEFAULT_RULE_ID] = $_all[self::DEFAULT_RULE_ID];
+
+    return $this->setData('rules', $all);
+  }
+
   public function match ($product) {
     if (($setId = $product->getAttributeSetId()) === false)
       return false;
