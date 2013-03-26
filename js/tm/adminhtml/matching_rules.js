@@ -76,46 +76,66 @@ jQuery(document).ready(function ($) {
     if ($save_rule_button.hasClass('disabled'))
       return;
 
-    new_rule.id = 'rule' + new Date().getTime();
+
+    new_rule.id = new_rule.attrs.length
+                    ? 'rule' + new Date().getTime()
+                      : TM_DEFAULT_RULE_ID;
 
     submit_rule(new_rule);
 
-    var $rule = $rule_template
-                  .clone()
-                  .removeClass('tm-template')
-                  .attr('id', new_rule.id);
+    var $default_rule = $('#' + TM_DEFAULT_RULE_ID);
 
-    var $list = $rule.find('> .tm-matching-rule-attrs > .tm-inner');
-    var $attr_template = $list.find('> :first-child');
+    if (new_rule.id == TM_DEFAULT_RULE_ID && $default_rule.length) {
+      $default_rule
+        .find('> .tm-matching-rule-category > .tm-inner')
+        .text($new_cat_name.text());
+    } else {
+      var $rule = $rule_template
+                    .clone()
+                    .removeClass('tm-template')
+                    .attr('id', new_rule.id);
 
-    $rule
-      .find('> .tm-matching-rule-category > .tm-inner')
-      .text($new_cat_name.text());
+      var $list = $rule.find('> .tm-matching-rule-attrs > .tm-inner');
+      var $attr_template = $list.find('> :first-child');
 
-    for (var i = 0; i < new_rule.attrs.length; i++) {
-      var attr = new_rule.attrs[i];
-      var attr_data = tm_attrs[attr.id];
+      $rule
+        .find('> .tm-matching-rule-category > .tm-inner')
+        .text($new_cat_name.text());
 
-      var value = $.map($.makeArray(attr.value), function (value, index) {
-        return attr_data.values[value];
-      });
+      if (new_rule.id == TM_DEFAULT_RULE_ID)
+        $attr_template
+          .clone()
+          .html(TM_DEFAULT_RULE_TITLE)
+          .appendTo($list);
+      else
+        for (var i = 0; i < new_rule.attrs.length; i++) {
+          var attr = new_rule.attrs[i];
+          var attr_data = tm_attrs[attr.id];
 
-      var $values = $attr_template.clone();
+          var value = $.map($.makeArray(attr.value), function (value, index) {
+            return attr_data.values[value];
+          });
 
-      $values
-        .find('> .tm-matching-rule-attr-name')
-        .html(attr_data.label);
+          var $values = $attr_template.clone();
 
-      $values
-        .find('> .tm-matching-rule-attr-value')
-        .html(value.join(', '));
+          $values
+            .find('> .tm-matching-rule-attr-name')
+            .html(attr_data.label);
 
-      $list.append($values);
+          $values
+            .find('> .tm-matching-rule-attr-value')
+            .html(value.join(', '));
+
+          $list.append($values);
+        }
+
+      $attr_template.remove();
+
+      if ($default_rule.length)
+        $default_rule.before($rule)
+      else
+        $rules.append($rule);
     }
-
-    $attr_template.remove();
-
-    $rules.append($rule);
 
     rules.push(new_rule);
 
@@ -285,7 +305,7 @@ jQuery(document).ready(function ($) {
   }
 
   function update_save_rule_button_state () {
-    if (/^\d+$/.test(new_rule.category) && new_rule.attrs.length)
+    if (/^\d+$/.test(new_rule.category))
       $save_rule_button.removeClass('disabled')
     else
       $save_rule_button.addClass('disabled')

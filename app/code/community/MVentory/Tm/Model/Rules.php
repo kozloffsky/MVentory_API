@@ -4,6 +4,8 @@ class MVentory_Tm_Model_Rules
   extends Mage_Core_Model_Abstract
   implements IteratorAggregate {
 
+  const DEFAULT_RULE_ID = 'default_rule';
+
   /**
    * Initialize resource mode
    *
@@ -25,7 +27,14 @@ class MVentory_Tm_Model_Rules
   public function append ($rule) {
     $all = $this->getData('rules');
 
-    $all[$rule['id']] = $rule;
+    if ($rule['id'] != self::DEFAULT_RULE_ID
+        && isset($all[self::DEFAULT_RULE_ID])) {
+      $defaultRule = array_pop($all);
+
+      $all[$rule['id']] = $rule;
+      $all[self::DEFAULT_RULE_ID] = $defaultRule;
+    } else
+      $all[$rule['id']] = $rule;
 
     return $this->setData('rules', $all);
   }
@@ -74,8 +83,12 @@ class MVentory_Tm_Model_Rules
       break;
     }
 
-    if ($categoryId == null && ($defaultRule = end($rules)))
-      $categoryId = (int) $defaultRule['category'];
+    if ($categoryId == null) {
+      if (isset($rules[self::DEFAULT_RULE_ID]))
+        $categoryId = (int) $rules[self::DEFAULT_RULE_ID]['category'];
+      else
+        return false;
+    }
 
     $categories = Mage::getModel('mventory_tm/connector')
                     ->getTmCategories();

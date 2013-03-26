@@ -16,12 +16,16 @@ $_rules = $this->_getRules();
     <div class="tm-matching-rule-attrs">
       <div class="tm-inner">
 
-      <?php foreach ($rule['attrs'] as $label => $values): ?>
-        <div class="tm-matching-rule-attr clear">
-          <div class="tm-matching-rule-attr-name"><?php echo $label; ?></div>
-          <div class="tm-matching-rule-attr-value"><?php echo $values; ?></div>
-        </div>
-      <?php endforeach; ?>
+      <?php if ($rule['default']): ?>
+        <div class="tm-matching-rule-attr clear"><?php echo $this->__('Default rule'); ?></div>
+      <?php else: ?>
+        <?php foreach ($rule['attrs'] as $label => $values): ?>
+          <div class="tm-matching-rule-attr clear">
+            <div class="tm-matching-rule-attr-name"><?php echo $label; ?></div>
+            <div class="tm-matching-rule-attr-value"><?php echo $values; ?></div>
+          </div>
+        <?php endforeach; ?>
+      <?php endif; ?>
 
       </div>
     </div>
@@ -99,6 +103,9 @@ $_rules = $this->_getRules();
 
 <script type="text/javascript">
 //<![CDATA[
+
+TM_DEFAULT_RULE_ID = '<?php echo MVentory_Tm_Model_Rules::DEFAULT_RULE_ID; ?>';
+TM_DEFAULT_RULE_TITLE = '<?php echo $this->__('Default rule'); ?>';
 
 tm_attrs = <?php echo $this->_getAttributesJson(); ?>;
 tm_urls = <?php echo $this->_getUrlsJson(); ?>;
