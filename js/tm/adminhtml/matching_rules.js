@@ -91,7 +91,7 @@ jQuery(document).ready(function ($) {
         .text($new_cat_name.text());
     } else {
       var $rule = $rule_template
-                    .clone()
+                    .clone(true)
                     .removeClass('tm-template')
                     .attr('id', new_rule.id);
 
