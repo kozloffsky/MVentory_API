@@ -183,6 +183,18 @@ jQuery(document).ready(function ($) {
     });
   });
 
+  $rules
+    .find('> .tm-matching-rule > .tm-remove-button')
+    .on('click', function () {
+      var $rule = $(this).parent();
+
+      remove_rule($rule.attr('id'));
+
+      $rule.remove();
+
+      return false;
+    });
+
   function clone_attr () {
     return $new_rule
              .find('> .tm-matching-new-attr')
@@ -246,6 +258,19 @@ jQuery(document).ready(function ($) {
       url: tm_urls['addrule'],
       type: 'POST',
       data: { rule: JSON.stringify(rule), form_key: FORM_KEY },
+      success: function (data, text_status, xhr) {
+        console.log(data);
+      },
+      complete: function (xhr, text_status) {
+      }
+    });
+  }
+
+  function remove_rule (rule_id) {
+    $.ajax({
+      url: tm_urls['remove'],
+      type: 'POST',
+      data: { rule_id: rule_id, form_key: FORM_KEY },
       success: function (data, text_status, xhr) {
         console.log(data);
       },

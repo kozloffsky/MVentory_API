@@ -118,8 +118,10 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
     );
 
     $addrule = $this->getUrl('mventory_tm/rule/append/', $params);
+    $remove = $this->getUrl('mventory_tm/rule/remove/', $params);
 
-    return Mage::helper('core')->jsonEncode(compact('categories', 'addrule'));
+    return Mage::helper('core')
+             ->jsonEncode(compact('categories', 'addrule', 'remove'));
   }
 
   /**

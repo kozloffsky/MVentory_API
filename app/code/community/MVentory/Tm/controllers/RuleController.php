@@ -37,4 +37,24 @@ class MVentory_Tm_RuleController
 
     echo 1;
   }
+
+  /**
+   * Append rule action
+   */
+  public function removeAction () {
+    $request = $this->getRequest();
+
+    $setId = $request->getParam('set_id');
+    $ruleId = $request->getParam('rule_id');
+
+    if (!($setId && $ruleId))
+      return 0;
+
+    Mage::getModel('mventory_tm/rules')
+      ->loadBySetId($setId)
+      ->remove($ruleId)
+      ->save();
+
+    echo 1;
+  }
 }

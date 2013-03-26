@@ -30,6 +30,14 @@ class MVentory_Tm_Model_Rules
     return $this->setData('rules', $all);
   }
 
+  public function remove ($ruleId) {
+    $all = $this->getData('rules');
+
+    unset($all[$ruleId]);
+
+    return $this->setData('rules', $all);
+  }
+
   public function match ($product) {
     if (($setId = $product->getAttributeSetId()) === false)
       return false;

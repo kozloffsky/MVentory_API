@@ -18,6 +18,20 @@
   display: none;
 }
 
+.tm-matching-rule {
+  position: relative;
+}
+
+.tm-matching-rule .tm-remove-button {
+  color: #EA7601;
+  cursor: pointer;
+  font-size: 12px;
+  left: 2px;
+  line-height: 12px;
+  position: absolute;
+  top: 1px;
+}
+
 .tm-matching-rule-attrs {
   float: left;
   width: 70%;
