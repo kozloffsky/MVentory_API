@@ -520,12 +520,10 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     //Add temp workaround until the app won't be updated
     if (isset($tmData['add_tm_fees']))
-      $tmData['tm_add_fees'] = $tmData['add_tm_fees'];
+      $tmData['add_fees'] = $tmData['add_tm_fees'];
 
     if (isset($tmData['tm_category_id']))
-      $tmData['tm_category'] = $tmData['tm_category_id'];
-
-    $tmData = Mage::helper('mventory_tm/product')->getTmFields($tmData);
+      $tmData['category'] = $tmData['tm_category_id'];
 
     $connector = Mage::getModel('mventory_tm/connector');
 
