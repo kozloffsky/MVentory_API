@@ -299,7 +299,9 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
                       ->getTmShippingType();
 
     if ($shippingType == MVentory_Tm_Model_Connector::FREE)
-      return $this->_accounts[$this->_accountId]['free_shipping_cost'];
+      return isset($this->_accounts[$this->_accountId]['free_shipping_cost'])
+               ? $this->_accounts[$this->_accountId]['free_shipping_cost']
+                 : null;
     
     return isset($this->_accounts[$this->_accountId]['shipping_rate'])
              ? $this->_accounts[$this->_accountId]['shipping_rate']
@@ -366,11 +368,15 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
                         ? $account['shipping_rate']
                           : 0;
 
+      $freeShippingCost = isset($account['free_shipping_cost'])
+                            ? $account['free_shipping_cost']
+                              : 0;
+
       $account['fees']
         = $helper->calculateFees($price + $shippingRate);
 
       $account['free_shipping_fees']
-        = $helper->calculateFees($price + $account['free_shipping_cost']);
+        = $helper->calculateFees($price + $freeShippingCost);
     }
   }
 }
