@@ -808,7 +808,8 @@ class MVentory_Tm_Model_Observer {
   public function hideProductsWithoutSmallImages ($observer) {
     $observer
       ->getCollection()
-      ->addAttributeToFilter('small_image', array('neq' => 'no_selection'));
+      ->addAttributeToFilter('small_image',
+                             array('nin' => array('no_selection', '')));
   }
 
   /**
