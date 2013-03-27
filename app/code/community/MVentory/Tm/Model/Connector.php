@@ -240,6 +240,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $price = $product->getPrice();
 
       if ($shippingType == self::FREE
+          && isset($this->_accountData['free_shipping_cost'])
           && $this->_accountData['free_shipping_cost'] > 0) {
         $price += (float) $this->_accountData['free_shipping_cost'];
       } elseif ($tmHelper->getShippingType($product) == 'tab_ShipTransport') {
@@ -499,6 +500,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         $price = $product->getPrice();
 
         if ($formData['shipping_type'] == self::FREE
+            && isset($this->_accountData['free_shipping_cost'])
             && $this->_accountData['free_shipping_cost'] > 0) {
           $price += (float) $this->_accountData['free_shipping_cost'];
         } elseif ($helper->getShippingType($product) == 'tab_ShipTransport') {
