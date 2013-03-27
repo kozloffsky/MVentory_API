@@ -167,7 +167,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $shippingType = isset($tmData['shipping_type'])
                         ? $tmData['shipping_type']
-                          : self::UNKNOWN;
+                          : self::UNDECIDED;
 
       Mage::unregister('product');
       Mage::register('product', $product);
