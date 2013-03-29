@@ -4,6 +4,19 @@ $_attrs = $this->_getAttributes();
 $_rules = $this->_getRules();
 
 ?>
+
+<div class="content-header">
+  <table cellspacing="0">
+    <tr>
+      <td style="width:100%;">
+        <h3 class="icon-head head-product-attribute-sets">
+          <?php echo $this->__('TM Categories Matching'); ?>
+        </h3>
+      </td>
+    </tr>
+  </table>
+</div>
+
 <div id="tm-matching-rules">
 
 <?php foreach ($_rules as $id => $_rule): ?>

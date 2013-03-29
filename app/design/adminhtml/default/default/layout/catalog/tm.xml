@@ -41,8 +41,7 @@
     </reference>
 
     <reference name="content">
-      <block type="adminhtml/template" after="content.child1" name="tm.matching_rules.header" template="catalog/product/attribute/set/toolbar/matching_rules.phtml" />
-      <block type="mventory_tm/catalog_product_attribute_set_matchingrules" after="tm.matching_rules.header" />
+      <block type="mventory_tm/catalog_product_attribute_set_matchingrules" after="content.child1" name="tm.rules" />
     </reference>
   </adminhtml_catalog_product_set_edit>
 </layout>
