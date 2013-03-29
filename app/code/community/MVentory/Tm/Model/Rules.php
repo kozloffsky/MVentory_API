@@ -77,7 +77,7 @@ class MVentory_Tm_Model_Rules
 
     unset($attribute, $code);
 
-    $categoryId = null;
+    $tmCategoryId = null;
 
     $rules = $this->getData('rules');
 
@@ -92,14 +92,14 @@ class MVentory_Tm_Model_Rules
           continue 2;
       }
 
-      $categoryId = (int) $rule['category'];
+      $tmCategoryId = (int) $rule['tm_category'];
 
       break;
     }
 
-    if ($categoryId == null) {
+    if ($tmCategoryId == null) {
       if (isset($rules[self::DEFAULT_RULE_ID]))
-        $categoryId = (int) $rules[self::DEFAULT_RULE_ID]['category'];
+        $tmCategoryId = (int) $rules[self::DEFAULT_RULE_ID]['category'];
       else
         return false;
     }
@@ -107,14 +107,14 @@ class MVentory_Tm_Model_Rules
     $categories = Mage::getModel('mventory_tm/connector')
                     ->getTmCategories();
 
-    $category = isset($categories[$categoryId])
-                  ? implode(' / ', $categories[$categoryId]['name'])
-                    : Mage::helper('mventory_tm')
-                        ->__('TM category doesn\'t exist');
+    $tmCategory = isset($categories[$tmCategoryId])
+                    ? implode(' / ', $categories[$tmCategoryId]['name'])
+                      : Mage::helper('mventory_tm')
+                          ->__('TM category doesn\'t exist');
 
     return array(
-      'id' => $categoryId,
-      'name' => $category
+      'tm_id' => $tmCategoryId,
+      'tm_category' => $tmCategory
     );
   }
 }

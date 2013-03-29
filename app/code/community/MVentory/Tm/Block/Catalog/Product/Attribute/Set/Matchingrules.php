@@ -148,12 +148,12 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
   protected function _prepareRule ($data) {
     $id = $data['id'];
     $default = ($id == MVentory_Tm_Model_Rules::DEFAULT_RULE_ID);
-    $category = $data['category'];
+    $tm_category = $data['tm_category'];
 
-    if (isset($this->_tmCategories[$category]))
-      $category = implode(' - ', $this->_tmCategories[$category]['name']);
+    if (isset($this->_tmCategories[$tm_category]))
+      $tm_category = implode(' - ', $this->_tmCategories[$tm_category]['name']);
     else
-      $category = $this->__('No category');
+      $tm_category = $this->__('No category');
 
     $attrs = array();
 
@@ -174,6 +174,6 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
       $attrs[$_attr['label']] = $_attr['values'][$attr['value']];
     }
 
-    return compact('id', 'default', 'category', 'attrs');
+    return compact('id', 'default', 'tm_category', 'attrs');
   }
 }
