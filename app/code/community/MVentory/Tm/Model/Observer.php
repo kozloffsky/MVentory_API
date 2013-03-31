@@ -854,9 +854,11 @@ class MVentory_Tm_Model_Observer {
 
     $result = Mage::getModel('mventory_tm/rules')->match($product);
 
-    if ($result)
+    if ($result['id'] != null)
+      $product->setCategoryIds((string) $result['id']);
+
+    if ($result['tm_id'] != null)
       $product
-        ->setCategoryIds((string) $result['id'])
         ->setData('tm_match_id', $result['tm_id'])
         ->setData('tm_match_name', $result['tm_category']);
   }

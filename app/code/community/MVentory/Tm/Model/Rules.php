@@ -78,6 +78,7 @@ class MVentory_Tm_Model_Rules
 
     unset($attribute, $code);
 
+    $categoryId = null;
     $tmCategoryId = null;
 
     $rules = $this->getData('rules');
@@ -93,14 +94,19 @@ class MVentory_Tm_Model_Rules
           continue 2;
       }
 
-      $categoryId = (int) $rule['category'];
-      $tmCategoryId = (int) $rule['tm_category'];
+      if (isset($rule['category'], $rule['tm_category'])) {
+        $categoryId = (int) $rule['category'];
+        $tmCategoryId = (int) $rule['tm_category'];
+      }
 
       break;
     }
 
-    if ($categoryId == null && isset($rules[self::DEFAULT_RULE_ID]))
+    if (($categoryId == null || $tmCategoryId == null)
+        && isset($rules[self::DEFAULT_RULE_ID])) {
       $categoryId = (int) $rules[self::DEFAULT_RULE_ID]['category'];
+      $tmCategoryId = (int) $rules[self::DEFAULT_RULE_ID]['tm_category'];
+    }
 
     $categories = Mage::getResourceModel('catalog/category_collection')
                     ->addNameToResult()
@@ -110,25 +116,23 @@ class MVentory_Tm_Model_Rules
     if ($categoryId == null || !isset($categories[$categoryId]))
       $categoryId = (int) $this->_getLostCategoryId($product);
 
-    if ($tmCategoryId == null) {
-      if (isset($rules[self::DEFAULT_RULE_ID]))
-        $tmCategoryId = (int) $rules[self::DEFAULT_RULE_ID]['tm_category'];
-      else
-        return false;
+    if (isset($categories[$categoryId]))
+      $category = $categories[$categoryId]['name'];
+    else {
+      $categoryId = null;
+      $category = Mage::helper('mventory_tm')->__('Category doesn\'t exist');
     }
-
-    $category = isset($categories[$categoryId])
-                  ? $categories[$categoryId]['name']
-                    : Mage::helper('mventory_tm')
-                        ->__('Category doesn\'t exist');
 
     $tmCategories = Mage::getModel('mventory_tm/connector')
                     ->getTmCategories();
 
-    $tmCategory = isset($tmCategories[$tmCategoryId])
-                    ? implode(' / ', $tmCategories[$tmCategoryId]['name'])
-                      : Mage::helper('mventory_tm')
-                          ->__('TM category doesn\'t exist');
+    if (isset($tmCategories[$tmCategoryId]))
+      $tmCategory = implode(' / ', $tmCategories[$tmCategoryId]['name']);
+    else {
+      $tmCategory = null;
+      $tmCategory = Mage::helper('mventory_tm')
+                      ->__('TM category doesn\'t exist');
+    }
 
     return array(
       'id' => $categoryId,
