@@ -43,8 +43,11 @@ $_rules = $this->_getRules();
       </div>
     </div>
 
-    <div class="tm-matching-rule-category">
-      <div class="tm-inner"><?php echo $rule['tm_category']; ?></div>
+    <div class="tm-matching-rule-categories">
+      <div class="tm-inner">
+        <div class="tm-rule-category magento-category"><?php echo $rule['category']; ?></div>
+        <div class="tm-rule-category tm-category"><?php echo $rule['tm_category']; ?></div>
+      </div>
     </div>
 
   </div>
@@ -66,8 +69,11 @@ $_rules = $this->_getRules();
       </div>
     </div>
 
-    <div class="tm-matching-rule-category">
-      <div class="tm-inner"></div>
+    <div class="tm-matching-rule-categories">
+      <div class="tm-inner">
+        <div class="tm-rule-category magento-category"></div>
+        <div class="tm-rule-category tm-category"></div>
+      </div>
     </div>
 
   </div>
@@ -101,10 +107,19 @@ $_rules = $this->_getRules();
     </div>
   </div>
 
-  <div class="tm-matching-rule-category">
+  <div class="tm-matching-rule-categories">
     <div class="tm-inner">
-      <?php echo $this->getChildHtml('categories_button'); ?>
-      <span id="tm-matching-new-cat-name"></span>
+      <div class="tm-rule-category">
+        <a id="magento-category" href="#">Select category</a>
+        <div id="categories-wrapper">  
+          <?php echo $this->getChildHtml('categories'); ?>
+        </div>
+      </div>
+
+      <div class="tm-rule-category">
+        <?php echo $this->getChildHtml('categories_button'); ?>
+        <span id="tm-category"></span>
+      </div>
     </div>
   </div>
 

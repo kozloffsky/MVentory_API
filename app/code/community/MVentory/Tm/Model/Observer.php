@@ -856,6 +856,7 @@ class MVentory_Tm_Model_Observer {
 
     if ($result)
       $product
+        ->setCategoryIds((string) $result['id'])
         ->setData('tm_match_id', $result['tm_id'])
         ->setData('tm_match_name', $result['tm_category']);
   }

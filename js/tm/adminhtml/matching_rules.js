@@ -10,20 +10,24 @@ jQuery(document).ready(function ($) {
   var new_rule = {
     'id': null,
     'category': null,
+    'tm_category': null,
     'attrs' : []
   };
 
   var rules = [];
 
   var $rules = $('#tm-matching-rules')
-  var $new_rule = $('#tm-matching-new-rule > .tm-inner');
-  var $new_cat_name = $('#tm-matching-new-cat-name');
-
   var $rule_template = $('#tm-matching-rules').find('> .tm-template');
+  var $new_rule = $('#tm-matching-new-rule > .tm-inner');
+  var $new_attr = $new_rule.find('> .tm-matching-new-attr');
+  var $categories_wrapper = $('#categories-wrapper');
 
   var $save_rule_button = $('#tm-save-rule-button');
 
-  var $new_attr = $new_rule.find('> .tm-matching-new-attr');
+  var $tm_category = $('#tm-category');
+  var $magento_category = $('#magento-category');
+
+  var default_magento_category_text = $magento_category.html();
 
   $new_attr
     .find('> div > .tm-rule-attr')
@@ -76,7 +80,6 @@ jQuery(document).ready(function ($) {
     if ($save_rule_button.hasClass('disabled'))
       return;
 
-
     new_rule.id = new_rule.attrs.length
                     ? 'rule' + new Date().getTime()
                       : TM_DEFAULT_RULE_ID;
@@ -86,9 +89,7 @@ jQuery(document).ready(function ($) {
     var $default_rule = $('#' + TM_DEFAULT_RULE_ID);
 
     if (new_rule.id == TM_DEFAULT_RULE_ID && $default_rule.length) {
-      $default_rule
-        .find('> .tm-matching-rule-category > .tm-inner')
-        .text($new_cat_name.text());
+      update_categories_names($default_rule);
     } else {
       var $rule = $rule_template
                     .clone(true)
@@ -98,9 +99,7 @@ jQuery(document).ready(function ($) {
       var $list = $rule.find('> .tm-matching-rule-attrs > .tm-inner');
       var $attr_template = $list.find('> :first-child');
 
-      $rule
-        .find('> .tm-matching-rule-category > .tm-inner')
-        .text($new_cat_name.text());
+      update_categories_names($rule);
 
       if (new_rule.id == TM_DEFAULT_RULE_ID)
         $attr_template
@@ -175,7 +174,7 @@ jQuery(document).ready(function ($) {
                          .find('> .category-check')
                          .prop('checked', true);
 
-          new_rule.category = $radio.val();
+          new_rule.tm_category = $radio.val();
 
           var name = $tds
                        .not('[class]')
@@ -187,7 +186,7 @@ jQuery(document).ready(function ($) {
                        .get()
                        .join(' - ');
 
-          $new_cat_name.text(name);
+          $tm_category.text(name);
 
           update_save_rule_button_state();
           scrollTo('#tm-matching-new-rule-wrapper', $(window).scrollTop() - e.pageY);
@@ -228,6 +227,12 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  $magento_category.on('click', function () {
+    $categories_wrapper.toggle();
+
+    return false;
+  });
+
   function clone_attr () {
     return $new_rule
              .find('> .tm-matching-new-attr')
@@ -260,8 +265,11 @@ jQuery(document).ready(function ($) {
       .find('> tbody > tr > .radio > .category-check:checked')
       .prop('checked', false);
 
-    $new_cat_name.empty();
+    $tm_category.empty();
+    $magento_category.text(default_magento_category_text);
+
     new_rule.category = null;
+    new_rule.tm_category = null;
   }
 
   function get_attrs () {
@@ -331,9 +339,34 @@ jQuery(document).ready(function ($) {
   }
 
   function update_save_rule_button_state () {
-    if (/^\d+$/.test(new_rule.category))
-      $save_rule_button.removeClass('disabled')
+    if (/^\d+$/.test(new_rule.tm_category) && new_rule.category)
+      $save_rule_button.removeClass('disabled');
     else
-      $save_rule_button.addClass('disabled')
+      $save_rule_button.addClass('disabled');
   }
+
+  function update_categories_names ($rule) {
+    $categories
+      = $rule
+          .find('> .tm-matching-rule-categories > .tm-inner > .tm-rule-category');
+
+    $categories
+      .filter('.tm-category')
+      .text($tm_category.text());
+
+    $categories
+      .filter('.magento-category')
+      .text($magento_category.text());
+  }
+
+  function select_category (id, name) {
+    new_rule.category = id;
+
+    $magento_category.text(name);
+    $categories_wrapper.toggle();
+
+    update_save_rule_button_state();
+  }
+
+  window.tm_select_category = select_category;
 });

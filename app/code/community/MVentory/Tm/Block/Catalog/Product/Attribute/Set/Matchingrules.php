@@ -5,6 +5,7 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
 
   protected $_attrs = null;
 
+  protected $_categories = null;
   protected $_tmCategories = null;
 
   protected function _construct () {
@@ -42,6 +43,11 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
 
     $this->_tmCategories = Mage::getModel('mventory_tm/connector')
                              ->getTmCategories();
+
+    $this->_categories = Mage::getResourceModel('catalog/category_collection')
+                           ->addNameToResult()
+                           ->load()
+                           ->toArray();
   }
 
   /**
@@ -77,7 +83,7 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
 
     $data = array(
       'id' => 'tm-categories-button',
-      'label' => Mage::helper('mventory_tm')->__('Select category')
+      'label' => Mage::helper('mventory_tm')->__('Select TM category')
     );
 
     $button = $this
@@ -148,12 +154,20 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
   protected function _prepareRule ($data) {
     $id = $data['id'];
     $default = ($id == MVentory_Tm_Model_Rules::DEFAULT_RULE_ID);
-    $tm_category = $data['tm_category'];
 
-    if (isset($this->_tmCategories[$tm_category]))
-      $tm_category = implode(' - ', $this->_tmCategories[$tm_category]['name']);
+    $category = $data['category'];
+    $tmCategory = $data['tm_category'];
+
+    if (isset($this->_categories[$category]))
+      $category = $this->_categories[$category]['name'];
     else
-      $tm_category = $this->__('No category');
+      $category = $this->__('No category');
+
+
+    if (isset($this->_tmCategories[$tmCategory]))
+      $tmCategory = implode(' - ', $this->_tmCategories[$tmCategory]['name']);
+    else
+      $tmCategory = $this->__('No TM category');
 
     $attrs = array();
 
@@ -174,6 +188,12 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
       $attrs[$_attr['label']] = $_attr['values'][$attr['value']];
     }
 
-    return compact('id', 'default', 'tm_category', 'attrs');
+    return array(
+      'id' => $id,
+      'default' => $default,
+      'category' => $category,
+      'tm_category' => $tmCategory,
+      'attrs' => $attrs
+    );
   }
 }

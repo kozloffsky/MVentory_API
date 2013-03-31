@@ -5,6 +5,7 @@ class MVentory_Tm_Model_Rules
   implements IteratorAggregate {
 
   const DEFAULT_RULE_ID = 'default_rule';
+  const LOST_CATEGORY_PATH = 'mventory_tm/shop-interface/lost_category';
 
   /**
    * Initialize resource mode
@@ -92,29 +93,55 @@ class MVentory_Tm_Model_Rules
           continue 2;
       }
 
+      $categoryId = (int) $rule['category'];
       $tmCategoryId = (int) $rule['tm_category'];
 
       break;
     }
 
+    if ($categoryId == null && isset($rules[self::DEFAULT_RULE_ID]))
+      $categoryId = (int) $rules[self::DEFAULT_RULE_ID]['category'];
+
+    $categories = Mage::getResourceModel('catalog/category_collection')
+                    ->addNameToResult()
+                    ->load()
+                    ->toArray();
+
+    if ($categoryId == null || !isset($categories[$categoryId]))
+      $categoryId = (int) $this->_getLostCategoryId($product);
+
     if ($tmCategoryId == null) {
       if (isset($rules[self::DEFAULT_RULE_ID]))
-        $tmCategoryId = (int) $rules[self::DEFAULT_RULE_ID]['category'];
+        $tmCategoryId = (int) $rules[self::DEFAULT_RULE_ID]['tm_category'];
       else
         return false;
     }
 
-    $categories = Mage::getModel('mventory_tm/connector')
+    $category = isset($categories[$categoryId])
+                  ? $categories[$categoryId]['name']
+                    : Mage::helper('mventory_tm')
+                        ->__('Category doesn\'t exist');
+
+    $tmCategories = Mage::getModel('mventory_tm/connector')
                     ->getTmCategories();
 
-    $tmCategory = isset($categories[$tmCategoryId])
-                    ? implode(' / ', $categories[$tmCategoryId]['name'])
+    $tmCategory = isset($tmCategories[$tmCategoryId])
+                    ? implode(' / ', $tmCategories[$tmCategoryId]['name'])
                       : Mage::helper('mventory_tm')
                           ->__('TM category doesn\'t exist');
 
     return array(
+      'id' => $categoryId,
+      'category' => $category,
       'tm_id' => $tmCategoryId,
       'tm_category' => $tmCategory
     );
+  }
+
+  protected function _getLostCategoryId ($product) {
+    $helper = Mage::helper('mventory_tm');
+
+    return $helper->getConfig(self::LOST_CATEGORY_PATH,
+                              $helper->getWebsite($product));
   }
 }

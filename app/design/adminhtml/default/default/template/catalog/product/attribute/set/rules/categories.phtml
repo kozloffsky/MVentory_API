@@ -1,0 +1,42 @@
+<div id="categories" class="tree box"></div>
+
+<script type="text/javascript">
+//<![CDATA[
+
+Ext.EventManager.onDocumentReady (function () {
+  function buildCategoryTree (parent, config) {
+    for (var i = 0; i < config.length; i++) {
+      var node = new Ext.tree.TreeNode(config[i]);
+
+      parent.appendChild(node);
+
+      if (config[i].children)
+        buildCategoryTree(node, config[i].children);
+    }
+  }
+
+  var root = new Ext.tree.TreeNode({
+    text: '<?php echo $this->jsQuoteEscape($this->getRoot()->getName()); ?>',
+    id: '<?php echo $this->getRoot()->getId(); ?>',
+    expanded: true
+  });
+
+  var tree = new Ext.tree.TreePanel('categories', {
+    animate: false,
+    enableDD: false,
+    rootVisible: false
+  });
+
+  tree.setRootNode(root);
+
+  tree.addListener('click', function (node, e) {
+    tm_select_category(node.id, node.text);
+  });
+
+  buildCategoryTree(root, <?php echo $this->getTreeJson() ?>);
+
+  tree.render();
+});
+
+//]]>
+</script>
