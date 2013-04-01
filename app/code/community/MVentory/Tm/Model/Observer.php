@@ -852,14 +852,16 @@ class MVentory_Tm_Model_Observer {
                  ->getEvent()
                  ->getProduct();
 
-    $result = Mage::getModel('mventory_tm/rules')->match($product);
+    $result = Mage::getModel('mventory_tm/rules')->matchCategory($product);
 
-    if ($result['id'] != null)
-      $product->setCategoryIds((string) $result['id']);
+    if ($result)
+      $product->setCategoryIds((string) $result);
 
-    if ($result['tm_id'] != null)
+    $result = Mage::getModel('mventory_tm/rules')->matchTmCategory($product);
+
+    if ($result)
       $product
-        ->setData('tm_match_id', $result['tm_id'])
-        ->setData('tm_match_name', $result['tm_category']);
+        ->setData('tm_match_id', $result['id'])
+        ->setData('tm_match_name', $result['category']);
   }
 }

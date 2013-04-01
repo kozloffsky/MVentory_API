@@ -62,7 +62,7 @@ class MVentory_Tm_Model_Rules
     return $this->setData('rules', $all);
   }
 
-  public function match ($product) {
+  public function matchCategory ($product) {
     if (($setId = $product->getAttributeSetId()) === false)
       return false;
 
@@ -79,7 +79,6 @@ class MVentory_Tm_Model_Rules
     unset($attribute, $code);
 
     $categoryId = null;
-    $tmCategoryId = null;
 
     $rules = $this->getData('rules');
 
@@ -94,51 +93,82 @@ class MVentory_Tm_Model_Rules
           continue 2;
       }
 
-      if (isset($rule['category'], $rule['tm_category'])) {
+      if (isset($rule['category'])) {
         $categoryId = (int) $rule['category'];
-        $tmCategoryId = (int) $rule['tm_category'];
+
+        break;
       }
-
-      break;
     }
 
-    if (($categoryId == null || $tmCategoryId == null)
-        && isset($rules[self::DEFAULT_RULE_ID])) {
+    if ($categoryId == null && isset($rules[self::DEFAULT_RULE_ID]))
       $categoryId = (int) $rules[self::DEFAULT_RULE_ID]['category'];
-      $tmCategoryId = (int) $rules[self::DEFAULT_RULE_ID]['tm_category'];
-    }
 
     $categories = Mage::getResourceModel('catalog/category_collection')
-                    ->addNameToResult()
                     ->load()
                     ->toArray();
 
     if ($categoryId == null || !isset($categories[$categoryId]))
       $categoryId = (int) $this->_getLostCategoryId($product);
 
-    if (isset($categories[$categoryId]))
-      $category = $categories[$categoryId]['name'];
-    else {
-      $categoryId = null;
-      $category = Mage::helper('mventory_tm')->__('Category doesn\'t exist');
+    if (!($categoryId && isset($categories[$categoryId])))
+      return false;
+
+    return $categoryId;
+  }
+
+  public function matchTmCategory ($product) {
+    if (($setId = $product->getAttributeSetId()) === false)
+      return false;
+
+    $this->loadBySetId($setId);
+
+    if (!$this->getId())
+      return false;
+
+    $_attributes = array();
+
+    foreach ($product->getAttributes() as $code => $attribute)
+      $_attributes[$attribute->getId()] = $code;
+
+    unset($attribute, $code);
+
+    $categoryId = null;
+
+    $rules = $this->getData('rules');
+
+    foreach ($rules as $rule) {
+      foreach ($rule['attrs'] as $attribute) {
+        $code = $_attributes[$attribute['id']];
+
+        $productValue = (array) $product->getData($code);
+        $ruleValue = (array) $attribute['value'];
+
+        if (!count(array_intersect($productValue, $ruleValue)))
+          continue 2;
+      }
+
+      if (isset($rule['tm_category'])) {
+        $categoryId = (int) $rule['tm_category'];
+
+        break;
+      }
     }
 
-    $tmCategories = Mage::getModel('mventory_tm/connector')
+    if ($categoryId == null && isset($rules[self::DEFAULT_RULE_ID]))
+      $categoryId = (int) $rules[self::DEFAULT_RULE_ID]['tm_category'];
+
+    if (!$categoryId)
+      return false;
+
+    $categories = Mage::getModel('mventory_tm/connector')
                     ->getTmCategories();
 
-    if (isset($tmCategories[$tmCategoryId]))
-      $tmCategory = implode(' / ', $tmCategories[$tmCategoryId]['name']);
-    else {
-      $tmCategory = null;
-      $tmCategory = Mage::helper('mventory_tm')
-                      ->__('TM category doesn\'t exist');
-    }
+    if (!isset($categories[$categoryId]))
+      return false;
 
     return array(
       'id' => $categoryId,
-      'category' => $category,
-      'tm_id' => $tmCategoryId,
-      'tm_category' => $tmCategory
+      'category' => implode(' / ', $categories[$categoryId]['name'])
     );
   }
 

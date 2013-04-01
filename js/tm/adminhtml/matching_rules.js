@@ -339,7 +339,7 @@ jQuery(document).ready(function ($) {
   }
 
   function update_save_rule_button_state () {
-    if (/^\d+$/.test(new_rule.tm_category) && new_rule.category)
+    if (/^\d+$/.test(new_rule.tm_category) || new_rule.category)
       $save_rule_button.removeClass('disabled');
     else
       $save_rule_button.addClass('disabled');
