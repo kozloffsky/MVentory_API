@@ -187,6 +187,12 @@
             <class>mventory_tm/observer</class>
             <method>addProductAttributesPopulateMassaction</method>
           </mventory_tm_product_attributes_populate>
+
+          <tm_product_category_match>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>addProductCategoryMatchMassaction</method>
+          </tm_product_category_match>
         </observers>
       </adminhtml_catalog_product_grid_prepare_massaction>
     </events>

@@ -233,6 +233,30 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
 
     return $numberOfPopulatedProducts;
   }
+
+  public function matchCategories ($productIds) {
+    $n = 0;
+
+    foreach ($productIds as $productId) {
+      $product = Mage::getModel('catalog/product')->load($productId);
+
+      if (!$product->getId())
+        continue;
+
+      $category = Mage::getModel('mventory_tm/rules')->matchCategory($product);
+
+      if ($category) {
+        $product
+          ->setCategoryIds((string) $category)
+          ->setTmCategoryMatched(true)
+          ->save();
+
+        $n++;
+      }
+    }
+
+    return $n;
+  }
 }
 
 ?>

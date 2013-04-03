@@ -467,6 +467,19 @@ class MVentory_Tm_Model_Observer {
       ->addItem('attributespopulate', compact('label', 'url'));
   }
 
+  public function addProductCategoryMatchMassaction ($observer) {
+    $block = $observer->getBlock();
+
+    $route = 'mventory_tm/catalog_product/massCategoryMatch';
+
+    $label = Mage::helper('mventory_tm')->__('Match product category');
+    $url = $block->getUrl($route, array('_current' => true));
+
+    $block
+      ->getMassactionBlock()
+      ->addItem('categorymatch', compact('label', 'url'));
+  }
+
   public function addCategoryTab ($observer) {
     $tabs = $observer->getTabs();
 
@@ -851,6 +864,9 @@ class MVentory_Tm_Model_Observer {
     $product = $observer
                  ->getEvent()
                  ->getProduct();
+
+    if ($product->getTmCategoryMatched())
+      return;
 
     $result = Mage::getModel('mventory_tm/rules')->matchCategory($product);
 

@@ -78,6 +78,41 @@ class MVentory_Tm_Catalog_ProductController
 
     $this->_redirect('adminhtml/*', array('store'=> $storeId));
   }
+
+  public function massCategoryMatchAction () {
+    $request = $this->getRequest();
+
+    $productIds = (array) $request->getParam('product');
+    $storeId = (int) $request->getParam('store', 0);
+
+    try {
+      $number = Mage::getSingleton('mventory_tm/product_action')
+                  ->matchCategories($productIds);
+
+      $m = '%d of %d record(s) have been updated.';
+
+      $this
+        ->_getSession()
+        ->addSuccess($this->__($m, $number, count($productIds)));
+    }
+    catch (Mage_Core_Model_Exception $e) {
+      $this
+        ->_getSession()
+        ->addError($e->getMessage());
+    } catch (Mage_Core_Exception $e) {
+      $this
+        ->_getSession()
+        ->addError($e->getMessage());
+    } catch (Exception $e) {
+      $m = $this->__('An error occurred while updating the product(s) status.');
+
+      $this
+        ->_getSession()
+        ->addException($e, $m);
+    }
+
+    $this->_redirect('adminhtml/*', array('store'=> $storeId));
+  }
 }
 
 ?>
