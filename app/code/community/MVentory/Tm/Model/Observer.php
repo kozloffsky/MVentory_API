@@ -201,7 +201,9 @@ class MVentory_Tm_Model_Observer {
                         : 0;
     }
 
-    foreach ($accounts as $accountId => $accountData) {
+    foreach ($accounts as $accountId => &$accountData) {
+      $accountData['free_slots'] = $accountData['max_listings'];
+
       $products = Mage::getModel('catalog/product')
                     ->getCollection()
                     ->addAttributeToSelect('tm_relist')
@@ -217,19 +219,16 @@ class MVentory_Tm_Model_Observer {
       //if ($customer->getId())
       //  $products->addPriceData($customer->getGroupId());
 
-      $connector = Mage::getModel('mventory_tm/connector');
-
-      $connector->setWebsiteId($website->getId());
-      $connector->setAccountId($accountId);
+      $connector = Mage::getModel('mventory_tm/connector')
+                     ->setWebsiteId($website->getId())
+                     ->setAccountId($accountId);
 
       //Check status of listings if there're products assigned
       //to current TM account
-      if ($numberOfListings = count($products)) {
-        $result = $connector->massCheck($products);
+      if (!$accountData['listings'] = count($products))
+        continue;
 
-        if (!$result)
-          continue;
-      }
+      $connector->massCheck($products);
 
       foreach ($products as $product) {
         if ($product->getIsSelling())
@@ -240,7 +239,7 @@ class MVentory_Tm_Model_Observer {
         if (!$result || $result == 3)
           continue;
 
-        --$numberOfListings;
+        --$accountData['listings'];
 
         if ($result == 2) {
           $sku = $product->getSku();
@@ -269,70 +268,93 @@ class MVentory_Tm_Model_Observer {
         $helper->setListingId(0, $product->getId());
       }
 
-      if (!($allowSubmit && $runsNumber))
-        continue;
+      $accountData['free_slots']
+        = $accountData['max_listings'] - $accountData['listings'];
+    }
 
-      $freeSlots = $accountData['max_listings'] - $numberOfListings;
+    unset($accountId, $accountData);
 
-      if ($freeSlots <= 0)
-        continue;
+    if (!($allowSubmit && $runsNumber))
+      return;
 
-      $enabled = Mage_Catalog_Model_Product_Status::STATUS_ENABLED;
+    foreach ($accounts as $accountId => $accountData)
+      if (!$accountData['free_slots'])
+        unset($accounts[$accountId]);
 
-      $products = Mage::getModel('catalog/product')
-                    ->getCollection()
-                    ->addFieldToFilter('tm_listing_id', '')
-                    ->addFieldToFilter('tm_relist', '1')
-                    ->addFieldToFilter('tm_account_id', $accountId)
-                    ->addFieldToFilter('status', $enabled)
-                    ->addStoreFilter($store);
+    unset($accountId, $accountData);
+
+    if (!count($accounts))
+      return;
+
+    $enabled = Mage_Catalog_Model_Product_Status::STATUS_ENABLED;
+
+    $products = Mage::getModel('catalog/product')
+                  ->getCollection()
+                  ->addFieldToFilter('tm_listing_id', '')
+                  ->addFieldToFilter('status', $enabled)
+                  ->addStoreFilter($store);
 
 
-      Mage::getSingleton('cataloginventory/stock')
-        ->addInStockFilterToCollection($products);
+    Mage::getSingleton('cataloginventory/stock')
+      ->addInStockFilterToCollection($products);
 
-      if (!$poolSize = count($products))
-        continue;
+    if (!$poolSize = count($products))
+      return;
 
-      //Calculate avaiable slots for current run of the sync script
+    //Calculate avaiable slots for current run of the sync script
+    foreach ($accounts as $accountId => &$accountData) {
+      $freeSlots = $accountData['free_slots'];
+
       $freeSlots = ($poolSize < $freeSlots)
                      ? round($poolSize / $runsNumber)
                        : round($freeSlots / $runsNumber);
 
       //One product should be uploaded at least
-      if ($freeSlots < 1)
-        $freeSlots = 1;
+      $accountData['free_slots'] = $freeSlots >= 1 ? $freeSlots : 1;
 
-      $products = $products->getItems();
+      $accountData['allowed_shipping_types']
+        = explode(',', $accountData['allowed_shipping_types']);
+    }
 
-      $ids = $freeSlots >= $poolSize
-               ? array_keys($products)
-                 : array_rand($products, $freeSlots);
+    unset($accountId, $accountData);
 
-      //array_rand returns key in case $freeSlots = 1,
-      //wrap it with array
-      if (!is_array($ids))
-        $ids = array($ids);
+    $ids = array_keys($products->getItems());
 
-      foreach ($ids as $id) {
-        $product = Mage::getModel('catalog/product')
-                     ->setStoreId($store->getId())
-                     ->load($id);
+    shuffle($ids);
 
-        if (!($product->getId()
-              && ($tmCategory = $product->getTmCategory()) > 0))
-          continue;
+    foreach ($ids as $id) {
+      $product = Mage::getModel('catalog/product')->load($id);
 
-        $tmData = $helper->getTmFields($product);
+      if (!($product->getId()
+            && ($tmCategory = $product->getTmCategory()) > 0))
+        continue;
 
-        $listingId
-          = $connector->send($product, $tmCategory, $tmData);
+      $accountIds = array();
 
-        if (is_int($listingId))
-          $product
-            ->setTmListingId($listingId)
-            ->save();
-      }
+      foreach ($accounts as $accountId => $accountData)
+        if (in_array($product->getData('mv_shipping_'),
+                      $accountData['allowed_shipping_types']))
+          $accountIds[] = $accountId;
+
+      unset($accountId, $accountData);
+
+      if (!$accountsNumber = count($accountIds))
+        continue;
+
+      $accountId = $accountsNumber == 1
+                     ? $accountIds[0]
+                       : $accountIds[array_rand($accountIds)];
+
+      $tmData = $helper->getTmFields($product);
+
+      $listingId = $connector
+                     ->setAccountId($accountId)
+                     ->send($product, $tmCategory, $tmData);
+
+      if (is_int($listingId))
+        $product
+          ->setTmListingId($listingId)
+          ->save();
     }
   }
 
