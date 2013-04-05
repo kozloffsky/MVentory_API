@@ -309,7 +309,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getTmFees () {
-    if (!$this->getAddTmFees())
+    if (!($this->getAddTmFees() && count($this->_accounts)))
       return 0;
 
     $shippingType = $this
