@@ -110,6 +110,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   public function setWebsiteId ($websiteId) {
     $this->_website = $websiteId;
+
+    return $this;
   }
 
   public function setAccountId ($data) {
@@ -128,6 +130,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $this->_accountId = key($accounts);
       $this->_accountData = current($accounts);
     }
+
+    return $this;
   }
 
   public function auth () {
