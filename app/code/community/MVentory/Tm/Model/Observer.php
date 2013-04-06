@@ -290,6 +290,7 @@ class MVentory_Tm_Model_Observer {
 
     $products = Mage::getModel('catalog/product')
                   ->getCollection()
+                  ->addFieldToFilter('tm_relist', '1')
                   ->addFieldToFilter('tm_listing_id', '')
                   ->addFieldToFilter('status', $enabled)
                   ->addStoreFilter($store);
@@ -341,15 +342,13 @@ class MVentory_Tm_Model_Observer {
       if (!$accountsNumber = count($accountIds))
         continue;
 
-      $accountId = $accountsNumber == 1
-                     ? $accountIds[0]
-                       : $accountIds[array_rand($accountIds)];
-
       $tmData = $helper->getTmFields($product);
 
-      $listingId = $connector
-                     ->setAccountId($accountId)
-                     ->send($product, $tmCategory, $tmData);
+      $tmData['account_id'] = $accountsNumber == 1
+                                ? $accountIds[0]
+                                  : $accountIds[array_rand($accountIds)];
+
+      $listingId = $connector->send($product, $tmCategory, $tmData);
 
       if (is_int($listingId))
         $product
