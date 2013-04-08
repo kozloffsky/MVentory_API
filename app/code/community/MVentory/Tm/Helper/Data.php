@@ -219,14 +219,13 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     $email = $this->getConfig('trans_email/ident_general/email', $website);
     $name = $this->getConfig('trans_email/ident_general/name', $website);
 
-    $host = $_SERVER['SERVER_NAME'];
-
     Mage::getModel('core/email')
+      ->setFromEmail($email)
+      ->setFromName($name)
       ->setToName($name)
       ->setToEmail($email)
       ->setBody($message)
       ->setSubject($subject)
-      ->setFromEmail('magento@' . $host)
       ->send();
   }
 
