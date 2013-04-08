@@ -348,11 +348,19 @@ class MVentory_Tm_Model_Observer {
                                 ? $accountIds[0]
                                   : $accountIds[array_rand($accountIds)];
 
-      $listingId = $connector->send($product, $tmCategory, $tmData);
+      $result = $connector->send($product, $tmCategory, $tmData);
 
-      if (is_int($listingId))
+      if ($result = 'Insufficient balance') {
+        $vars = array('account' => $accounts[$tmData['account_id']]['name']);
+
+        $helper->sendEmailTmpl('mventory_negative_balance', $vars, $website);
+
+        continue;
+      }
+
+      if (is_int($result))
         $product
-          ->setTmListingId($listingId)
+          ->setTmListingId($result)
           ->save();
     }
   }

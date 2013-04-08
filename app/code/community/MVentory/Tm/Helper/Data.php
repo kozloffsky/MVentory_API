@@ -229,4 +229,28 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
       ->setFromEmail('magento@' . $host)
       ->send();
   }
+
+  /**
+   * Sends email to website's general contant address using e-mail template
+   *
+   * @param string $template E-mail template ID
+   * @param string $variables Template variables
+   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
+   */
+  public function sendEmailTmpl ($template, $variables = array(), $website) {
+    $path = 'trans_email/ident_general/email';
+
+    $toEmail = $this->getConfig($path, $website);
+    $toName = $this->getConfig('trans_email/ident_general/name', $website);
+
+    $fromEmail = $this->getConfig('trans_email/ident_sales/name', $website);
+    $fromName = $this->getConfig('trans_email/ident_sales/email', $website);
+
+    Mage::getModel('core/email_template')
+      ->loadDefault($template)
+      ->setSenderName($fromName)
+      ->setSenderEmail($fromEmail)
+      ->addBcc((string) Mage::getConfig()->getNode('default/' . $path))
+      ->send($toEmail, $toName, $variables);
+  }
 }
