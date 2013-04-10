@@ -72,7 +72,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
     </label>
 
     <label class="tm-option">
-      <?php echo $this->__('Shipping type: '); ?>
+      <?php echo $this->__('Use free shipping: '); ?>
       <select id="tm_shipping_type" class="select" name="product[tm_shipping_type]">
         <?php foreach ($_shippingOptions as $opt): ?>
         <option value="<?php echo $opt['value']; ?>" <?php if ($opt['selected']) echo 'selected="selected"'; ?>><?php echo $opt['label'] ?></option>
