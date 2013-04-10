@@ -173,11 +173,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $productShippingType = $tmHelper->getShippingType($product);
 
-      if ($productShippingType == 'tab_ShipParcel'
-          && isset($this->_accountData['free_shipping_cost'])
-          && $this->_accountData['free_shipping_cost'] > 0)
-        $tmData['shipping_type'] = self::FREE;
-
       $shippingType = isset($tmData['shipping_type'])
                         ? $tmData['shipping_type']
                           : self::UNDECIDED;
@@ -192,7 +187,11 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       if ($descriptionTmpl) {
         $_data = $product->getData();
 
-        if ($shippingType == self::FREE)
+        if ($productShippingType == 'tab_ShipFree'
+            || ($productShippingType == 'tab_ShipParcel'
+                && $shippingType == self::FREE
+                && isset($this->_accountData['free_shipping_cost'])
+                && $this->_accountData['free_shipping_cost'] > 0))
           $_data['free_shipping_text']
             = isset($this->_accountData['free_shipping_text'])
                 ? $this->_accountData['free_shipping_text']
@@ -241,7 +240,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       if (strlen($title) > self::TITLE_MAX_LENGTH)
         $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
-      elseif ($shippingType == self::FREE) {
+      elseif ($productShippingType == 'tab_ShipParcel'
+              && $shippingType == self::FREE
+              && isset($this->_accountData['free_shipping_cost'])
+              && $this->_accountData['free_shipping_cost'] > 0) {
         $freeShippingTitle = $title . ', free shipping';
 
         if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
@@ -250,7 +252,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $price = $product->getPrice();
 
-      if ($shippingType == self::FREE
+      if ($productShippingType == 'tab_ShipParcel'
+          && $shippingType == self::FREE
           && isset($this->_accountData['free_shipping_cost'])
           && $this->_accountData['free_shipping_cost'] > 0) {
         $price += (float) $this->_accountData['free_shipping_cost'];
@@ -480,6 +483,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $item = $this->_parseTmListingDetails($json);
       $item = $this->_listingDetailsToEditingRequest($item);
 
+      $shippingType = isset($formData['shipping_type'])
+                        ? $formData['shipping_type']
+                          : self::UNDECIDED;
+
+      $productShippingType = $helper->getShippingType($product);
+
       if (!isset($parameters['Category']) && isset($formData['category'])
           && $formData['category'])
         $parameters['Category'] = $formData['category'];
@@ -489,8 +498,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
         if (strlen($title) > self::TITLE_MAX_LENGTH)
           $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
-        elseif (isset($formData['shipping_type'])
-                && $formData['shipping_type'] == self::FREE) {
+        elseif ($productShippingType == 'tab_ShipParcel'
+                && $shippingType == self::FREE
+                && isset($this->_accountData['free_shipping_cost'])
+                && $this->_accountData['free_shipping_cost'] > 0) {
           $freeShippingTitle = $title . ', free shipping';
 
           if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
@@ -500,21 +511,20 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         $parameters['Title'] = $title;
       }
 
-      if (!isset($parameters['ShippingOptions'])
-          && isset($formData['shipping_type']) && $formData['shipping_type'])
-        $parameters['ShippingOptions'][]['Type'] = $formData['shipping_type'];
+      if (!isset($parameters['ShippingOptions']))
+        $parameters['ShippingOptions'][]['Type'] = $shippingType;
 
       //set price
-      if (!isset($parameters['StartPrice']) && isset($formData['shipping_type'])
-          && $formData['shipping_type']) {
+      if (!isset($parameters['StartPrice'])) {
 
         $price = $product->getPrice();
 
-        if ($formData['shipping_type'] == self::FREE
+        if ($productShippingType == 'tab_ShipParcel'
+            && $shippingType == self::FREE
             && isset($this->_accountData['free_shipping_cost'])
             && $this->_accountData['free_shipping_cost'] > 0) {
           $price += (float) $this->_accountData['free_shipping_cost'];
-        } elseif ($helper->getShippingType($product) == 'tab_ShipTransport') {
+        } elseif ($productShippingType == 'tab_ShipTransport') {
           //Add shipping rate if product's shipping type is 'tab_ShipTransport'
 
           $regionName = $this->_accountData['name'];
@@ -554,8 +564,11 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
           $_data = $product->getData();
 
-          if (isset($formData['shipping_type'])
-              && $formData['shipping_type'] == self::FREE)
+          if ($productShippingType == 'tab_ShipFree'
+              || ($productShippingType == 'tab_ShipParcel'
+                  && $shippingType == self::FREE
+                  && isset($this->_accountData['free_shipping_cost'])
+                  && $this->_accountData['free_shipping_cost'] > 0))
             $_data['free_shipping_text']
               = isset($this->_accountData['free_shipping_text'])
                   ? $this->_accountData['free_shipping_text']
