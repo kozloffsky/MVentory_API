@@ -40,7 +40,10 @@ class MVentory_Tm_Model_System_Config_Source_Shippingtype {
    * @return array
    */
   public function toArray () {
-    return $this->_options;
+    return array(
+      MVentory_Tm_Model_Connector::UNDECIDED => 'Undecided',
+      MVentory_Tm_Model_Connector::FREE => 'Free'
+    );
   }
 }
 
