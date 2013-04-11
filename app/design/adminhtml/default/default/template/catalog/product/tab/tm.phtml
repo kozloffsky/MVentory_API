@@ -67,7 +67,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
     <label class="tm-option">
       <?php echo $this->__('Add TM fees: '); ?>
-      <select class="select" name="product[tm_add_fees]">
+      <select id="tm_add_fees" class="select" name="product[tm_add_fees]">
         <?php foreach ($this->_yesNoOptions as $option): ?>
         <option value="<?php echo $option['value']; ?>" <?php if ($option['value'] == $_addTmFees) echo 'selected="selected"'; ?>><?php echo $option['label'] ?></option>
         <?php endforeach; ?>
@@ -274,13 +274,8 @@ jQuery(document).ready(function ($) {
       var $option = $options.filter('[name*="tm_' + key + '"]')
 
       //Ignore account options without corresponding fields on the page
-      if (!$option.length)
-        continue;
-
-      if ($option.is(':checkbox'))
-        $option.prop('checked', account[key] == true);
-      else
-        $option.val(account[key]);
+      if ($option.length)
+        $option.val(-1);
     }
 
     tm_update_total_price(tm_data['product']['price'], account);

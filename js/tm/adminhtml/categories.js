@@ -262,15 +262,25 @@ function update_total_price (price, data) {
 
   var price = parseFloat(price);
 
-  var shipping_rate = $('#tm_shipping_type').val() == 3 //Free shipping
+  var shipping_type_value = $('#tm_shipping_type').val();
+
+  if (shipping_type_value == -1)
+    shipping_type_value = data['shipping_type'];
+
+  var shipping_rate = shipping_type_value == 3 //Free shipping
                         ? parseFloat(data['free_shipping_cost'])
                           : parseFloat(data['shipping_rate']);
 
-  var tm_fees = $('#tm_shipping_type').val() == 3 //Free shipping
+  var tm_fees = shipping_type_value == 3 //Free shipping
                   ? parseFloat(data['free_shipping_fees'])
                     : parseFloat(data['fees']);
 
-  var add_tm_fees = $('#tm_add_fees').is(':checked') && tm_fees;
+  var add_fees_value = $('#tm_add_fees').val();
+
+  if (add_fees_value == -1)
+    add_fees_value = data['add_fees'];
+
+  var add_tm_fees = add_fees_value == 1 && tm_fees;
 
   if (!(shipping_rate || add_tm_fees)) {
     $price_parts.hide();
