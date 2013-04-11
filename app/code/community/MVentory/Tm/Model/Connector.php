@@ -144,15 +144,22 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return $token->setParams(unserialize($data));
   }
 
-  public function send ($product, $categoryId, $tmData) {
+  public function send ($product, $categoryId, $_tmData) {
     $this->getWebsiteId($product);
-    $this->setAccountId($tmData);
+    $this->setAccountId($_tmData);
 
-    $updateTmOptions = is_array($tmData);
+    $updateTmOptions = is_array($_tmData);
 
     if (!$updateTmOptions)
       $tmData = Mage::helper('mventory_tm/product')
                   ->getTmFields($product, $this->_accountData);
+    else {
+      $tmData = $_tmData;
+
+      foreach ($tmData as $key => $value)
+        if ($value == -1)
+          $tmData[$key] = $this->_accountData[$key];
+    }
 
     $return = 'Error';
 
@@ -373,7 +380,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
           if ($updateTmOptions) {
             $tmData['account_id'] = $this->_accountId;
-            Mage::helper('mventory_tm/product')->setTmFields($product, $tmData);
+
+            Mage::helper('mventory_tm/product')
+              ->setTmFields($product, $_tmData);
           } else {
             $product->setData('tm_account_id', $this->_accountId);
           }
