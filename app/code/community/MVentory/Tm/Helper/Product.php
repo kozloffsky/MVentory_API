@@ -139,22 +139,30 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
   }
 
   /**
-   * Extracts data for TM options from product
+   * Extracts data for TM options from product or from optional account data
+   * if the product doesn't have attribute values
    *
    * @param Mage_Catalog_Model_Product|array $product Product's data
+   * @param array $account TM account data 
    *
    * @return array TM options
    */
-  public function getTmFields ($product) {
+  public function getTmFields ($product, $account = null) {
     if ($product instanceof Mage_Catalog_Model_Product)
       $product = $product->getData();
 
     $fields = array();
 
-    foreach ($this->_tmFields as $name => $code)
-      $fields[$name] = isset($product[$code])
+    foreach ($this->_tmFields as $name => $code) {
+      $value = isset($product[$code])
                          ? $product[$code]
                            : null;
+
+      if (!($value == '-1' || $value === null))
+        $fields[$name] = $value;
+      else
+        $fields[$name] = isset($account[$name]) ? $account[$name] : null;
+    }
 
     return $fields;
   }

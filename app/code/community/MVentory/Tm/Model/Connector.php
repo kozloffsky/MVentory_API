@@ -148,6 +148,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $this->getWebsiteId($product);
     $this->setAccountId($tmData);
 
+    $updateTmOptions = is_array($tmData);
+
+    if (!$updateTmOptions)
+      $tmData = Mage::helper('mventory_tm/product')
+                  ->getTmFields($product, $this->_accountData);
+
     $return = 'Error';
 
     if ($accessToken = $this->auth()) {
@@ -364,9 +370,13 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       if ($xml) {
         if ((string)$xml->Success == 'true') {
-          $tmData['account_id'] = $this->_accountId;
 
-          Mage::helper('mventory_tm/product')->setTmFields($product, $tmData);
+          if ($updateTmOptions) {
+            $tmData['account_id'] = $this->_accountId;
+            Mage::helper('mventory_tm/product')->setTmFields($product, $tmData);
+          } else {
+            $product->setData('tm_account_id', $this->_accountId);
+          }
 
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {

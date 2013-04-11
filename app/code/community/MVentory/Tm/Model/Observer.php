@@ -343,13 +343,11 @@ class MVentory_Tm_Model_Observer {
       if (!$accountsNumber = count($accountIds))
         continue;
 
-      $tmData = $helper->getTmFields($product);
+      $accountId = $accountsNumber == 1
+                    ? $accountIds[0]
+                      : $accountIds[array_rand($accountIds)];
 
-      $tmData['account_id'] = $accountsNumber == 1
-                                ? $accountIds[0]
-                                  : $accountIds[array_rand($accountIds)];
-
-      $result = $connector->send($product, $tmCategory, $tmData);
+      $result = $connector->send($product, $tmCategory, $accountId);
 
       if ($result = 'Insufficient balance') {
         $vars = array('account' => $accounts[$tmData['account_id']]['name']);
