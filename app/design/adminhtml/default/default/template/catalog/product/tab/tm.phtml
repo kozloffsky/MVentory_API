@@ -39,23 +39,39 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 <div class="entry-edit">
   <fieldset>
     <label class="tm-option">
-      <input type="checkbox" value="1" name="product[tm_relist]" <?php if ($_relist) echo 'checked="checked"'; ?> />
-      <?php echo $this->__('Relist if not sold'); ?>
+      <?php echo $this->__('Relist if not sold: '); ?>
+      <select class="select" name="product[tm_relist]">
+        <?php foreach ($this->_yesNoOptions as $option): ?>
+        <option value="<?php echo $option['value']; ?>" <?php if ($option['value'] == $_relist) echo 'selected="selected"'; ?>><?php echo $option['label'] ?></option>
+        <?php endforeach; ?>
+      </select>
     </label>
 
     <label class="tm-option">
-      <input type="checkbox" value="1" name="product[tm_avoid_withdrawal]" <?php if ($_avoidWithdrawal) echo 'checked="checked"'; ?> />
-      <?php echo $this->__('Avoid withdrawal'); ?>
+      <?php echo $this->__('Avoid withdrawal: '); ?>
+      <select class="select" name="product[tm_avoid_withdrawal]">
+        <?php foreach ($this->_yesNoOptions as $option): ?>
+        <option value="<?php echo $option['value']; ?>" <?php if ($option['value'] == $_avoidWithdrawal) echo 'selected="selected"'; ?>><?php echo $option['label'] ?></option>
+        <?php endforeach; ?>
+      </select>
     </label>
 
     <label class="tm-option">
-      <input type="checkbox" value="1" name="product[tm_allow_buy_now]" <?php if ($_allowBuyNow) echo 'checked="checked"'; ?> />
-      <?php echo $this->__('Allow Buy Now'); ?>
+      <?php echo $this->__('Allow Buy Now: '); ?>
+      <select class="select" name="product[tm_allow_buy_now]">
+        <?php foreach ($this->_yesNoOptions as $option): ?>
+        <option value="<?php echo $option['value']; ?>" <?php if ($option['value'] == $_allowBuyNow) echo 'selected="selected"'; ?>><?php echo $option['label'] ?></option>
+        <?php endforeach; ?>
+      </select>
     </label>
 
     <label class="tm-option">
-      <input id="tm_add_fees" type="checkbox" value="1" name="product[tm_add_fees]" <?php if ($_addTmFees) echo 'checked="checked"'; ?> />
-      <?php echo $this->__('Add TM fees'); ?>
+      <?php echo $this->__('Add TM fees: '); ?>
+      <select class="select" name="product[tm_add_fees]">
+        <?php foreach ($this->_yesNoOptions as $option): ?>
+        <option value="<?php echo $option['value']; ?>" <?php if ($option['value'] == $_addTmFees) echo 'selected="selected"'; ?>><?php echo $option['label'] ?></option>
+        <?php endforeach; ?>
+      </select>
     </label>
   </fieldset>
 </div>

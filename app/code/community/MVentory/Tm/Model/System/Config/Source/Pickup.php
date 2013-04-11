@@ -15,10 +15,13 @@ class MVentory_Tm_Model_System_Config_Source_Pickup {
    *
    * @return array
    */
-  public function toOptionArray () {
+  public function toOptionArray ($default = false) {
     $helper = Mage::helper('mventory_tm');
 
     $options = array();
+
+    if ($default)
+      $options[-1] = array('value' => -1, 'label' => $helper->__('Default'));
 
     foreach ($this->_options as $value => $code)
       $options[] = array('value' => $value, 'label' => $helper->__($code));

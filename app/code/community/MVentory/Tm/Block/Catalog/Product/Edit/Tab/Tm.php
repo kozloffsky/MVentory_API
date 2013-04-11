@@ -20,6 +20,8 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   private $_accounts = null;
   private $_accountId = null;
 
+  protected $_yesNoOptions = null;
+
   public function __construct() {
     parent::__construct();
 
@@ -54,6 +56,12 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
       $this->_calculateShippingRates();
       $this->_calculateTmFees();
     }
+
+    $this->_yesNoOptions = array(
+      array('value' => -1, 'label' => $tmHelper->__('Default')),
+      array('value' => 1, 'label' => $tmHelper->__('Yes')),
+      array('value' => 0, 'label' => $tmHelper->__('No')),
+    );
 
     $this->setTemplate('catalog/product/tab/tm.phtml');
   }
@@ -211,22 +219,22 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     $attr = 'tm_allow_buy_now';
     $field = 'allow_buy_now';
 
-    return (bool) $this->_getAttributeValue($attr, $field);
+    return (int) $this->_getAttributeValue($attr, $field);
   }
 
   public function getAddTmFees () {
-    return (bool) $this->_getAttributeValue('tm_add_fees', 'add_fees');
+    return (int) $this->_getAttributeValue('tm_add_fees', 'add_fees');
   }
 
   public function getRelist () {
-    return (bool) $this->_getAttributeValue('tm_relist', 'relist');
+    return (int) $this->_getAttributeValue('tm_relist', 'relist');
   }
 
   public function getAvoidWithdrawal () {
     $attr = 'tm_avoid_withdrawal';
     $field = 'avoid_withdrawal';
 
-    return (bool) $this->_getAttributeValue($attr, $field);
+    return (int) $this->_getAttributeValue($attr, $field);
   }
 
   public function getShippingOptions () {
@@ -251,7 +259,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     $shippingType = (int) $this->_getAttributeValue($attr, $field);
 
     $options = Mage::getModel('mventory_tm/system_config_source_pickup')
-                 ->toOptionArray();
+                 ->toOptionArray(true);
 
     foreach ($options as &$option)
       $option['selected'] = $shippingType == $option['value'];
@@ -284,13 +292,13 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
       if (isset($source[$key])) {
         $value = $source[$key];
 
-        if (!($value == '-1' || $value === null))
-          return $value;
+        if ($value === null)
+          return -1;
+
+        return $value;
       }
 
-    return isset($this->_accounts[$this->_accountId][$field])
-             ? $this->_accounts[$this->_accountId][$field]
-               : null;
+    return -1;
   }
 
   public function getShippingRate () {
