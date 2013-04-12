@@ -349,8 +349,8 @@ class MVentory_Tm_Model_Observer {
 
       $result = $connector->send($product, $tmCategory, $accountId);
 
-      if ($result = 'Insufficient balance') {
-        $vars = array('account' => $accounts[$tmData['account_id']]['name']);
+      if ($result == 'Insufficient balance') {
+        $vars = array('account' => $accounts[$accountId]['name']);
 
         $helper->sendEmailTmpl('mventory_negative_balance', $vars, $website);
 
