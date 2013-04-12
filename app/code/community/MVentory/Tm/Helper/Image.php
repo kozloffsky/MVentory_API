@@ -82,7 +82,8 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
     $width = $this->_getModel()->getWidth();
     $height = $this->_getModel()->getHeight();
 
-    if ($width == $height)
+    //!!!TODO: remove hack for 75x75 images
+    if ($width == $height && $width != 75)
       $height = null;
 
     if (($dimensions = $width . 'x' . $height) == 'x')
