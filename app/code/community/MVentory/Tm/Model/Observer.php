@@ -352,7 +352,8 @@ class MVentory_Tm_Model_Observer {
         $accountId = $accountsNumber == 1
                        ? $accountIds[0]
                          : $accountIds[array_rand($accountIds)];
-      }
+      } else if (!isset($accounts[$accountId]))
+        continue;
 
       $result = $connector->send($product, $matchResult['id'], $accountId);
 
@@ -364,10 +365,18 @@ class MVentory_Tm_Model_Observer {
         continue;
       }
 
-      if (is_int($result))
+      if (is_int($result)) {
         $product
           ->setTmListingId($result)
           ->save();
+
+        if (!--$accounts[$accountId]['free_slots']) {
+          unset($accounts[$accountId]);
+
+          if (!count($accounts))
+            break;
+        }
+      }
     }
   }
 
