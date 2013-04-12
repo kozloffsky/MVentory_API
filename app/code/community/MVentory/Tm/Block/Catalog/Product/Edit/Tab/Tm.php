@@ -214,6 +214,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
   public function getCategory () {
     return ($category = $this->_getAttributeValue('tm_category', 'category'))
+           && $category > 0
              ? $category
                : $this->_getAttributeValue('tm_match_id');
     
