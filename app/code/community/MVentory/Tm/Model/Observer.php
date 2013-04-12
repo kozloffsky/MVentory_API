@@ -331,21 +331,23 @@ class MVentory_Tm_Model_Observer {
             && ($tmCategory = $product->getTmCategory()) > 0))
         continue;
 
-      $accountIds = array();
+      if (!$accountId = $product->getTmAccountId()) {
+        $accountIds = array();
 
-      foreach ($accounts as $accountId => $accountData)
-        if (in_array($product->getData('mv_shipping_'),
-                      $accountData['allowed_shipping_types']))
-          $accountIds[] = $accountId;
+        foreach ($accounts as $accountId => $accountData)
+          if (in_array($product->getData('mv_shipping_'),
+                       $accountData['allowed_shipping_types']))
+            $accountIds[] = $accountId;
 
-      unset($accountId, $accountData);
+        unset($accountId, $accountData);
 
-      if (!$accountsNumber = count($accountIds))
-        continue;
+        if (!$accountsNumber = count($accountIds))
+          continue;
 
-      $accountId = $accountsNumber == 1
-                    ? $accountIds[0]
-                      : $accountIds[array_rand($accountIds)];
+        $accountId = $accountsNumber == 1
+                       ? $accountIds[0]
+                         : $accountIds[array_rand($accountIds)];
+      }
 
       $result = $connector->send($product, $tmCategory, $accountId);
 
