@@ -302,22 +302,38 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getShippingRate () {
+    if (!isset($this->_accounts[$this->_accountId]))
+      return null;
+
+    $account = $this->_accounts[$this->_accountId];
+
     $shippingType = $this
                       ->getProduct()
                       ->getTmShippingType();
 
+    if ($shippingType == -1 || $shippingType == null)
+      $shippingType = $account['shipping_type'];
+
     if ($shippingType == MVentory_Tm_Model_Connector::FREE)
-      return isset($this->_accounts[$this->_accountId]['free_shipping_cost'])
-               ? $this->_accounts[$this->_accountId]['free_shipping_cost']
+      return isset($account['free_shipping_cost'])
+               ? $account['free_shipping_cost']
                  : null;
     
-    return isset($this->_accounts[$this->_accountId]['shipping_rate'])
-             ? $this->_accounts[$this->_accountId]['shipping_rate']
-               : null;
+    return isset($account['shipping_rate']) ? $account['shipping_rate'] : null;
   }
 
   public function getTmFees () {
-    if (!($this->getAddTmFees() && count($this->_accounts)))
+    if (!isset($this->_accounts[$this->_accountId]))
+      return 0;
+
+    $account = $this->_accounts[$this->_accountId];
+
+    $addTmfees = $this->getAddTmFees();
+
+    if ($addTmfees == -1)
+      $addTmfees = $account['add_fees'];
+
+    if (!$addTmfees)
       return 0;
 
     $shippingType = $this
