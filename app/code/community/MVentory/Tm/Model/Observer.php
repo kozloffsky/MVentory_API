@@ -327,8 +327,13 @@ class MVentory_Tm_Model_Observer {
     foreach ($ids as $id) {
       $product = Mage::getModel('catalog/product')->load($id);
 
-      if (!($product->getId()
-            && ($tmCategory = $product->getTmCategory()) > 0))
+      if (!$product->getId())
+        continue;
+
+      $matchResult = Mage::getModel('mventory_tm/rules')
+                       ->matchTmCategory($product);
+
+      if (!(isset($matchResult['id']) && $matchResult['id'] > 0))
         continue;
 
       if (!$accountId = $product->getTmAccountId()) {
@@ -349,7 +354,7 @@ class MVentory_Tm_Model_Observer {
                          : $accountIds[array_rand($accountIds)];
       }
 
-      $result = $connector->send($product, $tmCategory, $accountId);
+      $result = $connector->send($product, $matchResult['id'], $accountId);
 
       if ($result == 'Insufficient balance') {
         $vars = array('account' => $accounts[$accountId]['name']);
