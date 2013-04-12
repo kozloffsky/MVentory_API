@@ -53,6 +53,10 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
       $this->_accountId = key($this->_accounts);
 
     if (count($this->_accounts)) {
+      if ($tmHelper->getShippingType($product) != 'tab_ShipParcel')
+        foreach ($this->_accounts as $id => $data)
+          unset($this->_accounts[$id]['free_shipping_cost']);
+
       $this->_calculateShippingRates();
       $this->_calculateTmFees();
     }
