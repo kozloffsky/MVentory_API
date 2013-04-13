@@ -151,27 +151,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     foreach ($tmAccounts as $id => $account)
       $tmOptions['tm_accounts'][$id] = $account['name'];
 
-    if (count($result['category_ids'])) {
-      $category = Mage::getModel('catalog/category')
-                        ->load($result['category_ids'][0]);
+    $product = Mage::getModel('catalog/product')->load($result['product_id']);
 
-      $assigned = $category->getTmAssignedCategories();
+    $matchResult = Mage::getModel('mventory_tm/rules')
+                     ->matchTmCategory($product );
 
-      if (is_string($assigned) && strlen($assigned)) {
-        $assigned = explode(',', $assigned);
-
-        $tmCategories = Mage::getModel('mventory_tm/connector')
-                          ->getTmCategories();
-
-        $preselected = array();
-
-        foreach ($assigned as $id)
-          if (isset($tmCategories[$id]))
-            $preselected[$id] = $tmCategories[$id]['path'];
-
-        $tmOptions['preselected_categories'] = $preselected;
-      }
-    }
+    if (isset($matchResult['id']) && $matchResult['id'] > 0)
+      $tmOptions['preselected_categories'][$matchResult['id']]
+        = $matchResult['category'];
 
     $result['tm_options'] = $tmOptions;
 
