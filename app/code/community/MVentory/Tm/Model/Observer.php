@@ -287,12 +287,18 @@ class MVentory_Tm_Model_Observer {
       return;
 
     $enabled = Mage_Catalog_Model_Product_Status::STATUS_ENABLED;
+
+    $listingFilter = array(
+      array('null' => true),
+      array('in' => array('', 0))
+    );
+
     $imageFilter = array('nin' => array('no_selection', ''));
 
     $products = Mage::getModel('catalog/product')
                   ->getCollection()
                   ->addAttributeToFilter('tm_relist', '1')
-                  ->addAttributeToFilter('tm_listing_id', '')
+                  ->addAttributeToFilter('tm_listing_id', $listingFilter)
                   ->addAttributeToFilter('image', $imageFilter)
                   ->addAttributeToFilter('status', $enabled)
                   ->addStoreFilter($store);
