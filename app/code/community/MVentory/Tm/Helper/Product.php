@@ -8,7 +8,6 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     'shipping_type' => 'tm_shipping_type',
     'allow_buy_now' => 'tm_allow_buy_now',
     'add_fees' => 'tm_add_fees',
-    'relist' => 'tm_relist',
     'avoid_withdrawal' => 'tm_avoid_withdrawal',
     'pickup' => 'tm_pickup'
   );

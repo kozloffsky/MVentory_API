@@ -81,18 +81,6 @@
               <sort_order>5</sort_order>
             </allow_buy_now>
 
-            <relist translate="label">
-              <label>Relist if not sold</label>
-              <frontend_type>select</frontend_type>
-              <source_model>adminhtml/system_config_source_yesno</source_model>
-
-              <show_in_default>0</show_in_default>
-              <show_in_website>1</show_in_website>
-              <show_in_store>0</show_in_store>
-
-              <sort_order>6</sort_order>
-            </relist>
-
             <avoid_withdrawal translate="label">
               <label>Avoid withdrawal</label>
               <frontend_type>select</frontend_type>
@@ -102,7 +90,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>7</sort_order>
+              <sort_order>6</sort_order>
             </avoid_withdrawal>
 
             <add_fees translate="label">
@@ -114,7 +102,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>8</sort_order>
+              <sort_order>7</sort_order>
             </add_fees>
 
             <pickup translate="label">
@@ -134,7 +122,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>9</sort_order>
+              <sort_order>8</sort_order>
             </pickup>
 
             <allowed_shipping_types translate="label">
@@ -146,7 +134,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>10</sort_order>
+              <sort_order>9</sort_order>
             </allowed_shipping_types>
 
             <shipping_type translate="label">
@@ -158,7 +146,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>11</sort_order>
+              <sort_order>10</sort_order>
             </shipping_type>
 
             <free_shipping_cost translate="label">
@@ -169,7 +157,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-               <sort_order>12</sort_order>
+               <sort_order>11</sort_order>
             </free_shipping_cost>
 
             <free_shipping_text translate="label">
@@ -180,7 +168,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-               <sort_order>13</sort_order>
+               <sort_order>12</sort_order>
             </free_shipping_text>
 
             <buyer translate="label">
@@ -192,7 +180,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>14</sort_order>
+              <sort_order>13</sort_order>
             </buyer>
 
             <footer translate="label">
@@ -213,7 +201,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>15</sort_order>
+              <sort_order>14</sort_order>
             </footer>
           </account_template>
 

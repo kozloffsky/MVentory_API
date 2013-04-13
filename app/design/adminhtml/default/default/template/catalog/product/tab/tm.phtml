@@ -28,7 +28,6 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 ?>
 
 <div class="hidden">
-  <input type="hidden" value="0" name="product[tm_relist]" />
   <input type="hidden" value="0" name="product[tm_avoid_withdrawal]" />
   <input type="hidden" value="0" name="product[tm_allow_buy_now]" />
   <input type="hidden" value="0" name="product[tm_add_fees]" />
@@ -39,10 +38,10 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 <div class="entry-edit">
   <fieldset>
     <label class="tm-option">
-      <?php echo $this->__('Relist if not sold: '); ?>
+      <?php echo $this->getAttributeLabel('tm_relist'); ?>:
       <select class="select" name="product[tm_relist]">
-        <?php foreach ($this->_yesNoOptions as $option): ?>
-        <option value="<?php echo $option['value']; ?>" <?php if ($option['value'] == $_relist) echo 'selected="selected"'; ?>><?php echo $option['label'] ?></option>
+        <?php foreach ($this->getAttributeOptions('tm_relist') as $value => $label): ?>
+        <option value="<?php echo $value; ?>" <?php if ($value == $_relist) echo 'selected="selected"'; ?>><?php echo $label; ?></option>
         <?php endforeach; ?>
       </select>
     </label>

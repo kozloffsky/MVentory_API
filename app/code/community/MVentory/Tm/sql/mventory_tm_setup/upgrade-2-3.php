@@ -9,15 +9,16 @@ $name = 'tm_relist';
 $attributeData = array(
   //Global settings
   'type' => 'int',
-  'input' => 'hidden',
-  'label' => 'Tm Relist',
+  'input' => 'select',
+  'label' => 'List on TM',
+  'source' => 'eav/entity_attribute_source_boolean',
   'required' => false,
   'user_defined' => false,
   'default' => 1,
   'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
 
   //Catalogue setting
-  'visible' => false,
+  'visible' => true,
   'is_configurable' => false
 );
 

@@ -370,6 +370,34 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return $data;
   }
 
+  public function getAttributeOptions ($code) {
+    $product = $this->getProduct();
+
+    $attributes = $product->getAttributes();
+
+    if (!isset($attributes[$code]))
+      return array();
+
+    $attribute = $attributes[$code];
+
+    return $attribute
+             ->getSource()
+             ->getOptionArray();
+  }
+
+  public function getAttributeLabel ($code) {
+    $product = $this->getProduct();
+
+    $attributes = $product->getAttributes();
+
+    if (!isset($attributes[$code]))
+      return;
+
+    $attribute = $attributes[$code];
+
+    return $this->__($attributes[$code]->getFrontendLabel());
+  }
+
   protected function _calculateShippingRates () {
     $helper = Mage::helper('mventory_tm/tm');
 
