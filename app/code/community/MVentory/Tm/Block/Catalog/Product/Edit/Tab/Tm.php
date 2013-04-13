@@ -85,23 +85,11 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $this->_preselectedCategories = array();
 
-    $category = Mage::helper('mventory_tm/product')
-                  ->getCategory($this->getProduct());
+    $matchResult = Mage::getModel('mventory_tm/rules')
+                     ->matchTmCategory($this->getProduct());
 
-    if ($category) {
-      $categories = $category->getTmAssignedCategories();
-
-      if ($categories && is_string($categories))
-        $this->_preselectedCategories = explode(',', $categories);
-    }
-
-    if (($category = $this->_getAttributeValue('tm_category', 'category'))
-        && !in_array($category, $this->_preselectedCategories))
-      $this->_preselectedCategories[] = $category;
-
-    if (($matchedCategory = $this->_getAttributeValue('tm_match_id'))
-        && !in_array($matchedCategory, $this->_preselectedCategories))
-      $this->_preselectedCategories[] = $matchedCategory;
+    if (isset($matchResult['id']) && $matchResult['id'] > 0)
+      $this->_preselectedCategories[] = $matchResult['id'];
 
     return $this->_preselectedCategories;
   }
