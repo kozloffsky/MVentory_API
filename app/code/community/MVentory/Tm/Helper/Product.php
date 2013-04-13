@@ -157,7 +157,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
                          ? $product[$code]
                            : null;
 
-      if (!($value == '-1' || $value === null))
+      if (!($account && ($value == '-1' || $value === null)))
         $fields[$name] = $value;
       else
         $fields[$name] = isset($account[$name]) ? $account[$name] : null;
