@@ -265,20 +265,25 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $price = $product->getPrice();
 
-      if ($productShippingType == 'tab_ShipParcel'
-          && $shippingType == self::FREE
-          && isset($this->_accountData['free_shipping_cost'])
-          && $this->_accountData['free_shipping_cost'] > 0) {
-        $price += (float) $this->_accountData['free_shipping_cost'];
-      } elseif ($productShippingType == 'tab_ShipTransport') {
+      if ($shippingType != self::FREE) {
+
         //Add shipping rate if product's shipping type is 'tab_ShipTransport'
+        if ($productShippingType == 'tab_ShipTransport') {
+          $regionName = $this->_accountData['name'];
+          $website = Mage::app()->getWebsite($this->_website);
 
-        $regionName = $this->_accountData['name'];
-        $website = Mage::app()->getWebsite($this->_website);
+          $price += $tmHelper->getShippingRate($product, $regionName, $website);
 
-        $price += $tmHelper->getShippingRate($product, $regionName, $website);
+          unset($regionName, $website);
+        }
+      } else {
 
-        unset($regionName, $website);
+        //Add free shippih cost if product's shipping type is 'tab_ShipParcel'
+        if ($productShippingType == 'tab_ShipParcel'
+            && isset($this->_accountData['free_shipping_cost'])
+            && $this->_accountData['free_shipping_cost'] > 0) {
+          $price += (float) $this->_accountData['free_shipping_cost'];
+        }
       }
 
       //Apply fees to price of the product if it's allowed
@@ -538,20 +543,25 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
         $price = $product->getPrice();
 
-        if ($productShippingType == 'tab_ShipParcel'
-            && $shippingType == self::FREE
-            && isset($this->_accountData['free_shipping_cost'])
-            && $this->_accountData['free_shipping_cost'] > 0) {
-          $price += (float) $this->_accountData['free_shipping_cost'];
-        } elseif ($productShippingType == 'tab_ShipTransport') {
+        if ($shippingType != self::FREE) {
+
           //Add shipping rate if product's shipping type is 'tab_ShipTransport'
+          if ($productShippingType == 'tab_ShipTransport') {
+            $regionName = $this->_accountData['name'];
+            $website = Mage::app()->getWebsite($this->_website);
 
-          $regionName = $this->_accountData['name'];
-          $website = Mage::app()->getWebsite($this->_website);
+            $price += $tmHelper->getShippingRate($product, $regionName, $website);
 
-          $price += $helper->getShippingRate($product, $regionName, $website);
+            unset($regionName, $website);
+          }
+        } else {
 
-          unset($regionName, $website);
+          //Add free shippih cost if product's shipping type is 'tab_ShipParcel'
+          if ($productShippingType == 'tab_ShipParcel'
+              && isset($this->_accountData['free_shipping_cost'])
+              && $this->_accountData['free_shipping_cost'] > 0) {
+            $price += (float) $this->_accountData['free_shipping_cost'];
+          }
         }
 
         //Apply fees to price of the product if it's allowed
