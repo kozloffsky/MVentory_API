@@ -278,7 +278,7 @@ class MVentory_Tm_Model_Observer {
       return;
 
     foreach ($accounts as $accountId => $accountData)
-      if (!$accountData['free_slots'])
+      if ($accountData['free_slots'] < 1)
         unset($accounts[$accountId]);
 
     unset($accountId, $accountData);
