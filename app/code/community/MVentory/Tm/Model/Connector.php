@@ -479,7 +479,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return 1;
   }
 
-  public function update($product,$parameters=null,$formData=null){
+  public function update ($product, $parameters = null, $_formData = null) {
     $this->getWebsiteId($product);
 
     $accountId = $product->getTmAccountId();
@@ -506,6 +506,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $item = $this->_parseTmListingDetails($json);
       $item = $this->_listingDetailsToEditingRequest($item);
+
+      $formData = $_formData;
+
+      foreach ($formData as $key => $value)
+        if ($value == -1)
+          $formData[$key] = $this->_accountData[$key];
 
       $shippingType = isset($formData['shipping_type'])
                         ? $formData['shipping_type']
@@ -639,7 +645,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $jsonResponse = json_decode($response->getBody());
 
       if (isset($jsonResponse->Success) && $jsonResponse->Success == 'true') {
-        Mage::helper('mventory_tm/product')->setTmFields($product, $formData);
+        Mage::helper('mventory_tm/product')->setTmFields($product, $_formData);
 
         $product->save();
 
