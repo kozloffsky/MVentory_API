@@ -211,7 +211,7 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
   public function getAccounts ($website) {
     $website = Mage::app()->getWebsite($website);
 
-    $configData = Mage::getSingleton('adminhtml/config_data')
+    $configData = Mage::getModel('adminhtml/config_data')
                     ->setWebsite($website->getCode())
                     ->setSection('mventory_tm');
 
