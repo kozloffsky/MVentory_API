@@ -361,7 +361,8 @@ class MVentory_Tm_Model_Observer {
       } else if (!isset($accounts[$accountId]))
         continue;
 
-      $result = $connector->send($product, $matchResult['id'], $accountId);
+      $result = Mage::getModel('mventory_tm/connector')
+                  ->send($product, $matchResult['id'], $accountId);
 
       if ($result == 'Insufficient balance') {
         $vars = array('account' => $accounts[$accountId]['name']);
