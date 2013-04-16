@@ -65,6 +65,9 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       }
     }
 
+    if (!($id > 0))
+      $this->_fault('product_not_exists');
+
     $helper = Mage::helper('mventory_tm/tm');
 
     $website = $helper->getWebsite($id);
