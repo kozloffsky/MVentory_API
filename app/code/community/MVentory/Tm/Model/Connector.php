@@ -317,7 +317,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
-<Title>' . $title . '</Title>
+<Title>' . htmlspecialchars($title) . '</Title>
 <Description><Paragraph>' . $description . '</Paragraph></Description>
 <StartPrice>' . $price . '</StartPrice>
 <ReservePrice>' . $price . '</ReservePrice>'
