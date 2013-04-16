@@ -388,8 +388,6 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
             Mage::helper('mventory_tm/product')
               ->setTmFields($product, $_tmData);
-          } else {
-            $product->setData('tm_account_id', $this->_accountId);
           }
 
           $return = (int)$xml->ListingId;

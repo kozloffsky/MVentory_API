@@ -47,10 +47,8 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $this->_accounts = $tmHelper->getAccounts($this->_website);
 
-    //Use first account from the list as default
-    //if product doesn't have an account_id value
     if (!$this->_accountId)
-      $this->_accountId = key($this->_accounts);
+      $this->_accountId = false;
 
     if (count($this->_accounts)) {
       if ($tmHelper->getShippingType($product) != 'tab_ShipParcel')

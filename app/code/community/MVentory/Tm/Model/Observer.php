@@ -181,6 +181,9 @@ class MVentory_Tm_Model_Observer {
     //Load TM accounts which are used in specified website
     $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
 
+    //Unset Random pseudo-account
+    unset($accounts[null]);
+
     $helper = Mage::helper('mventory_tm/product');
 
     //Get time with Magento timezone offset
@@ -342,7 +345,7 @@ class MVentory_Tm_Model_Observer {
       if (!(isset($matchResult['id']) && $matchResult['id'] > 0))
         continue;
 
-      if (!$accountId = $product->getTmAccountId()) {
+      if ((!$accountId = $product->getTmAccountId()) || $accountId == -1) {
         $accountIds = array();
 
         foreach ($accounts as $accountId => $accountData)

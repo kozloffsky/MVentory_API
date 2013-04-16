@@ -219,7 +219,9 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
     $groups = $configData->getConfigDataValue('mventory_tm')->asArray();
 
-    $accounts = array();
+    $accounts = array(
+      null => array('name' => $this->__('Random'))
+    );
 
     foreach ($groups as $id => $fields)
       if (strpos($id, 'account_', 0) === 0)
