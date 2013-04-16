@@ -369,6 +369,11 @@ class MVentory_Tm_Model_Observer {
 
         $helper->sendEmailTmpl('mventory_negative_balance', $vars, $website);
 
+        unset($accounts[$accountId]);
+
+        if (!count($accounts))
+          break;
+
         continue;
       }
 
