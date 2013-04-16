@@ -249,7 +249,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling.xml');
       $client->setMethod(Zend_Http_Client::POST);
 
-      $title = $product->getName();
+      $title = htmlspecialchars($product->getName());
 
       if (strlen($title) > self::TITLE_MAX_LENGTH)
         $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
@@ -317,7 +317,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
-<Title>' . htmlspecialchars($title) . '</Title>
+<Title>' . $title . '</Title>
 <Description><Paragraph>' . $description . '</Paragraph></Description>
 <StartPrice>' . $price . '</StartPrice>
 <ReservePrice>' . $price . '</ReservePrice>'
