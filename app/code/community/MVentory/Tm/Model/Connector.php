@@ -559,7 +559,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
             $regionName = $this->_accountData['name'];
             $website = Mage::app()->getWebsite($this->_website);
 
-            $price += $tmHelper->getShippingRate($product, $regionName, $website);
+            $price += $helper->getShippingRate($product, $regionName, $website);
 
             unset($regionName, $website);
           }
