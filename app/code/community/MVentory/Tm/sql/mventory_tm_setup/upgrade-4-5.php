@@ -9,15 +9,15 @@ $name = 'tm_account_id';
 $attributeData = array(
   //Global settings
   'type' => 'varchar',
-  'input' => 'hidden',
+  'input' => 'select',
   'label' => 'TM Account ID',
+  'source' => 'mventory_tm/entity_attribute_source_accounts',
   'required' => false,
   'user_defined' => false,
-  'default' => '',
+  'default' => null,
   'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
 
   //Catalogue setting
-  'visible' => false,
   'is_configurable' => false
 );
 
