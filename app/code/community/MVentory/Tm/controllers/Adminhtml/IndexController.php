@@ -21,6 +21,14 @@ class MVentory_Tm_Adminhtml_IndexController
     //when submit is failed
     $session->setData('tm_params', $data);
 
+    if (!(isset($data['account_id']) && $data['account_id'])) {
+      $session->addError($helper->__('Please, select account'));
+
+      $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
+
+      return;
+    }
+
     $product = Mage::getModel('catalog/product')->load($productId);
 
     if (!$product->getId()) {
