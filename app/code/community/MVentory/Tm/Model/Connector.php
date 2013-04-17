@@ -332,7 +332,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $xml .= '<ShippingOptions>
 <ShippingOption><Type>' . $shippingType . '</Type></ShippingOption>
 </ShippingOptions>
-<SendPaymentInstructions>1</SendPaymentInstructions>
+<SendPaymentInstructions>true</SendPaymentInstructions>
 <PaymentMethods>
 <PaymentMethod>CreditCard</PaymentMethod>
 <PaymentMethod>Cash</PaymentMethod>
