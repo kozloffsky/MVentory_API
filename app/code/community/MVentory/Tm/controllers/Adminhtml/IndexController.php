@@ -35,7 +35,7 @@ class MVentory_Tm_Adminhtml_IndexController
                ->loadByProduct($product);
 
     if ($stock->getManageStock() && $stock->getQty() == 0
-        && !$product->getTmListingId()) {
+        && !$product->getTmCurrentListingId()) {
       $session->addError($helper->__('Item is not available in inventory'));
 
       $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
@@ -67,6 +67,7 @@ class MVentory_Tm_Adminhtml_IndexController
 
     $product
       ->setTmListingId($result)
+      ->setTmCurrentListingId($result)
       ->save();
 
     //Remove TM options from the session on successful submit
@@ -95,7 +96,7 @@ class MVentory_Tm_Adminhtml_IndexController
       $url = 'http://www.'
              . $host
              . '.co.nz/Browse/Listing.aspx?id='
-             . $product->getTmListingId();
+             . $product->getTmCurrentListingId();
 
       $link = '<a href="' . $url . '">' . $url . '</a>';
 
@@ -103,7 +104,8 @@ class MVentory_Tm_Adminhtml_IndexController
         ->addSuccess($helper->__('Removed from') . ': ' . $link);
 
       $product
-        ->setTmListingId(0)
+        ->setTmCurrentListingId(0)
+        ->setTmCurrentAccountId(null)
         ->save();
     } else
       Mage::getSingleton('adminhtml/session')->addError($helper->__($result));
@@ -128,7 +130,7 @@ class MVentory_Tm_Adminhtml_IndexController
       $url = 'http://www.'
              . $host
              . '.co.nz/Browse/Listing.aspx?id='
-             . $product->getTmListingId();
+             . $product->getTmCurrentListingId();
 
       $link = '<a href="' . $url . '">' . $url . '</a>';
 
@@ -137,8 +139,10 @@ class MVentory_Tm_Adminhtml_IndexController
           Mage::getSingleton('adminhtml/session')
             ->addSuccess($helper->__('Wasn\'t sold') . ': ' . $link);
 
-          $product->setTmListingId(0);
-          $product->save();
+          $product
+            ->setTmCurrentListingId(0)
+            ->setTmCurrentAccountId(null)
+            ->save();
 
           break;
         case 2:
@@ -155,7 +159,8 @@ class MVentory_Tm_Adminhtml_IndexController
           }
 
           $product
-            ->setTmListingId(0)
+            ->setTmCurrentListingId(0)
+            ->setTmCurrentAccountId(null)
             ->save();
 
           break;

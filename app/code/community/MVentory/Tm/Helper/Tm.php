@@ -72,7 +72,7 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
     return 'http://www.'
            . $domain
            . '.co.nz/Browse/Listing.aspx?id='
-           . $product->getTmListingId();
+           . $product->getTmCurrentListingId();
   }
 
   /**
@@ -231,7 +231,8 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
   }
 
   /**
-   * Return account ID used for listing specified product on TM
+   * Return account ID which will be used for the next listing of specified
+   * product on TM
    *
    * @param int $productId
    * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
@@ -243,7 +244,8 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
   }
 
   /**
-   * Set account ID used for listing specified product on TM
+   * Set account ID which will be used for the next listing of specified
+   * product on TM
    *
    * @param int $productId
    * @param string $accountId
@@ -251,6 +253,32 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
    */
   public function setAccountId ($productId, $accountId, $website) {
     $attrData = array('tm_account_id' => $accountId);
+
+    $this->setAttributesValue($productId, $attrData, $website);
+  }
+
+  /**
+   * Return account ID used for listing specified product on TM
+   *
+   * @param int $productId
+   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
+   *
+   * @return string Account ID
+   */
+  public function getCurrentAccountId ($productId, $website) {
+    return
+      $this->getAttributesValue($productId, 'tm_current_account_id', $website);
+  }
+
+  /**
+   * Set account ID used for listing specified product on TM
+   *
+   * @param int $productId
+   * @param string $accountId
+   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
+   */
+  public function setCurrentAccountId ($productId, $accountId, $website) {
+    $attrData = array('tm_current_account_id' => $accountId);
 
     $this->setAttributesValue($productId, $attrData, $website);
   }

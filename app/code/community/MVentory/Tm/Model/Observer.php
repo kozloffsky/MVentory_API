@@ -36,9 +36,10 @@ class MVentory_Tm_Model_Observer {
       $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
 
       //We can use default store ID because the attribute is global
-      $listingId
-        = Mage::getResourceModel('catalog/product')
-            ->getAttributeRawValue($productId, 'tm_listing_id', $storeId);
+      $listingId = Mage::getResourceModel('catalog/product')
+                     ->getAttributeRawValue($productId,
+                                            'tm_current_listing_id',
+                                            $storeId);
 
       if (!$listingId)
         continue;
@@ -62,7 +63,7 @@ class MVentory_Tm_Model_Observer {
       {
         $addTMFees = false;
 
-        $accountId = $product->getAccountId();
+        $accountId = $product->getTmCurrentAccountId();
 
         if ($accountId) {
           $website = Mage::helper('mventory_tm')->getWebsite($product);
@@ -121,10 +122,12 @@ class MVentory_Tm_Model_Observer {
       }
 
       $productId = array($productId);
-      $attribute = array('tm_listing_id' => 0);
+      $attribute = array('tm_current_listing_id' => 0);
 
       Mage::getResourceSingleton('catalog/product_action')
         ->updateAttributes($productId, $attribute, $storeId);
+
+      Mage::helper('mventory_tm')->setCurrentAccountId($productId, null);
     }
   }
 
@@ -211,8 +214,9 @@ class MVentory_Tm_Model_Observer {
                     ->getCollection()
                     ->addAttributeToSelect('tm_relist')
                     ->addAttributeToSelect('price')
-                    ->addFieldToFilter('tm_listing_id', array('neq' => ''))
-                    ->addFieldToFilter('tm_account_id',
+                    ->addFieldToFilter('tm_current_listing_id',
+                                       array('neq' => ''))
+                    ->addFieldToFilter('tm_current_account_id',
                                        array('eq' => $accountId))
                     ->addStoreFilter($store);
 
@@ -301,7 +305,8 @@ class MVentory_Tm_Model_Observer {
     $products = Mage::getModel('catalog/product')
                   ->getCollection()
                   ->addAttributeToFilter('tm_relist', '1')
-                  ->addAttributeToFilter('tm_listing_id', $listingFilter)
+                  ->addAttributeToFilter('tm_current_listing_id',
+                                         $listingFilter)
                   ->addAttributeToFilter('image', $imageFilter)
                   ->addAttributeToFilter('status', $enabled)
                   ->addStoreFilter($store);
@@ -345,7 +350,7 @@ class MVentory_Tm_Model_Observer {
       if (!(isset($matchResult['id']) && $matchResult['id'] > 0))
         continue;
 
-      if ((!$accountId = $product->getTmAccountId()) || $accountId == -1) {
+      if (!$accountId = $product->getTmAccountId()) {
         $accountIds = array();
 
         foreach ($accounts as $accountId => $accountData)
@@ -383,6 +388,7 @@ class MVentory_Tm_Model_Observer {
       if (is_int($result)) {
         $product
           ->setTmListingId($result)
+          ->setTmCurrentListingId($result)
           ->save();
 
         if (!--$accounts[$accountId]['free_slots']) {

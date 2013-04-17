@@ -58,7 +58,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
    * @return string Listing ID
    */
   public function getListingId ($productId) {
-    return $this->getAttributesValue($productId, 'tm_listing_id');
+    return $this->getAttributesValue($productId, 'tm_current_listing_id');
   }
 
   /**
@@ -69,7 +69,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
    *
    */
   public function setListingId ($listingId, $productId) {
-    $attribute = array('tm_listing_id' => $listingId);
+    $attribute = array('tm_current_listing_id' => $listingId);
 
     $this->setAttributesValue($productId, $attribute);
   }

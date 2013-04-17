@@ -125,18 +125,18 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
   <tbody>
     <tr>
       <td>
-        <?php if ($_product->getTmListingId()): ?>
+        <?php if ($_product->getTmCurrentListingId()): ?>
           <?php echo $this->__('Listing URL'); ?>:
           <?php $_listingUrl = Mage::helper('mventory_tm/tm')->getListingUrl($_product); ?>
         <a target="_blank" href="<?php echo $_listingUrl ?>">
           <?php echo $_listingUrl ?>
         </a>
-        (<?php echo $this->__('ID'); ?>: <?php echo $_product->getTmListingId(); ?>  )
+        (<?php echo $this->__('ID'); ?>: <?php echo $_product->getTmCurrentListingId(); ?>  )
         <?php endif; ?>
       </td>
       <td class="tm-actions a-right">
       <?php
-        if ($_product->getTmListingId()) {
+        if ($_product->getTmCurrentListingId()) {
           echo $this->getStatusButton();
           echo $this->getRemoveButton();
           echo $this->getUpdateButton();

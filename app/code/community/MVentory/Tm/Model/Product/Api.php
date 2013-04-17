@@ -521,6 +521,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     if (is_int($connectorResult)) {
       $product
+        ->setTmCurrentListingId($connectorResult)
         ->setTmListingId($connectorResult)
         ->save();
     }

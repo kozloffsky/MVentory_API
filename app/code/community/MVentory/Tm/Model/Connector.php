@@ -390,6 +390,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
               ->setTmFields($product, $_tmData);
           }
 
+          $product->setTmCurrentAccountId($this->_accountId);
+
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
           $return = (string)$xml->ErrorDescription;
@@ -406,7 +408,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $this->getWebsiteId($product);
 
     $accountId = Mage::helper('mventory_tm/tm')
-                   ->getAccountId($product->getId(), $this->_website);
+                   ->getCurrentAccountId($product->getId(), $this->_website);
 
     $this->setAccountId($accountId);
 
@@ -418,7 +420,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $client->setMethod(Zend_Http_Client::POST);
 
       $xml = '<WithdrawRequest xmlns="http://api.trademe.co.nz/v1">
-<ListingId>' . $product->getTmListingId() . '</ListingId>
+<ListingId>' . $product->getTmCurrentListingId() . '</ListingId>
 <Type>ListingWasNotSold</Type>
 <Reason>Withdraw</Reason>
 </WithdrawRequest>';
@@ -441,10 +443,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function check ($product) {
-    $listingId = $product->getTmListingId();
+    $listingId = $product->getTmCurrentListingId();
 
     $this->getWebsiteId($product);
-    $this->setAccountId($product->getTmAccountId());
+    $this->setAccountId($product->getTmCurrentAccountId());
 
     $json = $this->_loadTmListingDetailsAuth($listingId);
 
@@ -480,12 +482,15 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   public function update ($product, $parameters = null, $_formData = null) {
     $this->getWebsiteId($product);
 
-    $accountId = $product->getTmAccountId();
+    if ($_formData && isset($_formData['account_id']))
+      unset($_formData['account_id']);
+
+    $accountId = $product->getTmCurrentAccountId();
     $this->setAccountId($accountId);
 
     $helper = Mage::helper('mventory_tm/tm');
 
-    $listingId = $product->getTmListingId();
+    $listingId = $product->getTmCurrentListingId();
     $return = 'Error';
 
     if ($accessToken = $this->auth()) {
@@ -701,7 +706,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     foreach ($products as $product)
       foreach ($items['List'] as $item)
-        if ($item['ListingId'] == $product->getTmListingId())
+        if ($item['ListingId'] == $product->getTmCurrentListingId())
           $product->setIsSelling(true);
 
     return true;
@@ -711,11 +716,11 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $this->getWebsiteId($product);
 
     $accountId = Mage::helper('mventory_tm/tm')
-                   ->getAccountId($product->getId(), $this->_website);
+                   ->getCurrentAccountId($product->getId(), $this->_website);
 
     $this->setAccountId($accountId);
 
-    if (!$listingId = $product->getTmListingId())
+    if (!$listingId = $product->getTmCurrentListingId())
       return false;
 
     if (!$accessToken = $this->auth())
