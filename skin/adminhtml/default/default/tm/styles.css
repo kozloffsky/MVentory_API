@@ -98,6 +98,10 @@
   width: 100%;
 }
 
+.tm-rule-value {
+  min-height: 200px;
+}
+
 .tm-rule-attr > option[value="-1"] {
   display: none;
 }
