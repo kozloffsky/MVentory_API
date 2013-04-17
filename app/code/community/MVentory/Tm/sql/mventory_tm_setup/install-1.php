@@ -18,7 +18,6 @@ $attributeData = array(
 
   //Catalogue setting
   'visible' => false,
-  'used_in_product_listing' => true,
   'is_configurable' => false
 );
 
