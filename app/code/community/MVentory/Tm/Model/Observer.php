@@ -372,7 +372,7 @@ class MVentory_Tm_Model_Observer {
       $result = Mage::getModel('mventory_tm/connector')
                   ->send($product, $matchResult['id'], $accountId);
 
-      if ($result == 'Insufficient balance') {
+      if (trim($result) == 'Insufficient balance') {
         $vars = array('account' => $accounts[$accountId]['name']);
 
         $helper->sendEmailTmpl('mventory_negative_balance', $vars, $website);
