@@ -373,9 +373,22 @@ class MVentory_Tm_Model_Observer {
                   ->send($product, $matchResult['id'], $accountId);
 
       if (trim($result) == 'Insufficient balance') {
-        $vars = array('account' => $accounts[$accountId]['name']);
+        $cacheId = array(
+          $website->getCode(),
+          $accounts[$accountId]['name'],
+          'negative_balance'
+        );
 
-        $helper->sendEmailTmpl('mventory_negative_balance', $vars, $website);
+        $cacheId = implode('_', $cacheId);
+
+        if (!Mage::app()->loadCache($cacheId)) {
+          $vars = array('account' => $accounts[$accountId]['name']);
+
+          $helper->sendEmailTmpl('mventory_negative_balance', $vars, $website);
+
+          Mage::app()
+            ->saveCache(true, $cacheId, array(self::TAG_TM_EMAILS), 3600);
+        }
 
         unset($accounts[$accountId]);
 
