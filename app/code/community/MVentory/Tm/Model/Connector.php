@@ -408,7 +408,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $this->getWebsiteId($product);
 
     $accountId = Mage::helper('mventory_tm/tm')
-                   ->getCurrentAccountId($product->getId(), $this->_website);
+                   ->getCurrentAccountId($product->getId());
 
     $this->setAccountId($accountId);
 
@@ -716,7 +716,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $this->getWebsiteId($product);
 
     $accountId = Mage::helper('mventory_tm/tm')
-                   ->getCurrentAccountId($product->getId(), $this->_website);
+                   ->getCurrentAccountId($product->getId());
 
     $this->setAccountId($accountId);
 

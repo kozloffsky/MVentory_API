@@ -261,13 +261,12 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
    * Return account ID used for listing specified product on TM
    *
    * @param int $productId
-   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
    *
    * @return string Account ID
    */
-  public function getCurrentAccountId ($productId, $website) {
+  public function getCurrentAccountId ($productId) {
     return
-      $this->getAttributesValue($productId, 'tm_current_account_id', $website);
+      $this->getAttributesValue($productId, 'tm_current_account_id');
   }
 
   /**
@@ -275,12 +274,11 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
    *
    * @param int $productId
    * @param string $accountId
-   * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
    */
-  public function setCurrentAccountId ($productId, $accountId, $website) {
+  public function setCurrentAccountId ($productId, $accountId) {
     $attrData = array('tm_current_account_id' => $accountId);
 
-    $this->setAttributesValue($productId, $attrData, $website);
+    $this->setAttributesValue($productId, $attrData);
   }
 
   /**
