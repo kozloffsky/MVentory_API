@@ -20,6 +20,8 @@ class MVentory_Tm_Model_Observer {
     IMAGETYPE_PNG => 'png'
   );
 
+  const TAG_TM_EMAILS = 'tag_tm_emails';
+
   public function removeListingFromTm ($observer) {
     if (Mage::registry('tm_disable_withdrawal'))
       return;
