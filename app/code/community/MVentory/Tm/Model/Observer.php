@@ -129,8 +129,7 @@ class MVentory_Tm_Model_Observer {
       Mage::getResourceSingleton('catalog/product_action')
         ->updateAttributes($productId, $attribute, $storeId);
 
-      Mage::helper('mventory_tm/product')
-        ->setCurrentAccountId($productId, null);
+      Mage::helper('mventory_tm/tm')->setCurrentAccountId($productId, null);
     }
   }
 
