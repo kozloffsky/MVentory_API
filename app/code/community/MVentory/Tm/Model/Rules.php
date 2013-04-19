@@ -64,12 +64,12 @@ class MVentory_Tm_Model_Rules
 
   public function matchCategory ($product) {
     if (($setId = $product->getAttributeSetId()) === false)
-      return false;
+      return (int) $this->_getLostCategoryId($product);
 
     $this->loadBySetId($setId);
 
     if (!$this->getId())
-      return false;
+      return (int) $this->_getLostCategoryId($product);
 
     $_attributes = array();
 
