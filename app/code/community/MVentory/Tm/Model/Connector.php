@@ -451,7 +451,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $json = $this->_loadTmListingDetailsAuth($listingId);
 
     if (!$json)
-      return 'Error';
+      return;
 
     $item = $this->_parseTmListingDetails($json);
 
