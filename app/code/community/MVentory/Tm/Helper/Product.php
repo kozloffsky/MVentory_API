@@ -12,6 +12,10 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     'pickup' => 'tm_pickup'
   );
 
+  protected $_tmFieldsWithoutDefaults = array(
+    'relist' => 'tm_relist'
+  );
+
   /**
    * Returns product's category
    *
@@ -163,6 +167,9 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
         $fields[$name] = isset($account[$name]) ? $account[$name] : null;
     }
 
+    foreach ($this->_tmFieldsWithoutDefaults as $name => $code)
+      $fields[$name] = isset($product[$code]) ? $product[$code] : null;
+
     return $fields;
   }
 
@@ -175,8 +182,10 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
    * @return MVentory_Tm_Helper_Product
    */
   public function setTmFields ($product, $fields) {
+    $tmFields = $this->_tmFields + $this->_tmFieldsWithoutDefaults;
+
     foreach ($fields as $name => $value)
-      $product->setData($this->_tmFields[$name], $value);
+      $product->setData($tmFields[$name], $value);
 
     return $this;
   }
