@@ -123,22 +123,21 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     //TM specific details start here
 
+    $tmAccounts = $helper->getAccounts($website);
+
     $tmAccountId = isset($result['tm_account_id'])
                      ? $result['tm_account_id']
                        : null;
 
-    $tmAccounts = $helper->getAccounts($website);
+    $tmAccount = $tmAccountId && isset($tmAccounts[$tmAccountId])
+                   ? $tmAccounts[$tmAccountId]
+                     : null;
 
-    if (!$tmAccountId)
-      $tmAccountId = key($tmAccounts);
+    $tmOptions = Mage::helper('mventory_tm/product')
+                    ->getTmFields($result, $tmAccount);
 
-    $tmOptions = array(
-      'allow_buy_now' => $tmAccounts[$tmAccountId]['allow_buy_now'],
-      'add_tm_fees' => $tmAccounts[$tmAccountId]['add_fees'],
-      'shipping_type' => $tmAccounts[$tmAccountId]['shipping_type'],
-      'relist' => $tmAccounts[$tmAccountId]['relist'],
-      'preselected_categories' => null
-    );
+    //!!!FIXME: temp. workaround for the app
+    $tmOptions['add_tm_fees'] = $tmOptions['add_fees'];
 
     if ($listingId = Mage::helper('mventory_tm/product')->getListingId($id))
       $tmOptions['tm_listing_id'] = $listingId;
@@ -154,6 +153,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     foreach ($tmAccounts as $id => $account)
       $tmOptions['tm_accounts'][$id] = $account['name'];
 
+    $tmOptions['preselected_categories'] = null;
+
     $product = Mage::getModel('catalog/product')->load($result['product_id']);
 
     $matchResult = Mage::getModel('mventory_tm/rules')
@@ -166,7 +167,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $result['tm_options'] = $tmOptions;
 
     //Add shipping rate if product's shipping type is 'tab_ShipTransport'
-    if (isset($result['mv_shipping_'])) {
+    if (isset($result['mv_shipping_']) && $tmAccount) {
       $do = false;
 
       //Iterate over all attributes...
@@ -184,7 +185,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       if ($do)
         $result['shipping_rate']
           = $helper->getShippingRate(new Varien_Object($result),
-                                     $tmAccounts[$tmAccountId]['name'],
+                                     $tmAccount['name'],
                                      $website);
     }
 
