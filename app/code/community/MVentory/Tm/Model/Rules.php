@@ -15,10 +15,12 @@ class MVentory_Tm_Model_Rules
     $this->_init('mventory_tm/rules');
   }
 
-  public function loadBySetId ($setId) {
-    return $this
-             ->setData('attribute_set_id', $setId)
-             ->load($setId, 'attribute_set_id');
+  public function loadBySetId ($setId, $cleanRules = true) {
+    $this
+      ->setData('attribute_set_id', $setId)
+      ->load($setId, 'attribute_set_id');
+
+    return $cleanRules ? $this->_clean() : $this;
   }
 
   public function getIterator () {
@@ -177,5 +179,53 @@ class MVentory_Tm_Model_Rules
 
     return $helper->getConfig(self::LOST_CATEGORY_PATH,
                               $helper->getWebsite($product));
+  }
+
+  protected function _clean () {
+    $attrs = array();
+
+    $_attrs = Mage::getResourceModel('catalog/product_attribute_collection')
+               ->setAttributeSetFilter($this->getData('attribute_set_id'));
+
+    foreach ($_attrs as $attr) {
+      if (substr($attr->getAttributeCode(), -1) != '_')
+        continue;
+
+      $type = $attr->getFrontendInput();
+
+      if (!($type == 'select' || $type == 'multiselect'))
+        continue;
+
+      $attrs[$attr->getId()] = true;
+    }
+
+    $rules = $this->getData('rules');
+
+    $isChanged = false;
+
+    foreach ($rules as $ruleId => &$rule) {
+      if ($ruleId == self::DEFAULT_RULE_ID)
+        continue;
+
+      foreach ($rule['attrs'] as $n => $attr)
+        if (!isset($attrs[$attr['id']])) {
+          unset($rule['attrs'][$n]);
+
+          $isChanged = true;
+        }
+
+      if (!count($rule['attrs'])) {
+        unset($rules[$ruleId]);
+
+        $isChanged = true;
+      }
+    }
+
+    if ($isChanged)
+      $this
+        ->setData('rules', $rules)
+        ->save();
+
+    return $this;
   }
 }

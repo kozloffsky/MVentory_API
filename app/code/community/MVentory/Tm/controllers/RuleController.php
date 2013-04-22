@@ -31,7 +31,7 @@ class MVentory_Tm_RuleController
     $rule = Mage::helper('core')->jsonDecode($rule);
 
     Mage::getModel('mventory_tm/rules')
-      ->loadBySetId($setId)
+      ->loadBySetId($setId, false)
       ->append($rule)
       ->save();
 
@@ -51,7 +51,7 @@ class MVentory_Tm_RuleController
       return 0;
 
     Mage::getModel('mventory_tm/rules')
-      ->loadBySetId($setId)
+      ->loadBySetId($setId, false)
       ->remove($ruleId)
       ->save();
 
@@ -71,7 +71,7 @@ class MVentory_Tm_RuleController
       return 0;
 
     Mage::getModel('mventory_tm/rules')
-      ->loadBySetId($setId)
+      ->loadBySetId($setId, false)
       ->reorder($ids)
       ->save();
 
