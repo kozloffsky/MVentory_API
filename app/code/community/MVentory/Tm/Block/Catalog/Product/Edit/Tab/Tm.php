@@ -235,7 +235,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     $shippingType = (int) $this->_getAttributeValue($attr, $field);
 
     $options = Mage::getModel('mventory_tm/system_config_source_shippingtype')
-                 ->toOptionArray();
+                 ->toOptionArray(true);
 
     foreach ($options as &$option)
       $option['selected'] = $shippingType == $option['value'];

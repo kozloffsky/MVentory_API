@@ -25,7 +25,10 @@ class MVentory_Tm_Model_System_Config_Source_Shippingtype {
    *
    * @return array
    */
-  public function toOptionArray () {
+  public function toOptionArray ($inclDefault = false) {
+    if (!$inclDefault)
+      unset($this->_options[-1]);
+
     $helper = Mage::helper('mventory_tm');
 
     $options = array();
