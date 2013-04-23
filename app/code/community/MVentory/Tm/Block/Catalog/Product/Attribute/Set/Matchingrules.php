@@ -182,14 +182,17 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
         $values = array();
 
         foreach ($attr['value'] as $valueId)
-          $values[] = $_attr['values'][$valueId];
+          if (isset($_attr['values'][$valueId]))
+            $values[] = $_attr['values'][$valueId];
 
         $attrs[$_attr['label']] = implode(', ', $values);
 
         continue;
       }
 
-      $attrs[$_attr['label']] = $_attr['values'][$attr['value']];
+      $attrs[$_attr['label']] = isset($_attr['values'][$attr['value']])
+                                  ? $_attr['values'][$attr['value']]
+                                    : '';
     }
 
     return array(

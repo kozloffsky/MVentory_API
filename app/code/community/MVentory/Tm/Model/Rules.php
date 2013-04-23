@@ -196,8 +196,20 @@ class MVentory_Tm_Model_Rules
       if (!($type == 'select' || $type == 'multiselect'))
         continue;
 
-      $attrs[$attr->getId()] = true;
+      $allOptions = $attr
+                      ->getSource()
+                      ->getAllOptions();
+
+      $optionIds = array();
+
+      foreach ($allOptions as $options)
+        if ($options['value'])
+          $optionIds[] = $options['value'];
+
+      $attrs[$attr->getId()] = $optionIds;
     }
+
+    unset($_attrs);
 
     $rules = $this->getData('rules');
 
@@ -207,12 +219,21 @@ class MVentory_Tm_Model_Rules
       if ($ruleId == self::DEFAULT_RULE_ID)
         continue;
 
-      foreach ($rule['attrs'] as $n => $attr)
-        if (!isset($attrs[$attr['id']])) {
+      foreach ($rule['attrs'] as $n => $attr) {
+        $id = $attr['id'];
+
+        //Keep attribute in the rule if it exists in the system, has values
+        //and containes one value at least which exists in the attribute 
+        $keepAttr = isset($attrs[$id])
+                    && count($attrs[$id])
+                    && count(array_intersect($attr['value'], $attrs[$id]));
+
+        if (!$keepAttr) {
           unset($rule['attrs'][$n]);
 
           $isChanged = true;
         }
+      }
 
       if (!count($rule['attrs'])) {
         unset($rules[$ruleId]);
