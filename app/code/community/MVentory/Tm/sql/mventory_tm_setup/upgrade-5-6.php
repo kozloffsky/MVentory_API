@@ -9,15 +9,16 @@ $name = 'tm_avoid_withdrawal';
 $attributeData = array(
   //Global settings
   'type' => 'int',
-  'input' => 'hidden',
-  'label' => 'TM Avoid withdraw',
+  'input' => 'select',
+  'label' => 'Avoid withdrawal',
+  'source' => 'mventory_tm/entity_attribute_source_boolean',
   'required' => false,
   'user_defined' => false,
   'default' => -1,
   'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
 
   //Catalogue setting
-  'visible' => false,
+  'visible' => true,
   'is_configurable' => false
 );
 

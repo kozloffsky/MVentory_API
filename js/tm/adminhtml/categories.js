@@ -208,7 +208,7 @@ function update_total_price (price, data) {
 
   var price = parseFloat(price);
 
-  var shipping_type_value = $('#tm_shipping_type').val();
+  var shipping_type_value = $('#tm_tab_shipping_type').val();
 
   if (shipping_type_value == -1)
     shipping_type_value = data['shipping_type'];
@@ -221,7 +221,7 @@ function update_total_price (price, data) {
                   ? parseFloat(data['free_shipping_fees'])
                     : parseFloat(data['fees']);
 
-  var add_fees_value = $('#tm_add_fees').val();
+  var add_fees_value = $('#tm_tab_add_fees').val();
 
   if (add_fees_value == -1)
     add_fees_value = data['add_fees'];

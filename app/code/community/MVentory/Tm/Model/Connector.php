@@ -299,7 +299,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         $buyNow = '<BuyNowPrice>' . $price . '</BuyNowPrice>';
 
       $shippingTypes
-        = Mage::getModel('mventory_tm/system_config_source_shippingtype')
+        = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
             ->toArray();
 
       $shippingType

@@ -143,7 +143,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $tmOptions['tm_listing_id'] = $listingId;
 
     $shippingTypes
-      = Mage::getModel('mventory_tm/system_config_source_shippingtype')
+      = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
         ->toOptionArray();
 
     $tmOptions['shipping_types_list'] = $shippingTypes;

@@ -9,15 +9,16 @@ $name = 'tm_pickup';
 $attributeData = array(
   //Global settings
   'type' => 'int',
-  'input' => 'hidden',
-  'label' => 'TM Pickup',
+  'input' => 'select',
+  'label' => 'Pickup',
+  'source' => 'mventory_tm/entity_attribute_source_pickup',
   'required' => false,
   'user_defined' => false,
   'default' => -1,
   'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
 
   //Catalogue setting
-  'visible' => false,
+  'visible' => true,
   'is_configurable' => false
 );
 

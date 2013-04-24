@@ -12,8 +12,8 @@ $_tmUrl = $this->getTmUrl();
 
 $_allowBuyNow = $this->getAllowBuyNow();
 $_addTmFees = $this->getAddTmFees();
-$_shippingOptions = $this->getShippingOptions();
-$_pickupOptions = $this->getPickupOptions();
+$_shippingType = $this->getShippingType();
+$_pickup = $this->getPickup();
 $_relist = $this->getRelist();
 $_avoidWithdrawal = $this->getAvoidWithdrawal();
 $_accounts = $this->getAccounts();
@@ -23,12 +23,6 @@ $_tmFees = $this->getTmFees();
 $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
 ?>
-
-<div class="hidden">
-  <input type="hidden" value="0" name="product[tm_avoid_withdrawal]" />
-  <input type="hidden" value="0" name="product[tm_allow_buy_now]" />
-  <input type="hidden" value="0" name="product[tm_add_fees]" />
-</div>
 
 <p><?php echo $this->__('Product URL'); ?>: <a target="_blank" href="<?php echo $_productUrl; ?>"><?php echo $_productUrl; ?></a></p>
 
@@ -44,28 +38,28 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
     </label>
 
     <label class="tm-option">
-      <?php echo $this->__('Avoid withdrawal: '); ?>
+      <?php echo $this->getAttributeLabel('tm_avoid_withdrawal'); ?>:
       <select class="select" name="product[tm_avoid_withdrawal]">
-        <?php foreach ($this->_yesNoOptions as $option): ?>
-        <option value="<?php echo $option['value']; ?>" <?php if ($option['value'] == $_avoidWithdrawal) echo 'selected="selected"'; ?>><?php echo $option['label'] ?></option>
+        <?php foreach ($this->getAttributeOptions('tm_avoid_withdrawal') as $value => $label): ?>
+        <option value="<?php echo $value; ?>" <?php if ($value == $_avoidWithdrawal) echo 'selected="selected"'; ?>><?php echo $label; ?></option>
         <?php endforeach; ?>
       </select>
     </label>
 
     <label class="tm-option">
-      <?php echo $this->__('Allow Buy Now: '); ?>
+      <?php echo $this->getAttributeLabel('tm_allow_buy_now'); ?>:
       <select class="select" name="product[tm_allow_buy_now]">
-        <?php foreach ($this->_yesNoOptions as $option): ?>
-        <option value="<?php echo $option['value']; ?>" <?php if ($option['value'] == $_allowBuyNow) echo 'selected="selected"'; ?>><?php echo $option['label'] ?></option>
+        <?php foreach ($this->getAttributeOptions('tm_allow_buy_now') as $value => $label): ?>
+        <option value="<?php echo $value; ?>" <?php if ($value == $_allowBuyNow) echo 'selected="selected"'; ?>><?php echo $label; ?></option>
         <?php endforeach; ?>
       </select>
     </label>
 
     <label class="tm-option">
-      <?php echo $this->__('Add TM fees: '); ?>
-      <select id="tm_add_fees" class="select" name="product[tm_add_fees]">
-        <?php foreach ($this->_yesNoOptions as $option): ?>
-        <option value="<?php echo $option['value']; ?>" <?php if ($option['value'] == $_addTmFees) echo 'selected="selected"'; ?>><?php echo $option['label'] ?></option>
+      <?php echo $this->getAttributeLabel('tm_add_fees'); ?>:
+      <select id="tm_tab_add_fees" class="select" name="product[tm_add_fees]">
+        <?php foreach ($this->getAttributeOptions('tm_add_fees') as $value => $label): ?>
+        <option value="<?php echo $value; ?>" <?php if ($value == $_addTmFees) echo 'selected="selected"'; ?>><?php echo $label; ?></option>
         <?php endforeach; ?>
       </select>
     </label>
@@ -84,19 +78,19 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
     </label>
 
     <label class="tm-option">
-      <?php echo $this->__('Use free shipping: '); ?>
-      <select id="tm_shipping_type" class="select" name="product[tm_shipping_type]">
-        <?php foreach ($_shippingOptions as $opt): ?>
-        <option value="<?php echo $opt['value']; ?>" <?php if ($opt['selected']) echo 'selected="selected"'; ?>><?php echo $opt['label'] ?></option>
+      <?php echo $this->getAttributeLabel('tm_shipping_type'); ?>:
+      <select id="tm_tab_shipping_type" class="select" name="product[tm_shipping_type]">
+        <?php foreach ($this->getAttributeOptions('tm_shipping_type') as $value => $label): ?>
+        <option value="<?php echo $value; ?>" <?php if ($value == $_shippingType) echo 'selected="selected"'; ?>><?php echo $label; ?></option>
         <?php endforeach; ?>
       </select>
     </label>
 
     <label class="tm-option">
-      <?php echo $this->__('Pickup: '); ?>
+      <?php echo $this->getAttributeLabel('tm_pickup'); ?>:
       <select class="select" name="product[tm_pickup]">
-        <?php foreach ($_pickupOptions as $opt): ?>
-        <option value="<?php echo $opt['value']; ?>" <?php if ($opt['selected']) echo 'selected="selected"'; ?>><?php echo $opt['label'] ?></option>
+        <?php foreach ($this->getAttributeOptions('tm_pickup') as $value => $label): ?>
+        <option value="<?php echo $value; ?>" <?php if ($value == $_pickup) echo 'selected="selected"'; ?>><?php echo $label; ?></option>
         <?php endforeach; ?>
       </select>
     </label>
@@ -277,7 +271,7 @@ jQuery(document).ready(function ($) {
     tm_update_total_price(tm_data['product']['price'], account);
   });
 
-  $('#tm_add_fees, #tm_shipping_type').on('change', function () {
+  $('#tm_tab_add_fees, #tm_tab_shipping_type').on('change', function () {
     tm_update_total_price(tm_data['product']['price'],
                           tm_data['accounts'][$('#tm_account').val()]);
   })

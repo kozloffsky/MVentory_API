@@ -20,8 +20,6 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   private $_accounts = null;
   private $_accountId = null;
 
-  protected $_yesNoOptions = null;
-
   public function __construct() {
     parent::__construct();
 
@@ -58,12 +56,6 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
       $this->_calculateShippingRates();
       $this->_calculateTmFees();
     }
-
-    $this->_yesNoOptions = array(
-      array('value' => -1, 'label' => $tmHelper->__('Default')),
-      array('value' => 1, 'label' => $tmHelper->__('Yes')),
-      array('value' => 0, 'label' => $tmHelper->__('No')),
-    );
 
     $this->setTemplate('catalog/product/tab/tm.phtml');
   }
@@ -231,34 +223,18 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return (int) $this->_getAttributeValue($attr, $field);
   }
 
-  public function getShippingOptions () {
+  public function getShippingType () {
     $attr = 'tm_shipping_type';
     $field = 'shipping_type';
 
-    $shippingType = (int) $this->_getAttributeValue($attr, $field);
-
-    $options = Mage::getModel('mventory_tm/system_config_source_shippingtype')
-                 ->toOptionArray(true);
-
-    foreach ($options as &$option)
-      $option['selected'] = $shippingType == $option['value'];
-
-    return $options;
+    return (int) $this->_getAttributeValue($attr, $field);
   }
 
-  public function getPickupOptions () {
+  public function getPickup () {
     $attr = 'tm_pickup';
     $field = 'pickup';
 
-    $shippingType = (int) $this->_getAttributeValue($attr, $field);
-
-    $options = Mage::getModel('mventory_tm/system_config_source_pickup')
-                 ->toOptionArray(true);
-
-    foreach ($options as &$option)
-      $option['selected'] = $shippingType == $option['value'];
-
-    return $options;
+    return (int) $this->_getAttributeValue($attr, $field);
   }
 
   public function getAccounts () {
@@ -301,9 +277,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $account = $this->_accounts[$this->_accountId];
 
-    $shippingType = $this
-                      ->getProduct()
-                      ->getTmShippingType();
+    $shippingType = $this->getShippingType();
 
     if ($shippingType == -1 || $shippingType == null)
       $shippingType = $account['shipping_type'];
@@ -330,9 +304,10 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     if (!$addTmfees)
       return 0;
 
-    $shippingType = $this
-                      ->getProduct()
-                      ->getTmShippingType();
+    $shippingType = $this->getShippingType();
+
+    if ($shippingType == -1 || $shippingType == null)
+      $shippingType = $account['shipping_type'];
 
     return $shippingType == MVentory_Tm_Model_Connector::FREE
              ? $account['free_shipping_fees']
