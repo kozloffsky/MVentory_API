@@ -303,16 +303,6 @@
     </acl>
 
     <events>
-      <adminhtml_catalog_category_tabs>
-        <observers>
-          <mventory_tm_add_category_tab>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>addCategoryTab</method>
-          </mventory_tm_add_category_tab>
-        </observers>
-      </adminhtml_catalog_category_tabs>
-
       <core_block_abstract_prepare_layout_after>
         <observers>
           <tm-add-tab-to-product>

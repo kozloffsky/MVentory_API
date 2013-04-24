@@ -2,11 +2,8 @@
 
 $_product = $this->getProduct();
 
-$_category = $this->getCategory();
 $_categories = $this->getCategories();
 $_preselectedCategories = $this->getPreselectedCategories();
-
-$_multiple = count($_preselectedCategories) > 1;
 
 $_cols = $this->getColsNumber() - 1;
 
@@ -168,11 +165,11 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
       </tr>
       <?php foreach ($_preselectedCategories as $id): ?>
         <?php if (isset($_categories[$id])): ?>
-          <?php $_checked = $_category == $id || !$_multiple; ?>
+          <?php $_checked = $this->getCategory() == $id; ?>
 
         <tr class="pointer">
           <td class="checkbox">
-            <input type="radio" class="category-check" name="product[tm_category]"  value="<?php echo $id; ?>" <?php echo $_checked ? 'checked="checked"' : '' ?> />
+            <input type="radio" class="category-check" name="tm_category"  value="<?php echo $id; ?>" <?php echo $_checked ? 'checked="checked"' : '' ?> />
           </td>
 
           <?php for ($n = 0; $n <= $_cols; ++$n): ?>

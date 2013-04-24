@@ -15,6 +15,10 @@ class MVentory_Tm_Adminhtml_IndexController
               ? $helper->getTmFields($params['product'])
                 : array();
 
+    $data['category'] = isset($params['tm_category'])
+                          ? $params['tm_category']
+                            : null;
+
     $session = Mage::getSingleton('adminhtml/session');
 
     //Store TM params in session to use them on mVentory tab
@@ -205,6 +209,10 @@ class MVentory_Tm_Adminhtml_IndexController
     $data = isset($params['product']) && is_array($params['product'])
               ? $helper->getTmFields($params['product'])
                 : array();
+
+    $data['category'] = isset($params['tm_category'])
+                          ? $params['tm_category']
+                            : null;
 
     $product = Mage::getModel('catalog/product')->load($params['id']);
 

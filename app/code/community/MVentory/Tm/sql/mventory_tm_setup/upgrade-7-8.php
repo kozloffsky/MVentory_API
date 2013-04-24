@@ -48,21 +48,6 @@ $attributesData = array(
     //Catalogue setting
     'visible' => false,
     'is_configurable' => false
-  ),
-
-  'tm_category' => array(
-    //Global settings
-    'type' => 'int',
-    'input' => 'hidden',
-    'label' => 'TM Category',
-    'required' => false,
-    'user_defined' => false,
-    'default' => -1,
-    'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
-
-    //Catalogue setting
-    'visible' => false,
-    'is_configurable' => false
   )
 );
 

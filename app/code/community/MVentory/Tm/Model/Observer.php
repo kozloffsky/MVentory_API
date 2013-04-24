@@ -560,21 +560,6 @@ class MVentory_Tm_Model_Observer {
       ->addItem('categorymatch', compact('label', 'url'));
   }
 
-  public function addCategoryTab ($observer) {
-    $tabs = $observer->getTabs();
-
-    $label = Mage::helper('mventory_tm')->__('TM Categories');
-
-    $content = $tabs
-                 ->getLayout()
-                 ->createBlock('mventory_tm/catalog_category_tab_tm',
-                               'category.tm')
-                 ->toHtml();
-
-    $tabs
-      ->addTab('tm', compact('label', 'content'));
-  }
-
   public function addTabToProduct ($observer) {
     $block =  $observer->getEvent()->getBlock();
 
@@ -952,12 +937,5 @@ class MVentory_Tm_Model_Observer {
 
     if ($result)
       $product->setCategoryIds((string) $result);
-
-    $result = Mage::getModel('mventory_tm/rules')->matchTmCategory($product);
-
-    if ($result)
-      $product
-        ->setData('tm_match_id', $result['id'])
-        ->setData('tm_match_name', $result['category']);
   }
 }

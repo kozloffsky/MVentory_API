@@ -86,8 +86,22 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     $matchResult = Mage::getModel('mventory_tm/rules')
                      ->matchTmCategory($this->getProduct());
 
-    if (isset($matchResult['id']) && $matchResult['id'] > 0)
+    if (isset($matchResult['id']) && $matchResult['id'] > 0) {
       $this->_preselectedCategories[] = $matchResult['id'];
+      $this->setCategory($this->_preselectedCategories[0]);
+    }
+
+    if (isset($this->_session['category'])
+        && ($id = $this->_session['category'])
+        && !in_array($id, $this->_preselectedCategories)) {
+
+      $categories = $this->getCategories();
+
+      if (isset($categories[$id])) {
+        $this->_preselectedCategories[] = $id;
+        $this->setCategory($id);
+      }
+    }
 
     return $this->_preselectedCategories;
   }
@@ -125,10 +139,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getSubmitButton () {
-    $preselectedCategories = $this->getPreselectedCategories();
-
-    $enabled = count($preselectedCategories) == 1
-               || in_array($this->getCategory(), $preselectedCategories);
+    $enabled = count($this->getPreselectedCategories()) > 0;
 
     $label = $this->__('Submit');
     $class = $enabled ? '' : 'disabled';
@@ -196,14 +207,6 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     }
 
     return compact('existing', 'missing', 'optional');
-  }
-
-  public function getCategory () {
-    return ($category = $this->_getAttributeValue('tm_category', 'category'))
-           && $category > 0
-             ? $category
-               : $this->_getAttributeValue('tm_match_id');
-    
   }
 
   public function getAllowBuyNow () {

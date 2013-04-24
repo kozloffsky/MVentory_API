@@ -3,7 +3,6 @@
 class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
   protected $_tmFields = array(
-    'category' => 'tm_category',
     'account_id' => 'tm_account_id',
     'shipping_type' => 'tm_shipping_type',
     'allow_buy_now' => 'tm_allow_buy_now',

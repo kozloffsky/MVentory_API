@@ -19,10 +19,6 @@
     </reference>
   </tm>
 
-  <adminhtml_catalog_category_edit>
-    <update handle="tm" />
-  </adminhtml_catalog_category_edit>
-
   <adminhtml_catalog_product_edit>
     <update handle="tm" />
   </adminhtml_catalog_product_edit>
