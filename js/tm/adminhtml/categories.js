@@ -147,7 +147,7 @@ function tm_categories_for_product (url_templates) {
 
     $tr
       .find('> .checkbox > .category-check')
-      .prop('name', 'product[tm_category]')
+      .prop('name', 'tm_category')
       .prop('type', 'radio');
 
     apply_table_handlers($tr, row_click_handler);
@@ -198,60 +198,6 @@ function tm_categories_for_product (url_templates) {
 
   var $submit = $('#tm_submit_button').on('click', submit_handler);
   var $update = $('#tm_update_button').on('click', update_handler);
-
-  apply_table_handlers($selected_categories, row_click_handler);
-  categories_table(url_templates, on_add, on_remove);
-}
-
-function tm_categories_for_category (url_templates) {
-  var $selected_categories = $('#tm_selected_categories');
-
-  function collectIds () {
-    var $ids = ''
-
-    $selected_categories
-      .find('> tbody > tr > .checkbox > .category-check')
-      .each(function () {
-        $ids += ',' + $(this).val();
-      });
-
-    $('#group_4tm_assigned_categories')
-      .val($ids.substring(1));
-  }
-
-  function on_add ($tr) {
-    $tr.on('click', row_click_handler);
-
-    collectIds();
-  }
-
-  function on_remove () {
-    collectIds();
-  }
-
-  //Handlers
-
-  function row_click_handler () {
-    var $this = $(this);
-
-    var id = $this
-               .find('> .checkbox > .category-check')
-               .val();
-
-    $('#tm_categories')
-        .find('> tbody > tr > .checkbox > .category-check[value="' + id + '"]')
-        .prop('checked', false)
-        .parents('tr')
-        .removeClass('selected-row');
-
-    $this
-      .next('.category-attrs')
-        .remove()
-      .end()
-      .remove();
-
-    collectIds();
-  }
 
   apply_table_handlers($selected_categories, row_click_handler);
   categories_table(url_templates, on_add, on_remove);
@@ -318,7 +264,6 @@ function update_total_price (price, data) {
 
 //Export functions to global namespace
 window.tm_categories_for_product = tm_categories_for_product;
-window.tm_categories_for_category = tm_categories_for_category;
 window.tm_update_total_price = update_total_price;
 window.tm_apply_table_handlers = apply_table_handlers;
 
