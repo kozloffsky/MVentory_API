@@ -183,8 +183,9 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
   public function setTmFields ($product, $fields) {
     $tmFields = $this->_tmFields + $this->_tmFieldsWithoutDefaults;
 
-    foreach ($fields as $name => $value)
-      $product->setData($tmFields[$name], $value);
+    foreach ($tmFields as $name => $code)
+      if (isset($fields[$name]))
+        $product->setData($code, $fields[$name]);
 
     return $this;
   }
