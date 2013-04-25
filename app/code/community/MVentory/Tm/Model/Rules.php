@@ -156,6 +156,9 @@ class MVentory_Tm_Model_Rules
       }
     }
 
+    if ($categoryId == -1)
+      return false;
+
     if ($categoryId == null && isset($rules[self::DEFAULT_RULE_ID]))
       $categoryId = (int) $rules[self::DEFAULT_RULE_ID]['tm_category'];
 

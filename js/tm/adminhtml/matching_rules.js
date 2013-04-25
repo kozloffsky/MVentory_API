@@ -233,6 +233,12 @@ jQuery(document).ready(function ($) {
     return false;
   });
 
+  $('#tm-ignore-button').on('click', function () {
+    new_rule.tm_category = -1;
+    $tm_category.text(TM_DONT_LIST_ON_TM_TITLE);
+    update_save_rule_button_state();
+  });
+
   function clone_attr () {
     return $new_rule
              .find('> .tm-matching-new-attr')
@@ -339,7 +345,8 @@ jQuery(document).ready(function ($) {
   }
 
   function update_save_rule_button_state () {
-    if (/^\d+$/.test(new_rule.tm_category) || new_rule.category)
+    if (new_rule.tm_category > 0 || new_rule.tm_category == -1
+        || new_rule.category)
       $save_rule_button.removeClass('disabled');
     else
       $save_rule_button.addClass('disabled');

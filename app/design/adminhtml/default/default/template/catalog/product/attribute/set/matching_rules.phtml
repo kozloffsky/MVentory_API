@@ -117,8 +117,10 @@ $_rules = $this->_getRules();
       </div>
 
       <div class="tm-rule-category">
-        <?php echo $this->getChildHtml('categories_button'); ?>
         <span id="tm-category"></span>
+        <br />
+        <?php echo $this->getChildHtml('categories_button'); ?>
+        <?php echo $this->getChildHtml('ignore_button'); ?>
       </div>
     </div>
   </div>
@@ -135,7 +137,9 @@ $_rules = $this->_getRules();
 //<![CDATA[
 
 TM_DEFAULT_RULE_ID = '<?php echo MVentory_Tm_Model_Rules::DEFAULT_RULE_ID; ?>';
+
 TM_DEFAULT_RULE_TITLE = '<?php echo $this->__('Default rule'); ?>';
+TM_DONT_LIST_ON_TM_TITLE = "<?php echo $this->__('Don\'t list on TM'); ?>";
 
 tm_attrs = <?php echo $this->_getAttributesJson(); ?>;
 tm_urls = <?php echo $this->_getUrlsJson(); ?>;

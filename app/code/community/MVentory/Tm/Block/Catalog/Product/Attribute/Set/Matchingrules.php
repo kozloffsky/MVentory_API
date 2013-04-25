@@ -92,6 +92,18 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
                 ->setData($data);
 
     $this->setChild('categories_button', $button);
+
+    $data = array(
+      'id' => 'tm-ignore-button',
+      'label' => Mage::helper('mventory_tm')->__('Don\'t list on TM')
+    );
+
+    $button = $this
+                ->getLayout()
+                ->createBlock('adminhtml/widget_button')
+                ->setData($data);
+
+    $this->setChild('ignore_button', $button);
   }
 
   protected function _getAttributes () {
@@ -165,8 +177,9 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
     else
       $category = $this->_categories[$category]['name'];
 
-
-    if ($tmCategory == null)
+    if ($tmCategory == -1)
+      $tmCategory = $this->__('Don\'t list on TM');
+    else if ($tmCategory == null)
       $tmCategory = $this->__('TM category not selected');
     else if (!isset($this->_tmCategories[$tmCategory]))
       $tmCategory = $this->__('TM category doesn\'t exist anymore');
