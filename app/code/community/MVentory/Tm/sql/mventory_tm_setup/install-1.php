@@ -18,7 +18,8 @@ $attributeData = array(
 
   //Catalogue setting
   'visible' => false,
-  'is_configurable' => false
+  'is_configurable' => false,
+  'visible_on_front' => true
 );
 
 $this
