@@ -8,11 +8,11 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     'allow_buy_now' => 'tm_allow_buy_now',
     'add_fees' => 'tm_add_fees',
     'avoid_withdrawal' => 'tm_avoid_withdrawal',
-    'pickup' => 'tm_pickup'
   );
 
   protected $_tmFieldsWithoutDefaults = array(
-    'relist' => 'tm_relist'
+    'relist' => 'tm_relist',
+    'pickup' => 'tm_pickup'
   );
 
   /**

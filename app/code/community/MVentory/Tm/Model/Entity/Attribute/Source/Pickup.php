@@ -24,11 +24,6 @@ class MVentory_Tm_Model_Entity_Attribute_Source_Pickup
         ),
 
         array(
-          'label' => $helper->__('Buyer must pickup'),
-          'value' => MVentory_Tm_Model_Tm::PICKUP_DEMAND,
-        ),
-
-        array(
           'label' => $helper->__('No pickups'),
           'value' => MVentory_Tm_Model_Tm::PICKUP_FORBID,
         ),

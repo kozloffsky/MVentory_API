@@ -105,25 +105,17 @@
               <sort_order>7</sort_order>
             </add_fees>
 
-            <pickup translate="label">
-              <label>Pickup</label>
-              <comment><![CDATA[
-                <ul style="list-style-type: disc; padding-left: 30px">
-                  <!--<li><i>None</i> - The listing allows pick up, but does not require it</li>-->
-                  <li><i>Buyer can pickup</i> - The buyer can pickup if they so choose</li>
-                  <li><i>Buyer must pickup</i> - The buyer must pickup the item</li>
-                  <li><i>No pickups</i> - The buyer cannot pickup the item (delivery only)</li>
-                </ul>
-              ]]></comment>
-              <frontend_type>select</frontend_type>
-              <source_model>mventory_tm/entity_attribute_source_pickup</source_model>
+            <allow_pickup_for translate="label">
+              <label>Allow pickup for</label>
+              <frontend_type>multiselect</frontend_type>
+              <source_model>mventory_tm/system_config_source_allowedshippingtypes</source_model>
 
               <show_in_default>0</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
               <sort_order>8</sort_order>
-            </pickup>
+            </allow_pickup_for>
 
             <allowed_shipping_types translate="label">
               <label>Allowed shipping types</label>

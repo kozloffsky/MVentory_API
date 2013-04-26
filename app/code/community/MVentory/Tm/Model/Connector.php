@@ -157,7 +157,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $tmData = $_tmData;
 
       foreach ($tmData as $key => $value)
-        if ($value == -1)
+        if ($value == -1 && isset($this->_accountData[$key]))
           $tmData[$key] = $this->_accountData[$key];
     }
 
@@ -307,13 +307,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       unset($shippingTypes);
 
-      $pickup = isset($tmData['pickup'])
-                        ? $tmData['pickup']
-                          : MVentory_Tm_Model_Tm::PICKUP_ALLOW;
-
-      $pickup = isset($this->_pickupValues[$pickup])
-                  ? $this->_pickupValues[$pickup]
-                    : $this->_pickupValues[MVentory_Tm_Model_Tm::PICKUP_ALLOW];
+      $pickup = $this->_getPickup($product, $tmData, $this->_accountData);
+      $pickup = $this->_pickupValues[$pickup];
 
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
@@ -628,9 +623,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $item['Duration'] = 7;
 
       //Set pickup option
-      if (!isset($parameters['Pickup']) && isset($formData['pickup'])
-          && $formData['pickup'] > 0)
-        $parameters['Pickup'] = (int) $formData['pickup'];
+      if (!isset($parameters['Pickup']) && isset($formData['pickup']))
+        $parameters['Pickup']
+          = $this->_getPickup($product, $formData, $this->_accountData);
 
       //set Payment methods
       //  None = 0
@@ -987,6 +982,32 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   private function _prepareTimestamp ($data) {
     return substr($data, 6, -2) / 1000;
+  }
+
+  protected function _getPickup ($product, $data, $account) {
+    if (isset($data['pickup'])) {
+      $pickup = (int) $data['pickup'];
+
+      if ($pickup == MVentory_Tm_Model_Tm::PICKUP_ALLOW
+          || $pickup == MVentory_Tm_Model_Tm::PICKUP_DEMAND
+          || $pickup == MVentory_Tm_Model_Tm::PICKUP_FORBID)
+        return $pickup;
+    }
+
+    if (!isset($account['allow_pickup_for']))
+      return MVentory_Tm_Model_Tm::PICKUP_FORBID;
+
+    $allowPickupFor = explode(',', $account['allow_pickup_for']);
+
+    if (!count($allowPickupFor))
+      return MVentory_Tm_Model_Tm::PICKUP_FORBID;
+
+    $shippingType = Mage::helper('mventory_tm/tm')
+                      ->getShippingType($product, true);
+
+    return in_array($shippingType, $allowPickupFor)
+             ? MVentory_Tm_Model_Tm::PICKUP_ALLOW
+               : MVentory_Tm_Model_Tm::PICKUP_FORBID;
   }
 
   public function getTmCategories () {

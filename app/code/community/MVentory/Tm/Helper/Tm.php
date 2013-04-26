@@ -288,10 +288,13 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
    *
    * @return mixin Value of the attribute
    */
-  public function getShippingType ($product) {
-    $attributes = $product->getAttributes();
-
+  public function getShippingType ($product, $rawValue = false) {
     $attributeCode = 'mv_shipping_';
+
+    if ($rawValue)
+      return $product->getData($attributeCode);
+
+    $attributes = $product->getAttributes();
 
     return isset($attributes[$attributeCode])
              ? $attributes[$attributeCode]->getFrontend()->getValue($product)
