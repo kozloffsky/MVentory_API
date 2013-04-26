@@ -11,7 +11,11 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
   protected function _construct () {
     $this->setTemplate('catalog/product/attribute/set/matching_rules.phtml');
 
-    $this->_attrs['-1'] = array('label' => $this->__('Select an attribute...'));
+    $this->_attrs['-1'] = array(
+      'label' => $this->__('Select an attribute...'),
+      'used' => false,
+      'used_values' => array()
+    );
 
     $attrs = Mage::getResourceModel('catalog/product_attribute_collection')
                ->setAttributeSetFilter($this->_getSetId());
@@ -27,7 +31,11 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
 
       $id = $attr->getId();
 
-      $this->_attrs[$id] = array('label' => $attr->getFrontendLabel());
+      $this->_attrs[$id] = array(
+        'label' => $attr->getFrontendLabel(),
+        'used' => false,
+        'used_values' => array()
+      );
     }
 
     unset($attrs);
@@ -106,12 +114,8 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
     $this->setChild('ignore_button', $button);
   }
 
-  protected function _getAttributes () {
-    return $this->_attrs;
-  }
-
   protected function _getAttributesJson () {
-    return Mage::helper('core')->jsonEncode($this->_getAttributes());
+    return Mage::helper('core')->jsonEncode($this->_attrs);
   }
 
   protected function _getRules () {
@@ -189,14 +193,19 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
     $attrs = array();
 
     foreach ($data['attrs'] as $attr) {
-      $_attr = $this->_attrs[$attr['id']];
+      $_attr = &$this->_attrs[$attr['id']];
+
+      $_attr['used'] = true;
 
       if (is_array($attr['value'])) {
         $values = array();
 
         foreach ($attr['value'] as $valueId)
-          if (isset($_attr['values'][$valueId]))
+          if (isset($_attr['values'][$valueId])) {
             $values[] = $_attr['values'][$valueId];
+
+            $_attr['used_values'][$valueId] = true;
+          }
 
         $attrs[$_attr['label']] = implode(', ', $values);
 

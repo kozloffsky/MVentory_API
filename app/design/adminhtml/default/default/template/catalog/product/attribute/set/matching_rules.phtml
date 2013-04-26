@@ -1,6 +1,5 @@
 <?php
 
-$_attrs = $this->_getAttributes();
 $_rules = $this->_getRules();
 
 ?>
@@ -91,8 +90,8 @@ $_rules = $this->_getRules();
 
         <div>
           <select class="tm-rule-attr">
-            <?php foreach ($_attrs as $id => $attr): ?>
-            <option value="<?php echo $id; ?>"><?php echo $attr['label']; ?></option>
+            <?php foreach ($this->_attrs as $id => $attr): ?>
+            <option <?php if ($attr['used']) echo 'class="used-attr"'; ?> value="<?php echo $id; ?>"><?php echo $attr['label']; ?></option>
             <?php endforeach; ?>
           </select>
         </div>

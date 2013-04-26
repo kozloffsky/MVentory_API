@@ -102,8 +102,16 @@
   min-height: 200px;
 }
 
+.tm-rule-attr > .used-attr {
+  color: blue;
+}
+
 .tm-rule-attr > option[value="-1"] {
   display: none;
+}
+
+.tm-rule-value > .used-value {
+  color: lightgray;
 }
 
 #tm-matching-new-rule-buttons {

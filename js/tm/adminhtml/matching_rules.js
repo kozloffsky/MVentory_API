@@ -48,7 +48,11 @@ jQuery(document).ready(function ($) {
                       .empty();
 
       for (var i in attr.values)
-        $values.append($('<option>', { value: i, text: attr.values[i] }))
+        $values.append($('<option>', {
+          value: i,
+          text: attr.values[i],
+          class: attr.used_values[i] ? 'used-value' : ''
+        }));
 
       $values.change();
     });
@@ -85,6 +89,20 @@ jQuery(document).ready(function ($) {
                       : TM_DEFAULT_RULE_ID;
 
     submit_rule(new_rule);
+
+    for (var i = 0; i < new_rule.attrs.length; i++) {
+      var attr = new_rule.attrs[i];
+
+      $new_rule
+        .find('> .tm-matching-new-attr')
+        .last()
+        .find('> div > .tm-rule-attr > [value="' + attr.id + '"]')
+        .addClass('used-attr');
+
+      $.map($.makeArray(attr.value), function (value, index) {
+        tm_attrs[attr.id]['used_values'][value * 1] = true;
+      });
+    }
 
     var $default_rule = $('#' + TM_DEFAULT_RULE_ID);
 
