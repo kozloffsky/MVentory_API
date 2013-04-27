@@ -21,28 +21,10 @@ class MVentory_Tm_Adminhtml_TmController
    * @return null
    */
   public function categoriesAction () {
-    $categoryId = (int) $this->getRequest()->getParam('category_id');
-
-    if (!$categoryId) { 
-      $productId = (int) $this->getRequest()->getParam('product_id');
-
-      //Get category ID from the product if product ID was sent
-      //instead category ID 
-      if ($productId) {
-        $product = Mage::getModel('catalog/product')->load($productId);
-
-        $categories = $product->getCategoryIds();
-
-        if (count($categories))
-          $categoryId = $categories[0];
-      }
-    }
-
-    $category = $categoryId
-                  ? Mage::getModel('catalog/category')->load($categoryId)
-                    : null;
-
     $request = $this->getRequest();
+
+    if (!is_array($ids = $request->getParam('selected_categories')))
+      $ids = array();
 
     if (!$type = $request->getParam('type'))
       $type = MVentory_Tm_Block_Categories::TYPE_CHECKBOX;
@@ -50,8 +32,8 @@ class MVentory_Tm_Adminhtml_TmController
     $body = $this
               ->getLayout()
               ->createBlock('mventory_tm/categories')
-              //Set category in loaded block for futher using
-              ->setCategory($category)
+              //Set selected categories
+              ->setSelectedCategories($ids)
               ->setInputType($type)
               ->toHtml();
 

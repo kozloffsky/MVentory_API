@@ -8,6 +8,8 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
   protected $_categories = null;
   protected $_tmCategories = null;
 
+  protected $_usedTmCategories = array();
+
   protected function _construct () {
     $this->setTemplate('catalog/product/attribute/set/matching_rules.phtml');
 
@@ -149,6 +151,11 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
                                                     'reorder'));
   }
 
+  protected function _getUsedTmCategories () {
+    return Mage::helper('core')
+             ->jsonEncode(array_unique($this->_usedTmCategories, SORT_NUMERIC));
+  }
+
   /**
    * Retrieve current attribute set
    *
@@ -187,8 +194,11 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
       $tmCategory = $this->__('TM category not selected');
     else if (!isset($this->_tmCategories[$tmCategory]))
       $tmCategory = $this->__('TM category doesn\'t exist anymore');
-    else
+    else {
+      $this->_usedTmCategories[] = (int) $tmCategory;
+
       $tmCategory = implode(' - ', $this->_tmCategories[$tmCategory]['name']);
+    }
 
     $attrs = array();
 

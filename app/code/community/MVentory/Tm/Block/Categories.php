@@ -32,30 +32,6 @@ class MVentory_Tm_Block_Categories extends Mage_Core_Block_Template {
   }
 
   /**
-   * Retrieve list of TM categories IDs from the category
-   *
-   * @return array
-   */
-  public function getSelectedCategories () {
-    if ($this->_selectedCategories)
-      return $this->_selectedCategories;
-
-    $this->_selectedCategories = array();
-
-    //Get Magento category. It was set in controller
-    $category = $this->getCategory();
-
-    if ($category) {
-      $categories = $category->getTmAssignedCategories();
-
-      if ($categories && is_string($categories))
-        $this->_selectedCategories = explode(',', $categories);
-    }
-
-    return $this->_selectedCategories;
-  }
-
-  /**
    * Return TM URL
    *
    * @return string

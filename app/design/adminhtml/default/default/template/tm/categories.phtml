@@ -58,7 +58,7 @@ $_cols = $this->getColsNumber() - 1;
     ?>
     <tr class="<?php echo $classes ?>">
       <td class="<?php echo $_type; ?>">
-        <input type="<?php echo $_type; ?>" class="category-check" <?php if ($_type == MVentory_Tm_Block_Categories::TYPE_RADIO) echo 'name="tm_category"'; ?>value="<?php echo $id; ?>" <?php echo $isSelected ? 'checked="checked"' : ''; ?> />
+        <input type="<?php echo $_type; ?>" class="category-check" <?php if ($_type == MVentory_Tm_Block_Categories::TYPE_RADIO) echo 'name="tm_category"'; ?>value="<?php echo $id; ?>" />
       </td>
 
       <?php for ($n = 0; $n <= $_cols; ++$n): ?>

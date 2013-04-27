@@ -154,6 +154,13 @@ jQuery(document).ready(function ($) {
         $rules.append($rule);
     }
 
+    if (new_rule.tm_category > 0)
+      $('#tm_categories')
+        .find('> tbody > tr > .radio > .category-check')
+        .filter('[value="' + new_rule.tm_category + '"]')
+        .parents('tr')
+        .addClass('selected-row');
+
     rules.push(new_rule);
 
     clear_attrs();
@@ -174,6 +181,7 @@ jQuery(document).ready(function ($) {
 
     $.ajax({
       url: tm_urls['categories'],
+      data: { selected_categories: tm_used_categories },
       dataType: 'html',
       success: function (data, text_status, xhr) {
         $('#tm_categories_wrapper').html(data);
