@@ -72,26 +72,64 @@ class MVentory_Tm_Model_Product_Attribute_Api
   public function addOptionAndReturnInfo ($attribute, $value) {
     $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
 
-    $data = array(
-      'label' => array(
-        array(
-          'store_id' => array(0, $storeId),
-          'value' => $value
-        )
-      ),
+    $attributeId = $this
+                     ->_getAttribute($attribute)
+                     ->getId();
 
-      'order' => 0
-    );
+    $options = Mage::getResourceModel('eav/entity_attribute_option_collection')
+                 ->setAttributeFilter($attributeId)
+                 ->setStoreFilter($storeId);
 
-    try {
-      $this->addOption($attribute, $data);
-    } catch (Exception $e) {}
+    $_value = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '', $value));
 
-    $attributeRet = $this->info($attribute);
+    $hasOption = false;
 
-    $attributeRet['options'] = $this->optionsPerStoreView($attribute, $storeId);
+    foreach ($options as $option) {
+      $def = $option->getDefaultValue();
+      $val = $option->getValue();
 
-    return $attributeRet;
+      if ($_value == strtolower(preg_replace('/[^a-zA-Z0-9]+/', '', $def))) {
+        if ($val == '~')
+          $this->_removeOptionValue($option->getId(), $storeId);
+
+        $hasOption = true;
+
+        break;
+      }
+
+      if ($def != $val
+          && $val != '~'
+          && $_value == strtolower(preg_replace('/[^a-zA-Z0-9]+/', '', $val))) {
+
+        $hasOption = true;
+
+        break;
+      }
+    }
+
+    if (!$hasOption) {
+      try {
+        $data = array(
+          'label' => array(
+            array(
+              'store_id' => 0,
+              'value' => $value
+            )
+          ),
+
+          'order' => 0,
+          'is_default' => false
+        );
+
+        $this->addOption($attributeId, $data);
+      } catch (Exception $e) {}
+    }
+
+    $info = $this->info($attributeId);
+
+    $info['options'] = $this->optionsPerStoreView($attributeId, $storeId);
+
+    return $info;
   }
 
   private function getOptionLabels($storeId, $attributeId)
@@ -153,5 +191,20 @@ class MVentory_Tm_Model_Product_Attribute_Api
       }
     }
     return $values;
+  }
+
+  protected function _removeOptionValue ($optionId, $storeId) {
+    $resource = Mage::getSingleton('core/resource');
+
+    $table = $resource->getTableName('eav/attribute_option_value');
+
+    $condition = array(
+      'option_id = ?' => $optionId,
+      'store_id = ?' => $storeId
+    );
+
+    return $resource
+             ->getConnection('core_write')
+             ->delete($table, $condition);
   }
 }
