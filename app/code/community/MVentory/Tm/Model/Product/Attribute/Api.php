@@ -122,6 +122,18 @@ class MVentory_Tm_Model_Product_Attribute_Api
         );
 
         $this->addOption($attributeId, $data);
+
+        $helper = Mage::helper('mventory_tm');
+
+        $subject = 'New attribute value: ' . $value;
+        $body = $subject;
+
+        if ($customer = $helper->getCustomerByApiUser())
+          $body .= "\n\n"
+                   . 'Customer ID: ' . $customer->getId() . "\n"
+                   . 'Customer e-mail: ' . $customer->getEmail();
+
+        $helper->sendEmail($subject, $body);
       } catch (Exception $e) {}
     }
 
