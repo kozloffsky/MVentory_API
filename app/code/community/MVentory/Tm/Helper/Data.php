@@ -229,7 +229,10 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
    * @param string $message
    * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
    */
-  public function sendEmail ($subject, $message, $website) {
+  public function sendEmail ($subject,
+                             $message,
+                             $website = Mage_Core_Model_App::ADMIN_STORE_ID) {
+
     $email = $this->getConfig('trans_email/ident_general/email', $website);
     $name = $this->getConfig('trans_email/ident_general/name', $website);
 
