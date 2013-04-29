@@ -68,7 +68,7 @@ class MVentory_Tm_Adminhtml_IndexController
     }
 
     $path = MVentory_Tm_Model_Connector::SANDBOX_PATH;
-    $website = $helper->getWebsiteIdFromProduct($product);
+    $website = $helper->getWebsite($product);
 
     $host = $helper->getConfig($path, $website) ? 'tmsandbox' : 'trademe';
     $url = 'http://www.' . $host . '.co.nz/Browse/Listing.aspx?id=' . $result;
@@ -98,11 +98,11 @@ class MVentory_Tm_Adminhtml_IndexController
       $result = $connector->remove($product);
     }
 
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory_tm/product');
 
     if ($result === true) {
       $path = MVentory_Tm_Model_Connector::SANDBOX_PATH;
-      $website = $helper->getWebsiteIdFromProduct($product);
+      $website = $helper->getWebsite($product);
 
       $host = $helper->getConfig($path, $website) ? 'tmsandbox' : 'trademe';
       $url = 'http://www.'
@@ -129,14 +129,14 @@ class MVentory_Tm_Adminhtml_IndexController
     $id = $this->_request->getParam('id');
     $product = Mage::getModel('catalog/product')->load($id);
 
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory_tm/product');
 
     if ($product->getId()) {
       $connector = Mage::getModel('mventory_tm/connector');
       $result = $connector->check($product);
 
       $path = MVentory_Tm_Model_Connector::SANDBOX_PATH;
-      $website = $helper->getWebsiteIdFromProduct($product);
+      $website = $helper->getWebsite($product);
 
       $host = $helper->getConfig($path, $website) ? 'tmsandbox' : 'trademe';
       $url = 'http://www.'

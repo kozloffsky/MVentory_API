@@ -58,7 +58,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   );
 
   protected function _construct () {
-    $this->_helper = Mage::helper('mventory_tm');
+    $this->_helper = Mage::helper('mventory_tm/product');
   }
 
   private function _getConfig ($path) {
@@ -105,11 +105,11 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   private function getWebsiteId ($product) {
     $this->_website = $this
                         ->_helper
-                        ->getWebsiteIdFromProduct($product);
+                        ->getWebsite($product);
   }
 
   public function setWebsiteId ($websiteId) {
-    $this->_website = $websiteId;
+    $this->_website = Mage::app()->getWebsite($websiteId);
 
     return $this;
   }
@@ -270,9 +270,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         //Add shipping rate if product's shipping type is 'tab_ShipTransport'
         if ($productShippingType == 'tab_ShipTransport') {
           $regionName = $this->_accountData['name'];
-          $website = Mage::app()->getWebsite($this->_website);
 
-          $price += $tmHelper->getShippingRate($product, $regionName, $website);
+          $price += $tmHelper
+                      ->getShippingRate($product, $regionName, $this->_website);
 
           unset($regionName, $website);
         }
@@ -552,9 +552,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           //Add shipping rate if product's shipping type is 'tab_ShipTransport'
           if ($productShippingType == 'tab_ShipTransport') {
             $regionName = $this->_accountData['name'];
-            $website = Mage::app()->getWebsite($this->_website);
 
-            $price += $helper->getShippingRate($product, $regionName, $website);
+            $price += $helper->getShippingRate($product,
+                                               $regionName,
+                                               $this->_website);
 
             unset($regionName, $website);
           }

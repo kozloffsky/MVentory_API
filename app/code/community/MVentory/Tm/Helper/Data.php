@@ -83,20 +83,6 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     return $customer;
   }
 
-  public function getWebsitesForProduct () {
-    $website = $this->getCurrentWebsite();
-
-    $websites = $this->getConfig(self::ADD_TO_WEBSITES_PATH, $website);
-    $websites = explode(',', $websites);
-
-    $website = $website->getId();
-
-    if (!in_array($website, $websites))
-      $websites[] = $website;
-
-    return $websites;
-  }
-
   public function getWebsiteIdFromProduct ($product) {
     $ids = $product->getWebsiteIds();
 
