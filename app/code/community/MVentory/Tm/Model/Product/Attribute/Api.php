@@ -70,18 +70,18 @@ class MVentory_Tm_Model_Product_Attribute_Api
   }
 
   public function addOptionAndReturnInfo ($attribute, $value) {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId(null);
+    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
 
     $data = array(
-              'label' => array(
-                           array(
-                             'store_id' => array(0, $storeId),
-                             'value' => $value
-                           )
-                         ),
+      'label' => array(
+        array(
+          'store_id' => array(0, $storeId),
+          'value' => $value
+        )
+      ),
 
-              'order' => 0
-            );
+      'order' => 0
+    );
 
     try {
       $this->addOption($attribute, $data);
@@ -89,8 +89,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
 
     $attributeRet = $this->info($attribute);
 
-    $attributeRet['options']
-      = $this->optionsPerStoreView($attribute, $storeId);
+    $attributeRet['options'] = $this->optionsPerStoreView($attribute, $storeId);
 
     return $attributeRet;
   }
