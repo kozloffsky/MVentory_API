@@ -89,7 +89,7 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
     if (($dimensions = $width . 'x' . $height) == 'x')
       $dimensions = 'full';
 
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory_tm/product');
     $website = $helper->getWebsite($this->getProduct());
 
     $prefix = $helper

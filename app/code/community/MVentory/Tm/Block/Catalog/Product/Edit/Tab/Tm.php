@@ -25,7 +25,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $product = $this->getProduct();
 
-    $this->_helper = Mage::helper('mventory_tm');
+    $this->_helper = Mage::helper('mventory_tm/product');
     $this->_website = $this->_helper->getWebsite($product);
 
     $productId = $product->getId();

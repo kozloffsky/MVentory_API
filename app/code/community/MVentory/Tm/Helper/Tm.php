@@ -58,6 +58,8 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
   }
 
   /**
+   * !!!TODO: move to product helper
+   *
    * Returns URL to the listing on TM which specified product is assigned to
    *
    * @param Mage_Catalog_Model_Product|int $product
@@ -65,7 +67,9 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
    * @return string URL to the listing
    */
   public function getListingUrl ($product) {
-    $domain = $this->isSandboxMode($this->getWebsite($product))
+    $website = Mage::helper('mventory_tm/product')->getWebsite($product);
+
+    $domain = $this->isSandboxMode($website)
                 ? 'tmsandbox'
                   : 'trademe';
 

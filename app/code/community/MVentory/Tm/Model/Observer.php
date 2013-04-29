@@ -68,7 +68,7 @@ class MVentory_Tm_Model_Observer {
         $accountId = $product->getTmCurrentAccountId();
 
         if ($accountId) {
-          $website = Mage::helper('mventory_tm')->getWebsite($product);
+          $website = Mage::helper('mventory_tm/product')->getWebsite($product);
           $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
 
           $addTMFees = $accounts[$accountId]['add_fees'];
@@ -621,7 +621,7 @@ class MVentory_Tm_Model_Observer {
 
     $images = $observer->getEvent()->getImages();
 
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory_tm/product');
 
     $website = $helper->getWebsite($product);
 

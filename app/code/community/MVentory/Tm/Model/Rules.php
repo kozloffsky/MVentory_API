@@ -178,7 +178,7 @@ class MVentory_Tm_Model_Rules
   }
 
   protected function _getLostCategoryId ($product) {
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory_tm/product');
 
     return $helper->getConfig(self::LOST_CATEGORY_PATH,
                               $helper->getWebsite($product));

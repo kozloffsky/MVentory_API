@@ -7,7 +7,7 @@
  * @package    MVentory_Tm
  * @author     MVentory <???@mventory.com>
  */
-class MVentory_Tm_Helper_S3 extends MVentory_Tm_Helper_Data {
+class MVentory_Tm_Helper_S3 extends MVentory_Tm_Helper_Product {
 
   private $_prefix = null;
 
