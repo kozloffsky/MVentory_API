@@ -383,13 +383,19 @@ jQuery(document).ready(function ($) {
       = $rule
           .find('> .tm-matching-rule-categories > .tm-inner > .tm-rule-category');
 
-    $categories
-      .filter('.tm-category')
-      .text($tm_category.text());
+    var $category = $categories
+                      .filter('.tm-category')
+                      .text($tm_category.text());
 
-    $categories
-      .filter('.magento-category')
-      .text($magento_category.text());
+    if (!(new_rule.tm_category > 0 || new_rule.tm_category == -1))
+      $category.addClass('tm-rule-no-category');
+
+    var $category = $categories
+                      .filter('.magento-category')
+                      .text($magento_category.text());
+
+    if (!new_rule.category)
+      $category.addClass('tm-rule-no-category');
   }
 
   function select_category (id, name) {

@@ -134,6 +134,10 @@
   margin: 0;
 }
 
+.tm-rule-no-category {
+  color: lightgray;
+}
+
 #categories-wrapper {
   display: none;
   position: absolute;

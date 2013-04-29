@@ -181,20 +181,29 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
     $category = $data['category'];
     $tmCategory = $data['tm_category'];
 
+    $hasCategory = false;
+    $hasTmCategory = false;
+
     if ($category == null)
       $category = $this->__('Category not selected');
     else if (!isset($this->_categories[$category]))
       $category = $this->__('Category doesn\'t exist anymore');
-    else
+    else {
+      $hasCategory = true;
       $category = $this->_categories[$category]['name'];
+    }
 
-    if ($tmCategory == -1)
+    if ($tmCategory == -1) {
+      $hasTmCategory = true;
+
       $tmCategory = $this->__('Don\'t list on TM');
-    else if ($tmCategory == null)
+    } else if ($tmCategory == null)
       $tmCategory = $this->__('TM category not selected');
     else if (!isset($this->_tmCategories[$tmCategory]))
       $tmCategory = $this->__('TM category doesn\'t exist anymore');
     else {
+      $hasTmCategory = true;
+
       $this->_usedTmCategories[] = (int) $tmCategory;
 
       $tmCategory = implode(' - ', $this->_tmCategories[$tmCategory]['name']);
@@ -231,7 +240,9 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
       'id' => $id,
       'default' => $default,
       'category' => $category,
+      'has_category' => $hasCategory,
       'tm_category' => $tmCategory,
+      'has_tm_category' => $hasTmCategory,
       'attrs' => $attrs
     );
   }

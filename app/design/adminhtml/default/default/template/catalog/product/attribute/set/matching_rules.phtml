@@ -44,8 +44,8 @@ $_rules = $this->_getRules();
 
     <div class="tm-matching-rule-categories">
       <div class="tm-inner">
-        <div class="tm-rule-category magento-category"><?php echo $rule['category']; ?></div>
-        <div class="tm-rule-category tm-category"><?php echo $rule['tm_category']; ?></div>
+        <div class="tm-rule-category magento-category <?php if (!$rule['has_category']) echo 'tm-rule-no-category'; ?>"><?php echo $rule['category']; ?></div>
+        <div class="tm-rule-category tm-category <?php if (!$rule['has_tm_category']) echo 'tm-rule-no-category'; ?>"><?php echo $rule['tm_category']; ?></div>
       </div>
     </div>
 
