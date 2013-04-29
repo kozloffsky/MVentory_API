@@ -37,6 +37,23 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
    * @return null|Mage_Core_Model_Website
    */
   public function getApiUserWebsite ($user = null) {
+    if (!$customer = $this->getCustomerByApiUser($user))
+      return null;
+
+    if (($websiteId = $customer->getWebsiteId()) === null)
+      return null;
+
+    return Mage::app()->getWebsite($websiteId);
+  }
+
+  /**
+   * Get a customer assigned to the current API user or specified one
+   *
+   * @param Mage_Api_Model_User $user API user
+   *
+   * @return null|Mage_Customer_Model_Customer
+   */
+  public function getCustomerByApiUser ($user = null) {
     $customerId = Mage::registry('tm_api_customer');
 
     if ($customerId === null) {
@@ -63,10 +80,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     if (!$customer->getId())
       return null;
 
-    if (($websiteId = $customer->getWebsiteId()) === null)
-      return null;
-
-    return Mage::app()->getWebsite($websiteId);
+    return $customer;
   }
 
   public function getWebsitesForProduct () {
