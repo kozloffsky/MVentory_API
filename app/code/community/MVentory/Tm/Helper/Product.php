@@ -2,6 +2,8 @@
 
 class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
+  const ROOT_WEBSITE_PATH = 'mventory_tm/shop-interface/root_website';
+
   protected $_tmFields = array(
     'account_id' => 'tm_account_id',
     'shipping_type' => 'tm_shipping_type',
@@ -34,6 +36,45 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
       return $category;
 
     return null;
+  }
+
+  /**
+   * Return website which the product are assigned to
+   *
+   * @param Mage_Catalog_Model_Product|int $product
+   *
+   * @return Mage_Core_Model_Website
+   */
+  public function getWebsite ($product = null) {
+    $app = Mage::app();
+
+    if ($product == null) {
+      $product = Mage::registry('product');
+
+      if (!$product)
+        return $app->getWebsite();
+    }
+
+    if ($product instanceof Mage_Catalog_Model_Product)
+      $ids = $product->getWebsiteIds();
+    else
+      $ids = Mage::getResourceModel('catalog/product')
+               ->getWebsiteIds($product);
+
+    if (!$n = count($ids))
+      return $app->getWebsite();
+
+    if ($n == 1)
+      return $app->getWebsite(reset($ids));
+
+    foreach ($ids as $id) {
+      $website = $app->getWebsite($id);
+
+      if (!$this->getConfig(self::ROOT_WEBSITE_PATH, $website))
+        break;
+    }
+
+    return $website;
   }
 
   /**
