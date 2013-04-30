@@ -512,7 +512,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $formData = $_formData;
 
       foreach ($formData as $key => $value)
-        if ($value == -1)
+        if ($value == -1 && isset($this->_accountData[$key]))
           $formData[$key] = $this->_accountData[$key];
 
       $shippingType = isset($formData['shipping_type'])
