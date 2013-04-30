@@ -3,6 +3,7 @@
 class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
   const SANDBOX_PATH = 'mventory_tm/settings/sandbox';
+  const LIST_AS_NEW_PATH = 'mventory_tm/settings/list_as_new';
 
   const CACHE_TYPE_TM = 'tm';
   const CACHE_TAG_TM = 'TM';
@@ -310,6 +311,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $pickup = $this->_getPickup($product, $tmData, $this->_accountData);
       $pickup = $this->_pickupValues[$pickup];
 
+      $isBrandNew = (int) $this->_getIsBrandNew($product);
+
       $xml = '<ListingRequest xmlns="http://api.trademe.co.nz/v1">
 <Category>' . $categoryId . '</Category>
 <Title>' . $title . '</Title>
@@ -318,7 +321,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 <ReservePrice>' . $price . '</ReservePrice>'
 . $buyNow .
 '<Duration>Seven</Duration>
-<Pickup>' . $pickup . '</Pickup>';
+<Pickup>' . $pickup . '</Pickup>
+<IsBrandNew>' . $isBrandNew . '</IsBrandNew>';
 
       if ($photoId) {
         $xml .= '<PhotoIds><PhotoId>' . $photoId . '</PhotoId></PhotoIds>';
@@ -627,6 +631,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       if (!isset($parameters['Pickup']) && isset($formData['pickup']))
         $parameters['Pickup']
           = $this->_getPickup($product, $formData, $this->_accountData);
+
+      //Set IsBrandNew option
+      if (!isset($parameters['IsBrandNew']))
+        $parameters['IsBrandNew'] = $this->_getIsBrandNew($product);
 
       //set Payment methods
       //  None = 0
@@ -1009,6 +1017,13 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     return in_array($shippingType, $allowPickupFor)
              ? MVentory_Tm_Model_Tm::PICKUP_ALLOW
                : MVentory_Tm_Model_Tm::PICKUP_FORBID;
+  }
+
+  protected function _getIsBrandNew ($product) {
+    return in_array(
+      $product->getData('mv_condition_'),
+      explode(',', $this->_getConfig(self::LIST_AS_NEW_PATH))
+    );
   }
 
   public function getTmCategories () {
