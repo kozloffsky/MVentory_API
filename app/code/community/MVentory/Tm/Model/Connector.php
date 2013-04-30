@@ -826,7 +826,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $_attrs = Mage::app()
               ->getLayout()
               ->createBlock('mventory_tm/product_view_attributes')
-              ->getAdditionalData();
+              ->getAdditionalData(array(), false);
 
     $attrs = '';
 
