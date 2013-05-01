@@ -54,23 +54,19 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
   }
 
   public function __toString() {
-    $destSubdir = $this->_getModel()->getDestinationSubdir();
+    $model = $this->_getModel();
+    $product = $this->getProduct();
 
-    //!!!Should be fixed. It loads full product data on every image
-    //request.
-    $bkThumbnail = Mage::getModel('catalog/product')
-                     ->load($this->getProduct()->getId())
-                     ->getData('bk_thumbnail_');
-
-    if (in_array($destSubdir, array('image', 'small_image'))
-        && $this->getProduct()->getData($destSubdir) == 'no_selection'
-        && $bkThumbnail)
-      return $bkThumbnail . '&zoom=' . ($destSubdir == 'image' ? 1 : 5);
+    $destSubdir = $model->getDestinationSubdir();
 
     if (!$imageFileName = $this->getImageFile())
-      $imageFileName = $this->getProduct()->getData($destSubdir);
+      $imageFileName = $product->getData($destSubdir);
 
     if ($imageFileName == 'no_selection') {
+      if (($bkThumbnail = $product->getData('bk_thumbnail_'))
+          && ($destSubdir == 'image' || $destSubdir == 'small_image'))
+        return $bkThumbnail . '&zoom=' . ($destSubdir == 'image' ? 1 : 5);
+
       $placeholder = Mage::getModel('catalog/product_image')
                        ->setDestinationSubdir($destSubdir)
                        ->setBaseFile(null)
@@ -79,8 +75,8 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
       $imageFileName = '/' . basename($placeholder);
     }
 
-    $width = $this->_getModel()->getWidth();
-    $height = $this->_getModel()->getHeight();
+    $width = $model->getWidth();
+    $height = $model->getHeight();
 
     //!!!TODO: remove hack for 75x75 images
     if ($width == $height && $width != 75)
@@ -90,7 +86,7 @@ class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
       $dimensions = 'full';
 
     $helper = Mage::helper('mventory_tm/product');
-    $website = $helper->getWebsite($this->getProduct());
+    $website = $helper->getWebsite($product);
 
     $prefix = $helper
                 ->getConfig(MVentory_Tm_Model_Observer::XML_PATH_CDN_PREFIX,
