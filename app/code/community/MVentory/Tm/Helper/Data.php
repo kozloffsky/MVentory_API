@@ -89,7 +89,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
   public function getWebsitesForProduct () {
     $website = $this->getCurrentWebsite();
 
-    $websites = $this->getConfig(self::ADD_TO_WEBSITES_PATH, $website)
+    $websites = $this->getConfig(self::ADD_TO_WEBSITES_PATH, $website);
     $websites = explode(',', $websites);
 
     $website = $website->getId();
