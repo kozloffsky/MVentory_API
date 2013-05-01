@@ -8,7 +8,7 @@ $attributeData = array(
   //Global settings
   'type' => 'int',
   'input' => 'select',
-  'source' => 'eav/entity_attribute_source_table'
+  'source' => 'eav/entity_attribute_source_table',
   'label' => 'Condition',
   'required' => false,
   'user_defined' => true,
