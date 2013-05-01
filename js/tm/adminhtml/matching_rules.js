@@ -215,7 +215,6 @@ jQuery(document).ready(function ($) {
           $tm_category.text(name);
 
           update_save_rule_button_state();
-          scrollTo('#tm-matching-new-rule-wrapper', $(window).scrollTop() - e.pageY);
         });
 
         $('#tm_filter').on('keyup', function () {
@@ -363,11 +362,6 @@ jQuery(document).ready(function ($) {
       complete: function (xhr, text_status) {
       }
     });
-  }
-
-  function scrollTo (selector, offset) {
-    $('html, body')
-      .animate({ scrollTop: $(selector).offset().top + offset }, 200);
   }
 
   function update_save_rule_button_state () {
