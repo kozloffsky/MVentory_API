@@ -1027,9 +1027,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function getTmCategories () {
-    $cache = Mage::getSingleton('core/cache');
+    $app = Mage::app();
 
-    if ($list = $cache->load(self::CACHE_TM_CATEGORIES))
+    if ($list = $app->loadCache(self::CACHE_TM_CATEGORIES))
       return unserialize($list);
 
     $json = $this->_loadTmCategories();
@@ -1047,10 +1047,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     unset($categories);
 
-    if ($cache->canUse(self::CACHE_TYPE_TM))
-      $cache->save(serialize($list),
-                   self::CACHE_TM_CATEGORIES,
-                   array(self::CACHE_TAG_TM));
+    if ($app->useCache(self::CACHE_TYPE_TM))
+      $app->saveCache(
+        serialize($list),
+        self::CACHE_TM_CATEGORIES,
+        array(self::CACHE_TAG_TM)
+      );
 
     return $list;
   }
@@ -1059,9 +1061,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     if (!$categoryId)
       return null;
 
-    $cache = Mage::getSingleton('core/cache');
+    $app = Mage::app();
 
-    if ($attrs = $cache->load(self::CACHE_TM_CATEGORY_ATTRS . $categoryId))
+    if ($attrs = $app->loadCache(self::CACHE_TM_CATEGORY_ATTRS . $categoryId))
       return unserialize($attrs);
 
     $json = $this->_loadTmCategoryAttrs($categoryId);
@@ -1071,10 +1073,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
     $attrs = json_decode($json, true);
 
-    if ($cache->canUse(self::CACHE_TYPE_TM))
-      $cache->save(serialize($attrs),
-                   self::CACHE_TM_CATEGORY_ATTRS . $categoryId,
-                   array(self::CACHE_TAG_TM));
+    if ($app->useCache(self::CACHE_TYPE_TM))
+      $app->saveCache(
+        serialize($attrs),
+        self::CACHE_TM_CATEGORY_ATTRS . $categoryId,
+        array(self::CACHE_TAG_TM)
+      );
 
     return $attrs;
   }
