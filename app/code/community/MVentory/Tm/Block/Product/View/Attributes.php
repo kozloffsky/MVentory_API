@@ -48,15 +48,19 @@ class MVentory_Tm_Block_Product_View_Attributes
    * @return array
    */
   public function getAdditionalDataHtml (array $exclude = array()) {
+    $helper = Mage::helper('mventory_tm/product');
+
     $data = array();
 
     $product = $this->getProduct();
-    $category = Mage::helper('mventory_tm/product')->getCategory($product);
+    $category = $helper->getCategory($product);
     $attributes = $product->getAttributes();
 
     $queryParams = $category
                      ->getUrlInstance()
                      ->getQueryParams();
+
+    $title = $helper->__('View more of this type');
 
     foreach ($attributes as $attribute) {
       $code = $attribute->getAttributeCode();
@@ -89,7 +93,8 @@ class MVentory_Tm_Block_Product_View_Attributes
             ->unsetData('query_params')
             ->setQueryParams($params);
 
-          $links[] = '<a href="' . $category->getUrl() . '">'
+          $links[] = '<a href="' . $category->getUrl() . '"'
+                      . 'title="' . $title . '">'
                     . $source->getOptionText($_value)
                     . '</a>';
         }
