@@ -72,9 +72,8 @@ class MVentory_Tm_Model_Product_Attribute_Api
   public function addOptionAndReturnInfo ($attribute, $value) {
     $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
 
-    $attributeId = $this
-                     ->_getAttribute($attribute)
-                     ->getId();
+    $attribute = $this->_getAttribute($attribute);
+    $attributeId = $attribute->getId();
 
     $options = Mage::getResourceModel('eav/entity_attribute_option_collection')
                  ->setAttributeFilter($attributeId)
@@ -130,6 +129,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
 
         if ($customer = $helper->getCustomerByApiUser())
           $body .= "\n\n"
+                   . 'Attribute code: ' . $attribute->getAttributeCode() . "\n"
                    . 'Customer ID: ' . $customer->getId() . "\n"
                    . 'Customer e-mail: ' . $customer->getEmail();
 
