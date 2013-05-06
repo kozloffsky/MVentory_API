@@ -511,9 +511,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
 
       $formData = $_formData;
 
-      foreach ($formData as $key => $value)
-        if ($value == -1 && isset($this->_accountData[$key]))
-          $formData[$key] = $this->_accountData[$key];
+      if ($formData)
+        foreach ($formData as $key => $value)
+          if ($value == -1 && isset($this->_accountData[$key]))
+            $formData[$key] = $this->_accountData[$key];
 
       $shippingType = isset($formData['shipping_type'])
                         ? $formData['shipping_type']
@@ -652,7 +653,9 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $jsonResponse = json_decode($response->getBody());
 
       if (isset($jsonResponse->Success) && $jsonResponse->Success == 'true') {
-        Mage::helper('mventory_tm/product')->setTmFields($product, $_formData);
+        if ($_formData)
+          Mage::helper('mventory_tm/product')
+            ->setTmFields($product, $_formData);
 
         $product->save();
 
