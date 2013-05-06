@@ -1,6 +1,8 @@
 <?php
 
-class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
+class MVentory_Tm_Model_Connector {
+
+  const LOG_FILE = 'tm.log';
 
   const SANDBOX_PATH = 'mventory_tm/settings/sandbox';
   const LIST_AS_NEW_PATH = 'mventory_tm/settings/list_as_new';
@@ -58,7 +60,7 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     3 => 'Forbid'
   );
 
-  protected function _construct () {
+  public function __construct () {
     $this->_helper = Mage::helper('mventory_tm/product');
   }
 
@@ -146,6 +148,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function send ($product, $categoryId, $_tmData) {
+    self::debug();
+
     $this->getWebsiteId($product);
     $this->setAccountId($_tmData);
 
@@ -161,6 +165,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
         if ($value == -1 && isset($this->_accountData[$key]))
           $tmData[$key] = $this->_accountData[$key];
     }
+
+    self::debug(array('Final TM options: ' => $tmData));
 
     $return = 'Error';
 
@@ -394,8 +400,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           $return = (int)$xml->ListingId;
         } elseif ((string)$xml->ErrorDescription) {
           $return = (string)$xml->ErrorDescription;
+
+          self::debug('Error on send (' . $return . ')');
         } elseif ((string)$xml->Description) {
           $return = (string)$xml->Description;
+
+          self::debug('Error on send (' . $return . ')');
         }
       }
     }
@@ -404,6 +414,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function remove($product) {
+    self::debug();
+
     $this->getWebsiteId($product);
 
     $accountId = Mage::helper('mventory_tm/tm')
@@ -434,6 +446,10 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
           return true;
         } elseif ((string)$xml->Description) {
           $error = (string)$xml->Description;
+
+          self::debug('Error on removing listing '
+                      . $product->getTmCurrentListingId()
+                      . ' (' . $error . ')');
         }
       }
     }
@@ -442,6 +458,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function check ($product) {
+    self::debug();
+
     $listingId = $product->getTmCurrentListingId();
 
     $this->getWebsiteId($product);
@@ -455,11 +473,11 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
     $item = $this->_parseTmListingDetails($json);
 
     if (is_string($item)) {
-      Mage::log('TM: error on retrieving listing details '
-                . $listingId
-                . ' ('
-                . $item
-                . ')');
+      self::debug('Error on retrieving listing details '
+                  . $listingId
+                  . ' ('
+                  . $item
+                  . ')');
 
       return;
     }
@@ -479,6 +497,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function update ($product, $parameters = null, $_formData = null) {
+    self::debug();
+
     $this->getWebsiteId($product);
 
     if ($_formData && isset($_formData['account_id']))
@@ -500,6 +520,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       $json = $this->_loadTmListingDetails($listingId);
 
       if (!$json){
+        self::debug('Unable to retrieve data for listing ' . $listingId);
+
         $helper->sendEmail('Unable to retrieve data for TM listing ',
           $return.' product id '.$product->getId().' listing id '.$listingId,
             $this->_website);
@@ -668,19 +690,20 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
             && (string)$jsonResponse->ErrorDescription) {
             $return = (string)$jsonResponse->ErrorDescription;
         }
+
         $helper->sendEmail('Unable to update TM listing ',
           $return.' product id '.$product->getId().' listing id '.$listingId,
             $this->_website);
-        Mage::log('TM: error on updating TM listing details '
-          . $listingId
-          );
+
+        self::debug('Error on updating listing ' . $listingId
+                    . ' (' . $return . ')');
       }
   	}
   	else{
   	  $helper->sendEmail('Unable to auth TM',
         $return.' product id '.$product->getId().' listing id '.$listingId,
           $this->_website);
-  	  Mage::log('TM: Unable to auth when trying to update listing details '
+  	  self::debug('Unable to auth when trying to update listing details '
   	    . $listingId
   	    );
   	}
@@ -763,6 +786,8 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
   }
 
   public function uploadImage ($image) {
+    self::debug();
+
     if (!$accessToken = $this->auth())
       return;
 
@@ -790,12 +815,12 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       return $result['ErrorDescription'];
 
     if ($result['Status'] != 1) {
-      $msg = 'TM: error on image uploading ('
+      $msg = 'Error on image uploading ('
              . $image
              . '). Error description: '
              . $result['Description'];
 
-      Mage::log($msg);
+      self::debug($msg);
 
       Mage::helper('mventory_tm')
         ->sendEmail('Unable to upload image to TM', $msg, $this->_website);
@@ -1098,5 +1123,37 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       return $this->_attrTypes[$id];
 
     return 'Unknown';
+  }
+
+  public static function debug ($msg = null) {
+    $backtrace = debug_backtrace();
+
+    $callee = $backtrace[1];
+
+    $name = '[' . $callee['line'] . '] '
+            . $callee['class']
+            . $callee['type']
+            . $callee['function'];
+
+    if ($msg === null)
+      foreach ($callee['args'] as $arg) {
+        if ($arg instanceof Varien_Object)
+          $args[] = get_class($arg) . '('
+
+                    . 'id: ' . $arg->getId() . ', '
+                    . 'sku: ' . $arg->getData('sku')
+
+                    . ')';
+        else
+          $args[] = print_r($arg, true);
+
+        $msg = '(' . implode(', ', $args) . ')';
+      }
+    else if (is_array($msg))
+      $msg = '(): ' . print_r($msg, true);
+    else
+      $msg = '(): ' . $msg;
+
+    Mage::log($name . $msg, null, self::LOG_FILE);
   }
 }
