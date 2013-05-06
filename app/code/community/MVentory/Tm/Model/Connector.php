@@ -989,6 +989,13 @@ class MVentory_Tm_Model_Connector extends Mage_Core_Model_Abstract {
       unset($details['Photos']);
     }
 
+    //Rename AllowsPickups option to Pickup
+    if (isset($details['AllowsPickups'])) {
+      $details['Pickup'] = $details['AllowsPickups'];
+
+      unset($details['AllowsPickups']);
+    }
+
     return $details;
   }
 
