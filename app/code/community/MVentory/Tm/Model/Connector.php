@@ -423,9 +423,9 @@ class MVentory_Tm_Model_Connector {
 
     $this->setAccountId($accountId);
 
-    if ($accessToken = $this->auth()) {
-      $error = false;
+    $error = 'error';
 
+    if ($accessToken = $this->auth()) {
       $client = $accessToken->getHttpClient($this->getConfig());
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Withdraw.xml');
       $client->setMethod(Zend_Http_Client::POST);
