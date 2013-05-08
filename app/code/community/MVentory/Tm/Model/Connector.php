@@ -517,7 +517,7 @@ class MVentory_Tm_Model_Connector {
 
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Edit.json');
       $client->setMethod(Zend_Http_Client::POST);
-      $json = $this->_loadTmListingDetails($listingId);
+      $json = $this->_loadTmListingDetailsAuth($listingId);
 
       if (!$json){
         self::debug('Unable to retrieve data for listing ' . $listingId);
