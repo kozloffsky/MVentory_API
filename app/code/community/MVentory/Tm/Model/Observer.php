@@ -32,16 +32,16 @@ class MVentory_Tm_Model_Observer {
 
     $items = $order->getAllItems();
 
+   $productHelper = Mage::helper('mventory_tm/product');
+   $tmHelper = Mage::helper('mventory_tm/tm');
+
     foreach ($items as $item) {
       $productId = (int) $item->getProductId();
 
       $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
 
       //We can use default store ID because the attribute is global
-      $listingId = Mage::getResourceModel('catalog/product')
-                     ->getAttributeRawValue($productId,
-                                            'tm_current_listing_id',
-                                            $storeId);
+      $listingId = $productHelper->getListingId($productId);
 
       if (!$listingId)
         continue;
@@ -52,84 +52,78 @@ class MVentory_Tm_Model_Observer {
       if (!($stockItem->getManageStock() && $stockItem->getQty() == 0))
         continue;
 
-      $connector = Mage::getModel('mventory_tm/connector');
-
-      //!!!FIXME: temporarely load the whole product object, but need only
-      //a couple of attributes.
       $product = Mage::getModel('catalog/product')->load($productId);
 
-      //Try to increase price of selling listing on TM if it's allowed,
-      //otherwise try to withdraw listing
-      $doRemoveFromTM = false;
-      if ($product->getTmAvoidWithdrawal())
-      {
-        $addTMFees = false;
+      $website = $productHelper->getWebsite($product);
+      $accounts = $tmHelper->getAccounts($website);
 
-        $accountId = $product->getTmCurrentAccountId();
+      $accountId = $product->getTmCurrentAccountId();
 
-        if ($accountId) {
-          $website = Mage::helper('mventory_tm/product')->getWebsite($product);
-          $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
+      $account = $accountId && isset($accounts[$accountId])
+                   ? $accounts[$accountId]
+                     : null;
 
-          $addTMFees = $accounts[$accountId]['add_fees'];
-        }
+      //Avoid withdrawal by default
+      $avoidWithdrawal = true;
 
-        $newPrice = $product->getPrice()*5;
+      $tmFields = $productHelper->getTmFields($product, $account);
 
-        if ($addTMFees)
-        {
-          $tmTmHelper = Mage::helper('mventory_tm/tm');
-          $newPrice = $tmTmHelper->addFees($newPrice);
-        }
+      $attrs = $product->getAttributes();
 
-        if (is_int($connector->update($product, array('StartPrice' => $newPrice), null)))
-        {
-          $result = true;
-        }
-        else
-        {
-          $doRemoveFromTM = true;
+      if (isset($attrs['tm_avoid_withdrawal'])) {
+        $attr = $attrs['tm_avoid_withdrawal'];
+
+        if ($attr->getDefaultValue() != $tmFields['avoid_withdrawal']) {
+          $options = $attr
+                      ->getSource()
+                      ->getOptionArray();
+
+          if (isset($options[$tmFields['avoid_withdrawal']]))
+            $avoidWithdrawal = (bool) $tmFields['avoid_withdrawal'];
         }
       }
-      else
-      {
-        $doRemoveFromTM = true;
+
+      $hasError = false;
+
+      if ($product->getTmAvoidWithdrawal()) {
+        $price = $product->getPrice() * 5;
+
+        if ($tmFields['add_fees'])
+          $price = $tmHelper->addFees($price);
+
+        $result = Mage::getModel('mventory_tm/connector')
+                    ->update($product, array('StartPrice' => $price));
+
+        if (!is_int($result))
+          $hasError = true;
+      } else {
+        $result = Mage::getModel('mventory_tm/connector')->remove($product);
+
+        if ($result !== true)
+          $hasError = true;
       }
 
-      if ($doRemoveFromTM)
-      {
-        $result = $connector->remove($product);
-      }
-
-      if ($result !== true) {
+      if ($hasError) {
         //Send email with error message to website's general contact address
 
-        $helper = Mage::helper('mventory_tm/product');
-
-        $website = $helper->getWebsite($product);
-
-        $productUrl = $helper->getUrl($product);
-        $listingId = Mage::helper('mventory_tm/tm')->getListingUrl($product);
+        $productUrl = $productHelper->getUrl($product);
+        $listingId = $tmHelper->getListingUrl($product);
 
         $subject = 'TM: error on removing listing';
         $message = 'Error on increasing price or withdrawing listing ('
                    . $listingId
                    . ') linked to product ('
                    . $productUrl
-                   . ')';
+                   . ')'
+                   . ' Error: ' . $result;
 
         $helper->sendEmail($subject, $message, $website);
 
         continue;
       }
 
-      $productId = array($productId);
-      $attribute = array('tm_current_listing_id' => 0);
-
-      Mage::getResourceSingleton('catalog/product_action')
-        ->updateAttributes($productId, $attribute, $storeId);
-
-      Mage::helper('mventory_tm/tm')->setCurrentAccountId($productId, null);
+      $productHelper->setListingId(0, $productId);
+      $tmHelper->setCurrentAccountId($productId, null);
     }
   }
 
