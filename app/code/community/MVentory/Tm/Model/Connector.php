@@ -523,8 +523,8 @@ class MVentory_Tm_Model_Connector {
         self::debug('Unable to retrieve data for listing ' . $listingId);
 
         $helper->sendEmail('Unable to retrieve data for TM listing ',
-          $return.' product id '.$product->getId().' listing id '.$listingId,
-            $this->_website);
+          $return.' product id '.$product->getId().' listing id '.$listingId);
+
         return 'Unable to retrieve data from TM';
       }
 
@@ -692,8 +692,7 @@ class MVentory_Tm_Model_Connector {
         }
 
         $helper->sendEmail('Unable to update TM listing ',
-          $return.' product id '.$product->getId().' listing id '.$listingId,
-            $this->_website);
+          $return.' product id '.$product->getId().' listing id '.$listingId);
 
         self::debug('Error on updating listing ' . $listingId
                     . ' (' . $return . ')');
@@ -701,8 +700,8 @@ class MVentory_Tm_Model_Connector {
   	}
   	else{
   	  $helper->sendEmail('Unable to auth TM',
-        $return.' product id '.$product->getId().' listing id '.$listingId,
-          $this->_website);
+        $return.' product id '.$product->getId().' listing id '.$listingId);
+
   	  self::debug('Unable to auth when trying to update listing details '
   	    . $listingId
   	    );
@@ -823,7 +822,7 @@ class MVentory_Tm_Model_Connector {
       self::debug($msg);
 
       Mage::helper('mventory_tm')
-        ->sendEmail('Unable to upload image to TM', $msg, $this->_website);
+        ->sendEmail('Unable to upload image to TM', $msg);
 
       return $result['Description'];
     }

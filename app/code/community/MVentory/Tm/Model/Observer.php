@@ -117,7 +117,7 @@ class MVentory_Tm_Model_Observer {
                    . ')'
                    . ' Error: ' . $result;
 
-        $helper->sendEmail($subject, $message, $website);
+        $helper->sendEmail($subject, $message);
 
         continue;
       }
