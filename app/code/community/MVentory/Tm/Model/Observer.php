@@ -147,9 +147,7 @@ class MVentory_Tm_Model_Observer {
   }
 
   public function saveApiUserId ($observer) {
-    $session = Mage::getSingleton('api/session');
-
-    if (!$session->getSessionId())
+    if (!$user = Mage::helper('mventory_tm')->getApiUser())
       return;
 
     $product = $observer
@@ -159,11 +157,7 @@ class MVentory_Tm_Model_Observer {
     if ($product->getId())
       return;
 
-    $userId = $session
-                ->getUser()
-                ->getId();
-
-    $product->setData('mv_created_userid', $userId);
+    $product->setData('mv_created_userid', $user->getId());
   }
 
   public function sync ($schedule) {

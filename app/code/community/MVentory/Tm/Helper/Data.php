@@ -57,14 +57,8 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     $customerId = Mage::registry('tm_api_customer');
 
     if ($customerId === null) {
-      if (!$user) {
-        $session = Mage::getSingleton('api/session');
-
-        if (!$session->isLoggedIn())
-          return null;
-
-        $user = $session->getUser();
-      }
+      if (!$user && !($user = $this->getApiUser()))
+        return;
 
       $customerId = $user->getUsername();
     }
@@ -81,6 +75,20 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
       return null;
 
     return $customer;
+  }
+
+  /**
+   * Get a current API user
+   *
+   * @return null|Mage_Api_Model_User
+   */
+  public function getApiUser () {
+    $session = Mage::getSingleton('api/session');
+
+    if (!$session->isLoggedIn())
+      return;
+
+    return $session->getUser();
   }
 
   /**
