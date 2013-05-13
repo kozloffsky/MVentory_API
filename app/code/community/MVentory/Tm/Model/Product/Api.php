@@ -301,8 +301,11 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
         $stockItem = Mage::getModel('cataloginventory/stock_item')->loadByProduct($id);
         
         if (!is_null($stockItem->getId())) {
-          $stockItem->setData('qty', $stockItem->getData('qty') - $decreaseOriginalQTYBy);
-          $stockItem->save();
+          $qty = $stockItem->getData('qty') - $decreaseOriginalQTYBy;
+
+          $this->update($id, array('stock_data' => array('qty' => $qty)));
+
+          unset($stockItem);
         }
       }
 
@@ -310,6 +313,9 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
       if (!isset($productData['sku']))
         $productData['sku'] = $skuNew;
+
+      //Reset stock journal for the duplicate
+      $productData['mv_stock_journal'] = '';
 
       $this->update($newProduct->getId(), $productData);
 
@@ -586,5 +592,34 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $this->_fault('access_denied');
 
     return parent::_getProduct($productId, $store, $identifierType);
+  }
+
+  /**
+   * Set additional data before product saved
+   *
+   * @param Mage_Catalog_Model_Product $product
+   * @param array $productData
+   */
+  protected function _prepareDataForSave ($product, $productData) {
+    parent::_prepareDataForSave($product, $productData);
+
+    if (isset($productData['stock_data']['qty'])) {
+      $qty = $this->_getStockJournalRecord($productData['stock_data']['qty']);
+
+      $record = $product->getData('mv_stock_journal')
+                . "\r\n"
+                . $qty;
+
+      $product->setData('mv_stock_journal', $record);
+    }
+  }
+
+  protected function _getStockJournalRecord ($qty) {
+    if (!$user = Mage::helper('mventory_tm')->getApiUser())
+      return;
+
+    $date = Mage::getModel('core/date')->date();
+
+    return $qty . ', ' . $date . ', ' . $user->getId();
   }
 }
