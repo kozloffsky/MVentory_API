@@ -198,7 +198,7 @@ class MVentory_Tm_Model_Observer {
     }
 
     foreach ($accounts as $accountId => &$accountData) {
-      $accountData['free_slots'] = $accountData['max_listings'];
+      $accountData['free_slots'] = 0;
 
       $products = Mage::getModel('catalog/product')
                     ->getCollection()
@@ -220,12 +220,7 @@ class MVentory_Tm_Model_Observer {
                      ->setWebsiteId($website->getId())
                      ->setAccountId($accountId);
 
-      //Check status of listings if there're products assigned
-      //to current TM account
-      if (!$accountData['listings'] = count($products))
-        continue;
-
-      $connector->massCheck($products);
+      $accountData['listings'] = $connector->massCheck($products);
 
       foreach ($products as $product) {
         if ($product->getIsSelling())
@@ -264,6 +259,9 @@ class MVentory_Tm_Model_Observer {
 
         $helper->setListingId(0, $product->getId());
       }
+
+      if ($accountData['listings'] < 0)
+        $accountData['listings'] = 0;
 
       $accountData['free_slots']
         = $accountData['max_listings'] - $accountData['listings'];

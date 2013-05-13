@@ -711,7 +711,7 @@ class MVentory_Tm_Model_Connector {
 
   public function massCheck($products) {
     if (!$accessToken = $this->auth())
-      return 0;
+      return;
 
     if ($products instanceof Mage_Catalog_Model_Product) {
       $collection = new Varien_Data_Collection();
@@ -738,7 +738,7 @@ class MVentory_Tm_Model_Connector {
         if ($item['ListingId'] == $product->getTmCurrentListingId())
           $product->setIsSelling(true);
 
-    return true;
+    return $items['TotalCount'];
   }
 
   public function relist ($product) {
