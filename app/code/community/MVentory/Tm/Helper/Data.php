@@ -236,8 +236,8 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     $toEmail = $this->getConfig($path, $website);
     $toName = $this->getConfig('trans_email/ident_general/name', $website);
 
-    $fromEmail = $this->getConfig('trans_email/ident_sales/name', $website);
-    $fromName = $this->getConfig('trans_email/ident_sales/email', $website);
+    $fromEmail = $this->getConfig('trans_email/ident_sales/email', $website);
+    $fromName = $this->getConfig('trans_email/ident_sales/name', $website);
 
     Mage::getModel('core/email_template')
       ->loadDefault($template)
