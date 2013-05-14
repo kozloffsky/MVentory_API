@@ -81,6 +81,12 @@
           <image>MVentory_Tm_Helper_Image</image>
         </rewrite>
       </catalog>
+
+      <sales>
+        <rewrite>
+          <data>MVentory_Tm_Helper_SalesData</data>
+        </rewrite>
+      </sales>
     </helpers>
 
     <resources>
