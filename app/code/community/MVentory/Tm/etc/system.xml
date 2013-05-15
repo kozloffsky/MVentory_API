@@ -522,6 +522,44 @@
             </upload_placeholders>
           </fields>
         </cdn>
+
+        <order translate="label">
+          <label>Order Management</label>
+          <frontend_type>text</frontend_type>
+
+          <show_in_default>1</show_in_default>
+          <show_in_website>1</show_in_website>
+          <show_in_store>0</show_in_store>
+
+          <sort_order>6</sort_order>
+
+          <fields>
+            <cancel_states translate="label">
+              <label>States to cancel</label>
+
+              <frontend_type>multiselect</frontend_type>
+              <source_model>adminhtml/system_config_source_order_status</source_model>
+
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>1</sort_order>
+            </cancel_states>
+
+            <cancel_period translate="label comment">
+              <label>Cancel period</label>
+              <comment>In hours</comment>
+              <frontend_type>text</frontend_type>
+
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>2</sort_order>
+            </cancel_period>
+          </fields>
+        </order>
       </groups>
     </mventory_tm>
 

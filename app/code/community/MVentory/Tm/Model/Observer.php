@@ -10,6 +10,9 @@ class MVentory_Tm_Model_Observer {
 
   const XML_PATH_CRON_INTERVAL = 'mventory_tm/settings/cron';
 
+  const XML_PATH_CANCEL_STATES = 'mventory_tm/order/cancel_states';
+  const XML_PATH_CANCEL_PERIOD = 'mventory_tm/order/cancel_period';
+
   const SYNC_START_HOUR = 7;
   const SYNC_END_HOUR = 23;
   const SYNC_PERIOD_DAYS = 7;
@@ -923,5 +926,49 @@ class MVentory_Tm_Model_Observer {
 
     if ($result)
       $product->setCategoryIds((string) $result);
+  }
+
+  public function cancelOrders ($observer) {
+    $helper = Mage::helper('mventory_tm');
+
+    $_expr = 'DATE_SUB(\''
+             . now()
+             . '\', INTERVAL ';
+
+    $websites = Mage::app()->getWebsites();
+
+    foreach ($websites as $website) {
+      $states = $helper->getConfig(self::XML_PATH_CANCEL_STATES, $website);
+      $period = $helper->getConfig(self::XML_PATH_CANCEL_PERIOD, $website);
+
+      if (!($states && $period))
+        continue;
+
+      $states = explode(',', $states);
+
+      $storeId = $website
+                   ->getDefaultStore()
+                   ->getId();
+
+      $expr = new Zend_Db_Expr($_expr . (int) $period . ' DAY)');
+
+      $orders = Mage::getResourceModel('sales/order_collection')
+                  ->addFieldToFilter('status', array('in' => $states))
+                  ->addFieldToFilter('store_id', $storeId)
+                  ->addFieldToFilter('created_at', array('lt' => $expr));
+
+      foreach($orders->getItems() as $order) {
+        $_order = Mage::getModel('sales/order')
+                    ->load($order->getId());
+
+        if (!($_order->getId() && $_order->canCancel()))
+          continue;
+
+        $_order
+          ->cancel()
+          ->save();
+
+      }
+    }
   }
 }

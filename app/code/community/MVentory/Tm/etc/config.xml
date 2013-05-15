@@ -427,4 +427,18 @@
       </dummy>
     </payment>
   </default>
+
+  <crontab>
+    <jobs>
+      <mventory_cancel_orders>
+        <schedule>
+          <cron_expr>0 * * * *</cron_expr>
+        </schedule>
+
+        <run>
+          <model>mventoty_tm/observer::cancelOrders</model>
+        </run>
+      </mventory_cancel_orders>
+    </jobs>
+  </crontab>
 </config>
