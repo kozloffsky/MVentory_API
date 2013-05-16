@@ -964,10 +964,15 @@ class MVentory_Tm_Model_Observer {
         if (!($_order->getId() && $_order->canCancel()))
           continue;
 
-        $_order
-          ->cancel()
-          ->save();
+        try {
+          $_order
+            ->cancel()
+            ->save();
 
+          Mage::log('Cancel order: ' . $_order->getIncrementId());
+        } catch (Exception $e) {
+          Mage::logException($e);
+        }
       }
     }
   }
