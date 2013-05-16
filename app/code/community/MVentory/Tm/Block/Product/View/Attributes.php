@@ -139,8 +139,11 @@ class MVentory_Tm_Block_Product_View_Attributes
     if ($html) {
       if (isset($data['sku'])) {
         $url = $this->getUrl('', array('sku' => $data['sku']['value']));
-        $qrUrl = 'https://chart.googleapis.com/chart?cht=qr&chs=100x100&chl='
-                 . urlencode($url); 
+
+        
+
+        $qrUrl = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl='
+                 . urlencode(substr($url, 0, -1)); 
 
         $data['sku']['value']
           = '<a href="' . $qrUrl . '">' . $data['sku']['value'] . '</a>';
