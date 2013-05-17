@@ -610,7 +610,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                 . "\r\n"
                 . $qty;
 
-      $product->setData('mv_stock_journal', $record);
+      $product->setData('mv_stock_journal', trim($record));
     }
   }
 
