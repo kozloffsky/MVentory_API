@@ -428,6 +428,7 @@
     </payment>
   </default>
 
+  <!--
   <crontab>
     <jobs>
       <mventory_cancel_orders>
@@ -441,4 +442,5 @@
       </mventory_cancel_orders>
     </jobs>
   </crontab>
+  -->
 </config>
