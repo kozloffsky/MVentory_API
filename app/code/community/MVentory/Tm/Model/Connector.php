@@ -675,11 +675,12 @@ class MVentory_Tm_Model_Connector {
       $jsonResponse = json_decode($response->getBody());
 
       if (isset($jsonResponse->Success) && $jsonResponse->Success == 'true') {
-        if ($_formData)
+        if ($_formData) {
           Mage::helper('mventory_tm/product')
             ->setTmFields($product, $_formData);
 
-        $product->save();
+          $product->save();
+        }
 
         $return = (int)$jsonResponse->ListingId;
       }
