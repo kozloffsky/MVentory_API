@@ -37,6 +37,23 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
   public function createAndReturnInfo ($productId, $data, $storeId = null,
                                        $identifierType = null) {
 
+    if (!isset($data['file']))
+      $this->_fault('data_invalid',
+                    Mage::helper('catalog')->__('The image is not specified.'));
+
+    $file = $data['file'];
+
+    if (!isset($file['name'], $file['mime'], $file['content']))
+      $this->_fault('data_invalid',
+                    Mage::helper('catalog')->__('The image is not specified.'));
+
+
+    if (!isset($this->_mimeTypes[$file['mime']]))
+      $this->_fault('data_invalid',
+                    Mage::helper('catalog')->__('Invalid image type.'));
+
+    $file['name'] = strtolower(trim($file['name']));
+
     //$storeId = Mage::helper('mventory_tm')->getCurrentStoreId($storeId);
 
     //Temp solution, apply image settings globally
@@ -44,20 +61,31 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
 
     $images = $this->items($productId, $storeId, $identifierType);
 
+    $name = $file['name'] . '.' . $this->_mimeTypes[$file['mime']];
+
+    foreach ($images as $image)
+      //Throw of first 5 symbols becau se 'file'
+      //has following format '/i/m/image.ext' (dispretion path)
+      if (strtolower(substr($image['file'], 5)) == $name)
+        return Mage::getModel('mventory_tm/product_api')
+                 ->fullInfo($identifierType == 'sku' ? null : $productId,
+                            $productId);
+
     $hasMainImage = false;
     $hasSmallImage = false;
     $hasThumbnail = false;
 
-    foreach ($images as $image) {
-      if (in_array('image', $image['types']))
-        $hasMainImage = true;
+    if (isset($image['types']))
+      foreach ($images as $image) {
+        if (in_array('image', $image['types']))
+          $hasMainImage = true;
 
-      if (in_array('small_image', $image['types']))
-        $hasSmallImage = true;
+        if (in_array('small_image', $image['types']))
+          $hasSmallImage = true;
 
-      if (in_array('thumbnail', $image['types']))
-        $hasThumbnail = true;
-    }
+        if (in_array('thumbnail', $image['types']))
+          $hasThumbnail = true;
+      }
 
     if (!$hasMainImage)
       $data['types'][] = 'image';
