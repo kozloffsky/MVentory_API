@@ -126,12 +126,6 @@ class MVentory_Tm_Block_Product_View_Attributes
       ->unsetData('query_params')
       ->setQueryParams($queryParams);
 
-    $data[] = array(
-      'label' => 'Product ID',
-      'value' => $this->getProduct()->getId(),
-      'code' => 'id'
-    );
-
     //Round value of weight attribute or unset if it's 0
     if (isset($data['weight'])) {
       if ($data['weight']['value'] == 0)
@@ -153,6 +147,8 @@ class MVentory_Tm_Block_Product_View_Attributes
           = '<a href="' . $qrUrl . '">' . $data['sku']['value'] . '</a>';
       }
     }
+
+    unset($data['tm_listing_id']);
 
     return $data;
   }
