@@ -976,4 +976,32 @@ class MVentory_Tm_Model_Observer {
       }
     }
   }
+
+  public function subtractInventory ($observer) {
+    $invoice = $observer->getData('invoice');
+
+    foreach ($invoice->getAllItems() as $item)
+      $item->setData('total_qty', $item->getData('qty'));
+
+    $args = array('quote' => $invoice);
+
+    $observer = new Varien_Event_Observer();
+    $observer
+      ->setData('event', new Varien_Event($args))
+      ->addData($args);
+
+    Mage::getModel('cataloginventory/observer')
+      ->subtractQuoteInventory($observer)
+      ->reindexQuoteInventory($observer);
+
+    return $this;
+  }
+
+  public function setInventoryProcessed ($observer) {
+    $observer
+      ->getQuote()
+      ->setInventoryProcessed(true);
+
+    return $this;
+  }
 }
