@@ -132,9 +132,13 @@ class MVentory_Tm_Block_Product_View_Attributes
       'code' => 'id'
     );
 
-    //Round value of weight attribute
-    if (isset($data['weight']) && is_numeric($data['weight']['value']))
-      $data['weight']['value'] = round($data['weight']['value'], 2);
+    //Round value of weight attribute or unset if it's 0
+    if (isset($data['weight'])) {
+      if ($data['weight']['value'] == 0)
+        unset($data['weight']);
+      else if (is_numeric($data['weight']['value']))
+        $data['weight']['value'] = round($data['weight']['value'], 2);
+    }
 
     if ($html) {
       if (isset($data['sku'])) {
