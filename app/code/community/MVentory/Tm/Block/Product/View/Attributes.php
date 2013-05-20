@@ -54,7 +54,7 @@ class MVentory_Tm_Block_Product_View_Attributes
 
       $values = $product->getData($code);
 
-      if ($values === null || $values === '')
+      if ($values === null || $values === '' || strpos($values, '~') === 0)
         continue;
 
       $input = $attribute->getFrontendInput();
