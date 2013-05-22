@@ -25,6 +25,12 @@
           <dashboard_grids>MVentory_Tm_Block_Adminhtml_Dashboard_Grids</dashboard_grids>
         </rewrite>
       </adminhtml>
+
+      <page>
+        <rewrite>
+          <html_breadcrumbs>MVentory_Tm_Block_Html_Breadcrumbs</html_breadcrumbs>
+        </rewrite>
+      </page>
     </blocks>
 
     <models>
@@ -78,6 +84,7 @@
 
       <catalog>
         <rewrite>
+          <data>MVentory_Tm_Helper_CatalogData</data>
           <image>MVentory_Tm_Helper_Image</image>
         </rewrite>
       </catalog>
