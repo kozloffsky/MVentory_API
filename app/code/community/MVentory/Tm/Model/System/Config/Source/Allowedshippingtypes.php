@@ -23,6 +23,20 @@ class MVentory_Tm_Model_System_Config_Source_Allowedshippingtypes {
   public function toOptionArray () {
     return $this->_options;
   }
+
+  /**
+   * Return options as id => label array
+   *
+   * @return array
+   */
+  public function toArray () {
+    $options = array();
+
+    foreach ($this->_options as $option)
+      $options[$option['value']] = $option['label'];
+
+    return $options;
+  }
 }
 
 ?>

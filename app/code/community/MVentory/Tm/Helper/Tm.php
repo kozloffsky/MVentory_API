@@ -212,7 +212,7 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
    *
    * @return array List of accounts
    */
-  public function getAccounts ($website) {
+  public function getAccounts ($website, $withRandom = true) {
     $website = Mage::app()->getWebsite($website);
 
     $configData = Mage::getModel('adminhtml/config_data')
@@ -223,13 +223,18 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
     $groups = $configData->getConfigDataValue('mventory_tm')->asArray();
 
-    $accounts = array(
-      null => array('name' => $this->__('Random'))
-    );
+    $accounts = array();
+
+    if ($withRandom)
+      $accounts[null] = array('name' => $this->__('Random'));
 
     foreach ($groups as $id => $fields)
-      if (strpos($id, 'account_', 0) === 0)
+      if (strpos($id, 'account_', 0) === 0) {
+        if (isset($fields['shipping_types']))
+          $fields['shipping_types'] = unserialize($fields['shipping_types']);
+
         $accounts[$id] = $fields;
+      }
 
     return $accounts;
   }
@@ -303,5 +308,259 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
     return isset($attributes[$attributeCode])
              ? $attributes[$attributeCode]->getFrontend()->getValue($product)
                : null;
+  }
+
+  /**
+   * Upload TM optons file and import data from it
+   *
+   * @param Varien_Object $object
+   * @throws Mage_Core_Exception
+   *
+   * @return void
+   */
+  public function importOptions ($data) {
+    $shippingTypes =
+      Mage::getModel('mventory_tm/system_config_source_allowedshippingtypes')
+        ->toArray();
+
+    if (!$shippingTypes)
+      Mage::throwException($this->__('There\'re no available shipping types'));
+
+    $scopeId = $data->getScopeId();
+    $website = Mage::app()->getWebsite($scopeId);
+
+    $accounts = $this->getAccounts($website, false);
+
+    if (!$accounts)
+      Mage::throwException($this->__('There\'re no accounts in this website'));
+
+    foreach ($accounts as $id => $account)
+      $accountMap[strtolower($account['name'])] = $id;
+
+    foreach ($shippingTypes as $id => $label)
+      $shippingTypeMap[strtolower($label)] = $id;
+
+    unset($accounts, $shippingTypes);
+
+    $groupId = $data->getGroupId();
+    $field = $data->getField();
+
+    if (empty($_FILES['groups']
+                     ['tmp_name']
+                     [$groupId]
+                     ['fields']
+                     [$field]
+                     ['value']))
+      return;
+
+    $file = $_FILES['groups']['tmp_name'][$groupId]['fields'][$field]['value'];
+
+    $info = pathinfo($file);
+
+    $io = new Varien_Io_File();
+
+    $io->open(array('path' => $info['dirname']));
+    $io->streamOpen($info['basename'], 'r');
+
+    //Check and skip headers
+    $headers = $io->streamReadCsv();
+
+    if ($headers === false || count($headers) < 5) {
+      $io->streamClose();
+
+      Mage::throwException(
+        $this->__('Invalid TM options file format')
+      );
+    }
+
+    $rowNumber = 1;
+    $data = array();
+
+    $params = array(
+      'account' => $accountMap,
+      'type' => $shippingTypeMap,
+      'hash' => array(),
+      'errors' => array()
+    );
+
+    try {
+      while (false !== ($line = $io->streamReadCsv())) {
+        $rowNumber ++;
+
+        if (empty($line))
+          continue;
+
+        $row = $this->_getImportRow($line, $rowNumber, $params);
+
+        if ($row !== false)
+          $data[] = $row;
+
+      }
+
+      $io->streamClose();
+
+      $this->_saveImportedOptions($data, $website);
+
+    } catch (Mage_Core_Exception $e) {
+      $io->streamClose();
+
+      Mage::throwException($e->getMessage());
+    } catch (Exception $e) {
+      $io->streamClose();
+
+      Mage::logException($e);
+
+      $msg = 'An error occurred while import TM options.';
+      Mage::throwException($this->__($msg));
+    }
+
+    if ($params['errors']) {
+      $msg = 'File has not been imported. See the following list of errors: %s';
+      $msg = $this->__($msg, implode(" \n", $params['errors']));
+
+      Mage::throwException($msg);
+    }
+  }
+
+  /**
+   * Validate row for import and return options array or false
+   *
+   * @param array $row
+   * @param int $rowNumber
+   *
+   * @return array|false
+   */
+  protected function _getImportRow ($row, $rowNumber = 0, &$params) {
+
+    //Validate row
+    if (count($row) < 10) {
+      $msg = 'Invalid TM options format in the row #%s';
+      $params['errors'][] = $this->__($msg, $rowNumber);
+
+      return false;
+    }
+
+    //Strip whitespace from the beginning and end of each column
+    foreach ($row as $k => $v)
+      $row[$k] = trim($v);
+
+    $account = strtolower($row[0]);
+
+    if (!isset($params['account'][$account])) {
+      $msg = 'Invalid account ("%s") in the row #%s.';
+      $params['errors'][] = $this->__($msg, $row[0], $rowNumber);
+
+      return false;
+    }
+
+    $account = $params['account'][$account];
+
+    $shippingType = strtolower($row[1]);
+
+    if (!isset($params['type'][$shippingType])) {
+      $msg = 'Invalid shipping type ("%s") in the row #%s.';
+      $params['errors'][] = $this->__($msg, $row[1], $rowNumber);
+
+      return false;
+    }
+
+    $shippingType = $params['type'][$shippingType];
+
+    //Validate minimal price
+    $minimalPrice = $this->_parseDecimalValue($row[2]);
+
+    if ($minimalPrice === false) {
+      $msg = 'Invalid Minimal price ("%s") value in the row #%s.';
+      $params['errors'][] = $this->__($msg, $row[2], $rowNumber);
+
+      return false;
+    }
+
+    $freeShippingCost = $this->_parseDecimalValue($row[3]);
+
+    if ($freeShippingCost === false) {
+      $msg = 'Invalid Free shipping cost ("%s") value in the row #%s.';
+      $params['errors'][] = $this->__($msg, $row[3], $rowNumber);
+
+      return false;
+    }
+
+    //Protect from duplicate
+    $hash = sprintf('%s-%s', $account, $shippingType);
+
+    if (isset($params['hash'][$hash])) {
+      $msg = 'Duplicate Row #%s.';
+
+      $params['errors'][] = $this->__($msg, $rowNumber);
+
+      return false;
+    }
+
+    $params['hash'][$hash] = true;
+
+    return array(
+      'account' => $account,
+      'shipping_type' => $shippingType,
+      'minimal_price' => $minimalPrice,
+      'free_shipping_cost' => $freeShippingCost,
+      'allow_buy_now' => (bool) $row[4],
+      'avoid_withdraval' => (bool) $row[5],
+      'add_fees' => (bool) $row[6],
+      'allow_pickup' => (bool) $row[7],
+      'buyer' => (int) $row[8],
+      'footer' => $row[9],
+    );
+  }
+
+  /**
+   * Parse and validate positive decimal value
+   * Return false if value is not decimal or is not positive
+   *
+   * @param string $value
+   * @return bool|float
+   */
+  protected function _parseDecimalValue ($value) {
+    if (!is_numeric($value))
+      return false;
+
+    $value = (float) sprintf('%.2F', $value);
+
+    if ($value < 0.0000)
+      return false;
+
+    return $value;
+  }
+
+  /**
+   * Save parsed options in Magento config
+   * 
+   *
+   * @param string $value
+   * @return bool|float
+   */
+  protected function _saveImportedOptions ($data, $website) {
+    foreach ($data as $options) {
+      $accountId = $options['account'];
+      $shippingTypeId = $options['shipping_type'];
+
+      unset($options['account'], $options['shipping_type']);
+
+      $accounts[$accountId][$shippingTypeId] = $options;
+    }
+
+    $websiteId = $website->getId();
+    $config = Mage::getConfig();
+
+    foreach ($accounts as $id => $data)
+      $config->saveConfig(
+        'mventory_tm/' . $id . '/shipping_types',
+        serialize($data),
+        'websites',
+        $websiteId
+      );
+
+    $config->reinit();
+
+    Mage::app()->reinitStores();
   }
 }
