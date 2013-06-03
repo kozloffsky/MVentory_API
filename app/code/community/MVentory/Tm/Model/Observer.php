@@ -241,6 +241,14 @@ class MVentory_Tm_Model_Observer {
           $price = $product->getPrice();
           $qty = 1;
 
+          $shippingType = $helper->getAttributesValue(
+            $product->getId(),
+            'mv_shipping_',
+            $website
+          );
+
+          $buyer = $accountData['shipping_types'][$shippingType]['buyer'];
+
           //API function for creating order requires curren store to be set
           Mage::app()->setCurrentStore($store);
 
@@ -253,11 +261,11 @@ class MVentory_Tm_Model_Observer {
           Mage::register('tm_allow_dummyshipping', true, true);
 
           //Set customer ID for API access checks
-          Mage::register('tm_api_customer', $accountData['buyer'], true);
+          Mage::register('tm_api_customer', $buyer, true);
 
           //Make order for the product
           Mage::getModel('mventory_tm/cart_api')
-            ->createOrderForProduct($sku, $price, $qty, $accountData['buyer']);
+            ->createOrderForProduct($sku, $price, $qty, $buyer);
         }
 
         $helper->setListingId(0, $product->getId());
@@ -320,7 +328,7 @@ class MVentory_Tm_Model_Observer {
       $accountData['free_slots'] = $freeSlots >= 1 ? $freeSlots : 1;
 
       $accountData['allowed_shipping_types']
-        = explode(',', $accountData['allowed_shipping_types']);
+        = array_keys($accountData['shipping_types']);
     }
 
     unset($accountId, $accountData);
@@ -341,12 +349,13 @@ class MVentory_Tm_Model_Observer {
       if (!(isset($matchResult['id']) && $matchResult['id'] > 0))
         continue;
 
+      $shippingType = $product->getData('mv_shipping_');
+
       if (!$accountId = $product->getTmAccountId()) {
         $accountIds = array();
 
         foreach ($accounts as $accountId => $accountData)
-          if (in_array($product->getData('mv_shipping_'),
-                       $accountData['allowed_shipping_types']))
+          if (in_array($shippingType, $accountData['allowed_shipping_types']))
             $accountIds[] = $accountId;
 
         unset($accountId, $accountData);
@@ -358,6 +367,15 @@ class MVentory_Tm_Model_Observer {
                        ? $accountIds[0]
                          : $accountIds[array_rand($accountIds)];
       } else if (!isset($accounts[$accountId]))
+        continue;
+
+      $minimalPrice = (float) $accounts
+                                [$accountId]
+                                ['shipping_types']
+                                [$shippingType]
+                                ['minimal_price'];
+
+      if ($minimalPrice && ($product->getPrice() < $minimalPrice))
         continue;
 
       $result = Mage::getModel('mventory_tm/connector')

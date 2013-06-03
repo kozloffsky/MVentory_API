@@ -153,17 +153,25 @@ class MVentory_Tm_Model_Connector {
     $this->getWebsiteId($product);
     $this->setAccountId($_tmData);
 
+    $account = Mage::helper('mventory_tm/product')
+                 ->prepareAccounts(array($this->_accountData), $product);
+
+    $account = $account[0];
+
+    if (!isset($account['shipping_type']))
+      return 'No settings for product\'s shipping type';
+
     $updateTmOptions = is_array($_tmData);
 
     if (!$updateTmOptions)
       $tmData = Mage::helper('mventory_tm/product')
-                  ->getTmFields($product, $this->_accountData);
+                  ->getTmFields($product, $account);
     else {
       $tmData = $_tmData;
 
       foreach ($tmData as $key => $value)
-        if ($value == -1 && isset($this->_accountData[$key]))
-          $tmData[$key] = $this->_accountData[$key];
+        if ($value == -1 && isset($account[$key]))
+          $tmData[$key] = $account[$key];
     }
 
     self::debug(array('Final TM options: ' => $tmData));
@@ -193,29 +201,29 @@ class MVentory_Tm_Model_Connector {
 
       $productShippingType = $tmHelper->getShippingType($product);
 
-      $shippingType = isset($tmData['shipping_type'])
-                        ? $tmData['shipping_type']
-                          : self::UNDECIDED;
+      //$shippingType = isset($tmData['shipping_type'])
+      //                  ? $tmData['shipping_type']
+      //                    : self::UNDECIDED;
+      $shippingType = self::UNDECIDED;
 
       Mage::unregister('product');
       Mage::register('product', $product);
 
-      $descriptionTmpl = $this->_accountData['footer'];
+      $descriptionTmpl = $account['footer'];
 
       $description = '';
 
       if ($descriptionTmpl) {
         $_data = $product->getData();
 
-        if ($productShippingType == 'tab_ShipFree'
-            || ($productShippingType == 'tab_ShipParcel'
-                && $shippingType == self::FREE
-                && isset($this->_accountData['free_shipping_cost'])
-                && $this->_accountData['free_shipping_cost'] > 0))
-          $_data['free_shipping_text']
-            = isset($this->_accountData['free_shipping_text'])
-                ? $this->_accountData['free_shipping_text']
-                  : '';
+        //if ($productShippingType == 'tab_ShipFree'
+        //    || ($productShippingType == 'tab_ShipParcel'
+        //        && $shippingType == self::FREE
+        //        && isset($account['free_shipping_cost'])
+        //        && $account['free_shipping_cost'] > 0))
+        //  $_data['free_shipping_text'] = isset($account['free_shipping_text'])
+        //                                   ? $account['free_shipping_text']
+        //                                     : '';
 
         $description = $this->processDescription($descriptionTmpl, $_data);
 
@@ -260,38 +268,36 @@ class MVentory_Tm_Model_Connector {
 
       if (strlen($title) > self::TITLE_MAX_LENGTH)
         $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
-      elseif ($productShippingType == 'tab_ShipParcel'
-              && $shippingType == self::FREE
-              && isset($this->_accountData['free_shipping_cost'])
-              && $this->_accountData['free_shipping_cost'] > 0) {
-        $freeShippingTitle = $title . ', free shipping';
+      //elseif ($productShippingType == 'tab_ShipParcel'
+      //        && $shippingType == self::FREE
+      //        && isset($account['free_shipping_cost'])
+      //        && $account['free_shipping_cost'] > 0) {
+      //  $freeShippingTitle = $title . ', free shipping';
 
-        if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
-          $title = $freeShippingTitle;
-      }
+      //  if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
+      //    $title = $freeShippingTitle;
+      //}
 
       $price = $product->getPrice();
 
-      if ($shippingType != self::FREE) {
+      //if ($shippingType != self::FREE) {
 
         //Add shipping rate if product's shipping type is 'tab_ShipTransport'
-        if ($productShippingType == 'tab_ShipTransport') {
-          $regionName = $this->_accountData['name'];
+        if ($productShippingType == 'tab_ShipTransport')
+          $price += $tmHelper->getShippingRate(
+                      $product,
+                      $account['name'],
+                      $this->_website
+                    );
+      //} else {
 
-          $price += $tmHelper
-                      ->getShippingRate($product, $regionName, $this->_website);
-
-          unset($regionName, $website);
-        }
-      } else {
-
-        //Add free shippih cost if product's shipping type is 'tab_ShipParcel'
-        if ($productShippingType == 'tab_ShipParcel'
-            && isset($this->_accountData['free_shipping_cost'])
-            && $this->_accountData['free_shipping_cost'] > 0) {
-          $price += (float) $this->_accountData['free_shipping_cost'];
-        }
-      }
+      //  //Add free shippih cost if product's shipping type is 'tab_ShipParcel'
+      //  if ($productShippingType == 'tab_ShipParcel'
+      //      && isset($account['free_shipping_cost'])
+      //      && $account['free_shipping_cost'] > 0) {
+      //    $price += (float) $account['free_shipping_cost'];
+      //  }
+      //}
 
       //Apply fees to price of the product if it's allowed
       $price = isset($tmData['add_fees']) && $tmData['add_fees']
@@ -314,7 +320,7 @@ class MVentory_Tm_Model_Connector {
 
       unset($shippingTypes);
 
-      $pickup = $this->_getPickup($product, $tmData, $this->_accountData);
+      $pickup = $this->_getPickup($tmData, $account);
       $pickup = $this->_pickupValues[$pickup];
 
       $isBrandNew = (int) $this->_getIsBrandNew($product);
@@ -507,6 +513,14 @@ class MVentory_Tm_Model_Connector {
     $accountId = $product->getTmCurrentAccountId();
     $this->setAccountId($accountId);
 
+    $account = Mage::helper('mventory_tm/product')
+                 ->prepareAccounts(array($this->_accountData), $product);
+
+    $account = $account[0];
+
+    if (!isset($account['shipping_type']))
+      return 'No settings for product\'s shipping type';
+
     $helper = Mage::helper('mventory_tm/tm');
 
     $listingId = $product->getTmCurrentListingId();
@@ -535,12 +549,14 @@ class MVentory_Tm_Model_Connector {
 
       if ($formData)
         foreach ($formData as $key => $value)
-          if ($value == -1 && isset($this->_accountData[$key]))
-            $formData[$key] = $this->_accountData[$key];
+          if ($value == -1 && isset($account[$key]))
+            $formData[$key] = $account[$key];
 
-      $shippingType = isset($formData['shipping_type'])
-                        ? $formData['shipping_type']
-                          : self::UNDECIDED;
+      //$shippingType = isset($formData['shipping_type'])
+      //                  ? $formData['shipping_type']
+      //                    : self::UNDECIDED;
+
+      $shippingType = self::UNDECIDED;
 
       $productShippingType = $helper->getShippingType($product);
 
@@ -553,15 +569,15 @@ class MVentory_Tm_Model_Connector {
 
         if (strlen($title) > self::TITLE_MAX_LENGTH)
           $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
-        elseif ($productShippingType == 'tab_ShipParcel'
-                && $shippingType == self::FREE
-                && isset($this->_accountData['free_shipping_cost'])
-                && $this->_accountData['free_shipping_cost'] > 0) {
-          $freeShippingTitle = $title . ', free shipping';
+        //elseif ($productShippingType == 'tab_ShipParcel'
+        //        && $shippingType == self::FREE
+        //        && isset($account['free_shipping_cost'])
+        //        && $account['free_shipping_cost'] > 0) {
+        //  $freeShippingTitle = $title . ', free shipping';
 
-          if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
-            $title = $freeShippingTitle;
-        }
+        //  if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
+        //    $title = $freeShippingTitle;
+        //}
 
         $parameters['Title'] = $title;
       }
@@ -574,27 +590,24 @@ class MVentory_Tm_Model_Connector {
 
         $price = $product->getPrice();
 
-        if ($shippingType != self::FREE) {
+        //if ($shippingType != self::FREE) {
 
           //Add shipping rate if product's shipping type is 'tab_ShipTransport'
-          if ($productShippingType == 'tab_ShipTransport') {
-            $regionName = $this->_accountData['name'];
+          if ($productShippingType == 'tab_ShipTransport')
+            $price += $helper->getShippingRate(
+                        $product,
+                        $account['name'],
+                        $this->_website
+                      );
+        //} else {
 
-            $price += $helper->getShippingRate($product,
-                                               $regionName,
-                                               $this->_website);
-
-            unset($regionName, $website);
-          }
-        } else {
-
-          //Add free shippih cost if product's shipping type is 'tab_ShipParcel'
-          if ($productShippingType == 'tab_ShipParcel'
-              && isset($this->_accountData['free_shipping_cost'])
-              && $this->_accountData['free_shipping_cost'] > 0) {
-            $price += (float) $this->_accountData['free_shipping_cost'];
-          }
-        }
+        //  //Add free shippih cost if product's shipping type is 'tab_ShipParcel'
+        //  if ($productShippingType == 'tab_ShipParcel'
+        //      && isset($account['free_shipping_cost'])
+        //      && $account['free_shipping_cost'] > 0) {
+        //    $price += (float) $account['free_shipping_cost'];
+        //  }
+        //}
 
         //Apply fees to price of the product if it's allowed
         $price = isset($formData['add_fees']) && $formData['add_fees']
@@ -614,7 +627,7 @@ class MVentory_Tm_Model_Connector {
 
       //set description
       if(!isset($parameters['Description'])) {
-        $descriptionTmpl = $this->_accountData['footer'];
+        $descriptionTmpl = $account['footer'];
 
         $description = '';
 
@@ -625,15 +638,14 @@ class MVentory_Tm_Model_Connector {
 
           $_data = $product->getData();
 
-          if ($productShippingType == 'tab_ShipFree'
-              || ($productShippingType == 'tab_ShipParcel'
-                  && $shippingType == self::FREE
-                  && isset($this->_accountData['free_shipping_cost'])
-                  && $this->_accountData['free_shipping_cost'] > 0))
-            $_data['free_shipping_text']
-              = isset($this->_accountData['free_shipping_text'])
-                  ? $this->_accountData['free_shipping_text']
-                    : '';
+          //if ($productShippingType == 'tab_ShipFree'
+          //    || ($productShippingType == 'tab_ShipParcel'
+          //        && $shippingType == self::FREE
+          //        && isset($account['free_shipping_cost'])
+          //        && $account['free_shipping_cost'] > 0))
+          //  $_data['free_shipping_text'] = isset($account['free_shipping_text'])
+          //                                   ? $account['free_shipping_text']
+          //                                     : '';
 
           $description = $this->processDescription($descriptionTmpl, $_data);
 
@@ -652,8 +664,7 @@ class MVentory_Tm_Model_Connector {
 
       //Set pickup option
       if (!isset($parameters['Pickup']) && isset($formData['pickup']))
-        $parameters['Pickup']
-          = $this->_getPickup($product, $formData, $this->_accountData);
+        $parameters['Pickup'] = $this->_getPickup($formData, $account);
 
       //Set IsBrandNew option
       if (!isset($parameters['IsBrandNew']))
@@ -1028,7 +1039,7 @@ class MVentory_Tm_Model_Connector {
     return substr($data, 6, -2) / 1000;
   }
 
-  protected function _getPickup ($product, $data, $account) {
+  protected function _getPickup ($data, $account) {
     if (isset($data['pickup'])) {
       $pickup = (int) $data['pickup'];
 
@@ -1038,20 +1049,12 @@ class MVentory_Tm_Model_Connector {
         return $pickup;
     }
 
-    if (!isset($account['allow_pickup_for']))
-      return MVentory_Tm_Model_Tm::PICKUP_FORBID;
-
-    $allowPickupFor = explode(',', $account['allow_pickup_for']);
-
-    if (!count($allowPickupFor))
-      return MVentory_Tm_Model_Tm::PICKUP_FORBID;
-
-    $shippingType = Mage::helper('mventory_tm/tm')
-                      ->getShippingType($product, true);
-
-    return in_array($shippingType, $allowPickupFor)
+    return isset($account['allow_pickup']) && $account['allow_pickup']
              ? MVentory_Tm_Model_Tm::PICKUP_ALLOW
                : MVentory_Tm_Model_Tm::PICKUP_FORBID;
+
+    if (!isset($account['allow_pickup']))
+      return MVentory_Tm_Model_Tm::PICKUP_FORBID;
   }
 
   protected function _getIsBrandNew ($product) {

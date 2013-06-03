@@ -43,13 +43,20 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
                             : $tmHelper
                                 ->getAccountId($productId, $this->_website);
 
-    $this->_accounts = $tmHelper->getAccounts($this->_website);
+    $this->_accounts = $this->_helper->prepareAccounts(
+      $tmHelper->getAccounts($this->_website),
+      $product
+    );
+
+    foreach ($this->_accounts as $id => $account)
+      if ($id && !isset($account['shipping_type']))
+        unset($this->_accounts[$id]);
 
     if (!$this->_accountId)
       $this->_accountId = false;
 
     if (count($this->_accounts)) {
-      if ($tmHelper->getShippingType($product) != 'tab_ShipParcel')
+      //if ($tmHelper->getShippingType($product) != 'tab_ShipParcel')
         foreach ($this->_accounts as $id => $data)
           unset($this->_accounts[$id]['free_shipping_cost']);
 
@@ -277,15 +284,15 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $account = $this->_accounts[$this->_accountId];
 
-    $shippingType = $this->getShippingType();
+    //$shippingType = $this->getShippingType();
 
-    if ($shippingType == -1 || $shippingType == null)
-      $shippingType = $account['shipping_type'];
+    //if ($shippingType == -1 || $shippingType == null)
+    //  $shippingType = $account['shipping_type'];
 
-    if ($shippingType == MVentory_Tm_Model_Connector::FREE)
-      return isset($account['free_shipping_cost'])
-               ? $account['free_shipping_cost']
-                 : null;
+    //if ($shippingType == MVentory_Tm_Model_Connector::FREE)
+    //  return isset($account['free_shipping_cost'])
+    //           ? $account['free_shipping_cost']
+    //             : null;
     
     return isset($account['shipping_rate']) ? $account['shipping_rate'] : null;
   }
@@ -304,14 +311,16 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     if (!$addTmfees)
       return 0;
 
-    $shippingType = $this->getShippingType();
+    //$shippingType = $this->getShippingType();
 
-    if ($shippingType == -1 || $shippingType == null)
-      $shippingType = $account['shipping_type'];
+    //if ($shippingType == -1 || $shippingType == null)
+    //  $shippingType = $account['shipping_type'];
 
-    return $shippingType == MVentory_Tm_Model_Connector::FREE
-             ? $account['free_shipping_fees']
-               : $account['fees'];
+    //return $shippingType == MVentory_Tm_Model_Connector::FREE
+    //         ? $account['free_shipping_fees']
+    //           : $account['fees'];
+
+    return $account['fees'];
   }
 
   public function prepareDataForJs () {
@@ -371,10 +380,12 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
       return;
 
     foreach ($this->_accounts as &$account)
-      $account['shipping_rate']
-        = (float) $helper->getShippingRate($product,
-                                           $account['name'],
-                                           $this->_website);
+      if (isset($account['shipping_type']))
+        $account['shipping_rate'] = (float) $helper->getShippingRate(
+          $product,
+          $account['name'],
+          $this->_website
+        );
   }
 
   protected function _calculateTmFees () {
@@ -385,19 +396,22 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
                ->getPrice();
 
     foreach ($this->_accounts as &$account) {
+      if (!isset($account['shipping_type']))
+        continue;
+
       $shippingRate = isset($account['shipping_rate'])
                         ? $account['shipping_rate']
                           : 0;
 
-      $freeShippingCost = isset($account['free_shipping_cost'])
-                            ? $account['free_shipping_cost']
-                              : 0;
+      //$freeShippingCost = isset($account['free_shipping_cost'])
+      //                      ? $account['free_shipping_cost']
+      //                        : 0;
 
       $account['fees']
         = $helper->calculateFees($price + $shippingRate);
 
-      $account['free_shipping_fees']
-        = $helper->calculateFees($price + $freeShippingCost);
+      //$account['free_shipping_fees']
+      //  = $helper->calculateFees($price + $freeShippingCost);
     }
   }
 }

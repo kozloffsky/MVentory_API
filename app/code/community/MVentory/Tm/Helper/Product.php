@@ -230,4 +230,29 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
     return $this;
   }
+
+  /**
+   * Prepare TM accounts for the specified product.
+   * Leave TM options for product's shipping type only
+   *
+   * @param array $accounts TM accounts
+   * @param Mage_Catalog_Model_Product $product Product
+   *
+   * @return array
+   */
+  public function prepareAccounts ($accounts, $product) {
+    $shippingType = Mage::helper('mventory_tm/tm')
+                      ->getShippingType($product, true);
+
+    foreach ($accounts as &$account) {
+      if (isset($account['shipping_types'][$shippingType])) {
+        $account['shipping_type'] = $shippingType;
+        $account = $account + $account['shipping_types'][$shippingType];
+      }
+
+      unset($account['shipping_types']);
+    }
+
+    return $accounts;
+  }
 }
