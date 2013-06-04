@@ -11,6 +11,56 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
   extends Mage_Shipping_Model_Resource_Carrier_Tablerate {
 
   protected $_helper = null;
+  protected $_destionationConditions = array(
+    array(
+      'dest_country_id = :country_id',
+      'dest_region_id = :region_id',
+      'dest_zip = :postcode'
+    ),
+    array(
+      'dest_country_id = :country_id',
+      'dest_region_id = :region_id',
+      'dest_zip = \'\''
+    ),
+
+    // Handle asterix in dest_zip field
+    array(
+      'dest_country_id = :country_id',
+      'dest_region_id = :region_id',
+      'dest_zip = \'*\''
+    ),
+    array(
+      'dest_country_id = :country_id',
+      'dest_region_id = 0',
+      'dest_zip = \'*\''
+    ),
+    array(
+      'dest_country_id = \'0\'',
+      'dest_region_id = :region_id',
+      'dest_zip = \'*\''
+    ),
+    array(
+      'dest_country_id = \'0\'',
+      'dest_region_id = 0',
+      'dest_zip = \'*\''
+    ),
+
+    array(
+      'dest_country_id = :country_id',
+      'dest_region_id = 0',
+      'dest_zip = \'\''
+    ),
+    array(
+      'dest_country_id = :country_id',
+      'dest_region_id = 0',
+      'dest_zip = :postcode'
+    ),
+    array(
+      'dest_country_id = :country_id',
+      'dest_region_id = 0',
+      'dest_zip = \'*\''
+    )
+  );
 
   /**
    * Define main table and id field name
@@ -22,6 +72,85 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
   }
 
   /**
+   * Return table rate array or false by rate request
+   *
+   * @param Mage_Shipping_Model_Rate_Request $request
+   * @return array|boolean
+   */
+  public function getRate (Mage_Shipping_Model_Rate_Request $request) {
+    $adapter = $this->_getReadAdapter();
+
+    $bind = array(
+      ':website_id' => (int) $request->getWebsiteId(),
+      ':shipping_type' => (int) $request->getShippingType(),
+      ':country_id' => $request->getDestCountryId(),
+      ':region_id' => (int) $request->getDestRegionId(),
+      ':postcode' => $request->getDestPostcode()
+    );
+
+    $order = array(
+      'dest_country_id DESC',
+      'dest_region_id DESC',
+      'dest_zip DESC'
+    );
+
+    $where = 'website_id = :website_id AND shipping_type = :shipping_type';
+
+    $select = $adapter
+                ->select()
+                ->from($this->getMainTable())
+                ->where($where)
+                ->order($order)
+                ->limit(1);
+
+    //Render destination condition
+    foreach ($this->_destionationConditions as $conditions)
+      $orWhere[] = implode(' AND ', $conditions);
+
+    $select->where('(' . implode(') OR (', $orWhere) . ')');
+
+    $conditionNames = $request->getConditionName();
+
+    // Render condition by condition name
+    if (is_array($conditionNames)) {
+      $orWhere = array();
+      $i = 0;
+
+      foreach ($conditionNames as $conditionName) {
+        $name  = sprintf(':condition_name_%d', $i);
+        $value = sprintf(':condition_value_%d', $i);
+
+        $orWhere[] = '(condition_name = ' . $name
+                     . ' AND '
+                     . ' condition_value <= ' . $value . ')';
+
+        $bind[$name] = $conditionName;
+        $bind[$value] = $request->getData($conditionName);
+
+        $i++;
+      }
+
+      if ($orWhere)
+        $select->where(implode(' OR ', $orWhere));
+    } else {
+      $bind[':condition_name']  = $conditionNames;
+      $bind[':condition_value'] = $request->getData($conditionNames);
+
+      $select
+        ->where('condition_name = :condition_name')
+        ->where('condition_value <= :condition_value');
+    }
+
+    $result = $adapter->fetchRow($select, $bind);
+
+    //Normalize destination zip code
+    if ($result && $result['dest_zip'] == '*')
+      $result['dest_zip'] = '';
+
+    return $result;
+  }
+
+  /**
    * Upload table rate file and import data from it
    *
    * @param Varien_Object $object
@@ -30,6 +159,13 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
    * @return Mage_Shipping_Model_Resource_Carrier_Tablerate
    */
   public function uploadAndImport (Varien_Object $object) {
+    $shippingTypes =
+      Mage::getModel('mventory_tm/system_config_source_allowedshippingtypes')
+        ->toArray();
+
+    if (!$shippingTypes)
+      Mage::throwException($this->__('There\'re no available shipping types'));
+
     $scopeId = $object->getScopeId();
     $groupId = $object->getGroupId();
     $field = $object->getField();
@@ -53,6 +189,11 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
     $this->_importUniqueHash = array();
     $this->_importErrors = array();
     $this->_importedRows = 0;
+
+    foreach ($shippingTypes as $id => $label)
+      $this->_shippingTypeMap[strtolower($label)] = $id;
+
+    unset($shippingTypes);
 
     $info = pathinfo($file);
 
@@ -148,7 +289,7 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
   protected function _getImportRow ($row, $rowNumber = 0) {
 
     //Validate row
-    if (count($row) < 5) {
+    if (count($row) < 7) {
       $msg = 'Invalid Table Rates format in the row #%s';
       $this->_importErrors[] = $this->__($msg, $rowNumber);
 
@@ -159,26 +300,24 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
     foreach ($row as $k => $v)
       $row[$k] = trim($v);
 
-    //Validate country
-    if (isset($this->_importIso2Countries[$row[0]]))
-      $countryId = $this->_importIso2Countries[$row[0]];
-    elseif (isset($this->_importIso3Countries[$row[0]]))
-      $countryId = $this->_importIso3Countries[$row[0]];
-    elseif ($row[0] == '*' || $row[0] == '')
-      $countryId = '0';
-    else {
-      $msg = 'Invalid Country "%s" in the row #%s.';
+    $shippingType = strtolower($row[0]);
+
+    if (!isset($this->_shippingTypeMap[$shippingType])) {
+      $msg = 'Invalid shipping type ("%s") in the row #%s.';
       $this->_importErrors[] = $this->__($msg, $row[0], $rowNumber);
 
       return false;
     }
 
-    //Validate region
-    if ($countryId != '0'
-        && isset($this->_importRegions[$countryId][$row[1]]))
-      $regionId = $this->_importRegions[$countryId][$row[1]];
+    $shippingType = $this->_shippingTypeMap[$shippingType];
+
+    //Validate country
+    if (isset($this->_importIso2Countries[$row[1]]))
+      $countryId = $this->_importIso2Countries[$row[1]];
+    elseif (isset($this->_importIso3Countries[$row[1]]))
+      $countryId = $this->_importIso3Countries[$row[1]];
     elseif ($row[1] == '*' || $row[1] == '')
-      $regionId = 0;
+      $countryId = '0';
     else {
       $msg = 'Invalid Country "%s" in the row #%s.';
       $this->_importErrors[] = $this->__($msg, $row[1], $rowNumber);
@@ -186,37 +325,51 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
       return false;
     }
 
+    //Validate region
+    if ($countryId != '0'
+        && isset($this->_importRegions[$countryId][$row[2]]))
+      $regionId = $this->_importRegions[$countryId][$row[2]];
+    elseif ($row[2] == '*' || $row[2] == '')
+      $regionId = 0;
+    else {
+      $msg = 'Invalid Country "%s" in the row #%s.';
+      $this->_importErrors[] = $this->__($msg, $row[2], $rowNumber);
+
+      return false;
+    }
+
     //Detect zip code
-    if ($row[2] == '*' || $row[2] == '')
+    if ($row[3] == '*' || $row[3] == '')
       $zipCode = '*';
     else
-      $zipCode = $row[2];
+      $zipCode = $row[3];
 
     //Validate weight value
-    $weight = $this->_parseDecimalValue($row[3]);
+    $weight = $this->_parseDecimalValue($row[4]);
 
     //Validate weight value
-    $volume = $this->_parseDecimalValue($row[4]);
+    $volume = $this->_parseDecimalValue($row[5]);
 
     if ($weight === false && $volume === false) {
       $msg = 'Invalid Weight ("%s") and Volume ("%s") values in the row #%s.';
-      $this->_importErrors[] = $this->__($msg, $row[3], $row[4], $rowNumber);
+      $this->_importErrors[] = $this->__($msg, $row[4], $row[5], $rowNumber);
 
       return false;
     }
 
     //Validate price
-    $price = $this->_parseDecimalValue($row[5]);
+    $price = $this->_parseDecimalValue($row[6]);
 
     if ($price === false) {
       $msg = 'Invalid Shipping Price "%s" in the Row #%s.';
-      $this->_importErrors[] = $this->__($msg, $row[4], $rowNumber);
+      $this->_importErrors[] = $this->__($msg, $row[6], $rowNumber);
 
       return false;
     }
 
     //Protect from duplicate
-    $hash = sprintf('%s-%d-%s-%s-%s',
+    $hash = sprintf('%d-%s-%d-%s-%s-%s',
+                    $shippingType,
                     $countryId,
                     $regionId,
                     $zipCode,
@@ -224,13 +377,14 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
                     $volume);
 
     if (isset($this->_importUniqueHash[$hash])) {
-      $msg = 'Duplicate Row #%s (Country "%s", Region/State "%s", Zip "%s", '
-             . 'Weight "%s" and Volume "%s").';
+      $msg = 'Duplicate Row #%s (Shipping Type "%s", Country "%s", '
+             .'Region/State "%s", Zip "%s", Weight "%s" and Volume "%s").';
 
       $this->_importErrors[] = $this->__($msg,
                                          $rowNumber,
                                          $row[0],
                                          $row[1],
+                                         $row[2],
                                          $zipCode,
                                          $weight,
                                          $volume);
@@ -251,6 +405,9 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
       //website_id
       $this->_importWebsiteId,
 
+      //shipping_type
+      $shippingType,
+
       //dest_country_id
       $countryId,
 
@@ -269,6 +426,36 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
       //price
       $price
     );
+  }
+
+  /**
+   * Save import data batch
+   *
+   * @param array $data
+   * @return MVentory_Tm_Model_Resource_Carrier_Volumerate
+   */
+  protected function _saveImportData (array $data) {
+    if (empty($data))
+      return $this;
+
+    $columns = array(
+      'website_id',
+      'shipping_type',
+      'dest_country_id',
+      'dest_region_id',
+      'dest_zip',
+      'condition_name',
+      'condition_value',
+      'price'
+    );
+
+    $this
+      ->_getWriteAdapter()
+      ->insertArray($this->getMainTable(), $columns, $data);
+
+    $this->_importedRows += count($data);
+
+    return $this;
   }
 
   protected function __() {

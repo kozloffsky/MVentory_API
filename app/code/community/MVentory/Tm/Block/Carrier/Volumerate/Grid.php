@@ -36,6 +36,10 @@ class MVentory_Tm_Block_Carrier_Volumerate_Grid
 
     $this->setCollection($collection);
 
+    $shippingTypes
+      = Mage::getModel('mventory_tm/system_config_source_allowedshippingtypes')
+          ->toArray();
+
     foreach ($collection as $rate) {
       $name = $rate->getConditionName();
 
@@ -43,6 +47,14 @@ class MVentory_Tm_Block_Carrier_Volumerate_Grid
         $rate->setWeight($rate->getConditionValue());
       else if ($name == 'volume')
         $rate->setVolume($rate->getConditionValue());
+
+      $shippingType = $rate->getShippingType();
+
+      $shippingType = isset($shippingTypes[$shippingType])
+                        ? $shippingTypes[$shippingType]
+                          : '';
+
+      $rate->setShippingType($shippingType);
     }
 
     return parent::_prepareCollection();
@@ -58,6 +70,10 @@ class MVentory_Tm_Block_Carrier_Volumerate_Grid
     $tmHelper = Mage::helper('mventory_tm');
 
     $columns = array(
+      'shipping_type' => array(
+        'header' => $helper->__('Shipping Type'),
+        'index' => 'shipping_type',
+      ),
       'dest_country' => array(
         'header' => $helper->__('Country'),
         'index' => 'dest_country',

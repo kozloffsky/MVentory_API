@@ -199,7 +199,7 @@ class MVentory_Tm_Model_Connector {
 
       $tmHelper = Mage::helper('mventory_tm/tm');
 
-      $productShippingType = $tmHelper->getShippingType($product);
+      //$productShippingType = $tmHelper->getShippingType($product);
 
       //$shippingType = isset($tmData['shipping_type'])
       //                  ? $tmData['shipping_type']
@@ -282,13 +282,12 @@ class MVentory_Tm_Model_Connector {
 
       //if ($shippingType != self::FREE) {
 
-        //Add shipping rate if product's shipping type is 'tab_ShipTransport'
-        if ($productShippingType == 'tab_ShipTransport')
-          $price += $tmHelper->getShippingRate(
-                      $product,
-                      $account['name'],
-                      $this->_website
-                    );
+        //Add shipping rate using Volume/Weight based shipping method
+        $price += $tmHelper->getShippingRate(
+                    $product,
+                    $account['name'],
+                    $this->_website
+                  );
       //} else {
 
       //  //Add free shippih cost if product's shipping type is 'tab_ShipParcel'
@@ -558,7 +557,7 @@ class MVentory_Tm_Model_Connector {
 
       $shippingType = self::UNDECIDED;
 
-      $productShippingType = $helper->getShippingType($product);
+      //$productShippingType = $helper->getShippingType($product);
 
       if (!isset($parameters['Category']) && isset($formData['category'])
           && $formData['category'])
@@ -592,13 +591,12 @@ class MVentory_Tm_Model_Connector {
 
         //if ($shippingType != self::FREE) {
 
-          //Add shipping rate if product's shipping type is 'tab_ShipTransport'
-          if ($productShippingType == 'tab_ShipTransport')
-            $price += $helper->getShippingRate(
-                        $product,
-                        $account['name'],
-                        $this->_website
-                      );
+          //Add shipping rate using Volume/Weight based shipping method
+          $price += $helper->getShippingRate(
+                      $product,
+                      $account['name'],
+                      $this->_website
+                    );
         //} else {
 
         //  //Add free shippih cost if product's shipping type is 'tab_ShipParcel'

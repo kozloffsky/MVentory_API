@@ -376,9 +376,6 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $product = $this->getProduct();
 
-    if ($helper->getShippingType($product) != 'tab_ShipTransport')
-      return;
-
     foreach ($this->_accounts as &$account)
       if (isset($account['shipping_type']))
         $account['shipping_rate'] = (float) $helper->getShippingRate(
