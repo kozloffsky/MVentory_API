@@ -289,7 +289,7 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
   protected function _getImportRow ($row, $rowNumber = 0) {
 
     //Validate row
-    if (count($row) < 7) {
+    if (count($row) < 8) {
       $msg = 'Invalid Table Rates format in the row #%s';
       $this->_importErrors[] = $this->__($msg, $rowNumber);
 
@@ -367,6 +367,16 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
       return false;
     }
 
+    //Validate minimal rate
+    $minRate = $this->_parseDecimalValue($row[7]);
+
+    if ($minRate === false) {
+      $msg = 'Invalid Minimal Charge "%s" in the Row #%s.';
+      $this->_importErrors[] = $this->__($msg, $row[7], $rowNumber);
+
+      return false;
+    }
+
     //Protect from duplicate
     $hash = sprintf('%d-%s-%d-%s-%s-%s',
                     $shippingType,
@@ -424,7 +434,10 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
       $conditionValue,
 
       //price
-      $price
+      $price,
+
+      //min_rate
+      $minRate
     );
   }
 
@@ -446,7 +459,8 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
       'dest_zip',
       'condition_name',
       'condition_value',
-      'price'
+      'price',
+      'min_rate'
     );
 
     $this

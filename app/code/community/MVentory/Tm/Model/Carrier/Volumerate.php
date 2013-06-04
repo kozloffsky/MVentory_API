@@ -104,7 +104,7 @@ class MVentory_Tm_Model_Carrier_Volumerate
           $rate = $_rate['price'];
       }
 
-      $minimalRate = (float) $this->getConfigData('minimal_rate');
+      $minimalRate = (float) $_rate['min_rate'];
 
       if ($minimalRate > $rate)
         $rate = $minimalRate;

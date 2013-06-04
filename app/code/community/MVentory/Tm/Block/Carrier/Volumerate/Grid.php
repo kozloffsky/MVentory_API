@@ -100,6 +100,10 @@ class MVentory_Tm_Block_Carrier_Volumerate_Grid
       'price' => array(
         'header' => $helper->__('Shipping Price'),
         'index' => 'price',
+      ),
+      'min_rate' => array(
+        'header' => $helper->__('Minimal Rate'),
+        'index' => 'min_rate',
       )
     );
 

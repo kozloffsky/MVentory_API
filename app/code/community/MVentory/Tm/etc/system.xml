@@ -528,17 +528,6 @@
               <sort_order>4</sort_order>
             </volume_attributes>
 
-            <minimal_rate translate="label">
-              <label>Minimal rate</label>
-              <frontend_type>text</frontend_type>
-
-              <show_in_default>1</show_in_default>
-              <show_in_website>1</show_in_website>
-              <show_in_store>0</show_in_store>
-
-              <sort_order>5</sort_order>
-            </minimal_rate>
-
             <import translate="label">
               <label>Import</label>
               <frontend_type>file</frontend_type>

@@ -85,14 +85,14 @@ $table = $connection
                          'default'   => '0.0000',
                        ),
                        'Price')
-           ->addColumn('cost',
+           ->addColumn('min_rate',
                        Varien_Db_Ddl_Table::TYPE_DECIMAL,
                        '12,4',
                        array(
                          'nullable'  => false,
                          'default'   => '0.0000',
                        ),
-                       'Cost')
+                       'Minimal rate')
            ->addIndex($idxName, $fields, array('type' => $idxType))
            ->setComment('Shipping Volumerate');
 
