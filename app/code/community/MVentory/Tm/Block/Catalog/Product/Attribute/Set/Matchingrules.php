@@ -48,16 +48,16 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
 
     $keys = array_keys($this->_attrs);
 
-    array_multisort($labels, SORT_ASC, SORT_NATURAL, $keys, $this->_attrs);
+    array_multisort($labels, SORT_ASC, SORT_STRING, $keys, $this->_attrs);
 
     $this->_attrs = array_combine($keys, $this->_attrs);
 
     unset($keys, $labels);
 
     $options = Mage::getResourceModel('eav/entity_attribute_option_collection')
-                 ->setPositionOrder('asc')
                  ->setAttributeFilter(array('in' => array_keys($this->_attrs)))
-                 ->setStoreFilter($attr->getStoreId());
+                 ->setStoreFilter($attr->getStoreId())
+                 ->setPositionOrder('asc', true);
 
     foreach ($options as $option)
       $this->_attrs[$option->getAttributeId()]['values'][$option->getId()]
