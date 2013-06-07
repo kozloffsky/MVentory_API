@@ -19,6 +19,8 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
       'used_values' => array()
     );
 
+    $labels[] = '';
+
     $attrs = Mage::getResourceModel('catalog/product_attribute_collection')
                ->setAttributeSetFilter($this->_getSetId());
 
@@ -38,9 +40,19 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
         'used' => false,
         'used_values' => array()
       );
+
+      $labels[] = $attr->getFrontendLabel();
     }
 
     unset($attrs);
+
+    $keys = array_keys($this->_attrs);
+
+    array_multisort($labels, SORT_ASC, SORT_NATURAL, $keys, $this->_attrs);
+
+    $this->_attrs = array_combine($keys, $this->_attrs);
+
+    unset($keys, $labels);
 
     $options = Mage::getResourceModel('eav/entity_attribute_option_collection')
                  ->setPositionOrder('asc')
