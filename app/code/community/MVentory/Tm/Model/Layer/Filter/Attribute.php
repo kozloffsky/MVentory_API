@@ -29,9 +29,28 @@ class MVentory_Tm_Model_Layer_Filter_Attribute
    * @return array
    */
   protected function _getItemsData () {
-    $data = parent::_getItemsData();
+    $attribute = $this->getAttributeModel();
+    $layer = $this->getLayer();
+    $aggregator = $layer->getAggregator();
 
-    usort($data, array($this, '_compareLabels'));
+    $this->_requestVar = $attribute->getAttributeCode();
+
+    $key = $layer->getStateKey() . '_' . $this->_requestVar;
+    $data = $aggregator->getCacheData($key);
+
+    if ($data === null) {
+      $data = parent::_getItemsData();
+
+      usort($data, array($this, '_compareLabels'));
+
+      $tags = $layer->getStateTags(
+        array(
+          Mage_Eav_Model_Entity_Attribute::CACHE_TAG . ':' . $attribute->getId()
+        )
+      );
+
+      $aggregator->saveCacheData($data, $key, $tags);
+    }
 
     return $data;
   }
