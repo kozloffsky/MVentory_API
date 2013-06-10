@@ -41,6 +41,13 @@ class MVentory_Tm_Model_Layer_Filter_Attribute
     if ($data === null) {
       $data = parent::_getItemsData();
 
+      foreach ($data as $id => $option) {
+        $label = strtolower(trim($option['label']));
+
+        if ($label == '' || $label == 'n/a' || $label == 'none')
+          unset($data[$id]);
+      }
+
       usort($data, array($this, '_compareLabels'));
 
       $tags = $layer->getStateTags(
