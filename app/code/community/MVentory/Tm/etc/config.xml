@@ -2,7 +2,7 @@
 <config>
   <modules>
     <MVentory_Tm>
-      <version>18</version>
+      <version>19</version>
     </MVentory_Tm>
   </modules>
 
@@ -58,6 +58,10 @@
           <matching_rules>
             <table>mventory_matching_rules</table>
           </matching_rules>
+
+          <additional_skus>
+            <table>mventory_additional_skus</table>
+          </additional_skus>
         </entities>
       </mventory_tm_resources>
 

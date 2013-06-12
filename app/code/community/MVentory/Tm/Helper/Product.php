@@ -120,34 +120,54 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
   /**
    * Try to get product's ID
-   * Code is taken from Mage_Catalog_Helper_Product::getProduct()
    *
-   * @param  int|string $productId (SKU or ID)
+   * @param  int|string $productId (SKU, ID or Barcode)
    * @param  string $identifierType
    *
    * @return int|null
    */
   public function getProductId ($productId, $identifierType = null) {
-    $expectedIdType = false;
+    if ($identifierType == 'barcode')
+      return (int) $this->getProductIdByBarcode($productId);
 
-    if ($identifierType === null && is_string($productId)
-        && !preg_match("/^[+-]?[1-9][0-9]*$|^0$/", $productId))
-      $expectedIdType = 'sku';
-
-    if ($identifierType == 'sku' || $expectedIdType == 'sku') {
-      $idBySku = Mage::getResourceModel('catalog/product')
-                   ->getIdBySku($productId);
-
-      if ($idBySku)
-        $productId = $idBySku;
-      else if ($identifierType == 'sku')
-        return null;
-    }
-
-    if ($productId && is_numeric($productId))
+    if ($identifierType != 'sku' && ((int) $productId > 0))
       return (int) $productId;
 
-    return null;
+    $id = (int) Mage::getResourceModel('catalog/product')
+                  ->getIdBySku($productId);
+
+    if ($id > 0)
+      return $id;
+
+    if ($identifierType != 'sku') {
+      $id = (int) $this->getProductIdByBarcode($productId);
+
+      if ($id > 0)
+        return $id;
+    }
+
+    $id = (int) Mage::getResourceModel('mventory_tm/sku')
+                  ->getProductId($productId);
+
+    return $id > 0 ? $id : null;
+  }
+
+  /**
+   * Search product ID by value of product_barcode_ attribute
+   *
+   * !!!TODO: product_barcode_ attribute should be converted to global
+   *
+   * @param  string $barcode Barcode
+   *
+   * @return int|null
+   */
+  public function getProductIdByBarcode ($barcode) {
+    $ids = Mage::getResourceModel('catalog/product_collection')
+             ->addAttributeToFilter('product_barcode_', $barcode)
+             ->addStoreFilter($this->getCurrentStoreId())
+             ->getAllIds(1);
+
+    return $ids ? $ids[0] : null;
   }
 
   /**

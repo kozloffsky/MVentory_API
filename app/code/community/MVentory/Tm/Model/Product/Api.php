@@ -36,48 +36,41 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   const FETCH_LIMIT_PATH = 'mventory_tm/api/products-number-to-fetch';
   const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
 
-  public function fullInfo ($id = null, $sku = null, $searchByBarcode = false) {
-    if (! $id)
-      $id = Mage::getResourceModel('catalog/product')->getIdBySku($sku);
+  public function fullInfo ($productId,
+                            $identifierType = null,
+                            $none = false) {
 
-    $id = (int) $id;
-
-    if (!Mage::getModel('catalog/product')->load($id)->getId()) {
-      if ($searchByBarcode)
-      {
-        $barCode = $sku;
-
-        $currentStoreId = Mage::helper('mventory_tm')->getCurrentStoreId();
-
-        $collection = Mage::getModel('catalog/product')
-                      ->getCollection()
-                      ->addStoreFilter($currentStoreId);
-
-        $collection->addAttributeToFilter(
-          array(
-              array('attribute'=> 'product_barcode_','eq' => $barCode))
-        );
-        
-        if ($collection->count() > 0)
-        {
-          $id = $collection->getFirstItem()->getId();
-        }
-      }
+    //Support for not updated apps which requests product's info
+    //by SKU or Barcode.
+    //
+    // * 1st param is null
+    // * 2nd param contains SKU or barcode
+    // * 3rd param shows if barcode is used
+    if ($productId == null) {
+      $productId = $identifierType;
+      $identifierType = $none ? 'barcode' : 'sku';
     }
 
-    if (!($id > 0))
+    $helper = Mage::helper('mventory_tm/product');
+
+    if (!$helper->hasApiUserAccess($productId, $identifierType))
+      $this->_fault('access_denied');
+
+    $productId = $helper->getProductId($productId, $identifierType);
+
+    if (!$productId)
       $this->_fault('product_not_exists');
 
-    $website = Mage::helper('mventory_tm/product')->getWebsite($id);
+    $website = Mage::helper('mventory_tm/product')->getWebsite($productId);
     $storeId = $website
                  ->getDefaultStore()
                  ->getId();
 
-    $result = $this->info($id, $storeId, null, 'id');
+    $result = $this->info($productId, $storeId, null, 'id');
 
     $stockItem = Mage::getModel('mventory_tm/stock_item_api');
 
-    $_result = $stockItem->items($id);
+    $_result = $stockItem->items($productId);
 
     if (isset($_result[0]))
       $result = array_merge($result, $_result[0]);
@@ -107,7 +100,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                  . Mage::getSingleton('catalog/product_media_config')
                      ->getBaseMediaUrlAddition();
 
-    $images = $productAttributeMedia->items($id, $storeId, 'id');
+    $images = $productAttributeMedia->items($productId, $storeId, 'id');
 
     foreach ($images as &$image)
       $image['url'] = $mediaPath . $image['file'];
@@ -139,7 +132,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     //!!!FIXME: temp. workaround for the app
     $tmOptions['add_tm_fees'] = $tmOptions['add_fees'];
 
-    if ($listingId = Mage::helper('mventory_tm/product')->getListingId($id))
+    if ($listingId = Mage::helper('mventory_tm/product')
+                       ->getListingId($productId))
       $tmOptions['tm_listing_id'] = $listingId;
 
     $shippingTypes
@@ -260,9 +254,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   public function createAndReturnInfo ($type, $set, $sku, $productData,
                                    $storeId = null) {
 
-    $id = (int) Mage::getModel('catalog/product')
-                  ->getResource()
-                  ->getIdBySku($sku);
+    $id = Mage::helper('mventory_tm/product')->getProductId($sku, 'sku');
 
     if (! $id) {
       $helper = Mage::helper('mventory_tm');
@@ -286,9 +278,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   
   public function duplicateAndReturnInfo ($skuToDuplicate, $skuNew, $productData, $imagesCopyMode, $decreaseOriginalQTYBy) {
 
-    $id = (int) Mage::getModel('catalog/product')
-                  ->getResource()
-                  ->getIdBySku($skuNew);
+    $id = Mage::helper('mventory_tm/product')->getProductId($skuNew, 'sku');
 
     if (!$id) {
       $oldProduct = $this->_getProduct($skuToDuplicate, null, 'sku');
@@ -575,9 +565,46 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   }
 
   /**
+   * Update product data
+   *
+   * @param int|string $productId
+   * @param array $productData
+   * @param string|int $store
+   * @return boolean
+   */
+  public function update ($productId,
+                          $productData,
+                          $store = null,
+                          $identifierType = null) {
+
+    $productId = Mage::helper('mventory_tm/product')
+                   ->getProductId($productId, $identifierType);
+
+    if (!$productId)
+      $this->_fault('product_not_exists');
+
+    $result = parent::update($productId, $productData, $store, 'id');
+
+    if (!$result)
+      return $result;
+
+    if (isset($productData['stock_data']['qty'])
+        && $productData['stock_data']['qty'] == 0)
+      Mage::getResourceModel('mventory_tm/sku')->removeByProductId($productId);
+
+    $skus = isset($productData['additional_sku'])
+              ? (array) $productData['additional_sku']
+                : false;
+
+    if ($skus)
+      Mage::getResourceModel('mventory_tm/sku')->add($skus, $productId);
+  }
+
+  /**
    * Return loaded product instance
    *
    * The function is redefined to check if api user has access to the product
+   * and to load product but barcode or additional SKUs
    *
    * @param  int|string $productId (SKU or ID)
    * @param  int|string $store
@@ -587,11 +614,24 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   protected function _getProduct($productId, $store = null,
                                  $identifierType = null) {
 
-    if (!Mage::helper('mventory_tm/product')
-           ->hasApiUserAccess($productId, $identifierType))
+    $helper = Mage::helper('mventory_tm/product');
+
+    if (!$helper->hasApiUserAccess($productId, $identifierType))
       $this->_fault('access_denied');
 
-    return parent::_getProduct($productId, $store, $identifierType);
+    $productId = $helper->getProductId($productId, $identifierType);
+
+    if (!$productId)
+      $this->_fault('product_not_exists');
+
+    $product = Mage::getModel('catalog/product')
+                 ->setStoreId(Mage::app()->getStore($store)->getId())
+                 ->load($productId);
+
+    if (!$product->getId())
+      $this->_fault('product_not_exists');
+
+    return $product;
   }
 
   /**
