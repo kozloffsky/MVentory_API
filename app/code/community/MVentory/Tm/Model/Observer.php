@@ -304,8 +304,11 @@ class MVentory_Tm_Model_Observer {
     $products = Mage::getModel('catalog/product')
                   ->getCollection()
                   ->addAttributeToFilter('tm_relist', '1')
-                  ->addAttributeToFilter('tm_current_listing_id',
-                                         $listingFilter)
+                  ->addAttributeToFilter(
+                      'tm_current_listing_id',
+                      $listingFilter,
+                      'left'
+                    )
                   ->addAttributeToFilter('image', $imageFilter)
                   ->addAttributeToFilter('status', $enabled)
                   ->addStoreFilter($store);
