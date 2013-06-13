@@ -598,6 +598,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     if ($skus)
       Mage::getResourceModel('mventory_tm/sku')->add($skus, $productId);
+
+    return $result;
   }
 
   /**
