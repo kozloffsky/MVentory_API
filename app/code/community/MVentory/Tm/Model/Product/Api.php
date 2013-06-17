@@ -229,6 +229,10 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $collection
       ->addAttributeToSelect('name')
+      ->addAttributeToFilter(
+          'type_id',
+          Mage_Catalog_Model_Product_Type::TYPE_SIMPLE
+        )
       ->setPage($page, $limit);
 
     if (!$name)
