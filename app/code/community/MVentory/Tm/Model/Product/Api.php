@@ -48,7 +48,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     // * 3rd param shows if barcode is used
     if ($productId == null) {
       $productId = $identifierType;
-      $identifierType = $none ? null : 'sku';
+      $identifierType = 'sku';
     }
 
     $helper = Mage::helper('mventory_tm/product');
