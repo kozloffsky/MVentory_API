@@ -36,7 +36,7 @@ class MVentory_Tm_Block_Layer_View extends Mage_Catalog_Block_Layer_View {
 
       //Remember 'price' attribute to add it as first attribute in filter
       if ($attr->getAttributeCode() == 'price') {
-        $priceAttrs = $attr;
+        $priceAttr = $attr;
 
         continue;
       }
@@ -46,17 +46,22 @@ class MVentory_Tm_Block_Layer_View extends Mage_Catalog_Block_Layer_View {
           $sets[$setId][] = $id;
     }
 
-    //Sort sets in descending order by number of attributes in them
-    usort($sets, function ($a, $b) {
-      return count($b) - count($a);
-    });
+    $_attrs = array();
 
-    if (isset($priceAttrs))
-      $_attrs[$priceAttrs->getAttributeId()] = $priceAttrs;
+    if (isset($priceAttr))
+      $_attrs[$priceAttr->getAttributeId()] = $priceAttr;
 
-    foreach ($sets as $attrIds)
-      foreach ($attrIds as $id)
-        $_attrs[$id] = $attrs[$id];
+    if (isset($sets) && $sets) {
+
+      //Sort sets in descending order by number of attributes in them
+      usort($sets, function ($a, $b) {
+        return count($b) - count($a);
+      });
+
+      foreach ($sets as $attrIds)
+        foreach ($attrIds as $id)
+          $_attrs[$id] = $attrs[$id];
+    }
 
     $this->setData('_filterable_attributes', $_attrs);
     
