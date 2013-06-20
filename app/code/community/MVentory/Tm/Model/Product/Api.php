@@ -315,9 +315,9 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   
   public function duplicateAndReturnInfo ($oldSku,
                                           $newSku,
-                                          $data,
-                                          $mode,
-                                          $subtractQty) {
+                                          $data = array(),
+                                          $mode = 'all',
+                                          $subtractQty = 0) {
 
     $newId = Mage::helper('mventory_tm/product')->getProductId($newSku, 'sku');
 
