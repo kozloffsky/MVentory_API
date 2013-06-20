@@ -313,66 +313,85 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     return $this->fullInfo($id);
   }
   
-  public function duplicateAndReturnInfo ($skuToDuplicate, $skuNew, $productData, $imagesCopyMode, $decreaseOriginalQTYBy) {
+  public function duplicateAndReturnInfo ($oldSku,
+                                          $newSku,
+                                          $data,
+                                          $mode,
+                                          $subtractQty) {
 
-    $id = Mage::helper('mventory_tm/product')->getProductId($skuNew, 'sku');
+    $newId = Mage::helper('mventory_tm/product')->getProductId($newSku, 'sku');
 
-    if (!$id) {
-      $oldProduct = $this->_getProduct($skuToDuplicate, null, 'sku');
+    if ($newId)
+      return $this->fullInfo($newId, 'id');
 
-      if (!$id = $oldProduct->getId()) {
-        $this->_fault('product_not_exists');
-      }
+    $old = $this->_getProduct($oldSku, null, 'sku');
+    $oldId = $old->getId();
 
-      if ($decreaseOriginalQTYBy > 0) {
-        $stockItem = Mage::getModel('cataloginventory/stock_item')->loadByProduct($id);
+    $subtractQty = (int) $subtractQty;
+
+    if ($subtractQty > 0) {
+      $stock = Mage::getModel('cataloginventory/stock_item')
+                 ->loadByProduct($oldId);
         
-        if (!is_null($stockItem->getId())) {
-          $qty = $stockItem->getData('qty') - $decreaseOriginalQTYBy;
+      if ($stock->getId())
+        $stock
+          ->subtractQty($subtractQty)
+          ->save();
 
-          $this->update($id, array('stock_data' => array('qty' => $qty)));
-
-          unset($stockItem);
-        }
-      }
-
-      $newProduct = $oldProduct->duplicate();
-
-      if (!isset($productData['sku']))
-        $productData['sku'] = $skuNew;
-
-      //Reset stock journal for the duplicate
-      $productData['mv_stock_journal'] = '';
-
-      $this->update($newProduct->getId(), $productData);
-
-      $images_api = Mage::getModel('catalog/product_attribute_media_api');
-
-      $items_old = $images_api->items($id);
-      $items_new = $images_api->items($newProduct->getId());
-
-      for($pos=0; $pos<count($items_old); $pos++) {
-
-        if ($pos >= count($items_new))
-          break;
-
-        $item_old = $items_old[$pos];
-        $item_new = $items_new[$pos];
-
-        if ((strcmp($imagesCopyMode, 'none') == 0) ||
-          ((strcmp($imagesCopyMode, 'main') == 0) && (!in_array('image', $item_old['types'])))) {
-          $images_api->remove($newProduct->getId(), $item_new['file']);
-        } else {
-          if (isset($item_old['types'])) {
-            $images_api->update($newProduct->getId(), $item_new['file'], array('types' => $item_old['types']));
-          }
-        }
-      }
-
-      $id = $newProduct->getId();
+      unset($stock);
     }
+
+    if (!isset($data['sku']))
+      $data['sku'] = $newSku;
+
+    //Reset stock journal for the duplicate
+    $data['mv_stock_journal'] = '';
+
+    $new = $old->duplicate();
+    $newId = $new->getId();
+
+    unset($old, $new);
+
+    $this->update($newId, $data);
+
+    $mode = strtolower($mode);
+
+    $images = Mage::getModel('catalog/product_attribute_media_api');
+
+    $old = $images->items($oldId);
+    $new = $images->items($newId);
+
+    $countOld = count($old);
+    $countNew = count($new);
+
+    for ($n = 0; $n < $countOld && $n < $countNew; $n++) {
+      $file = $new[$n]['file'];
+
+      if ($mode == 'none') {
+        $images->remove($newId, $file);
+
+        continue;
+      }
+
+      if (!isset($old[$n]['types'])) {
+        if ($mode == 'main')
+          $images->remove($newId, $file);
+
+        continue;
+      }
+
+      $types = $old[$n]['types'];
+
+      if ($mode == 'main' && !in_array('image', $types)) {
+        $images->remove($newId, $file);
+
+        continue;
+      }
     
-    return $this->fullInfo($id);
+      $images->update($newId, $file, array('types' => $types));
+    }
+
+    return $this->fullInfo($newId);
   }
 
   /**
