@@ -17,9 +17,7 @@ class MVentory_Tm_Model_Resource_Sku
 
     $binds = array('sku' => $sku);
 
-    $result = $adapter->fetchRow($select, $binds);
-
-    return $result['product_id'];
+    return (int) $adapter->fetchOne($select, $binds);
   }
 
   public function add ($skus, $productId) {
