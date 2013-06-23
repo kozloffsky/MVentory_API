@@ -652,8 +652,17 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
               ? (array) $productData['additional_sku']
                 : false;
 
-    if ($skus)
+    if ($skus) {
       Mage::getResourceModel('mventory_tm/sku')->add($skus, $productId);
+
+      $stock = Mage::getModel('cataloginventory/stock_item')
+                 ->loadByProduct($productId);
+        
+      if ($stock->getId())
+        $stock
+          ->addQty(count($skus))
+          ->save();
+    }
 
     return $result;
   }
