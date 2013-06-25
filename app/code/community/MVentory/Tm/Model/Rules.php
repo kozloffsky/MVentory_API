@@ -86,6 +86,9 @@ class MVentory_Tm_Model_Rules
 
     foreach ($rules as $rule) {
       foreach ($rule['attrs'] as $attribute) {
+        if (!isset($_attributes[$attribute['id']]))
+          continue;
+
         $code = $_attributes[$attribute['id']];
 
         $productValue = (array) $product->getData($code);
@@ -140,6 +143,9 @@ class MVentory_Tm_Model_Rules
 
     foreach ($rules as $rule) {
       foreach ($rule['attrs'] as $attribute) {
+        if (!isset($_attributes[$attribute['id']]))
+          continue;
+
         $code = $_attributes[$attribute['id']];
 
         $productValue = (array) $product->getData($code);
