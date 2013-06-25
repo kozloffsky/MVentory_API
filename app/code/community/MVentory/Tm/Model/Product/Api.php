@@ -36,6 +36,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   const FETCH_LIMIT_PATH = 'mventory_tm/api/products-number-to-fetch';
   const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
 
+  const CONF_TYPE = Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE;
+
   public function fullInfo ($productId,
                             $identifierType = null,
                             $none = false) {
@@ -347,12 +349,96 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     //Reset stock journal for the duplicate
     $data['mv_stock_journal'] = '';
 
+    $setupConfigurable
+      = !(isset($data['type_id']) && $data['type_id'] == self::CONF_TYPE)
+        && ($attr = $this->_getConfigurableAttribute($old->getAttributeSetId()))
+        && $this->_canCreateConfugurableProduct($attr, $data)
+        && ($configurable = $this->_getConfigurableProduct($old, $attr));
+
+    if ($setupConfigurable) {
+      $code = $attr->getAttributeCode();
+      $type = $configurable->getTypeInstance();
+
+      $attrs = $type->getConfigurableAttributesAsArray();
+
+      list($attrPos, $valuePos)
+        = $this->_hasConfigurableAttribute($attrs, $attr, $data[$code]);
+
+      if ($attrPos === null)
+        $attrs[] = $this->_getConfigurableAttrData(
+          $attr,
+          array(
+            $old->getData($code),
+            $data[$code]
+          )
+        );
+      else if ($valuePos === null)
+        $attrs[$attrPos]['values'] = array_merge(
+          $attrs[$attrPos]['values'],
+          $this->_getConfigurableAttrValue($attr, $data[$code])
+        );
+      else {
+        //Find similar assigned product to update its QTY and price
+
+        $assignedProductId
+          = $this->_updateAssignedProduct($configurable, $attr, $data);
+
+        $attrs = $this->_updateOptionPrices($configurable, $attr, $attrs);
+
+        $configurable
+          ->setConfigurableAttributesData($attrs)
+          ->setCanSaveConfigurableAttributes(true)
+          ->save();
+
+        if ($assignedProductId)
+          return $this->fullInfo($assignedProductId, 'id');
+      }
+
+      if ($attrPos === null || $valuePos === null) {
+        $assignedIds[] = $oldId;
+
+        if (isset($data['price']))
+          $attrs = $this->_updateOptionPrices(
+            $configurable,
+            $attr,
+            $attrs,
+            array(
+              $old->getData($code) => $old->getPrice(),
+              $data[$code] => $data['price'] 
+            )
+          );
+
+        //Set visibility to "Not Visible Individually"
+        $data['visibility'] = 1;
+
+        $configurable->setConfigurableAttributesData($attrs);
+      }
+    }
+
     $new = $old->duplicate();
     $newId = $new->getId();
 
-    unset($old, $new);
+    unset($new);
 
     $this->update($newId, $data);
+
+    if (isset($assignedIds)) {
+
+      //Set visibility of original product to "Not Visible Individually"
+      if ($attrPos === null && $old->getVisibility() != 1)
+        $old
+          ->setVisibility(1)
+          ->save();
+  
+      $assignedIds[] = $newId;
+      $assignedIds = array_merge($type->getUsedProductIds(), $assignedIds);
+
+      $configurable
+        ->setConfigurableProductsData(array_flip($assignedIds))
+        ->setCanSaveConfigurableAttributes(true)
+        ->setStockData(array())
+        ->save();
+    }
 
     $mode = strtolower($mode);
 
@@ -601,6 +687,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
    * @return boolean
    */
   public function delete ($productId, $identifierType = null) {
+    return parent::delete($productId, $identifierType);
+
     $product = $this->_getProduct($productId, null, $identifierType);
 
     $name = $product->getName();
@@ -728,5 +816,234 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $date = Mage::getModel('core/date')->date();
 
     return $qty . ', ' . $date . ', ' . $user->getId();
+  }
+
+  protected function _getConfigurableProduct ($old, $attribute) {
+    $code = $attribute->getAttributeCode();
+
+    $data = array(
+      $code => '',
+      'status' => Mage_Catalog_Model_Product_Status::STATUS_ENABLED,
+      'visibility' => 4
+    );
+
+    return ($configurable = $this->_loadConfigurableByChild($old))
+             ? $configurable
+               : $this->_createConfigurable($old, $data);
+
+  }
+
+  protected function _loadConfigurableByChild ($child) {
+    $configurableType
+      = Mage::getResourceSingleton('catalog/product_type_configurable');
+
+    $parentIds = $configurableType->getParentIdsByChild($child->getId());
+
+    if (!$parentIds)
+      return;
+
+    //Get first ID because we use only one configurable product
+    //per simple product,
+    $configurable = $this->_getProduct($parentIds[0], null, 'id');
+
+    return $configurable->getId() ? $configurable : null;
+  }
+
+  protected function _createConfigurable ($simple, $data = array()) {
+    $sku = microtime();
+    $sku = 'C' . substr($sku, 11) . substr($sku, 2, 6);
+
+    $data += array(
+      'stock_data' => array(
+        'is_in_stock' => true
+      )
+    );
+
+    //Set type to configurable
+    $data['type_id'] = self::CONF_TYPE;
+
+    //Reset attribute values
+    $data['tm_relist'] = 0;
+    $data['product_barcode_'] = '';
+
+    try {
+
+      //Create configurable product by duplicating original product
+      $result = $this->duplicateAndReturnInfo(
+        $simple->getSku(),
+        $sku,
+        $data
+      );
+
+      $configurable = $this->_getProduct($result['product_id'], null, 'id');
+
+      return $configurable->getId() ? $configurable : null;
+    } catch (Exception $e) {}
+  }
+
+  protected function _getConfigurableAttribute ($setId) {
+    $attrs = Mage::getResourceModel('catalog/product_attribute_collection')
+               ->setAttributeSetFilter($setId)
+               ->addFieldToFilter('attribute_code', array('like' => '%\_'))
+               ->addFieldToFilter('is_configurable', '1')
+               ->addFieldToFilter('frontend_input', 'select')
+               ->addFieldToFilter(
+                   'is_global',
+                   Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL
+                 );
+
+    //We support only one configurable attribute in product,
+    //so get first one and ignore others
+    return $attrs->getFirstItem();
+  }
+
+  protected function _hasConfigurableAttribute ($attrs, $attr, $value) {
+    if (!$attrs)
+      return array(null, null);
+
+    $code = $attr->getAttributeCode();
+
+    foreach ($attrs as $attrId => $attrData)
+      if ($attrData['attribute_code'] == $code) {
+        foreach ($attrData['values'] as $valueId => $valueData)
+          if ($valueData['value_index'] == $value)
+            return array($attrId, $valueId);
+
+        return array($attrId, null);
+      }
+
+    return array(null, null);
+  }
+
+  protected function _getConfigurableAttrData ($attr, $values) {
+    return array(
+      'label' => $attr->getStoreLabel(),
+      'use_default' => true,
+      'attribute_id' => $attr->getAttributeId(),
+      'attribute_code' => $attr->getAttributeCode(),
+      'values' => $this->_getConfigurableAttrValue($attr, $values)
+    );
+  }
+
+  protected function _getConfigurableAttrValue ($attr, $values) {
+    $options = $attr
+                 ->getSource()
+                 ->getAllOptions(false, true);
+
+    if (!$options)
+      return array();
+
+    $values = (array) $values;
+    $values = array_flip($values);
+
+    $_values = array();
+
+    foreach ($options as $option)
+      if (isset($values[$option['value']]))
+        $_values[] = array(
+          'value_index' => $option['value'],
+          'label' => $option['label'],
+          'default_label' => $option['label'],
+          'store_label' => $option['label'],
+          'is_percent' => 0,
+          'pricing_value' => ''
+        );
+
+    return $_values;
+  }
+
+  protected function _canCreateConfugurableProduct ($attribute, $data) {
+    $code = $attribute->getAttributeCode();
+
+    //Configurable attribute should contain different value in the new product
+    if (!isset($data[$code]))
+      return false;
+
+    //Ignore configurable attribute when checking
+    //if old and new products are similar
+    unset($data[$code]);
+
+    foreach ($data as $_code => $_value)
+      if (substr($_code, -1) == '_')
+        return false;
+
+    return true;
+  }
+
+  protected function _updateAssignedProduct ($product, $attribute, $data) {
+    $type = $product->getTypeInstance();
+    $code = $attribute->getAttributeCode();
+
+    $assignedProduct = $type->getProductByAttributes(
+      array(
+        $code => $data[$code]
+      )
+    );
+
+    if (!$assignedProduct)
+      return;
+
+    if (isset($data['price'])) {
+      $assignedProduct->setPrice($data['price']);
+
+      $save = true;
+    }
+
+    if (isset($data['stock_data'])) {
+      $assignedProduct->setStockData($data['stock_data']);
+
+      $save = true;
+    }
+
+    if ($save)
+      $assignedProduct->save();
+
+    return $assignedProduct->getId();
+  }
+
+  protected function _updateOptionPrices ($product,
+                                          $attribute,
+                                          $attrs,
+                                          $prices = array()) {
+
+    $type = $product->getTypeInstance();
+
+    $id = $attribute->getAttributeId();
+    $code = $attribute->getAttributeCode();
+
+    $products = $type
+                  ->getUsedProductCollection()
+                  ->addAttributeToSelect('price')
+                  ->addAttributeToSelect($code);
+
+    $_prices = array();
+    $min = INF;
+
+    //Find minimal price in already assigned products
+    foreach ($products as $_product) {
+      if (($price = $_product->getPrice()) < $min)
+        $min = $price;
+
+      $_prices[(int) $_product->getData($code)] = $price;
+    }
+
+    //Find minimal price in newly assigned products
+    foreach ($prices as $optionId => $price)
+      if ($price < $min)
+        $min = $price;
+
+    $_prices = $prices + $_prices;
+
+    foreach ($attrs as &$attr)
+      if ($attr['attribute_id'] == $id) {
+        foreach ($attr['values'] as &$values)
+          $values['pricing_value'] = $_prices[$values['value_index']] - $min;
+
+        break;
+      }
+
+    $product->setPrice($min);
+
+    return $attrs;
   }
 }
