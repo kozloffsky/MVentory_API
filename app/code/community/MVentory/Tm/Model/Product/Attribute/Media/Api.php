@@ -68,8 +68,7 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
       //has following format '/i/m/image.ext' (dispretion path)
       if (strtolower(substr($image['file'], 5)) == $name)
         return Mage::getModel('mventory_tm/product_api')
-                 ->fullInfo($identifierType == 'sku' ? null : $productId,
-                            $productId);
+                 ->fullInfo($productId, $identifierType);
 
     $hasMainImage = false;
     $hasSmallImage = false;
@@ -105,8 +104,7 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
 
     $productApi = Mage::getModel('mventory_tm/product_api');
 
-    return $productApi->fullInfo($identifierType == 'sku' ? null : $productId,
-                                 $productId);
+    return $productApi->fullInfo($productId, $identifierType);
   }
 
   /**
