@@ -687,8 +687,6 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
    * @return boolean
    */
   public function delete ($productId, $identifierType = null) {
-    return parent::delete($productId, $identifierType);
-
     $product = $this->_getProduct($productId, null, $identifierType);
 
     $name = $product->getName();
