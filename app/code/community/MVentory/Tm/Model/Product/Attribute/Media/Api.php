@@ -120,10 +120,23 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
   protected function _initProduct($productId, $store = null,
                                   $identifierType = null) {
 
-    if (!Mage::helper('mventory_tm/product')
-           ->hasApiUserAccess($productId, $identifierType))
+    $helper = Mage::helper('mventory_tm/product');
+
+    if (!$helper->hasApiUserAccess($productId, $identifierType))
       $this->_fault('access_denied');
 
-    return parent::_initProduct($productId, $store, $identifierType);
+    $productId = $helper->getProductId($productId, $identifierType);
+
+    if (!$productId)
+      $this->_fault('product_not_exists');
+
+    $product = Mage::getModel('catalog/product')
+                 ->setStoreId(Mage::app()->getStore($store)->getId())
+                 ->load($productId);
+
+    if (!$product->getId())
+      $this->_fault('product_not_exists');
+
+    return $product;
   }
 }
