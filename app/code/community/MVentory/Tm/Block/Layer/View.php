@@ -20,8 +20,12 @@ class MVentory_Tm_Block_Layer_View extends Mage_Catalog_Block_Layer_View {
     if ($attrs != null)
       return $attrs;
 
-    $attrs = parent::_getFilterableAttributes()
-               ->getItems();
+    $attrs = parent::_getFilterableAttributes();
+
+    if (!$attrs)
+      return $attrs;
+
+    $attrs = $attrs->getItems();
 
     //Use IDs to filter out sets which are not used in products from
     //current category
