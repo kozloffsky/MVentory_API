@@ -352,7 +352,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $setupConfigurable
       = !(isset($data['type_id']) && $data['type_id'] == self::CONF_TYPE)
         && ($attr = $this->_getConfigurableAttribute($old->getAttributeSetId()))
-        && $this->_canCreateConfugurableProduct($attr, $data)
+        && $this->_canCreateConfugurableProduct($attr, $data, $old->getData())
         && ($configurable = $this->_getConfigurableProduct($old, $attr));
 
     if ($setupConfigurable) {
@@ -950,7 +950,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     return $_values;
   }
 
-  protected function _canCreateConfugurableProduct ($attribute, $data) {
+  protected function _canCreateConfugurableProduct ($attribute, $data, $orig) {
     $code = $attribute->getAttributeCode();
 
     //Configurable attribute should contain different value in the new product
@@ -962,7 +962,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     unset($data[$code]);
 
     foreach ($data as $_code => $_value)
-      if (substr($_code, -1) == '_')
+      if (substr($_code, -1) == '_' && $_value != $orig[$_code])
         return false;
 
     return true;
