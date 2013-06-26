@@ -832,17 +832,12 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   }
 
   protected function _loadConfigurableByChild ($child) {
-    $configurableType
-      = Mage::getResourceSingleton('catalog/product_type_configurable');
+    $helper = Mage::helper('mventory_tm/product_configurable');
 
-    $parentIds = $configurableType->getParentIdsByChild($child->getId());
-
-    if (!$parentIds)
+    if (!$id = $helper->getIdByChild($child))
       return;
 
-    //Get first ID because we use only one configurable product
-    //per simple product,
-    $configurable = $this->_getProduct($parentIds[0], null, 'id');
+    $configurable = $this->_getProduct($id, null, 'id');
 
     return $configurable->getId() ? $configurable : null;
   }
