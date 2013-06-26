@@ -185,26 +185,13 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                                      $website);
     }
 
-    $configurableType
-      = Mage::getResourceSingleton('catalog/product_type_configurable');
+     $helper = Mage::helper('mventory_tm/product_configurable');
 
-    $parentIds = $configurableType->getParentIdsByChild($productId);
-
-    if ($parentIds) {
-      $childrenIds = array();
-
-      foreach ($parentIds as $parentId) {
-        $_childrenIds = $configurableType->getChildrenIds($parentId);
-
-        $childrenIds += $_childrenIds[0];
-      }
-
-      unset($childrenIds[$productId]);
-
+    if ($siblingIds = $helper->getSiblingsIds($productId)) {
       $siblings = Mage::getResourceModel('catalog/product_collection')
                     ->addAttributeToSelect('price')
                     ->addAttributeToSelect('name')
-                    ->addIdFilter($childrenIds)
+                    ->addIdFilter($siblingIds)
                     ->addStoreFilter($storeId)
                     ->setFlag('require_stock_items');
 
