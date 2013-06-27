@@ -130,7 +130,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     if ($identifierType == 'barcode')
       return (int) $this->getProductIdByBarcode($productId);
 
-    if ($identifierType != 'sku' && ((int) $productId > 0))
+    if ($identifierType == 'id' && ((int) $productId > 0))
       return (int) $productId;
 
     $id = (int) Mage::getResourceModel('catalog/product')
