@@ -712,18 +712,23 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     if (!$productId)
       $this->_fault('product_not_exists');
 
+    $skus = isset($productData['additional_sku'])
+              ? (array) $productData['additional_sku']
+                : false;
+
+    $removeSkus = isset($productData['stock_data']['qty'])
+                  && $productData['stock_data']['qty'] == 0;
+
+    if ($skus)
+      unset($productData['stock_data']);
+
     $result = parent::update($productId, $productData, $store, 'id');
 
     if (!$result)
       return $result;
 
-    if (isset($productData['stock_data']['qty'])
-        && $productData['stock_data']['qty'] == 0)
+    if ($removeSkus)
       Mage::getResourceModel('mventory_tm/sku')->removeByProductId($productId);
-
-    $skus = isset($productData['additional_sku'])
-              ? (array) $productData['additional_sku']
-                : false;
 
     if ($skus) {
       Mage::getResourceModel('mventory_tm/sku')->add($skus, $productId);
