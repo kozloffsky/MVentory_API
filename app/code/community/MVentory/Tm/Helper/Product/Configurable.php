@@ -21,22 +21,31 @@ class MVentory_Tm_Helper_Product_Configurable
     return $parentIds ? $parentIds[0] : null;
   }
 
+  public function getChildrenIds ($configurable) {
+    $id = $configurable instanceof Mage_Catalog_Model_Product
+            ? $configurable->getId()
+              : $configurable;
+
+    $ids = Mage::getResourceSingleton('catalog/product_type_configurable')
+             ->getChildrenIds($id);
+
+    return $ids[0] ? $ids[0] : null;
+  }
+
   public function getSiblingsIds ($product) {
     $id = $product instanceof Mage_Catalog_Model_Product
             ? $product->getId()
               : $this->getProductId($product);
 
-    $configurableId = $this->getIdByChild($id);
+    if (!$configurableId = $this->getIdByChild($id))
+      return;
 
-    $ids = Mage::getResourceSingleton('catalog/product_type_configurable')
-             ->getChildrenIds($configurableId);
-
-    if (!$ids[0])
+    if (!$ids = $this->getChildrenIds($configurableId))
       return;
 
     //Unset product'd ID
-    unset($ids[0][$id]);
+    unset($ids[$id]);
 
-    return $ids[0];
+    return $ids;
   }
 }
