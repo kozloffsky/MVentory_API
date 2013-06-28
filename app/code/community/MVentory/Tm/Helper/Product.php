@@ -147,6 +147,11 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     $id = (int) Mage::getResourceModel('mventory_tm/sku')
                   ->getProductId($productId);
 
+    if ($id > 0)
+      return $id;
+
+    $id = (int) $productId;
+
     return $id > 0 ? $id : null;
   }
 
