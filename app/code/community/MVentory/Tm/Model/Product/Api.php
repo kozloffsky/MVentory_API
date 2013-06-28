@@ -299,7 +299,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $id = $this->create($type, $set, $sku, $productData, null);
     }
 
-    return $this->fullInfo($id);
+    return $this->fullInfo($id, 'id');
   }
   
   public function duplicateAndReturnInfo ($oldSku,
@@ -464,7 +464,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $images->update($newId, $file, array('types' => $types));
     }
 
-    return $this->fullInfo($newId);
+    return $this->fullInfo($newId, 'id');
   }
 
   /**
@@ -652,7 +652,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
         ->save();
     }
 
-    $result = $this->fullInfo($productId, null);
+    $result = $this->fullInfo($productId, 'id');
 
     if (!is_int($connectorResult))
     {

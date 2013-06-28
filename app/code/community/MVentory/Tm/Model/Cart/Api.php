@@ -24,7 +24,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
                    ->getOrderIdByTransaction($transactionId);
 
       if ($orderId) {
-        $result = $productApi->fullInfo(null, $sku);
+        $result = $productApi->fullInfo($sku, 'sku');
 
         $result['order_id'] = $orderId;
 
@@ -234,7 +234,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
         ->setQty($productQtyNew)
         ->save();
 
-    $result = $productApi->fullInfo($product->getId());
+    $result = $productApi->fullInfo($product->getId(), 'id');
 
     if ($orderId)
       $result['order_id'] = $orderId;
