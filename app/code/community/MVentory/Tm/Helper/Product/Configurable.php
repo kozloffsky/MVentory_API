@@ -33,9 +33,9 @@ class MVentory_Tm_Helper_Product_Configurable
   }
 
   public function getSiblingsIds ($product) {
-    $id = $configurable instanceof Mage_Catalog_Model_Product
-            ? $configurable->getId()
-              : $configurable;
+    $id = $product instanceof Mage_Catalog_Model_Product
+            ? $product->getId()
+              : $product;
 
     if (!$configurableId = $this->getIdByChild($id))
       return;
