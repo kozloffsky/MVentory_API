@@ -170,6 +170,12 @@
             <class>mventory_tm/observer</class>
             <method>uploadImageToCdn</method>
           </mventory_tm_upload_image_to_cdn>
+
+          <mventory_sync_images>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>syncImages</method>
+          </mventory_sync_images>
         </observers>
       </catalog_product_media_save_before>
 

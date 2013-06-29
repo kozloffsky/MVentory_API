@@ -773,6 +773,89 @@ class MVentory_Tm_Model_Observer {
     }
   }
 
+  public function syncImages ($observer) {
+    $product = $observer->getProduct();
+
+    $attrs = $product->getAttributes();
+
+    if (!isset($attrs['media_gallery']))
+      return;
+
+    $galleryAttribute = $attrs['media_gallery'];
+    $galleryAttributeId = $galleryAttribute->getAttributeId();
+
+    unset($attrs);
+
+    $helper = Mage::helper('mventory_tm/product_configurable');
+
+    $configurableId = $helper->getIdByChild($product);
+
+    if (!$configurableId)
+      return;
+
+    $ids = $helper->getChildrenIds($configurableId);
+    $ids[] = $configurableId;
+
+    unset($ids[$product->getId()]);
+
+    $storeId = $product->getStoreId();
+
+    $mediaAttributes = $product->getMediaAttributes();
+
+    foreach ($mediaAttributes as $code => $attr)
+      $mediaValues[$attr->getAttributeId()] = $product->getData($code);
+
+    unset($product, $mediaAttributes);
+
+    $object = new Varien_Object();
+    $object->setAttribute($galleryAttribute);
+
+    $product = new Varien_Object();
+    $product->setStoreId($storeId);
+
+    $resourse
+      = Mage::getResourceSingleton('catalog/product_attribute_backend_media');
+
+    $images = $observer->getImages();
+
+    foreach ($ids as $id) {
+      $gallery = $resourse->loadGallery($product->setId($id), $object);
+
+      foreach ($gallery as $image) {
+        $toDelete[] = $image['value_id'];
+
+        $resourse->deleteGalleryValueInStore($image['value_id'], $storeId);
+      }
+
+      if (isset($toDelete))
+        $resourse->deleteGallery($toDelete);
+
+      foreach ($images['images'] as $image) {
+        if (isset($image['removed']) && $image['removed'])
+          continue;
+
+        $resourse->insertGalleryValueInStore(
+          array(
+            'value_id' => $resourse->insertGallery(
+              array(
+                'entity_id' => $id,
+                'attribute_id' => $galleryAttributeId,
+                'value' => $image['file']
+              )
+            ),
+            'label'  => $image['label'],
+            'position' => (int) $image['position'],
+            'disabled' => (int) $image['disabled'],
+            'store_id' => $storeId
+          )
+        );
+      }
+    }
+
+    Mage::getResourceSingleton('catalog/product_action')
+      ->updateAttributes($ids, $mediaValues, $storeId);
+  }
+
   public function restoreNewAccountInConfig ($observer) {
     $configData = $observer->getObject();
 
