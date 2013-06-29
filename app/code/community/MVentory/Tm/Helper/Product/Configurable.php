@@ -29,7 +29,7 @@ class MVentory_Tm_Helper_Product_Configurable
     $ids = Mage::getResourceSingleton('catalog/product_type_configurable')
              ->getChildrenIds($id);
 
-    return $ids[0] ? $ids[0] : null;
+    return $ids[0] ? $ids[0] : array();
   }
 
   public function getSiblingsIds ($product) {
@@ -38,10 +38,10 @@ class MVentory_Tm_Helper_Product_Configurable
               : $product;
 
     if (!$configurableId = $this->getIdByChild($id))
-      return;
+      return array();
 
     if (!$ids = $this->getChildrenIds($configurableId))
-      return;
+      return array();
 
     //Unset product'd ID
     unset($ids[$id]);
