@@ -153,6 +153,12 @@
       <!-- Requires M. >= 1.7 -->
       <catalog_product_media_save_before>
         <observers>
+          <mventory_reset_exclude_flag>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>resetExcludeFlag</method>
+          </mventory_reset_exclude_flag>
+
           <tm_product_restore_duplicate_flag>
             <type>singleton</type>
             <class>mventory_tm/observer</class>

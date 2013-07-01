@@ -856,6 +856,13 @@ class MVentory_Tm_Model_Observer {
       ->updateAttributes($ids, $mediaValues, $storeId);
   }
 
+  public function resetExcludeFlag ($observer) {
+    $images = $observer->getImages();
+
+    foreach ($images['images'] as &$image)
+      $image['disabled'] = 0;
+  }
+
   public function restoreNewAccountInConfig ($observer) {
     $configData = $observer->getObject();
 
