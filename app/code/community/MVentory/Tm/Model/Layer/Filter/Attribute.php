@@ -23,6 +23,10 @@ class MVentory_Tm_Model_Layer_Filter_Attribute
     return $leftNotNumeric - $rightNotNumeric;
   }
 
+  protected function _compareCounts ($left, $right) {
+    return (int) $left['count'] < (int) $right['count'];
+  }
+
   /**
    * Get data array for building attribute filter items
    *
@@ -48,7 +52,18 @@ class MVentory_Tm_Model_Layer_Filter_Attribute
           unset($data[$id]);
       }
 
-      usort($data, array($this, '_compareLabels'));
+      if (count($data) > 10) {
+        usort($data, array($this, '_compareCounts'));
+
+        $top = array_slice($data, 0, 10);
+        $other = array_slice($data, 10);
+
+        usort($top, array($this, '_compareLabels'));
+        usort($other, array($this, '_compareLabels'));
+
+        $data = array_merge($top, $other);
+      } else
+        usort($data, array($this, '_compareLabels'));
 
       $tags = $layer->getStateTags(
         array(
