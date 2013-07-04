@@ -29,6 +29,6 @@ class MVentory_Tm_OptionsController
                  ->setWebsiteId($websiteId)
                  ->getCsvFile();
 
-    $this->_prepareDownloadResponse('options.csv', $content);
+    $this->_prepareDownloadResponse('tm-options.csv', $content);
   }
 }
