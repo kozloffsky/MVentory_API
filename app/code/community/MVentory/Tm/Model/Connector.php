@@ -333,7 +333,8 @@ class MVentory_Tm_Model_Connector {
 . $buyNow .
 '<Duration>Seven</Duration>
 <Pickup>' . $pickup . '</Pickup>
-<IsBrandNew>' . $isBrandNew . '</IsBrandNew>';
+<IsBrandNew>' . $isBrandNew . '</IsBrandNew>
+<SendPaymentInstructions>true</SendPaymentInstructions>';
 
       if ($photoId) {
         $xml .= '<PhotoIds><PhotoId>' . $photoId . '</PhotoId></PhotoIds>';
@@ -342,7 +343,6 @@ class MVentory_Tm_Model_Connector {
       $xml .= '<ShippingOptions>
 <ShippingOption><Type>' . $shippingType . '</Type></ShippingOption>
 </ShippingOptions>
-<SendPaymentInstructions>true</SendPaymentInstructions>
 <PaymentMethods>
 <PaymentMethod>CreditCard</PaymentMethod>
 <PaymentMethod>Cash</PaymentMethod>
