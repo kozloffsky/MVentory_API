@@ -416,7 +416,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
         $old
           ->setVisibility(1)
           ->save();
-  
+
       $assignedIds[] = $newId;
       $assignedIds = array_merge($type->getUsedProductIds(), $assignedIds);
 
@@ -425,9 +425,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
         ->setCanSaveConfigurableAttributes(true)
         ->setStockData(array())
         ->save();
+
+      $mode = 'ignore';
     }
 
     $mode = strtolower($mode);
+
+    if ($mode == 'ignore')
+      return $this->fullInfo($newId, 'id');
 
     $images = Mage::getModel('catalog/product_attribute_media_api');
 
@@ -857,7 +862,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $result = $this->duplicateAndReturnInfo(
         $simple->getSku(),
         $sku,
-        $data
+        $data,
+        'ignore'
       );
 
       $configurable = $this->_getProduct($result['product_id'], null, 'id');
@@ -946,10 +952,11 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     //Ignore configurable attribute when checking
     //if old and new products are similar
-    unset($data[$code]);
+    unset($data[$code], $data['product_barcode_']);
 
     foreach ($data as $_code => $_value)
-      if (substr($_code, -1) == '_' && $_value != $orig[$_code])
+      if (substr($_code, -1) == '_'
+          && !(array_key_exists($_code, $orig) && $_value == $orig[$_code]))
         return false;
 
     return true;
