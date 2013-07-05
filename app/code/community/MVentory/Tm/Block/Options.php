@@ -37,6 +37,7 @@ class MVentory_Tm_Block_Options
       'avoid_withdraval' => 'Avoid withdrawal',
       'add_fees' => 'Add TM fees',
       'allow_pickup' => 'Allow pickup',
+      'category_image' => 'Add category image',
       'buyer' => 'TM buyer ID',
       'footer' => 'Footer description'
     );

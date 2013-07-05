@@ -507,8 +507,9 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
       'avoid_withdraval' => (bool) $row[5],
       'add_fees' => (bool) $row[6],
       'allow_pickup' => (bool) $row[7],
-      'buyer' => (int) $row[8],
-      'footer' => $row[9],
+      'category_image' => (bool) $row[8],
+      'buyer' => (int) $row[9],
+      'footer' => $row[10],
     );
   }
 

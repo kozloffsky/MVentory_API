@@ -336,6 +336,9 @@ class MVentory_Tm_Model_Connector {
 <IsBrandNew>' . $isBrandNew . '</IsBrandNew>
 <SendPaymentInstructions>true</SendPaymentInstructions>';
 
+      if (isset($account['category_image']) && $account['category_image'])
+        $xml .= '<HasGallery>true</HasGallery>';
+
       if ($photoId) {
         $xml .= '<PhotoIds><PhotoId>' . $photoId . '</PhotoId></PhotoIds>';
       }
