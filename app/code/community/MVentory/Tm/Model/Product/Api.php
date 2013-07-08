@@ -639,16 +639,18 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $this->_fault('product_not_exists');
     }
 
-    //Add temp workaround until the app won't be updated
-    if (isset($tmData['add_tm_fees']))
-      $tmData['add_fees'] = $tmData['add_tm_fees'];
+    $match = Mage::getModel('mventory_tm/rules')->matchTmCategory($product);
 
-    if (isset($tmData['tm_category_id']))
-      $tmData['category'] = $tmData['tm_category_id'];
+    if (!(isset($match['id']) && $match['id'] > 0))
+      $this->_fault('unable_to_match_tm_category');
 
     $connector = Mage::getModel('mventory_tm/connector');
 
-    $connectorResult = $connector->send($product, $tmData['category'], $tmData);
+    $connectorResult = $connector->send(
+      $product,
+      $match['id'],
+      $tmData['account_id']
+    );
 
     if (is_int($connectorResult)) {
       $product

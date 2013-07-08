@@ -75,6 +75,13 @@
             <acl>mventory/catalog/product/delete</acl>
           </delete>
         </methods>
+
+        <faults module="mventory_tm">
+          <unable_to_match_tm_category>
+            <code>201</code>
+            <message>Unable to match TM category</message>
+          </unable_to_match_tm_category>
+        </faults>
       </catalog_product>
 
       <catalog_product_attribute>
