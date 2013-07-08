@@ -132,6 +132,12 @@
             <method>saveApiUserId</method>
           </mventory_tm_save_api_user_id>
 
+          <mventory_set_list_on_tm>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>setListOnTm</method>
+          </mventory_set_list_on_tm>
+
           <tm_match_category>
             <type>singleton</type>
             <class>mventory_tm/observer</class>
@@ -440,6 +446,7 @@
         <shipping_type>1</shipping_type>
         <avoid_withdrawal>1</avoid_withdrawal>
         <pickup>0</pickup>
+        <enable_listing>1</enable_listing>
       </settings>
 
       <qr>
