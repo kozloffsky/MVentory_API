@@ -19,16 +19,18 @@ class MVentory_Tm_OptionsController
    * Export TM options in csv format
    */
   public function exportAction () {
-    $websiteId = Mage::app()
-                   ->getWebsite($this->getRequest()->getParam('website'))
-                   ->getId();
+    $website = Mage::app()
+                 ->getWebsite($this->getRequest()->getParam('website'));
 
     $content = $this
                  ->getLayout()
                  ->createBlock('mventory_tm/options')
-                 ->setWebsiteId($websiteId)
+                 ->setWebsiteId($website->getId())
                  ->getCsvFile();
 
-    $this->_prepareDownloadResponse('tm-options.csv', $content);
+    $this->_prepareDownloadResponse(
+      'tm-options-' . $website->getCode() . '.csv',
+      $content
+    );
   }
 }
