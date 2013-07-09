@@ -14,7 +14,6 @@ $attributeData = array(
   'source' => 'eav/entity_attribute_source_boolean',
   'required' => false,
   'user_defined' => false,
-  'default' => 1,
   'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
 
   //Catalogue setting
