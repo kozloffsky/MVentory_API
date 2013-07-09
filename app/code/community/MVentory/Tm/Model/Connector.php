@@ -357,28 +357,34 @@ class MVentory_Tm_Model_Connector {
       if ($attributes && count($attributes)) {
         $xml .= '<Attributes>';
 
-        foreach ($attributes as $attribute) {
-          $name = strtolower($attribute['Name']);
+        $productAttributes = $product->getAttributes();
 
-          $data = null;
+        foreach ($attributes as $attribute) {
+          $name = 'tma_' . strtolower($attribute['Name']);
+
+          $hasData = false;
 
           if ($product->hasData($name))
-            $data = $product->getData($name);
+            $hasData = true;
           else {
             $name .= '_';
 
             if ($product->hasData($name))
-              $data = $product->getData($name);
+              $hasData = true;
           }
 
-          if ($data == null)
+          if (!$hasData)
             if ($attribute['IsRequiredForSell'])
               return 'Product has empty ' . $name . ' attribute';
             else
               continue;
 
+          $data = $productAttributes[$name]
+                    ->getFrontend()
+                    ->getValue($product);
+
           $xml .= '<Attribute>';
-          $xml .= '<Name>' . $name . '</Name>';
+          $xml .= '<Name>' . $attribute['Name'] . '</Name>';
           $xml .= '<Value>' . $data . '</Value>';
           $xml .= '</Attribute>';
         }
