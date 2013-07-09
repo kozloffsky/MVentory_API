@@ -333,6 +333,10 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     if (!isset($data['sku']))
       $data['sku'] = $newSku;
 
+    //Set visibility to "Catalog, Search". By default all products are visible.
+    //They will be hidden if configurable one is created.
+    $data['visibility'] = 4;
+
     //Reset stock journal for the duplicate
     $data['mv_stock_journal'] = '';
 
