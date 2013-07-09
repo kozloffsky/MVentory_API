@@ -1065,10 +1065,11 @@ class MVentory_Tm_Model_Connector {
   }
 
   protected function _getIsBrandNew ($product) {
-    return in_array(
-      $product->getData('mv_condition_'),
-      explode(',', $this->_getConfig(self::LIST_AS_NEW_PATH))
-    );
+    return ($value = $product->getData('mv_condition_')) === null
+           || in_array(
+                $value,
+                explode(',', $this->_getConfig(self::LIST_AS_NEW_PATH))
+              );
   }
 
   public function getTmCategories () {
