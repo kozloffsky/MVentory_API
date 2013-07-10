@@ -496,7 +496,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
       if (isset($productData['product_quantity_new']))
         $productData['product_model']->getStockItem()
           ->setUseConfigManageStock(0)
-          ->setQty($productQtyNew)
+          ->setQty($productData['product_quantity_new'])
           ->save();
     }
     
