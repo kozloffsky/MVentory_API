@@ -25,6 +25,7 @@ class MVentory_Tm_Model_Observer {
   );
 
   const TAG_TM_EMAILS = 'tag_tm_emails';
+  const TAG_TM_FREE_SLOTS = 'tag_tm_free_slots';
 
   public function removeListingFromTm ($observer) {
     if (Mage::registry('tm_disable_withdrawal'))
@@ -325,15 +326,42 @@ class MVentory_Tm_Model_Observer {
       $freeSlots = $accountData['free_slots'];
 
       $freeSlots = ($poolSize < $freeSlots)
-                     ? round($poolSize / $runsNumber)
-                       : round($freeSlots / $runsNumber);
+                     ? $poolSize / $runsNumber
+                       : $freeSlots / $runsNumber;
 
-      //One product should be uploaded at least
-      $accountData['free_slots'] = $freeSlots >= 1 ? $freeSlots : 1;
+      $cacheId = implode(
+        '_',
+        array(
+          $website->getCode(),
+          $accountData['name'],
+          'free_slots'
+        )
+      );
+
+      $freeSlots += (float) Mage::app()->loadCache($cacheId);
+
+      $_freeSlots = (int) floor($freeSlots);
+
+      Mage::app()->saveCache(
+        $freeSlots - $_freeSlots,
+        $cacheId,
+        array(self::TAG_TM_FREE_SLOTS)
+      );
+
+      if ($_freeSlots < 1) {
+        unset($accounts[$accountId]);
+
+        continue;
+      }
+
+      $accountData['free_slots'] = $_freeSlots;
 
       $accountData['allowed_shipping_types']
         = array_keys($accountData['shipping_types']);
     }
+
+    if (!count($accounts))
+      return;
 
     unset($accountId, $accountData);
 
