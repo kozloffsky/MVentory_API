@@ -880,7 +880,7 @@ class MVentory_Tm_Model_Connector {
     $_attrs = Mage::app()
               ->getLayout()
               ->createBlock('mventory_tm/product_view_attributes')
-              ->getAdditionalData(array(), false);
+              ->getAdditionalData(array('product_barcode_'), false);
 
     $attrs = '';
 
