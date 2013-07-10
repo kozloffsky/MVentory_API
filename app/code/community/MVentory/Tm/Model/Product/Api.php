@@ -201,9 +201,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
      $helper = Mage::helper('mventory_tm/product_configurable');
 
     if ($siblingIds = $helper->getSiblingsIds($productId)) {
+      foreach ($result['set_attributes'] as $attr)
+        if ($attr['is_configurable'])
+          break;
+
       $siblings = Mage::getResourceModel('catalog/product_collection')
                     ->addAttributeToSelect('price')
                     ->addAttributeToSelect('name')
+                    ->addAttributeToSelect($attr['attribute_code'])
                     ->addIdFilter($siblingIds)
                     ->addStoreFilter($storeId)
                     ->setFlag('require_stock_items');
@@ -214,7 +219,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
           'sku' => $sibling->getSku(),
           'name' => $sibling->getName(),
           'price' => $sibling->getPrice(),
-          'qty' => $sibling->getStockItem()->getQty()
+          'qty' => $sibling->getStockItem()->getQty(),
+          $attr['attribute_code'] => $sibling->getData($attr['attribute_code'])
         );
     }
 
