@@ -84,10 +84,23 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $result['set_attributes'] = array();
 
     foreach ($_result as $_attr) {
+      if (substr($_attr['code'], -1) != '_')
+        continue;
+
       $attr = $productAttribute->info($_attr['attribute_id'], $storeId);
 
-      $attr['options']
-        = $productAttribute->options($attr['attribute_id'], $storeId);
+      $attr = array(
+        'attribute_code' => $attr['attribute_code'],
+        'frontend_input' => $attr['frontend_input'],
+        'default_value' => $attr['default_value'],
+        'is_configurable' => $attr['is_configurable'],
+        'frontend_label' => $attr['frontend_label'],
+        'options' => array()
+      );
+
+      if ($_attr['type'] == 'select' || $_attr['type'] == 'multiselect')
+        $attr['options']
+          = $productAttribute->options($_attr['attribute_id'], $storeId);
 
       $result['set_attributes'][] = $attr;
     }
