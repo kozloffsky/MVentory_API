@@ -6,6 +6,7 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
     $numberOfRenamedProducts = 0;
 
     $templates = array();
+    $frontends = array();
 
     $attributeResource
                    = Mage::getResourceSingleton('mventory_tm/entity_attribute');
@@ -31,26 +32,44 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
         $defaultValue = $attributeResource
                           ->getDefaultValueByLabel($attributeSetName, $storeId);
 
-        if ($defaultValue)
+        if ($defaultValue) {
           $templates[$attributeSetId] = $defaultValue;
+
+          $attrs = Mage::getResourceModel('eav/entity_attribute_collection')
+                     ->setAttributeSetFilter($attributeSetId);
+
+          foreach ($attrs as $attr) {
+            $code = $attr->getAttributeCode();
+
+            if (isset($frontends[$code]))
+              continue;
+
+            $resource = $product->getResource();
+
+            $frontends[$code] = $attr
+                                  ->setEntity($resource)
+                                  ->getFrontend();
+
+            $sortFrontends = true;
+          }
+
+          unset($attrs);
+
+          if (isset($sortFrontends) && $sortFrontends)
+            uksort(
+              $frontends,
+              function ($a, $b) { return strlen($a) < strlen($b); }
+            );
+        }
       }
 
       if (!$templates[$attributeSetId])
         continue;
 
-      $productData = $product->getData();
-
-      $productResource = $product->getResource();
-
       $mapping = array();
 
-      foreach ($productData as $code => $value) {
-        //If field is an attribute...
-        if ($attribute = $productResource->getAttribute($code))
-          //... then get label for its value
-          $value = $attribute
-                     ->getFrontend()
-                     ->getValue($product);
+      foreach ($frontends as $code => $frontend) {
+        $value = $frontend->getValue($product);
 
         //Try converting value of the field to a string. Set it to empty if
         //value of the field is array or class which doesn't support convertion
