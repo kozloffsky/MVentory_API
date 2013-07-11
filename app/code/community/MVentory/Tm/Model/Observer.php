@@ -345,7 +345,8 @@ class MVentory_Tm_Model_Observer {
       Mage::app()->saveCache(
         $freeSlots - $_freeSlots,
         $cacheId,
-        array(self::TAG_TM_FREE_SLOTS)
+        array(self::TAG_TM_FREE_SLOTS),
+        null
       );
 
       if ($_freeSlots < 1) {
