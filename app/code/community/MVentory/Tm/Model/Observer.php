@@ -384,7 +384,12 @@ class MVentory_Tm_Model_Observer {
 
       $shippingType = $product->getData('mv_shipping_');
 
-      if (!$accountId = $product->getTmAccountId()) {
+      $accountId = $product->getTmAccountId();
+
+      if ($accountId && !isset($accounts[$accountId]))
+        $product->setTmAccountId($accountId = null);
+
+      if (!$accountId) {
         $accountIds = array();
 
         foreach ($accounts as $accountId => $accountData)
@@ -399,8 +404,7 @@ class MVentory_Tm_Model_Observer {
         $accountId = $accountsNumber == 1
                        ? $accountIds[0]
                          : $accountIds[array_rand($accountIds)];
-      } else if (!isset($accounts[$accountId]))
-        continue;
+      }
 
       $minimalPrice = (float) $accounts
                                 [$accountId]
