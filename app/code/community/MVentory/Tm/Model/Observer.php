@@ -323,12 +323,6 @@ class MVentory_Tm_Model_Observer {
 
     //Calculate avaiable slots for current run of the sync script
     foreach ($accounts as $accountId => &$accountData) {
-      $freeSlots = $accountData['free_slots'];
-
-      $freeSlots = ($poolSize < $freeSlots)
-                     ? $poolSize / $runsNumber
-                       : $freeSlots / $runsNumber;
-
       $cacheId = implode(
         '_',
         array(
@@ -338,7 +332,8 @@ class MVentory_Tm_Model_Observer {
         )
       );
 
-      $freeSlots += (float) Mage::app()->loadCache($cacheId);
+      $freeSlots = $accountData['max_listings'] / $runsNumber
+                   + Mage::app()->loadCache($cacheId);
 
       $_freeSlots = (int) floor($freeSlots);
 
