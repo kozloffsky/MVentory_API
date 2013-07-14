@@ -38,6 +38,45 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
   const CONF_TYPE = Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE;
 
+  protected $_excludeFromProduct = array(
+    'type' => true,
+    'type_id' => true,
+    'old_id' => true,
+    'news_from_date' => true,
+    'news_to_date' => true,
+    'country_of_manufacture' => true,
+    'category_ids' => true,
+    'required_options' => true,
+    'has_options' => true,
+    'image_label' => true,
+    'small_image_label' => true,
+    'thumbnail_label' => true,
+    'group_price' => true,
+    'special_price' => true,
+    'special_from_date' => true,
+    'special_to_date' => true,
+    'tier_price' => true,
+    'msrp_enabled' => true,
+    'minimal_price' => true,
+    'msrp_display_actual_price_type' => true,
+    'msrp' => true,
+    'enable_googlecheckout' => true,
+    'meta_title' => true,
+    'meta_keyword' => true,
+    'meta_description' => true,
+    'is_recurring' => true,
+    'recurring_profile' => true,
+    'custom_design' => true,
+    'custom_design_from' => true,
+    'custom_design_to' => true,
+    'custom_layout_update' => true,
+    'page_layout' => true,
+    'options_container' => true,
+    'gift_message_available' => true,
+    'url_key' => true,
+    'visibility' => true,
+  );
+
   public function fullInfo ($productId,
                             $identifierType = null,
                             $none = false) {
@@ -68,7 +107,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                  ->getDefaultStore()
                  ->getId();
 
-    $result = $this->info($productId, $storeId, null, 'id');
+    $_result = $this->info($productId, $storeId, null, 'id');
+
+    foreach ($_result as $key => $value) {
+      if (isset($this->_excludeFromProduct[$key]))
+        continue;
+
+      $result[$key] = $value;
+    }
 
     $stockItem = Mage::getModel('mventory_tm/stock_item_api');
 
