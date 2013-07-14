@@ -327,7 +327,7 @@ class MVentory_Tm_Model_Observer {
         '_',
         array(
           $website->getCode(),
-          $accountData['name'],
+          $accountId,
           'free_slots'
         )
       );
