@@ -280,9 +280,14 @@ class MVentory_Tm_Model_Observer {
     if (!($allowSubmit && $runsNumber))
       return;
 
-    foreach ($accounts as $accountId => $accountData)
+    foreach ($accounts as $accountId => $accountData) {
+
+      //Remember IDs of all existing accounts for further using
+      $allAccountsIDs[$accountId] = true;
+
       if (($accountData['max_listings'] - $accountData['listings']) < 1)
         unset($accounts[$accountId]);
+    }
 
     unset($accountId, $accountData);
 
@@ -366,16 +371,17 @@ class MVentory_Tm_Model_Observer {
       if (!$product->getId())
         continue;
 
+      if ($accountId = $product->getTmAccountId())
+        if (!isset($allAccountsIDs[$accountId]))
+          $product->setTmAccountId($accountId = null);
+        else if (!isset($accounts[$accountId]))
+          continue;
+
       $matchResult = Mage::getModel('mventory_tm/rules')
                        ->matchTmCategory($product);
 
       if (!(isset($matchResult['id']) && $matchResult['id'] > 0))
         continue;
-
-      $accountId = $product->getTmAccountId();
-
-      if ($accountId && !isset($accounts[$accountId]))
-        $product->setTmAccountId($accountId = null);
 
       $accountIds = $accountId
                       ? (array) $accountId
