@@ -372,79 +372,78 @@ class MVentory_Tm_Model_Observer {
       if (!(isset($matchResult['id']) && $matchResult['id'] > 0))
         continue;
 
-      $shippingType = $product->getData('mv_shipping_');
-
       $accountId = $product->getTmAccountId();
 
       if ($accountId && !isset($accounts[$accountId]))
         $product->setTmAccountId($accountId = null);
 
-      if (!$accountId) {
-        $accountIds = array();
+      $accountIds = $accountId
+                      ? (array) $accountId
+                        : array_keys($accounts);
 
-        foreach ($accounts as $accountId => $accountData)
-          if (in_array($shippingType, $accountData['allowed_shipping_types']))
-            $accountIds[] = $accountId;
+      shuffle($accountIds);
 
-        unset($accountId, $accountData);
+      $shippingType = $product->getData('mv_shipping_');
 
-        if (!$accountsNumber = count($accountIds))
+      foreach ($accountIds as $accountId) {
+        $accountData = $accounts[$accountId];
+
+        $minimalPrice = (float) $accountData
+                                   ['shipping_types']
+                                   [$shippingType]
+                                   ['minimal_price'];
+
+        if ($minimalPrice && ($product->getPrice() < $minimalPrice))
           continue;
 
-        $accountId = $accountsNumber == 1
-                       ? $accountIds[0]
-                         : $accountIds[array_rand($accountIds)];
-      }
+        if (!in_array($shippingType, $accountData['allowed_shipping_types']))
+          continue;
 
-      $minimalPrice = (float) $accounts
-                                [$accountId]
-                                ['shipping_types']
-                                [$shippingType]
-                                ['minimal_price'];
+        $result = Mage::getModel('mventory_tm/connector')
+                    ->send($product, $matchResult['id'], $accountId);
 
-      if ($minimalPrice && ($product->getPrice() < $minimalPrice))
-        continue;
+        if (trim($result) == 'Insufficient balance') {
+          $cacheId = array(
+            $website->getCode(),
+            $accountData['name'],
+            'negative_balance'
+          );
 
-      $result = Mage::getModel('mventory_tm/connector')
-                  ->send($product, $matchResult['id'], $accountId);
+          $cacheId = implode('_', $cacheId);
 
-      if (trim($result) == 'Insufficient balance') {
-        $cacheId = array(
-          $website->getCode(),
-          $accounts[$accountId]['name'],
-          'negative_balance'
-        );
+          if (!Mage::app()->loadCache($cacheId)) {
+            $helper->sendEmailTmpl(
+              'mventory_negative_balance',
+              array('account' => $accountData['name']),
+              $website
+            );
 
-        $cacheId = implode('_', $cacheId);
+            Mage::app()
+              ->saveCache(true, $cacheId, array(self::TAG_TM_EMAILS), 3600);
+          }
 
-        if (!Mage::app()->loadCache($cacheId)) {
-          $vars = array('account' => $accounts[$accountId]['name']);
+          if (count($accounts) == 1)
+            return;
 
-          $helper->sendEmailTmpl('mventory_negative_balance', $vars, $website);
-
-          Mage::app()
-            ->saveCache(true, $cacheId, array(self::TAG_TM_EMAILS), 3600);
-        }
-
-        unset($accounts[$accountId]);
-
-        if (!count($accounts))
-          break;
-
-        continue;
-      }
-
-      if (is_int($result)) {
-        $product
-          ->setTmListingId($result)
-          ->setTmCurrentListingId($result)
-          ->save();
-
-        if (!--$accounts[$accountId]['free_slots']) {
           unset($accounts[$accountId]);
 
-          if (!count($accounts))
-            break;
+          continue;
+        }
+
+        if (is_int($result)) {
+          $product
+            ->setTmListingId($result)
+            ->setTmCurrentListingId($result)
+            ->save();
+
+          if (!--$accounts[$accountId]['free_slots']) {
+            if (count($accounts) == 1)
+              return;
+
+            unset($accounts[$accountId]);
+          }
+
+          break;
         }
       }
     }
