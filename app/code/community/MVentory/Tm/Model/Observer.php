@@ -203,8 +203,6 @@ class MVentory_Tm_Model_Observer {
     }
 
     foreach ($accounts as $accountId => &$accountData) {
-      $accountData['free_slots'] = 0;
-
       $products = Mage::getModel('catalog/product')
                     ->getCollection()
                     ->addAttributeToSelect('tm_relist')
@@ -275,9 +273,6 @@ class MVentory_Tm_Model_Observer {
 
       if ($accountData['listings'] < 0)
         $accountData['listings'] = 0;
-
-      $accountData['free_slots']
-        = $accountData['max_listings'] - $accountData['listings'];
     }
 
     unset($accountId, $accountData);
@@ -286,7 +281,7 @@ class MVentory_Tm_Model_Observer {
       return;
 
     foreach ($accounts as $accountId => $accountData)
-      if ($accountData['free_slots'] < 1)
+      if (($accountData['max_listings'] - $accountData['listings']) < 1)
         unset($accounts[$accountId]);
 
     unset($accountId, $accountData);
