@@ -388,15 +388,15 @@ class MVentory_Tm_Model_Observer {
       foreach ($accountIds as $accountId) {
         $accountData = $accounts[$accountId];
 
+        if (!in_array($shippingType, $accountData['allowed_shipping_types']))
+          continue;
+
         $minimalPrice = (float) $accountData
                                    ['shipping_types']
                                    [$shippingType]
                                    ['minimal_price'];
 
         if ($minimalPrice && ($product->getPrice() < $minimalPrice))
-          continue;
-
-        if (!in_array($shippingType, $accountData['allowed_shipping_types']))
           continue;
 
         $result = Mage::getModel('mventory_tm/connector')
