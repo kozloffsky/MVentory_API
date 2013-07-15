@@ -45,7 +45,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     'news_from_date' => true,
     'news_to_date' => true,
     'country_of_manufacture' => true,
-    'category_ids' => true,
+    'categories' => true,
     'required_options' => true,
     'has_options' => true,
     'image_label' => true,
@@ -74,7 +74,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     'options_container' => true,
     'gift_message_available' => true,
     'url_key' => true,
-    'visibility' => true,
+    'visibility' => true
   );
 
   public function fullInfo ($productId,
@@ -167,11 +167,6 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $image['url'] = $mediaPath . $image['file'];
 
     $result['images'] = $images;
-
-    $category = Mage::getModel('catalog/category_api');
-
-    foreach ($result['categories'] as $i => $categoryId)
-      $result['categories'][$i] = $category->info($categoryId, $storeId);
 
     //TM specific details start here
 
