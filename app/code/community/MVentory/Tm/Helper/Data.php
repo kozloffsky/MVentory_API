@@ -167,6 +167,28 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     return $this->_baseMediaUrl;
   }
 
+  /**
+   * Return configurable attribute by attribute set ID
+   *
+   * It searches configurable attribute which is global and has underscore
+   * at the end and select as frontend
+   *
+   * NOTE: the function returns first attribute because we support
+   *       only one configurable attribute in product
+   */
+  public function getConfigurableAttribute ($setId) {
+    return Mage::getResourceModel('catalog/product_attribute_collection')
+             ->setAttributeSetFilter($setId)
+             ->addFieldToFilter('attribute_code', array('like' => '%\_'))
+             ->addFieldToFilter('is_configurable', '1')
+             ->addFieldToFilter('frontend_input', 'select')
+             ->addFieldToFilter(
+                 'is_global',
+                 Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL
+               )
+             ->getFirstItem();
+  }
+
   public function getConfig ($path, $website) {
     $website = Mage::app()->getWebsite($website);
 

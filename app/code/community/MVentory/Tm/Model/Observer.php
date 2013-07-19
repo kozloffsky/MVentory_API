@@ -1160,4 +1160,151 @@ class MVentory_Tm_Model_Observer {
 
     $product->setData('tm_relist', $relist);
   }
+
+  public function updateDuplicate ($observer) {
+    $data = $observer
+              ->getCurrentProduct()
+              ->getData('mventory_update_duplicate');
+
+    if ($data)
+      $observer
+        ->getNewProduct()
+        ->addData($data);
+  }
+
+  
+  public function saveAttributesHash ($observer) {
+    $product = $observer->getProduct();
+
+    if ($product->getTypeId()
+          == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE)
+      return $this;
+
+    $configurable = Mage::helper('mventory_tm')
+                      ->getConfigurableAttribute($product->getSetId());
+
+    if (!($configurable && $configurable->getId()))
+      return;
+
+    foreach ($product->getAttributes() as $_attribute) {
+      $code = $_attribute->getAttributeCode();
+
+      if (substr($code, -1) == '_')
+        $data[$code] = $product->getData($code);
+    }
+
+    if (!isset($data))
+      return;
+
+    unset(
+      $data[$configurable->getAttributeCode()],
+      $data['product_barcode_']
+    );
+
+    if ($data)
+      $product->setData(
+        'mv_attributes_hash',
+        md5(implode('', array_keys($data)) . implode('', $data))
+      );
+  }
+
+  public function assignToConfigurableBefore ($observer) {
+    $product = $observer->getProduct();
+
+    if ($product->getData('mventory_assigned_new_to_configurable') === false
+        || $product->getTypeId()
+             == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE)
+      return;
+
+    if (!$hash = $product->getData('mv_attributes_hash'))
+      return;
+
+    $helper = Mage::helper('mventory_tm/product_configurable');
+
+    if (($id = $product->getId()) && $helper->getIdByChild($product))
+      return;
+
+    $attribute = $helper->getConfigurableAttribute($product->getSetId());
+
+    $store = $helper
+               ->getWebsite($product)
+               ->getDefaultStore();
+
+    $products = Mage::getResourceModel('catalog/product_collection')
+                  ->addAttributeToSelect('*')
+                  ->addFieldToFilter('mv_attributes_hash', $hash)
+                  ->addStoreFilter($store);
+
+    if ($id)
+      $products->addIdFilter($id, true);
+
+    if (!count($products))
+      return;
+
+    foreach ($products as $_product)
+      if ($_product->getTypeId()
+            == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE) {
+
+        $configurable = $_product;
+
+        $products->removeItemByKey($configurable->getId());
+
+        break;
+      }
+
+    unset($_product);
+
+    //Create configurable by duplicating similar product.
+    //We use similar one because we can't duplicate non-existing product.
+    if (!isset($configurable))
+      $configurable = $helper->create(
+                        $products->getFirstItem(),
+                        array($attribute->getAttributeCode() => null)
+                      );
+
+    if (!$configurable)
+      return;
+
+    $product->addData(array(
+      'mventory_assigned_new_to_configurable' => array(
+        'configurable' => $configurable,
+        'attribute' => $attribute,
+        'products' => $products
+      ),
+      'visibility' => 1
+    ));
+  }
+
+  public function assignToConfigurableAfter ($observer) {
+    $product = $observer->getProduct();
+
+    if (!$data = $product->getData('mventory_assigned_new_to_configurable'))
+      return $this;
+
+    $configurable = $data['configurable'];
+    $attribute = $data['attribute'];
+    $products = $data['products']->addItem($product);
+
+    $helper = Mage::helper('mventory_tm/product_configurable');
+
+    $helper
+      ->addAttribute($configurable, $attribute, $products)
+      ->recalculatePrices($configurable, $attribute, $products)
+      ->assignProducts($configurable, $products);
+
+    $stockItem = Mage::getModel('cataloginventory/stock_item')
+                   ->loadByProduct($configurable);
+
+    $configurable
+      ->setStockItem($stockItem)
+      ->save();
+
+    $products->removeItemByKey($product->getId());
+
+    foreach ($products as $product)
+      if ($product->getVisibility() != 1)
+        $product
+          ->setVisibility(1)
+          ->save();
+  }
 }

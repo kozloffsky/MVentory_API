@@ -2,7 +2,7 @@
 <config>
   <modules>
     <MVentory_Tm>
-      <version>19</version>
+      <version>20</version>
     </MVentory_Tm>
   </modules>
 
@@ -143,8 +143,30 @@
             <class>mventory_tm/observer</class>
             <method>matchCategory</method>
           </tm_match_category>
+
+          <mventory_save_attributes_hash>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>saveAttributesHash</method>
+          </mventory_save_attributes_hash>
+
+          <mventory_assign_to_configurable_before>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>assignToConfigurableBefore</method>
+          </mventory_assign_to_configurable_before>
         </observers>
       </catalog_product_save_before>
+
+      <catalog_product_save_after>
+        <observers>
+          <mventory_assign_to_configurable_after>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>assignToConfigurableAfter</method>
+          </mventory_assign_to_configurable_after>
+        </observers>
+      </catalog_product_save_after>
 
       <catalog_model_product_duplicate>
         <observers>
@@ -153,6 +175,12 @@
             <class>mventory_tm/observer</class>
             <method>unsetDuplicateFlagInProduct</method>
           </tm_product_unset_duplicate_flag>
+
+          <mventory_update_duplicate>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>updateDuplicate</method>
+          </mventory_update_duplicate>
         </observers>
       </catalog_model_product_duplicate>
 
