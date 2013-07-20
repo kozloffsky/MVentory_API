@@ -72,7 +72,6 @@ class MVentory_Tm_Helper_Product_Configurable
     $data['mv_stock_journal'] = null;
 
     $configurable = $product
-                      ->setData('mventory_assigned_new_to_configurable', false)
                       ->setData('mventory_update_duplicate', $data)
                       ->duplicate();
 

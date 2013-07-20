@@ -1247,7 +1247,7 @@ class MVentory_Tm_Model_Observer {
   public function assignToConfigurableBefore ($observer) {
     $product = $observer->getProduct();
 
-    if ($product->getData('mventory_assigned_new_to_configurable') === false
+    if ($product->getData('mventory_assigned_to_configurable_after') === false
         || $product->getTypeId()
              == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE)
       return;
@@ -1302,7 +1302,7 @@ class MVentory_Tm_Model_Observer {
       return;
 
     $product->addData(array(
-      'mventory_assigned_new_to_configurable' => array(
+      'mventory_assigned_to_configurable_after' => array(
         'configurable' => $configurable,
         'attribute' => $attribute,
         'products' => $products
@@ -1314,7 +1314,7 @@ class MVentory_Tm_Model_Observer {
   public function assignToConfigurableAfter ($observer) {
     $product = $observer->getProduct();
 
-    if (!$data = $product->getData('mventory_assigned_new_to_configurable'))
+    if (!$data = $product->getData('mventory_assigned_to_configurable_after'))
       return $this;
 
     $configurable = $data['configurable'];
