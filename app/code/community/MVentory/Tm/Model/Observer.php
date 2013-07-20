@@ -819,13 +819,20 @@ class MVentory_Tm_Model_Observer {
 
     $configurableId = $helper->getIdByChild($product);
 
+    //!!!FIXME: add support for configurable products,
+    //they are ignored at the moment
     if (!$configurableId)
       return;
 
-    $ids = $helper->getChildrenIds($configurableId);
-    $ids[] = $configurableId;
+    $productId = $product->getId();
 
-    unset($ids[$product->getId()]);
+    $products = $helper->getChildrenIds($configurableId);
+    $products[$configurableId] = $configurableId;
+
+    //Make current product first, because we need to collect removed images
+    //on first iteration before processing images from other products
+    unset($products[$productId]);
+    $products = array($productId => $productId) + $products;
 
     $storeId = $product->getStoreId();
 
@@ -845,44 +852,73 @@ class MVentory_Tm_Model_Observer {
     $resourse
       = Mage::getResourceSingleton('catalog/product_attribute_backend_media');
 
-    $images = $observer->getImages();
+    $_images = $observer->getImages();
 
-    foreach ($ids as $id) {
-      $gallery = $resourse->loadGallery($product->setId($id), $object);
+    foreach ($products as $id => $images) {
+
+      //Don't load gallery for current product
+      $gallery = ($id == $productId)
+                   ? $_images['images']
+                     : $resourse->loadGallery($product->setId($id), $object);
+
+      $products[$id] = array();
 
       foreach ($gallery as $image) {
-        $toDelete[] = $image['value_id'];
+        $file = $image['file'];
 
-        $resourse->deleteGalleryValueInStore($image['value_id'], $storeId);
-      }
+        if (isset($image['removed']) && $image['removed']) {
+          $imagesToDelete[$file] = true;
 
-      if (isset($toDelete))
-        $resourse->deleteGallery($toDelete);
-
-      foreach ($images['images'] as $image) {
-        if (isset($image['removed']) && $image['removed'])
           continue;
+        }
 
-        $resourse->insertGalleryValueInStore(
-          array(
-            'value_id' => $resourse->insertGallery(
-              array(
-                'entity_id' => $id,
-                'attribute_id' => $galleryAttributeId,
-                'value' => $image['file']
-              )
-            ),
-            'label'  => $image['label'],
-            'position' => (int) $image['position'],
-            'disabled' => (int) $image['disabled'],
-            'store_id' => $storeId
-          )
-        );
+        if (isset($imagesToDelete[$file])) {
+          $idsToDelete[] = $image['value_id'];
+
+          continue;
+        }
+
+        $products[$id][$file] = $image;
+
+        if (!isset($allImages[$file]))
+          $allImages[$file] = $image;
+      }
+    }
+
+    unset($imagesToDelete, $_images);
+
+    if (isset($idsToDelete)) {
+      foreach ($idsToDelete as $id)
+        $resourse->deleteGalleryValueInStore($id, $storeId);
+
+      $resourse->deleteGallery($idsToDelete);
+    }
+
+    unset($idsToDelete);
+
+    foreach ($products as $id => $images) {
+      foreach ($allImages as $file => $image) {
+        if (!isset($images[$file]))
+          $resourse->insertGalleryValueInStore(
+            array(
+              'value_id' => $resourse->insertGallery(
+                array(
+                  'entity_id' => $id,
+                  'attribute_id' => $galleryAttributeId,
+                  'value' => $file
+                )
+              ),
+              'label'  => $image['label'],
+              'position' => (int) $image['position'],
+              'disabled' => (int) $image['disabled'],
+              'store_id' => $storeId
+            )
+          );
       }
     }
 
     Mage::getResourceSingleton('catalog/product_action')
-      ->updateAttributes($ids, $mediaValues, $storeId);
+      ->updateAttributes(array_keys($products), $mediaValues, $storeId);
   }
 
   public function resetExcludeFlag ($observer) {
