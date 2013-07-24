@@ -863,7 +863,7 @@ class MVentory_Tm_Model_Observer {
 
       $products[$id] = array();
 
-      foreach ($gallery as $image) {
+      if ($gallery) foreach ($gallery as $image) {
         $file = $image['file'];
 
         if (isset($image['removed']) && $image['removed']) {
@@ -1208,7 +1208,6 @@ class MVentory_Tm_Model_Observer {
         ->addData($data);
   }
 
-  
   public function saveAttributesHash ($observer) {
     $product = $observer->getProduct();
 
@@ -1216,17 +1215,26 @@ class MVentory_Tm_Model_Observer {
           == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE)
       return $this;
 
-    $configurable = Mage::helper('mventory_tm')
-                      ->getConfigurableAttribute($product->getSetId());
+    $helper = Mage::helper('mventory_tm');
+
+    $configurable = $helper->getConfigurableAttribute($product->getAttributeSetId());
 
     if (!($configurable && $configurable->getId()))
       return;
 
+    $storeId = $helper->getCurrentStoreId();
+
     foreach ($product->getAttributes() as $_attribute) {
       $code = $_attribute->getAttributeCode();
 
-      if (substr($code, -1) == '_')
-        $data[$code] = $product->getData($code);
+      if (substr($code, -1) == '_'
+          && $_attribute
+               ->unsetData('store_label')
+               ->getStoreLabel($storeId) != '~')
+
+        $data[$code] = is_array($value = $product->getData($code))
+                         ? implode(',', $value)
+                           : (string) $value;
     }
 
     if (!isset($data))
@@ -1240,7 +1248,7 @@ class MVentory_Tm_Model_Observer {
     if ($data)
       $product->setData(
         'mv_attributes_hash',
-        md5(implode('', array_keys($data)) . implode('', $data))
+        md5(serialize($data))
       );
   }
 
@@ -1260,7 +1268,8 @@ class MVentory_Tm_Model_Observer {
     if (($id = $product->getId()) && $helper->getIdByChild($product))
       return;
 
-    $attribute = $helper->getConfigurableAttribute($product->getSetId());
+    $attribute = $helper
+                   ->getConfigurableAttribute($product->getAttributeSetId());
 
     $store = $helper
                ->getWebsite($product)
@@ -1342,5 +1351,7 @@ class MVentory_Tm_Model_Observer {
         $product
           ->setVisibility(1)
           ->save();
+
+    $this->syncImages($observer);
   }
 }
