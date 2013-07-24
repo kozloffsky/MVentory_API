@@ -410,8 +410,12 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
       Mage::logException($e);
 
-      $msg = 'An error occurred while import TM options.';
-      Mage::throwException($this->__($msg));
+      $msg = $this->__('An error occurred while import TM options.');
+
+      if ($params['errors'])
+        $msg .= " \n" . implode(" \n", $params['errors']);
+
+      Mage::throwException($msg);
     }
 
     if ($params['errors']) {
