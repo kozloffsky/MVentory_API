@@ -838,10 +838,26 @@ class MVentory_Tm_Model_Observer {
 
     $mediaAttributes = $product->getMediaAttributes();
 
-    foreach ($mediaAttributes as $code => $attr)
-      $mediaValues[$attr->getAttributeId()] = $product->getData($code);
+    $noMediaValues = true;
 
-    unset($product, $mediaAttributes);
+    foreach ($mediaAttributes as $code => $attr) {
+      if (($data = $product->getData($code)) != 'no_selection')
+        $noMediaValues = false;
+
+      $mediaValues[$attr->getAttributeId()] = $data;
+    }
+
+    if ($noMediaValues
+        && $data = $product
+                     ->getData('mventory_assigned_to_configurable_after')) {
+
+      $product = $data['configurable'];
+
+      foreach ($mediaAttributes as $code => $attr)
+        $mediaValues[$attr->getAttributeId()] = $product->getData($code);
+    }
+
+    unset($product, $mediaAttributes, $data, $noMediaValues);
 
     $object = new Varien_Object();
     $object->setAttribute($galleryAttribute);
