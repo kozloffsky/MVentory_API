@@ -71,9 +71,26 @@ class MVentory_Tm_Helper_Product_Configurable
     $data['product_barcode_'] = null;
     $data['mv_stock_journal'] = null;
 
+    //Load media gallery if it's not loaded automatically (e.g. the product
+    //is loaded in collection) to duplicate images
+    if (!$product->getData('media_gallery'))
+      Mage::getModel('catalog/product_attribute_backend_media')
+        ->setAttribute(new Varien_Object(array(
+            'id' => Mage::getResourceModel('eav/entity_attribute')
+                      ->getIdByCode(
+                          Mage_Catalog_Model_Product::ENTITY,
+                          'media_gallery'
+                        ),
+            'attribute_code' => 'media_gallery'
+          )))
+        ->afterLoad($product);
+
     $configurable = $product
                       ->setData('mventory_update_duplicate', $data)
-                      ->duplicate();
+                      ->duplicate()
+                      //Unset 'is duplicate' flag to prevent duplicating
+                      //of images on subsequent saves
+                      ->setIsDuplicate(false);
 
     if ($configurable->getId())
       return $configurable;
