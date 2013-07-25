@@ -1362,12 +1362,15 @@ class MVentory_Tm_Model_Observer {
 
     $products->removeItemByKey($product->getId());
 
+    //Don't sync images when the product was created by duplicating
+    //original one. It already has all images.
+    if (!$product->getIsDuplicate())
+      $this->syncImages($observer);
+
     foreach ($products as $product)
       if ($product->getVisibility() != 1)
         $product
           ->setVisibility(1)
           ->save();
-
-    $this->syncImages($observer);
   }
 }
