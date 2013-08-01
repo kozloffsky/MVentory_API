@@ -1261,6 +1261,9 @@ class MVentory_Tm_Model_Observer {
       $data['product_barcode_']
     );
 
+    if ($name = str_replace(' ', '', strtolower($product->getName())))
+      $data['name'] = $name;
+
     if ($data)
       $product->setData(
         'mv_attributes_hash',
