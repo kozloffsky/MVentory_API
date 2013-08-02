@@ -165,6 +165,12 @@
             <class>mventory_tm/observer</class>
             <method>assignToConfigurableAfter</method>
           </mventory_assign_to_configurable_after>
+
+          <mventory_update_prices_in_configurable>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>updatePricesInConfigurable</method>
+          </mventory_update_prices_in_configurable>
         </observers>
       </catalog_product_save_after>
 

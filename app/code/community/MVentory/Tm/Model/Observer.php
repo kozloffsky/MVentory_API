@@ -1376,4 +1376,60 @@ class MVentory_Tm_Model_Observer {
           ->setVisibility(1)
           ->save();
   }
+
+  public function updatePricesInConfigurable ($observer) {
+    $product = $observer->getProduct();
+
+    //We don't need to update prices because it's already been done in
+    //assignToConfigurableAfter() method or product is new
+    if ($product->getData('mventory_assigned_to_configurable_after')
+        || $product->getTypeId()
+             == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE)
+      return;
+
+    $origPrice = $product->getOrigData('price');
+
+    //Ignore product if it's newly created
+    if (($origPrice = $product->getOrigData('price')) === null)
+      return;
+
+    $origPrice = (float) $origPrice;
+    $price = (float) $product->getData('price');
+
+    if ($price == $origPrice)
+      return;
+
+    $helper = Mage::helper('mventory_tm/product_configurable');
+
+    if (!$childrenIds = $helper->getSiblingsIds($product))
+      return;
+
+    $configurable = Mage::getModel('catalog/product')
+                      ->load($helper->getIdByChild($product));
+
+    if (!$configurable->getId())
+      return;
+
+    $attribute = $helper->getConfigurableAttribute(
+                   $product->getAttributeSetId()
+                 );
+
+    $children = Mage::getResourceModel('catalog/product_collection')
+                  ->addAttributeToSelect(array(
+                      'price',
+                      $attribute->getAttributeCode()
+                    ))
+                  ->addIdFilter($childrenIds);
+
+    if (!count($children))
+      return;
+
+    $helper->recalculatePrices(
+      $configurable,
+      $attribute,
+      $children->addItem($product)
+    );
+
+    $configurable->save();
+  }
 }
