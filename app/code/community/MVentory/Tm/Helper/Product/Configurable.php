@@ -251,4 +251,23 @@ class MVentory_Tm_Helper_Product_Configurable
 
     return $this;
   }
+
+  public function syncDescription ($configurable, $products) {
+    $descriprions = array();
+
+    foreach ($products as $product) {
+      if (!$description = trim($product->getDescription()))
+        continue;
+
+      $_desc = str_replace(' ', '', strtolower($description));
+
+      if (isset($descriptions[$_desc]))
+        continue;
+
+      $descriptions[$_desc] = $description;
+    }
+
+    if (count($descriptions))
+      $configurable->setDescription(implode("\r\n", $descriptions));
+  }
 }

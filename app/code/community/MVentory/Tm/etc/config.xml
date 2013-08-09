@@ -171,6 +171,12 @@
             <class>mventory_tm/observer</class>
             <method>updatePricesInConfigurable</method>
           </mventory_update_prices_in_configurable>
+
+          <mventory_update_description_in_configurable>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>updateDescriptionInConfigurable</method>
+          </mventory_update_description_in_configurable>
         </observers>
       </catalog_product_save_after>
 
