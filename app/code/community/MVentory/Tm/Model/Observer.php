@@ -1551,11 +1551,9 @@ class MVentory_Tm_Model_Observer {
     $attribute = $helper
                    ->getConfigurableAttribute($product->getAttributeSetId());
 
+    //Load all product attributes for correct saving
     $children = Mage::getResourceModel('catalog/product_collection')
-                  ->addAttributeToSelect(array(
-                      'description',
-                      $attribute->getAttributeCode()
-                    ))
+                  ->addAttributeToSelect('*')
                   ->addIdFilter($childrenIds);
 
     $helper->shareDescription(
@@ -1566,6 +1564,7 @@ class MVentory_Tm_Model_Observer {
 
     $children
       ->removeItemByKey($product->getId())
+      ->setDataToAll('mventory_assigned_to_configurable_after', false)
       ->save();
 
     $configurable->save();
