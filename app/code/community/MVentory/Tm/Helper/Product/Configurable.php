@@ -280,8 +280,10 @@ class MVentory_Tm_Helper_Product_Configurable
       return $desc;
     }
 
-    $_desc = str_replace(' ', '', strtolower($desc));
-    $_currentDesc = str_replace(' ', '', strtolower($currentDesc));
+    $search = array(' ', "\r", "\n");
+
+    $_desc = str_replace($search, '', strtolower($desc));
+    $_currentDesc = str_replace($search, '', strtolower($currentDesc));
 
     if (strpos($_currentDesc, $_desc) !== false)
       return $currentDesc;
