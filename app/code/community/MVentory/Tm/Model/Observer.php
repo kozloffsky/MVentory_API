@@ -912,7 +912,7 @@ class MVentory_Tm_Model_Observer {
 
     unset($idsToDelete);
 
-    foreach ($products as $id => $images) {
+    if (isset($allImages)) foreach ($products as $id => $images) {
       foreach ($allImages as $file => $image) {
         if (!isset($images[$file]))
           $resourse->insertGalleryValueInStore(
