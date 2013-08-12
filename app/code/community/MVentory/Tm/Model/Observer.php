@@ -1335,7 +1335,8 @@ class MVentory_Tm_Model_Observer {
         'attribute' => $attribute,
         'products' => $products
       ),
-      'visibility' => 1
+      'visibility' => 1,
+      'description' => $helper->updateDescription($configurable, $product)
     ));
   }
 
@@ -1356,6 +1357,18 @@ class MVentory_Tm_Model_Observer {
       ->recalculatePrices($configurable, $attribute, $products)
       ->assignProducts($configurable, $products);
 
+    $updateAll = false;
+
+    if ($configurable->getData('mventory_update_description')) {
+      $helper->shareDescription(
+        $configurable,
+        $products,
+        $product->getDescription()
+      );
+
+      $updateAll = true;
+    }
+
     $stockItem = Mage::getModel('cataloginventory/stock_item')
                    ->loadByProduct($configurable);
 
@@ -1370,11 +1383,23 @@ class MVentory_Tm_Model_Observer {
     if (!$product->getIsDuplicate())
       $this->syncImages($observer);
 
-    foreach ($products as $product)
-      if ($product->getVisibility() != 1)
+    foreach ($products as $product) {
+      //Set this field to disable updatePricesInConfigurable()
+      //and updateDescriptionInConfigurable() methods.
+      //Set false value to disable this method.
+      $product->setData('mventory_assigned_to_configurable_after', false);
+
+      if ($product->getVisibility() != 1) {
         $product
           ->setVisibility(1)
           ->save();
+
+        continue;
+      }
+
+      if ($updateAll)
+        $product->save();
+    }
   }
 
   public function updatePricesInConfigurable ($observer) {
@@ -1382,7 +1407,7 @@ class MVentory_Tm_Model_Observer {
 
     //We don't need to update prices because it's already been done in
     //assignToConfigurableAfter() method or product is new
-    if ($product->getData('mventory_assigned_to_configurable_after')
+    if ($product->hasData('mventory_assigned_to_configurable_after')
         || $product->getTypeId()
              == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE)
       return;
@@ -1445,8 +1470,7 @@ class MVentory_Tm_Model_Observer {
     if ($origStatus !== null && $origStatus == $status)
       return;
 
-    //$product = $item->getProduct();
-    $product = null;
+    $product = $item->getProduct();
 
     if (!$product)
       $product = Mage::getModel('catalog/product')->load($item->getProductId());
@@ -1502,7 +1526,7 @@ class MVentory_Tm_Model_Observer {
 
     //We don't need to update prices because it's already been done in
     //assignToConfigurableAfter() method or product is new
-    if ($product->getData('mventory_assigned_to_configurable_after')
+    if ($product->hasData('mventory_assigned_to_configurable_after')
         || $product->getTypeId()
              == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE)
       return;
@@ -1534,7 +1558,15 @@ class MVentory_Tm_Model_Observer {
                     ))
                   ->addIdFilter($childrenIds);
 
-    $helper->syncDescription($configurable, $children->addItem($product));
+    $helper->shareDescription(
+      $configurable,
+      $children->addItem($product),
+      $description
+    );
+
+    $children
+      ->removeItemByKey($product->getId())
+      ->save();
 
     $configurable->save();
   }

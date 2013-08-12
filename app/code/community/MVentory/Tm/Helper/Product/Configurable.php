@@ -228,7 +228,8 @@ class MVentory_Tm_Helper_Product_Configurable
     foreach ($attributes as &$_attribute)
       if ($_attribute['attribute_id'] == $id) {
         foreach ($_attribute['values'] as &$values)
-          $values['pricing_value'] = $prices[$values['value_index']] - $min;
+          if (isset($prices[$values['value_index']])) 
+            $values['pricing_value'] = $prices[$values['value_index']] - $min;
 
         break;
       }
@@ -252,22 +253,41 @@ class MVentory_Tm_Helper_Product_Configurable
     return $this;
   }
 
-  public function syncDescription ($configurable, $products) {
-    $descriprions = array();
+  public function shareDescription ($configurable, $products, $description) {
+    $description = trim($description);
 
-    foreach ($products as $product) {
-      if (!$description = trim($product->getDescription()))
-        continue;
+    if (!$description)
+      return this;
 
-      $_desc = str_replace(' ', '', strtolower($description));
+    foreach ($products as $product)
+      $product->setDescription($description);
 
-      if (isset($descriptions[$_desc]))
-        continue;
+    $configurable->setDescription($description);
 
-      $descriptions[$_desc] = $description;
+    return $this;
+  }
+
+  public function updateDescription ($configurable, $product) {
+    $desc = trim($product->getDescription());
+    $currentDesc = trim($configurable->getDescription());
+
+    if (!$desc)
+      return $currentDesc;
+
+    if (!$currentDesc) {
+      $configurable->setData('mventory_update_description', true);
+
+      return $desc;
     }
 
-    if (count($descriptions))
-      $configurable->setDescription(implode("\r\n", $descriptions));
+    $_desc = str_replace(' ', '', strtolower($desc));
+    $_currentDesc = str_replace(' ', '', strtolower($currentDesc));
+
+    if (strpos($_currentDesc, $_desc) !== false)
+      return $currentDesc;
+
+    $configurable->setData('mventory_update_description', true);
+
+    return $currentDesc . "\r\n" . $desc;
   }
 }
