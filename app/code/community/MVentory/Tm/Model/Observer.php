@@ -1421,14 +1421,78 @@ class MVentory_Tm_Model_Observer {
                     ))
                   ->addIdFilter($childrenIds);
 
-    if (!count($children))
-      return;
+    Mage::getResourceModel('cataloginventory/stock')
+      ->setInStockFilterToCollection($children);
 
     $helper->recalculatePrices(
       $configurable,
       $attribute,
       $children->addItem($product)
     );
+
+    $configurable->save();
+  }
+
+  public function updatePricesInConfigurableOnStockChange ($observer) {
+    $item = $observer->getItem();
+
+    if (!$item->getManageStock())
+      return;
+
+    $origStatus = $item->getOrigData('is_in_stock');
+    $status = $item->getData('is_in_stock');
+
+    if ($origStatus !== null && $origStatus == $status)
+      return;
+
+    //$product = $item->getProduct();
+    $product = null;
+
+    if (!$product)
+      $product = Mage::getModel('catalog/product')->load($item->getProductId());
+
+    if (!$product->getId())
+      return;
+
+    $helper = Mage::helper('mventory_tm/product_configurable');
+
+    if (!$childrenIds = $helper->getSiblingsIds($product))
+      return;
+
+    $storeId = Mage::app()
+                 ->getStore(true)
+                 ->getId();
+
+    if ($storeId != Mage_Core_Model_App::ADMIN_STORE_ID)
+      Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+
+    $configurable = Mage::getModel('catalog/product')
+                      ->load($helper->getIdByChild($product));
+
+    if ($storeId != Mage_Core_Model_App::ADMIN_STORE_ID)
+      Mage::app()->setCurrentStore($storeId);
+
+    if (!$configurable->getId())
+      return;
+
+    $attribute = $helper->getConfigurableAttribute(
+                   $product->getAttributeSetId()
+                 );
+
+    $children = Mage::getResourceModel('catalog/product_collection')
+                  ->addAttributeToSelect(array(
+                      'price',
+                      $attribute->getAttributeCode()
+                    ))
+                  ->addIdFilter($childrenIds);
+
+    Mage::getResourceModel('cataloginventory/stock')
+      ->setInStockFilterToCollection($children);
+
+    if ($status)
+      $children->addItem($product);
+
+    $helper->recalculatePrices($configurable, $attribute, $children);
 
     $configurable->save();
   }

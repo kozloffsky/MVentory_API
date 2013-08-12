@@ -241,6 +241,16 @@
         </observers>
       </catalog_controller_product_init>
 
+      <cataloginventory_stock_item_save_after>
+        <observers>
+          <mventory_update_prices_in_configurable_on_stock_change>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>updatePricesInConfigurableOnStockChange</method>
+          </mventory_update_prices_in_configurable_on_stock_change>
+        </observers>
+      </cataloginventory_stock_item_save_after>
+
       <checkout_type_onepage_save_order_after>
         <observers>
           <mventory_tm_save_order_after>
