@@ -260,9 +260,13 @@ class MVentory_Tm_Helper_Product_Configurable
       return this;
 
     foreach ($products as $product)
-      $product->setDescription($description);
+      $product
+        ->setShortDescription($description)
+        ->setDescription($description);
 
-    $configurable->setDescription($description);
+    $configurable
+      ->setShortDescription($description)
+      ->setDescription($description);
 
     return $this;
   }
