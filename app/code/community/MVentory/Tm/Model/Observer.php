@@ -817,14 +817,18 @@ class MVentory_Tm_Model_Observer {
 
     $helper = Mage::helper('mventory_tm/product_configurable');
 
-    $configurableId = $helper->getIdByChild($product);
+    $productId = $product->getId();
 
-    //!!!FIXME: add support for configurable products,
-    //they are ignored at the moment
+    $isConfigurable
+      = $product->getTypeId()
+          == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE;
+
+    $configurableId = $isConfigurable
+                        ? $productId
+                          : $helper->getIdByChild($product);
+
     if (!$configurableId)
       return;
-
-    $productId = $product->getId();
 
     $products = $helper->getChildrenIds($configurableId);
     $products[$configurableId] = $configurableId;
