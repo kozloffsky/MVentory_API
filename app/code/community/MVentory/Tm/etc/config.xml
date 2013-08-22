@@ -150,6 +150,12 @@
             <method>saveAttributesHash</method>
           </mventory_save_attributes_hash>
 
+          <mventory_unassign_from_configurable>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>unassignFromConfigurable</method>
+          </mventory_unassign_from_configurable>
+
           <mventory_assign_to_configurable_before>
             <type>singleton</type>
             <class>mventory_tm/observer</class>

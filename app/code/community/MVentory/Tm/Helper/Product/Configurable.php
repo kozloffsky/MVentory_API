@@ -178,6 +178,27 @@ class MVentory_Tm_Helper_Product_Configurable
     return false;
   }
 
+  public function removeOption ($configurable, $attribute, $product) {
+    $id = $attribute->getAttributeId();
+    $value = $product->getData($attribute->getAttributeCode());
+    $attributes = $this->getConfigurableAttributes($configurable);
+
+    foreach ($attributes as &$_attribute) {
+      if (!($_attribute['attribute_id'] == $id
+            && isset($_attribute['values'])
+            && $_attribute['values']))
+        continue;
+
+      foreach ($_attribute['values'] as $valueId => $_value)
+        if ($_value['value_index'] == $value)
+          unset($_attribute['values'][$valueId]);
+    }
+
+    $this->setConfigurableAttributes($configurable, $attributes);
+
+    return $this;
+  }
+
   public function addAttribute ($configurable, $attribute, $products) {
     if ($this->hasAttribute($configurable, $attribute))
       return $this->addOptions($configurable, $attribute, $products);
@@ -249,6 +270,16 @@ class MVentory_Tm_Helper_Product_Configurable
       $configurable->getTypeInstance()->getUsedProductIds(),
       $ids
     )));
+
+    return $this;
+  }
+
+  public function unassignProduct ($configurable, $product) {
+    $ids = array_flip($configurable->getTypeInstance()->getUsedProductIds());
+
+    unset($ids[$product->getId()]);
+
+    $configurable->setConfigurableProductsData($ids);
 
     return $this;
   }

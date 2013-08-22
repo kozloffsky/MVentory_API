@@ -1275,6 +1275,56 @@ class MVentory_Tm_Model_Observer {
       );
   }
 
+  public function unassignFromConfigurable ($observer) {
+    $product = $observer->getProduct();
+
+    if ($product->getData('mventory_assigned_to_configurable_after') === false
+        || !($id = $product->getId())
+        || $product->getTypeId()
+             == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE)
+      return;
+
+    if (!$oldHash = $product->getOrigData('mv_attributes_hash'))
+      return;
+
+    if (($hash = $product->getData('mv_attributes_hash')) == $oldHash)
+      return;
+
+    $helper = Mage::helper('mventory_tm/product_configurable');
+
+    if (!$configurableId = $helper->getIdByChild($product))
+      return;
+
+    $configurable = Mage::getModel('catalog/product')->load($configurableId);
+
+    if (!$configurable->getId())
+      return;
+
+    $childrenIds = $helper->getSiblingsIds($product);
+
+    if ($childrenIds) {
+      $attribute = $helper
+                   ->getConfigurableAttribute($product->getAttributeSetId());
+
+      $products = Mage::getResourceModel('catalog/product_collection')
+                    ->addAttributeToSelect(array(
+                      $attribute->getAttributeCode(),
+                      'price'
+                    ))
+                  ->addIdFilter($childrenIds);
+
+      $helper
+        ->removeOption($configurable, $attribute, $product)
+        ->unassignProduct($configurable, $product)
+        ->recalculatePrices($configurable, $attribute, $products);
+
+      $configurable->save();
+    } else
+      $configurable->delete();
+
+    $product->setVisibility(4);
+  }
+
   public function assignToConfigurableBefore ($observer) {
     $product = $observer->getProduct();
 
