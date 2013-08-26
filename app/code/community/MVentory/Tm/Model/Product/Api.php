@@ -106,6 +106,10 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $_result = $this->info($productId, $storeId, null, 'id');
 
+    //Product's ID can be changed by '_getProduct()' function if original
+    //product is configurable one
+    $productId = $_result['product_id'];
+
     foreach ($_result as $key => $value) {
       if (isset($this->_excludeFromProduct[$key]))
         continue;
@@ -751,6 +755,12 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     if (!$productId)
       $this->_fault('product_not_exists');
+
+    $helper = Mage::helper('mventory_tm/product_configurable');
+
+    //Load details of assigned product if the product is configurable
+    if ($childrenIds = $helper->getChildrenIds($productId))
+      $productId = current($childrenIds);
 
     $product = Mage::getModel('catalog/product')
                  ->setStoreId(Mage::app()->getStore($store)->getId())
