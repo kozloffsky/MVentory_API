@@ -104,6 +104,12 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
 
       $name = trim($name, ', ');
 
+      $name = preg_replace_callback(
+        '/(?<needle>\w+)(\s+\k<needle>)+\b/i',
+        function ($match) { return $match['needle']; },
+        $name
+      );
+
       do {
         $before = strlen($name);
 
