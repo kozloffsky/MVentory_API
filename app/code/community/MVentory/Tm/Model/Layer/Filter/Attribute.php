@@ -3,6 +3,9 @@
 class MVentory_Tm_Model_Layer_Filter_Attribute
   extends Mage_Catalog_Model_Layer_Filter_Attribute {
 
+  const SORT_GROUPED = 'grouped';
+  const SORT_ALPHABETICAL = 'alphabetical';
+
   protected function _compareLabels ($left, $right) {
     $left = $left['label'];
     $right = $right['label'];
@@ -25,6 +28,20 @@ class MVentory_Tm_Model_Layer_Filter_Attribute
 
   protected function _compareCounts ($left, $right) {
     return (int) $left['count'] < (int) $right['count'];
+  }
+
+  protected function _getSortMethod () {
+    $method = $this
+                ->getLayer()
+                ->getData('mventory_filter_sort_method');
+
+    if (!$method)
+      return self::SORT_GROUPED;
+
+    if (!($method == self::SORT_GROUPED || $method == self::SORT_ALPHABETICAL))
+      return self::SORT_GROUPED;
+
+    return $method;
   }
 
   /**
@@ -52,7 +69,10 @@ class MVentory_Tm_Model_Layer_Filter_Attribute
           unset($data[$id]);
       }
 
-      if (count($data) > 10) {
+      $sortMethod = $this->_getSortMethod();
+
+
+      if ($sortMethod == self::SORT_GROUPED && count($data) > 10) {
         usort($data, array($this, '_compareCounts'));
 
         $top = array_slice($data, 0, 10);
