@@ -60,6 +60,15 @@ class MVentory_Tm_Model_Connector {
     3 => 'Forbid'
   );
 
+  private $_durations = array(
+    2 => 'Two',
+    3 => 'Three',
+    4 => 'Four',
+    5 => 'Five',
+    6 => 'Six',
+    7 => 'Seven'
+  );
+
   public function __construct () {
     $this->_helper = Mage::helper('mventory_tm/product');
   }
@@ -310,6 +319,8 @@ class MVentory_Tm_Model_Connector {
       if (isset($tmData['allow_buy_now']) && $tmData['allow_buy_now'])
         $buyNow = '<BuyNowPrice>' . $price . '</BuyNowPrice>';
 
+      $duration = $this->_durations[$this->_getDuration($account)];
+
       $shippingTypes
         = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
             ->toArray();
@@ -331,7 +342,7 @@ class MVentory_Tm_Model_Connector {
 <StartPrice>' . $price . '</StartPrice>
 <ReservePrice>' . $price . '</ReservePrice>'
 . $buyNow .
-'<Duration>Seven</Duration>
+'<Duration>' . $duration . '</Duration>
 <Pickup>' . $pickup . '</Pickup>
 <IsBrandNew>' . $isBrandNew . '</IsBrandNew>
 <SendPaymentInstructions>true</SendPaymentInstructions>';
@@ -667,7 +678,7 @@ class MVentory_Tm_Model_Connector {
       }
 
       //set Duration
-      $item['Duration'] = 7;
+      $item['Duration'] = $this->_getDuration($account);
 
       //Set pickup option
       if (!isset($parameters['Pickup']) && isset($formData['pickup']))
@@ -1070,6 +1081,20 @@ class MVentory_Tm_Model_Connector {
                 $value,
                 explode(',', $this->_getConfig(self::LIST_AS_NEW_PATH))
               );
+  }
+
+  protected function _getDuration ($account) {
+    if (!(isset($account['duration'])
+          && $duration = (int) $account['duration']))
+      return MVentory_Tm_Helper_Tm::LISTING_DURATION_MAX;
+
+    if ($duration < MVentory_Tm_Helper_Tm::LISTING_DURATION_MIN)
+      return MVentory_Tm_Helper_Tm::LISTING_DURATION_MIN;
+
+    if ($duration > MVentory_Tm_Helper_Tm::LISTING_DURATION_MAX)
+      return MVentory_Tm_Helper_Tm::LISTING_DURATION_MAX;
+
+    return $duration;
   }
 
   public function getTmCategories () {

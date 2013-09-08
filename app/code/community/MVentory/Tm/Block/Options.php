@@ -39,6 +39,7 @@ class MVentory_Tm_Block_Options
       'allow_pickup' => 'Allow pickup',
       'category_image' => 'Add category image',
       'buyer' => 'TM buyer ID',
+      'duration' => 'Listing duration',
       'footer' => 'Footer description'
     );
   }

@@ -6,6 +6,9 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
   const COUNTRY_CODE = 'NZ';
 
+  const LISTING_DURATION_MAX = 7;
+  const LISTING_DURATION_MIN = 2;
+
   //TM fees description.
   //Available fields:
   // * from - Min product price for the fee (value is included in comparision)
@@ -489,6 +492,14 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
       return false;
     }
 
+    //Validate listing duration value
+    $listingDuaration = (int) $row[10];
+
+    if (!$listingDuaration || $listingDuaration > self::LISTING_DURATION_MAX)
+      $listingDuaration = self::LISTING_DURATION_MAX;
+    else if ($listingDuaration < self::LISTING_DURATION_MIN)
+      $listingDuaration = self::LISTING_DURATION_MIN;
+
     //Protect from duplicate
     $hash = sprintf('%s-%s', $account, $shippingType);
 
@@ -513,7 +524,8 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
       'allow_pickup' => (bool) $row[7],
       'category_image' => (bool) $row[8],
       'buyer' => (int) $row[9],
-      'footer' => $row[10],
+      'duration' => $listingDuaration,
+      'footer' => $row[11]
     );
   }
 
