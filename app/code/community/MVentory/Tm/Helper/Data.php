@@ -111,10 +111,10 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
   /**
    * Retrieve attribute's raw value from DB for specified product's ID.
    *
-   * @param int $productId 
+   * @param int $productId
    * @param int|string|array $attribute atrribute's IDs or codes
    * @param int|string|Mage_Core_Model_Website $website Website, its ID or code
-   * 
+   *
    * @return bool|string|array
    */
   public function getAttributesValue ($productId, $attribute, $website = 0) {
@@ -209,15 +209,15 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
 
     return $this->getConfig($path, $websiteId) == true;
   }
-  
+
   public function isMobile () {
     $storeId = $this->getCurrentStoreId();
     $code = 'site_version_' . $storeId;
-    if(Mage::getModel('core/cookie')->get($code) == 'mobile' || 
+    if(Mage::getModel('core/cookie')->get($code) == 'mobile' ||
        (Mage::getModel('core/cookie')->get($code) === false &&
         Mage::getSingleton('core/session')->getData($code) == 'mobile'))
       return true;
-      
+
     return false;
   }
 

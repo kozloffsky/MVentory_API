@@ -86,7 +86,7 @@ $table = $this
                        array(
                          'nullable'  => false
                     ),
-                       'User Name')   
+                       'User Name')
            ->addIndex($this->getIdxName('mventory_tm/cart_item',
                                         array('transaction_id')),
                       array('store_id', 'date_time'))

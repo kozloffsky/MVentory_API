@@ -27,12 +27,12 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     {
       $profileID = $profile;
     }
-    
+
     $userEmail = $user->getEmail();
     $userID = $user->getID();
-    
+
     $logMessage = "";
-    
+
     if ($errorConstant == self::PROFILE_ERR_SUCCESS)
     {
       $logMessage = "Profile execution finished (success), ";
@@ -41,22 +41,22 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     {
       $logMessage = "Profile execution finished (failure), ";
     }
-    
+
     $logMessage .= "userID = " . $userID . ", ";
     $logMessage .= "profileID = " . $profileID . ", ";
-    
+
     if ($additionalInfo != null)
     {
       $logMessage .= "additionalInfo = " . $additionalInfo . ", ";
     }
-    
+
     if ($exception != null && $exception->getMessage() != null)
     {
       $logMessage .= "exception->getMessage() = " . $exception->getMessage() . ", ";
     }
-    
+
     Mage::log($logMessage);
-    
+
     switch($errorConstant)
     {
     case self::PROFILE_ERR_INVALID:
@@ -77,29 +77,29 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     $session = $this->_getSession();
     $user = $session->getUser();
     $userEmail = $user->getEmail();
-    
+
     $logMessage = "Executing a profile, ";
     $logMessage .= "userID = " . $user->getID() . ", ";
     $logMessage .= "profileID = " . $id . ", ";
     Mage::log($logMessage);
-    
+
     $profile = Mage::getModel("dataflow/profile")->load($id);
 
     if (is_null($profile->getId()))
     {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_INVALID, $id, $user, "No such profile in the database");
     }
-    
+
     if (strpos($profile['name'], '_') !== 0)
     {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_INVALID, $id, $user, "Profile name doesn't start with underscore");
     }
-    
+
     $profileName = substr($profile['name'], 1);
 
     $xml = '<convert version="1.0"><profile name="default">' . $profile->getActionsXml()
       . '</profile></convert>';
-      
+
     $convertProfile = null;
     try {
       $convertProfile = Mage::getModel('core/convert')
@@ -111,33 +111,33 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     }
 
     $actions = $convertProfile->getActions();
-    $actionsCount = count($actions); 
-    
+    $actionsCount = count($actions);
+
     if ($actionsCount == 0)
     {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_FAILED, $profile, $user, "No actions found in the profile");
     }
-    
+
     $lastAction = $actions[$actionsCount-1];
     $lastActionParams = $lastAction->getParams();
     $lastContainer = $lastAction->getContainer();
-    
+
     if (strcmp(get_class($lastContainer), "Mage_Dataflow_Model_Convert_Adapter_Io") != 0)
     {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_FAILED, $profile, $user, "Last action is not an IO action");
     }
-    
+
     if (strcmp($lastActionParams['method'], "save") != 0)
     {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_FAILED, $profile, $user, "Last action is an IO action but does not save data into a file.");
     }
-    
+
     $currentStoreID = Mage::helper('mventory_tm')->getCurrentStoreId();
-    
+
     foreach($actions as $action)
     {
       $container = $action->getContainer();
-      
+
       if ($container->getVar("store", $currentStoreID) != $currentStoreID)
       {
         $container->setVar("store", $currentStoreID);
@@ -147,15 +147,15 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     $outputFileName = $profile['name'] . "_" . $this->getCurrentTimestamp();
     $outputFileExtension = ".csv";
     $outputZippedFileExtension = ".zip";
-    
+
     $outputDirName = "var/export";
-    
+
     $outputFilePath = $outputDirName . "/" . $outputFileName . $outputFileExtension;
     $outputZippedPath = $outputDirName . "/" . $outputFileName . $outputZippedFileExtension;
-    
+
     $lastContainer->setVar("filename", $outputFileName . $outputFileExtension);
     $lastContainer->setVar("path", $outputDirName);
-    
+
     try {
       $batch = Mage::getSingleton('dataflow/batch')
         ->setProfileId($profile->getId())
@@ -171,7 +171,7 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     }
 
     $profile->setExceptions($convertProfile->getExceptions());
-        
+
     $filter = new Zend_Filter_Compress(array(
       'adapter' => 'Zend_Filter_Compress_Zip',
       'options' => array(
@@ -186,31 +186,31 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     catch (Exception $e) {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_FAILED, $profile, $user, "Unable to zip the profile", $e);
     }
-    
+
     if (!$compressed)
     {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_FAILED, $profile, $user, "Unable to zip the profile (no exceptions thrown)");
     }
-        
+
     if (filesize($outputZippedPath) > 7 * 1024 * 1024)
     {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_REPORT_TOO_BIG, $profile, $user, "Report too big");
     }
-            
+
     $at = new Zend_Mime_Part(file_get_contents($outputZippedPath));
     $at->type = Zend_Mime::TYPE_OCTETSTREAM;
     $at->disposition = Zend_Mime::DISPOSITION_ATTACHMENT;
     $at->encoding    = Zend_Mime::ENCODING_BASE64;
     $at->filename    = "report.zip";
-    
+
     $mail = Mage::getModel("core/email_template");
 
     $mail->setSenderName(Mage::getConfig()->getNode('default/trans_email/ident_general/name'));
     $mail->setSenderEmail(Mage::getConfig()->getNode('default/trans_email/ident_general/email'));
     $mail->setTemplateSubject($profileName);
-    
+
     $mail->getMail()->addAttachment($at);
-    
+
     try {
       if ($mail->send($userEmail) == false)
       {
@@ -220,7 +220,7 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
     catch (Exception $e) {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_EMAIL_ERROR, $profile, $user, "Unable to send email", $e);
     }
-    
+
     return $this->getProfileErrorMessage(self::PROFILE_ERR_SUCCESS, $profile, $user);
   }
 
@@ -237,12 +237,12 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
       {
         $resultItem = array();
         $resultItem['profile_id'] = $item['profile_id'];
-        $resultItem['name'] = substr($item['name'], 1); 
+        $resultItem['name'] = substr($item['name'], 1);
 
         $result[] = $resultItem;
       }
     }
-    
+
     return $result;
   }
 }

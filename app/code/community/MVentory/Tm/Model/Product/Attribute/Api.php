@@ -45,7 +45,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
       $attribute = $this->info($_attribute['attribute_id']);
 
       $excludeAttribute = false;
-      
+
       foreach($attribute['frontend_label'] as $label)
       {
         if ($label['store_id'] == $storeId && strcmp($label['label'], '~') == 0)
@@ -54,12 +54,12 @@ class MVentory_Tm_Model_Product_Attribute_Api
           break;
         }
       }
-      
+
       if ($excludeAttribute)
       {
         continue;
       }
-      
+
       $attribute['options']
         = $this->optionsPerStoreView($attribute['attribute_id'], $storeId);
 
@@ -159,7 +159,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
 
     return $values;
   }
-  
+
   private function optionsPerStoreView($attribute, $storeId)
   {
     $attributeModel = Mage::getResourceModel('catalog/eav_attribute')

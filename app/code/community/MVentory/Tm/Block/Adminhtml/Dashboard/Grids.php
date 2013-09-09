@@ -13,9 +13,9 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Grids extends Mage_Adminhtml_Block_D
      * Add tab with stock info
      */
     protected function _prepareLayout()
-    {    
+    {
         parent::_prepareLayout();
-          
+
         // load tab statically
         $this->addTab('stock_info', array(
             'label'     => $this->__('Stock Info'),

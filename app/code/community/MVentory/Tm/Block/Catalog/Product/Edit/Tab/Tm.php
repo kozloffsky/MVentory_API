@@ -133,7 +133,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
                                 array('product_id' => $productId));
     $update = $this->getUrl('mventory_tm/adminhtml_index/update/',
                                 array('id' => $productId));
-    
+
     return Zend_Json::encode(compact('submit', 'categories','update'));
   }
 
@@ -171,7 +171,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     return $this->getButtonHtml($label, null, '', 'tm_update_button');
   }
-  
+
   public function getCategoriesButton () {
     $label = $this->__('Show all categories');
 
@@ -293,7 +293,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     //  return isset($account['free_shipping_cost'])
     //           ? $account['free_shipping_cost']
     //             : null;
-    
+
     return isset($account['shipping_rate']) ? $account['shipping_rate'] : null;
   }
 

@@ -47,7 +47,7 @@ class MVentory_Tm_Model_Product_Attribute_Set_Api
 
     return $sets;
   }
-  
+
   private function itemsPerStoreView($storeId)
   {
     $attributeApi = Mage::getModel('mventory_tm/product_attribute_api');
@@ -59,7 +59,7 @@ class MVentory_Tm_Model_Product_Attribute_Set_Api
       ->setEntityTypeFilter($entityType->getId());
 
     $result = array();
-    
+
     foreach ($collection as $attributeSet)
     {
       /* Assume the set needs to be included in the response but try to prove otherwise */
@@ -84,11 +84,11 @@ class MVentory_Tm_Model_Product_Attribute_Set_Api
            * and exclude the entire attribute set if this is true. */
           $storeLabels = $attributeModel->getStoreLabels();
           $storeLabel = isset($storeLabels[$storeId]) ? $storeLabels[$storeId] : '';
-              	 
+              	
           if (strcmp($storeLabel, "~") == 0)
           {
             $isIncluded = false;
-            
+
             /* We have just proven this attribute set needs to be excluded. No need to iterate anymore. */
             break;
           }

@@ -6,12 +6,12 @@
  * @package    MVentory_Tm
  * @author     MVentory <???@mventory.com>
  */
-class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock 
+class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
   extends Mage_Adminhtml_Block_Template {
-  
+
   protected $_totalStockQty;
   protected $_totalStockValue;
-  
+
   const USE_CACHE = false;
 
   public function __construct() {
@@ -36,16 +36,16 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
 
     if (Mage::helper('catalog')->isModuleEnabled('Mage_CatalogInventory')) {
       $collection
-        ->joinField('qty', 
-                    'cataloginventory/stock_item', 
-                    'qty', 'product_id=entity_id', 
+        ->joinField('qty',
+                    'cataloginventory/stock_item',
+                    'qty', 'product_id=entity_id',
                     '{{table}}.stock_id=1 AND {{table}}.is_in_stock=1
                     AND {{table}}.manage_stock=1 AND {{table}}.qty>0', 'left');
     }
     if ($store->getId()) {
       //$collection->setStoreId($store->getId());
       $collection->addStoreFilter($store);
-      
+
       $collection->joinAttribute(
         'price',
         'catalog_product/price',
@@ -57,11 +57,11 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
     } else {
       $collection->addAttributeToSelect('price');
     }
-    
+
     $collection->joinAttribute(
-      'status', 
+      'status',
       'catalog_product/status',
-      'entity_id', 
+      'entity_id',
       null,
       'inner',
       $store->getId());
@@ -72,12 +72,12 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
       null,
       'inner',
       $store->getId());
-      
+
     return $collection;
   }
 
   /**
-   * Preload Total Stock Qty and Total Stock Value 
+   * Preload Total Stock Qty and Total Stock Value
    */
   public function _prepareLayout() {
     $cache = Mage::getSingleton('core/cache');
@@ -87,9 +87,9 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
     $this->_totalStockQty = $cache->load("total_stock_qty_" . $storeId);
     $this->_totalStockValue = $cache->load("total_stock_value_" . $storeId);
     if ($this->_totalStockQty === false || $this->_totalStockValue === false) {
-                       
+
       $productsCollection = $this->_prepareCollection();
-      
+
       $this->_totalStockQty = 0;
       $this->_totalStockValue = 0;
       foreach ($productsCollection as $product) {
@@ -98,7 +98,7 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
       }
 
       // save to cache if needed
-      if (self::USE_CACHE 
+      if (self::USE_CACHE
           && $cache->canUse(MVentory_Tm_Model_Connector::CACHE_TYPE_TM)) {
         $cache->save($this->_totalStockQty,
                      "total_stock_qty_" . $storeId,

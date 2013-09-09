@@ -209,7 +209,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
    * if the product doesn't have attribute values
    *
    * @param Mage_Catalog_Model_Product|array $product Product's data
-   * @param array $account TM account data 
+   * @param array $account TM account data
    *
    * @return array TM options
    */

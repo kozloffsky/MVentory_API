@@ -557,7 +557,7 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
   /**
    * Save parsed options in Magento config
-   * 
+   *
    *
    * @param string $value
    * @return bool|float

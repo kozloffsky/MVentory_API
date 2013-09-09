@@ -68,7 +68,7 @@ class MVentory_Tm_Block_Layer_View extends Mage_Catalog_Block_Layer_View {
     }
 
     $this->setData('_filterable_attributes', $_attrs);
-    
+
     return $_attrs;
   }
 }

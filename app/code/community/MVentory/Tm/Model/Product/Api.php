@@ -362,7 +362,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     return $this->fullInfo($id, 'id');
   }
-  
+
   public function duplicateAndReturnInfo ($oldSku,
                                           $newSku,
                                           $data = array(),
@@ -382,7 +382,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     if ($subtractQty > 0) {
       $stock = Mage::getModel('cataloginventory/stock_item')
                  ->loadByProduct($oldId);
-        
+
       if ($stock->getId())
         $stock
           ->subtractQty($subtractQty)
@@ -445,7 +445,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
         continue;
       }
-    
+
       $images->update($newId, $file, array('types' => $types));
     }
 
@@ -722,7 +722,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
       $stock = Mage::getModel('cataloginventory/stock_item')
                  ->loadByProduct($productId);
-        
+
       if ($stock->getId())
         $stock
           ->addQty(count($skus))

@@ -264,7 +264,7 @@ class MVentory_Tm_Model_Connector {
 
         if (!file_exists($image))
           return 'Image doesn\'t exists';
-          
+
         if (!is_int($photoId = $this->uploadImage($image)))
           return $photoId;
       }

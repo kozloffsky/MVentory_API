@@ -129,17 +129,17 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
 
     return $numberOfRenamedProducts;
   }
-  
+
   /**
-   * Populate product attributes      
-   * 
+   * Populate product attributes
+   *
    * @param  array  $productIds array of products ids or products
    * @param  int|null $storeId
-   * @param  bool $save      
-   * @return int     
+   * @param  bool $save
+   * @return int
    */
-  public function populateAttributes($productIds, 
-                                     $storeId = null, 
+  public function populateAttributes($productIds,
+                                     $storeId = null,
                                      $save = true) {
     $numberOfPopulatedProducts = 0;
 
@@ -172,11 +172,11 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
                           ->getAttribute($code)
                           ->getDefaultValue();
 
-        // Example default value: 
+        // Example default value:
         // ~approx{/size_width/size_length/size_thickness}
 
-        // skip this attribute if the default value is empty or 
-        // the first symbol isn't '~' 
+        // skip this attribute if the default value is empty or
+        // the first symbol isn't '~'
         if (empty($defaultValue) || substr($defaultValue, 0, 1) != '~')
           continue;
 
@@ -194,13 +194,13 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
 
           // get approximated attributes codes from default value using delimeter
           $attributeCodes = explode($delim, substr(substr($parts[1], 0, strlen($parts[1]) - 1), 1));
-          
+
           // get attribute value
           $_value = $productResource
                   ->getAttribute($code)
                   ->getFrontend()
                   ->getValue($product);
-          
+
           // get values which needed to be approximated
           $values = explode($delim, $_value);
 
@@ -208,7 +208,7 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
 
             if(!isset($values[$i]))
               break;
-            
+
             // get attribute object from attribute code
             $attribute = $productResource->getAttribute($attributeCode);
 
@@ -240,7 +240,7 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
 
             // check if the nearest attribute's option is found and
             // update value for the approximated attribute only if it's changed
-            if ($temp != -1 
+            if ($temp != -1
                 && $product->getData($attributeCode) != $temp['value']) {
                 $product->setData($attributeCode, $temp['value']);
                 $updateProduct = true;

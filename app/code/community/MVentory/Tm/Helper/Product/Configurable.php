@@ -249,7 +249,7 @@ class MVentory_Tm_Helper_Product_Configurable
     foreach ($attributes as &$_attribute)
       if ($_attribute['attribute_id'] == $id) {
         foreach ($_attribute['values'] as &$values)
-          if (isset($prices[$values['value_index']])) 
+          if (isset($prices[$values['value_index']]))
             $values['pricing_value'] = $prices[$values['value_index']] - $min;
 
         break;

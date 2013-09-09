@@ -232,7 +232,7 @@ class MVentory_Tm_Model_Rules
         $id = $attr['id'];
 
         //Keep attribute in the rule if it exists in the system, has values
-        //and containes one value at least which exists in the attribute 
+        //and containes one value at least which exists in the attribute
         $keepAttr = isset($attrs[$id])
                     && count($attrs[$id])
                     && count(array_intersect($attr['value'], $attrs[$id]));

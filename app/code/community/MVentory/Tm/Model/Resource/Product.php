@@ -18,7 +18,7 @@ class MVentory_Tm_Model_Resource_Product
    * @param int $entityId
    * @param int|string|array $attribute Atrribute's ids or codes
    * @param int|Mage_Core_Model_Store $store
-   * 
+   *
    * @return bool|string|array
    */
   public function getAttributeRawValue($entityId, $attribute, $store) {

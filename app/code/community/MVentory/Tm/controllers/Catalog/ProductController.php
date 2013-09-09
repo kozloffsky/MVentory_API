@@ -37,16 +37,16 @@ class MVentory_Tm_Catalog_ProductController
 
     $this->_redirect('adminhtml/*', array('store'=> $storeId));
   }
-  
+
   /**
    *  Populate product attributes when selected "Populate product attributes" action
-   */           
+   */
   public function massAttributesPopulateAction () {
     $request = $this->getRequest();
 
     // Get selected products ids
     $productIds = (array) $request->getParam('product');
-    
+
     $storeId = (int) $request->getParam('store', 0);
 
     try {

@@ -57,11 +57,11 @@ class MVentory_Tm_Model_System_Config_Backend_Cron
     return $this;
   }
 
-  
+
   /**
    * Remove cron records from config after settinh website's cron interval
    * to use default value
-   * 
+   *
    * @return MVentory_Tm_Model_System_Config_Backend_Cron
    */
   protected function _afterDelete () {
