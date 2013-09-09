@@ -189,7 +189,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
              ->getFirstItem();
   }
 
-  public function getConfig ($path, $website) {
+  public function getConfig ($path, $website = null) {
     $website = Mage::app()->getWebsite($website);
 
     $config = $website->getConfig($path);
