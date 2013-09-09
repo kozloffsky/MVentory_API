@@ -312,8 +312,6 @@ class MVentory_Tm_Model_Connector {
                   ? $tmHelper->addFees($price)
                     : $price;
 
-      unset($tmHelper);
-
       $buyNow = '';
 
       if (isset($tmData['allow_buy_now']) && $tmData['allow_buy_now'])
@@ -368,6 +366,10 @@ class MVentory_Tm_Model_Connector {
       if ($attributes && count($attributes)) {
         $xml .= '<Attributes>';
 
+        $mappingStoreId = $tmHelper
+                            ->getMappingStore()
+                            ->getId();
+
         $productAttributes = $product->getAttributes();
 
         foreach ($attributes as $attribute) {
@@ -391,6 +393,7 @@ class MVentory_Tm_Model_Connector {
               continue;
 
           $data = $productAttributes[$name]
+                    ->setStoreId($mappingStoreId)
                     ->getFrontend()
                     ->getValue($product);
 
@@ -402,6 +405,8 @@ class MVentory_Tm_Model_Connector {
 
         $xml .= '</Attributes>';
       }
+
+      unset($tmHelper);
 
       $xml .= '</ListingRequest>';
 

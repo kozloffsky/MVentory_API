@@ -3,6 +3,7 @@
 class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
   const XML_PATH_ACCOUNTS = 'mventory_tm/settings/accounts';
+  const XML_PATH_MAPPING_STORE_ID = 'mventory_tm/settings/mapping_store';
 
   const COUNTRY_CODE = 'NZ';
 
@@ -311,6 +312,12 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
     return isset($attributes[$attributeCode])
              ? $attributes[$attributeCode]->getFrontend()->getValue($product)
                : null;
+  }
+
+  public function getMappingStore () {
+    return Mage::app()->getStore(
+      (int) parent::getConfig(self::XML_PATH_MAPPING_STORE_ID)
+    );
   }
 
   /**
