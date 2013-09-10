@@ -40,6 +40,7 @@ class MVentory_Tm_Block_Options
       'category_image' => 'Add category image',
       'buyer' => 'TM buyer ID',
       'duration' => 'Listing duration',
+      'shipping_options' => 'Shipping options',
       'footer' => 'Footer description'
     );
   }
@@ -65,6 +66,10 @@ class MVentory_Tm_Block_Options
                              : $this->_fillShippingTypes($_shippingTypes);
 
         foreach ($shippingTypes as $id => $options) {
+          if ($options['shipping_options'])
+            $options['shipping_options']
+              = $this->_exportShippingOptions($options['shipping_options']);
+
           $row = $options + array(
             'account_name' => $account['name'],
             'shipping_type' => $_shippingTypes[$id]
@@ -118,5 +123,26 @@ class MVentory_Tm_Block_Options
       ));
 
     return parent::_prepareColumns();
+  }
+
+  /**
+   * Convert list of shipping options to string
+   *
+   * String format:
+   *
+   *   <price>,<method>\r\n
+   *   ...
+   *   <price>,<method>
+   *
+   * $param string $options Shipping options
+   * @return string
+   */
+  protected function _exportShippingOptions ($options) {
+    $_options = '';
+
+    foreach ($options as $option)
+      $_options .= "\r\n" . $option['price'] . ',' . $option['method'];
+
+    return substr($_options, 2);
   }
 }

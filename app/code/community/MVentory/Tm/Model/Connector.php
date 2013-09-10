@@ -18,7 +18,7 @@ class MVentory_Tm_Model_Connector {
   const UNDECIDED = 1;
   //const PICKUP = 2;
   const FREE = 3;
-  //const CUSTOM = 4;
+  const CUSTOM = 4;
 
   const TM_MAX_IMAGE_SIZE = '670x502';
 
@@ -352,9 +352,21 @@ class MVentory_Tm_Model_Connector {
         $xml .= '<PhotoIds><PhotoId>' . $photoId . '</PhotoId></PhotoIds>';
       }
 
-      $xml .= '<ShippingOptions>
-<ShippingOption><Type>' . $shippingType . '</Type></ShippingOption>
-</ShippingOptions>
+      $xml .= '<ShippingOptions>';
+
+      if ($account['shipping_options'])
+        foreach ($account['shipping_options'] as $shippingOption)
+          $xml .= '<ShippingOption><Type>Custom</Type><Price>'
+                  . $shippingOption['price']
+                  . '</Price><Method>'
+                  . $shippingOption['method']
+                  . '</Method></ShippingOption>';
+      else
+        $xml .= '<ShippingOption><Type>'
+                . $shippingType
+                . '</Type></ShippingOption>';
+
+      $xml .= '</ShippingOptions>
 <PaymentMethods>
 <PaymentMethod>CreditCard</PaymentMethod>
 <PaymentMethod>Cash</PaymentMethod>
@@ -607,7 +619,15 @@ class MVentory_Tm_Model_Connector {
       }
 
       if (!isset($parameters['ShippingOptions']))
-        $parameters['ShippingOptions'][]['Type'] = $shippingType;
+        if ($account['shipping_options'])
+          foreach ($account['shipping_options'] as $shippingOption)
+            $parameters['ShippingOptions'][] = array(
+              'Type' => self::CUSTOM,
+              'Price' => $shippingOption['price'],
+              'Method' => $shippingOption['method'],
+            );
+        else
+          $parameters['ShippingOptions'][]['Type'] = $shippingType;
 
       //set price
       if (!isset($parameters['StartPrice'])) {

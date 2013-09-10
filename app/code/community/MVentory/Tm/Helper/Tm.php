@@ -532,7 +532,8 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
       'category_image' => (bool) $row[8],
       'buyer' => (int) $row[9],
       'duration' => $listingDuaration,
-      'footer' => $row[11]
+      'shipping_options' => $this->_parseShippingOptionsValue($row[11]),
+      'footer' => $row[12]
     );
   }
 
@@ -553,6 +554,42 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
       return false;
 
     return $value;
+  }
+
+  /**
+   * Parse string with shipping options in following format
+   *
+   *   <price>,<method>\r\n
+   *   ...
+   *   <price>,<method>
+   *
+   * to a list with shipping options in following format
+   *
+   *   array(
+   *     array(
+   *       'price' => 12.5,
+   *       'method' => 'Name of shipping method'
+   *     ),
+   *     ...
+   *   )
+   *
+   * $param string $value Shipping options
+   * @return array
+   */
+  protected function _parseShippingOptionsValue ($value) {
+    $options = array();
+
+    if (!$value = trim($value))
+      return $options;
+
+    foreach (explode("\n", str_replace("\r\n", "\n", $value)) as $option)
+      if (count($option = explode(',', trim($option, " ,\t\n\r\0\x0B"))) == 2)
+        $options[] = array(
+          'price' => (float) rtrim($option[0]),
+          'method' => ltrim($option[1])
+        );
+
+    return $options;
   }
 
   /**
