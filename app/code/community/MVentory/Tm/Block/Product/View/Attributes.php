@@ -97,7 +97,7 @@ class MVentory_Tm_Block_Product_View_Attributes
             ->unsetData('query_params')
             ->setQueryParams($params);
 
-          $value = '<a href="' . $category->getUrl() . '"'
+          $value = '<a href="' . $category->getUrl() . '" '
                     . 'title="' . $title . '">'
                     . $value
                     . '</a>';
