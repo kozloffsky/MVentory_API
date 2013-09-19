@@ -354,7 +354,7 @@ class MVentory_Tm_Model_Connector {
 
       $xml .= '<ShippingOptions>';
 
-      if ($account['shipping_options'])
+      if (isset($account['shipping_options']) && $account['shipping_options'])
         foreach ($account['shipping_options'] as $shippingOption)
           $xml .= '<ShippingOption><Type>Custom</Type><Price>'
                   . $shippingOption['price']
@@ -619,7 +619,7 @@ class MVentory_Tm_Model_Connector {
       }
 
       if (!isset($parameters['ShippingOptions']))
-        if ($account['shipping_options'])
+        if (isset($account['shipping_options']) && $account['shipping_options'])
           foreach ($account['shipping_options'] as $shippingOption)
             $parameters['ShippingOptions'][] = array(
               'Type' => self::CUSTOM,
