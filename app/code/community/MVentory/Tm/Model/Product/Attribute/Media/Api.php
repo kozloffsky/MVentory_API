@@ -120,13 +120,13 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
 
     $helper = Mage::helper('mventory_tm/product');
 
-    if (!$helper->hasApiUserAccess($productId, $identifierType))
-      $this->_fault('access_denied');
-
     $productId = $helper->getProductId($productId, $identifierType);
 
     if (!$productId)
       $this->_fault('product_not_exists');
+
+    if (!$helper->hasApiUserAccess($productId, 'id'))
+      $this->_fault('access_denied');
 
     $product = Mage::getModel('catalog/product')
                  ->setStoreId(Mage::app()->getStore($store)->getId())
