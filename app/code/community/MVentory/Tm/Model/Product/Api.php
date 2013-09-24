@@ -93,11 +93,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $productId = $helper->getProductId($productId, $identifierType);
 
-    if (!$productId)
+    if (!($productId && $helper->hasApiUserAccess($productId, 'id')))
       $this->_fault('product_not_exists');
-
-    if (!$helper->hasApiUserAccess($productId, 'id'))
-      $this->_fault('access_denied');
 
     $website = Mage::helper('mventory_tm/product')->getWebsite($productId);
     $storeId = $website
@@ -750,11 +747,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $productId = $helper->getProductId($productId, $identifierType);
 
-    if (!$productId)
+    if (!($productId && $helper->hasApiUserAccess($productId, 'id')))
       $this->_fault('product_not_exists');
-
-    if (!$helper->hasApiUserAccess($productId, 'id'))
-      $this->_fault('access_denied');
 
     $helper = Mage::helper('mventory_tm/product_configurable');
 

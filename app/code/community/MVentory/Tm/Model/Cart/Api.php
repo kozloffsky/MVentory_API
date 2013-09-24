@@ -79,7 +79,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
         $updateProduct = true;
     } else {
       if (!$helper->hasApiUserAccess($productId, 'id'))
-        $this->_fault('access_denied');
+        $this->_fault('product_not_exists');
 
       $product->load($productId);
       $stockItem = $product->getStockItem();
@@ -327,7 +327,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
       $productId = (int) $productData['product_id'];
 
       if (!$helper->hasApiUserAccess($productId, 'id'))
-        $this->_fault('access_denied');
+        $this->_fault('product_not_exists');
 
       $product->load($productId);
 

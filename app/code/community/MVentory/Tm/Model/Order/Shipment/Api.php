@@ -49,7 +49,7 @@ class MVentory_Tm_Model_Order_Shipment_Api extends Mage_Sales_Model_Order_Shipme
                         ->getWebsiteId();
 
     if ($orderWebsiteId != $userWebsiteId)
-      $this->_fault('access_denied');
+      $this->_fault('not_exists');
 
     $shipmentId = $this->create($orderIncrementId,$itemsQty,$comment,$email,
       $includeComment);
