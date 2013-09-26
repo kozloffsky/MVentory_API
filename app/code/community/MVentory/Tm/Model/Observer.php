@@ -61,6 +61,7 @@ class MVentory_Tm_Model_Observer {
 
       $website = $productHelper->getWebsite($product);
       $accounts = $tmHelper->getAccounts($website);
+      $accounts = $productHelper->prepareAccounts($accounts, $product);
 
       $accountId = $product->getTmCurrentAccountId();
 
@@ -90,7 +91,7 @@ class MVentory_Tm_Model_Observer {
 
       $hasError = false;
 
-      if ($product->getTmAvoidWithdrawal()) {
+      if ($avoidWithdrawal) {
         $price = $product->getPrice() * 5;
 
         if ($tmFields['add_fees'])
