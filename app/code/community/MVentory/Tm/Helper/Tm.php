@@ -526,7 +526,7 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
       'minimal_price' => $minimalPrice,
       'free_shipping_cost' => $freeShippingCost,
       'allow_buy_now' => (bool) $row[4],
-      'avoid_withdraval' => (bool) $row[5],
+      'avoid_withdrawal' => (bool) $row[5],
       'add_fees' => (bool) $row[6],
       'allow_pickup' => (bool) $row[7],
       'category_image' => (bool) $row[8],

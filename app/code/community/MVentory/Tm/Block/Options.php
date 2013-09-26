@@ -34,7 +34,7 @@ class MVentory_Tm_Block_Options
       'minimal_price' => 'Minimal price',
       'free_shipping_cost' => 'Free shipping cost',
       'allow_buy_now' => 'Allow Buy Now',
-      'avoid_withdraval' => 'Avoid withdrawal',
+      'avoid_withdrawal' => 'Avoid withdrawal',
       'add_fees' => 'Add TM fees',
       'allow_pickup' => 'Allow pickup',
       'category_image' => 'Add category image',
