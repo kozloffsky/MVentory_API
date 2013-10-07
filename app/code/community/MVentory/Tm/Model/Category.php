@@ -60,6 +60,20 @@ class MVentory_Tm_Model_Category extends Mage_Catalog_Model_Category {
   }
 
   /**
+   * Check category is in Root Category list
+   *
+   * The method is redefined to allow access to website's root category.
+   * We need it for filtering over all products in the website.
+   *
+   * @return bool
+   */
+  public function isInRootCategoryList() {
+    return $this->getId() == Mage::app()->getStore()->getRootCategoryId()
+             ? true
+               : parent::isInRootCategoryList();
+  }
+
+  /**
    * Walk down categories tree and return first category with more
    * than one sub-category
    *
