@@ -35,9 +35,10 @@ class MVentory_Tm_Block_Product_View_Attributes
     $category = $helper->getCategory($product);
     $attributes = $product->getAttributes();
 
-    $queryParams = $category
-                     ->getUrlInstance()
-                     ->getQueryParams();
+    if ($category)
+      $queryParams = $category
+                       ->getUrlInstance()
+                       ->getQueryParams();
 
     $title = $helper->__('View more of this type');
 
@@ -86,7 +87,10 @@ class MVentory_Tm_Block_Product_View_Attributes
       if (!count($values))
         continue;
 
-      if ($attribute->getIsHtmlAllowedOnFront() && $isSelect && $html) {
+      if ($category
+          && $attribute->getIsHtmlAllowedOnFront()
+          && $isSelect
+          && $html) {
         foreach ($values as $i => &$value) {
           $params = $queryParams;
           $params[$code] = $i;
@@ -120,11 +124,12 @@ class MVentory_Tm_Block_Product_View_Attributes
       );
     }
 
-    $category
-      ->unsetData('url')
-      ->getUrlInstance()
-      ->unsetData('query_params')
-      ->setQueryParams($queryParams);
+    if ($category)
+      $category
+        ->unsetData('url')
+        ->getUrlInstance()
+        ->unsetData('query_params')
+        ->setQueryParams($queryParams);
 
     //Round value of weight attribute or unset if it's 0
     if (isset($data['weight'])) {
