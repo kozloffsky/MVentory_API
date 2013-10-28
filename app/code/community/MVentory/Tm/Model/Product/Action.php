@@ -76,6 +76,12 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
         //to string
         try {
           $value = (string) $value;
+
+          //Ignore 'n/a', 'n-a', 'n\a' and 'na' values
+          //Note: case insensitive comparing; delimeter can be surrounded
+          //      with spaces
+          if (preg_match('#^n(\s*[/-\\\\]\s*)?a$#i', trim($value)))
+            $value = '';
         } catch (Exception $e) {
           $value = '';
         }
@@ -110,13 +116,12 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
         $name
       );
 
-      do {
-        $before = strlen($name);
-
-        $name = str_replace(', , ', ', ', $name);
-
-        $after = strlen($name);
-      } while ($before != $after);
+      //Remove duplicates of spaces and punctuation 
+      $name = preg_replace(
+        '/([,.!?;:\s])\1*(\s?)(\2)*(\s*\1\s*)*/',
+        '\\1\\2',
+        $name
+      );
 
       if ($name && $name != $product->getName()) {
         $product
