@@ -66,7 +66,8 @@ class MVentory_Tm_Block_Options
                              : $this->_fillShippingTypes($_shippingTypes);
 
         foreach ($shippingTypes as $id => $options) {
-          if ($options['shipping_options'])
+          if (isset($options['shipping_options'])
+              && $options['shipping_options'])
             $options['shipping_options']
               = $this->_exportShippingOptions($options['shipping_options']);
 
