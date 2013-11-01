@@ -235,7 +235,10 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
     foreach ($groups as $id => $fields)
       if (strpos($id, 'account_', 0) === 0) {
         if (isset($fields['shipping_types']))
-          $fields['shipping_types'] = unserialize($fields['shipping_types']);
+          $fields['shipping_types']
+            = (($types = unserialize($fields['shipping_types'])) === false)
+                 ? array()
+                   : $types;
 
         $accounts[$id] = $fields;
       }
