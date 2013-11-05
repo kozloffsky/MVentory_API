@@ -375,47 +375,35 @@ class MVentory_Tm_Model_Connector {
 
       $attributes = $this->getTmCategoryAttrs($categoryId);
 
-      if ($attributes && count($attributes)) {
-        $xml .= '<Attributes>';
+      if ($attributes) {
+        $attributes = Mage::helper('mventory_tm/product')->fillTmAttributes(
+          $product,
+          $attributes,
+          $tmHelper->getMappingStore()
+        );
 
-        $mappingStoreId = $tmHelper
-                            ->getMappingStore()
-                            ->getId();
+        if ($attributes['error']) {
+          if (isset($attributes['required']))
+            return 'Product has empty "' . $attributes['required']
+                   . '" attribute';
 
-        $productAttributes = $product->getAttributes();
-
-        foreach ($attributes as $attribute) {
-          $name = 'tma_' . strtolower($attribute['Name']);
-
-          $hasData = false;
-
-          if ($product->hasData($name))
-            $hasData = true;
-          else {
-            $name .= '_';
-
-            if ($product->hasData($name))
-              $hasData = true;
-          }
-
-          if (!$hasData)
-            if ($attribute['IsRequiredForSell'])
-              return 'Product has empty ' . $name . ' attribute';
-            else
-              continue;
-
-          $data = $productAttributes[$name]
-                    ->setStoreId($mappingStoreId)
-                    ->getFrontend()
-                    ->getValue($product);
-
-          $xml .= '<Attribute>';
-          $xml .= '<Name>' . $attribute['Name'] . '</Name>';
-          $xml .= '<Value>' . $data . '</Value>';
-          $xml .= '</Attribute>';
+          if (isset($attributes['no_match']))
+            return 'Error in matching "' . $attributes['no_match']
+                   . '" attribute: incorrect value in "fake" store';
         }
 
-        $xml .= '</Attributes>';
+        if ($attributes = $attributes['attributes']) {
+          $xml .= '<Attributes>';
+
+          foreach ($attributes as $attributeName => $attributeValue) {
+            $xml .= '<Attribute>';
+            $xml .= '<Name>' . $attributeName . '</Name>';
+            $xml .= '<Value>' . $attributeValue . '</Value>';
+            $xml .= '</Attribute>';
+          }
+
+          $xml .= '</Attributes>';
+        }
       }
 
       unset($tmHelper);

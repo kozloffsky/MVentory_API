@@ -209,7 +209,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
    * if the product doesn't have attribute values
    *
    * @param Mage_Catalog_Model_Product|array $product Product's data
-   * @param array $account TM account data
+   * @param array $account TM account data 
    *
    * @return array TM options
    */
@@ -277,5 +277,69 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     }
 
     return $accounts;
+  }
+
+  public function fillTmAttributes ($product, $tmAttributes, $store) {
+    $storeId = $store->getId();
+
+    foreach ($tmAttributes as $tmAttribute)
+      $_tmAttributes[strtolower($tmAttribute['Name'])] = $tmAttribute;
+
+    unset($tmAttributes);
+
+    foreach ($product->getAttributes() as $code => $attribute) {
+      $input = $attribute->getFrontendInput();
+
+      if (!($input == 'select' || $input == 'multiselect'))
+        continue;
+
+      $frontend = $attribute->getFrontend();
+
+      $defaultValue = $frontend->getValue($product);
+      $attributeStoreId = $attribute->getStoreId();
+
+      $attribute->setStoreId($storeId);
+      $value = $frontend->getValue($product);
+      $attribute->setStoreId($attributeStoreId);
+
+      if ($defaultValue == $value)
+        continue;
+
+      $value = trim($value);
+
+      if (!$value)
+        continue;
+
+      $parts = explode(':', $value, 2);
+
+      if (!(count($parts) == 2 && $parts[0]))
+        return array(
+          'error' => true,
+          'no_match' => $code
+        );
+
+      $name = strtolower(rtrim($parts[0]));
+      $value = ltrim($parts[1]);
+
+      if (!isset($_tmAttributes[$name]))
+        continue;
+
+      $tmAttribute = $_tmAttributes[$name];
+
+      $value = trim($value);
+
+      if (!$value && $_tmAttribute['IsRequiredForSell'])
+        return array(
+          'error' => true,
+          'required' => $tmAttribute['DisplayName']
+        );
+
+      $result[$tmAttribute['Name']] = $value;
+    }
+
+    return array(
+      'error' => false,
+      'attributes' => isset($result) ? $result : null
+    );
   }
 }
