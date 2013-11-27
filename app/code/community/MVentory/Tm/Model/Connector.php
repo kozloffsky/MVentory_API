@@ -317,7 +317,7 @@ class MVentory_Tm_Model_Connector {
       if (isset($tmData['allow_buy_now']) && $tmData['allow_buy_now'])
         $buyNow = '<BuyNowPrice>' . $price . '</BuyNowPrice>';
 
-      $duration = $this->_durations[$this->_getDuration($account)];
+      $duration = $this->_durations[$tmHelper->getDuration($account)];
 
       $shippingTypes
         = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
@@ -691,7 +691,7 @@ class MVentory_Tm_Model_Connector {
       }
 
       //set Duration
-      $item['Duration'] = $this->_getDuration($account);
+      $item['Duration'] = $helper->getDuration($account);
 
       //Set pickup option
       if (!isset($parameters['Pickup']) && isset($formData['pickup']))

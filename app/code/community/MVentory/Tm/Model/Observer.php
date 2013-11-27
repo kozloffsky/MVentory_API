@@ -16,7 +16,6 @@ class MVentory_Tm_Model_Observer {
 
   const SYNC_START_HOUR = 7;
   const SYNC_END_HOUR = 23;
-  const SYNC_PERIOD_DAYS = 7;
 
   private $supportedImageTypes = array(
     IMAGETYPE_GIF => 'gif',
@@ -177,8 +176,10 @@ class MVentory_Tm_Model_Observer {
     //Get website's default store
     $store = $website->getDefaultStore();
 
+    $tmHelper = Mage::helper('mventory_tm/tm');
+
     //Load TM accounts which are used in specified website
-    $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
+    $accounts = $tmHelper->getAccounts($website);
 
     //Unset Random pseudo-account
     unset($accounts[null]);
@@ -196,10 +197,10 @@ class MVentory_Tm_Model_Observer {
       $cronInterval
         = (int) $helper->getConfig(self::XML_PATH_CRON_INTERVAL, $website);
 
-      //Calculate number of sync script runs during period
+      //Calculate number of runnings of the sync script during 1 day
       $runsNumber = $cronInterval
                       ? (self::SYNC_END_HOUR - self::SYNC_START_HOUR) * 60
-                          * self::SYNC_PERIOD_DAYS / $cronInterval
+                          / $cronInterval - 1
                         : 0;
     }
 
@@ -327,31 +328,49 @@ class MVentory_Tm_Model_Observer {
       $cacheId = implode(
         '_',
         array(
+          'tm_sync',
           $website->getCode(),
           $accountId,
-          'free_slots'
         )
       );
 
-      $freeSlots = $accountData['max_listings'] / $runsNumber
-                   + Mage::app()->loadCache($cacheId);
+      try {
+        $syncData = unserialize(Mage::app()->loadCache($cacheId));
+      } catch (Exception $e) {
+        $syncData = null;
+      }
+
+      if (!is_array($syncData))
+        $syncData = array(
+          'free_slots' => 0,
+          'duration' => MVentory_Tm_Helper_Tm::LISTING_DURATION_MAX
+        );
+
+      $freeSlots = $accountData['max_listings']
+                   / ($runsNumber * $syncData['duration'])
+                   + $syncData['free_slots'];
 
       $_freeSlots = (int) floor($freeSlots);
 
-      Mage::app()->saveCache(
-        $freeSlots - $_freeSlots,
-        $cacheId,
-        array(self::TAG_TM_FREE_SLOTS),
-        null
-      );
+      $syncData['free_slots'] = $freeSlots - $_freeSlots;
 
       if ($_freeSlots < 1) {
+        Mage::app()->saveCache(
+          serialize($syncData),
+          $cacheId,
+          array(self::TAG_TM_FREE_SLOTS),
+          null
+        );
+
         unset($accounts[$accountId]);
 
         continue;
       }
 
       $accountData['free_slots'] = $_freeSlots;
+
+      $accountData['cache_id'] = $cacheId;
+      $accountData['sync_data'] = $syncData;
 
       $accountData['allowed_shipping_types']
         = array_keys($accountData['shipping_types']);
@@ -360,7 +379,7 @@ class MVentory_Tm_Model_Observer {
     if (!count($accounts))
       return;
 
-    unset($accountId, $accountData);
+    unset($accountId, $accountData, $syncData);
 
     $ids = array_keys($products->getItems());
 
@@ -390,7 +409,7 @@ class MVentory_Tm_Model_Observer {
 
       shuffle($accountIds);
 
-      $shippingType = $product->getData('mv_shipping_');
+      $shippingType = $tmHelper->getShippingType($product, true);
 
       foreach ($accountIds as $accountId) {
         $accountData = $accounts[$accountId];
@@ -444,6 +463,17 @@ class MVentory_Tm_Model_Observer {
             ->save();
 
           if (!--$accounts[$accountId]['free_slots']) {
+            $accountData['sync_data']['duration'] = $tmHelper->getDuration(
+              $accountData['shipping_types'][$shippingType]
+            );
+
+            Mage::app()->saveCache(
+              serialize($accountData['sync_data']),
+              $accountData['cache_id'],
+              array(self::TAG_TM_FREE_SLOTS),
+              null
+            );
+
             if (count($accounts) == 1)
               return;
 

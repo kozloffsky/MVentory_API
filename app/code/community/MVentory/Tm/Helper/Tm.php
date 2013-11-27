@@ -324,6 +324,28 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
   }
 
   /**
+   * Returns duration of TM listing limited by MIN and MAX values
+   * By default returns MAX duration value
+   *
+   * @param array $data Account data
+   *
+   * @return int duration
+   */
+  public function getDuration ($data) {
+    if (!(isset($data['duration'])
+          && $duration = (int) $data['duration']))
+      return self::LISTING_DURATION_MAX;
+
+    if ($duration < self::LISTING_DURATION_MIN)
+      return self::LISTING_DURATION_MIN;
+
+    if ($duration > self::LISTING_DURATION_MAX)
+      return self::LISTING_DURATION_MAX;
+
+    return $duration;
+  }
+
+  /**
    * Upload TM optons file and import data from it
    *
    * @param Varien_Object $object
