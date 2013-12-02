@@ -65,7 +65,10 @@ class MVentory_Tm_Model_Layer_Filter_Attribute
       foreach ($data as $id => $option) {
         $label = strtolower(trim($option['label']));
 
-        if ($label == '' || $label == 'n/a' || $label == 'none')
+        if ($label == ''
+            || $label == 'n/a'
+            || $label == 'none'
+            || $label == '~')
           unset($data[$id]);
       }
 
