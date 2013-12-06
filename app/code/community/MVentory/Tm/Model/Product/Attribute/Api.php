@@ -34,6 +34,37 @@
 class MVentory_Tm_Model_Product_Attribute_Api
   extends Mage_Catalog_Model_Product_Attribute_Api {
 
+  protected $_excludeFromSet = array(
+    'old_id' => true,
+    'news_from_date' => true,
+    'news_to_date' => true,
+    'country_of_manufacture' => true,
+    'category_id' => true,
+    'required_options' => true,
+    'has_options' => true,
+    'image_label' => true,
+    'small_image_label' => true,
+    'thumbnail_label' => true,
+    'group_price' => true,
+    'tier_price' => true,
+    'msrp_enabled' => true,
+    'minimal_price' => true,
+    'msrp_display_actual_price_type' => true,
+    'msrp' => true,
+    'enable_googlecheckout' => true,
+    'meta_title' => true,
+    'meta_keyword' => true,
+    'meta_description' => true,
+    'is_recurring' => true,
+    'recurring_profile' => true,
+    'custom_design' => true,
+    'custom_design_from' => true,
+    'custom_design_to' => true,
+    'custom_layout_update' => true,
+    'page_layout' => true,
+    'options_container' => true,
+  );
+
   public function fullInfoList ($setId) {
     $storeId = Mage::helper('mventory_tm')->getCurrentStoreId(null);
 
@@ -42,6 +73,9 @@ class MVentory_Tm_Model_Product_Attribute_Api
     $attributes = array();
 
     foreach ($_attributes as $_attribute) {
+      if (isset($this->_excludeFromSet[$_attribute['code']]))
+        continue;
+
       $attribute = $this->info($_attribute['attribute_id']);
 
       $excludeAttribute = false;
@@ -60,10 +94,18 @@ class MVentory_Tm_Model_Product_Attribute_Api
         continue;
       }
 
-      $attribute['options']
-        = $this->optionsPerStoreView($attribute['attribute_id'], $storeId);
-
-      $attributes[] = $attribute;
+      $attributes[] = array(
+        'attribute_id' => $attribute['attribute_id'],
+        'attribute_code' => $attribute['attribute_code'],
+        'frontend_input' => $attribute['frontend_input'],
+        'default_value' => $attribute['default_value'],
+        'is_required' => $attribute['is_required'],
+        'frontend_label' => $attribute['frontend_label'],
+        'options' => $this->optionsPerStoreView(
+          $attribute['attribute_id'],
+          $storeId
+        )
+      );
     }
 
     return $attributes;
