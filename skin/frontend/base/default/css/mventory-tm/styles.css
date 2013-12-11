@@ -5,3 +5,7 @@
 .box-store pre.store-address {
   margin: 0 0 10px;
 }
+
+#mv-powered-by {
+  float: right;
+}
