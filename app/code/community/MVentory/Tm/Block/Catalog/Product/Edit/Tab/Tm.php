@@ -191,7 +191,8 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     $optional = array();
 
     foreach ($attributes as $attribute) {
-      if (!$attribute['IsRequiredForSell']) {
+      if (!(isset($attribute['IsRequiredForSell'])
+            && $attribute['IsRequiredForSell'])) {
         $optional[] = $attribute;
 
         continue;
