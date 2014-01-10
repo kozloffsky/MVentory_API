@@ -181,7 +181,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   public function getPreparedAttributes ($tmCategoryId) {
     $attributes = Mage::helper('mventory_tm/tm')->getAttributes($tmCategoryId);
 
-    if (!($attributes && count($attributes)))
+    if (!$attributes)
       return;
 
     $product = $this->getProduct();
