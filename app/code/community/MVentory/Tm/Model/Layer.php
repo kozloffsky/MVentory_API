@@ -37,6 +37,25 @@ class MVentory_Tm_Model_Layer extends Mage_Catalog_Model_Layer {
   }
 
   /**
+   * Initialize product collection
+   *
+   * Redeclared to filter out products without images
+   *
+   * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection
+   * @return Mage_Catalog_Model_Layer
+   */
+  public function prepareProductCollection ($collection) {
+    parent::prepareProductCollection($collection);
+
+    $collection->addAttributeToFilter(
+      'small_image',
+      array('nin' => array('no_selection', ''))
+    );
+
+    return $this;
+  }
+
+  /**
    * Add filters to attribute collection
    *
    * @param Mage_Catalog_Model_Resource_Product_Attribute_Collection $collection
