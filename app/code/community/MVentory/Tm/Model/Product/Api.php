@@ -353,8 +353,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
           = (int) $helper->getConfig(self::TAX_CLASS_PATH,
                                      $helper->getCurrentWebsite());
 
-      //Set storeId as null to save values of attributes in the default scope
-      $id = $this->create($type, $set, $sku, $productData, null);
+      //Use admin store ID to save values of attributes in the default scope
+      $id = $this->create(
+        $type,
+        $set,
+        $sku,
+        $productData,
+        Mage_Core_Model_App::ADMIN_STORE_ID
+      );
     }
 
     return $this->fullInfo($id, 'id');
@@ -706,7 +712,13 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     if ($skus)
       unset($productData['stock_data']);
 
-    $result = parent::update($productId, $productData, $store, 'id');
+    //Use admin store ID to save values of attributes in the default scope
+    $result = parent::update(
+      $productId,
+      $productData,
+      Mage_Core_Model_App::ADMIN_STORE_ID,
+      'id'
+    );
 
     if (!$result)
       return $result;
