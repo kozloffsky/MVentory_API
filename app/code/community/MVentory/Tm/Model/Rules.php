@@ -75,10 +75,14 @@ class MVentory_Tm_Model_Rules
 
     $_attributes = array();
 
-    foreach ($product->getAttributes() as $code => $attribute)
+    $attributes = $product
+      ->getTypeInstance()
+      ->getEditableAttributes($product);
+
+    foreach ($attributes as $code => $attribute)
       $_attributes[$attribute->getId()] = $code;
 
-    unset($attribute, $code);
+    unset($attributes, $attribute, $code);
 
     $categoryId = null;
 
