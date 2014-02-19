@@ -380,6 +380,12 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $old = $this->_getProduct($oldSku, null, 'sku');
     $oldId = $old->getId();
 
+    //Load images from the original product before duplicating
+    //because the original one can be removed during duplication
+    //if duplicated product is similar to it.
+    $images = Mage::getModel('catalog/product_attribute_media_api');
+    $oldImages = $images->items($oldId);
+
     $subtractQty = (int) $subtractQty;
 
     if ($subtractQty > 0) {
@@ -417,9 +423,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $mode = strtolower($mode);
 
-    $images = Mage::getModel('catalog/product_attribute_media_api');
-
-    $old = $images->items($oldId);
+    $old = $oldImages;
     $new = $images->items($newId);
 
     $countOld = count($old);

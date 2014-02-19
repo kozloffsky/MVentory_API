@@ -342,4 +342,75 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
       'attributes' => isset($result) ? $result : null
     );
   }
+
+  public function updateFromSimilar ($product, $similar) {
+    if ($similar instanceof Mage_Catalog_Model_Product)
+      $similar = array($similar);
+
+    foreach ($similar as $_similar) {
+      $item = Mage::getModel('cataloginventory/stock_item')
+        ->loadByProduct($_similar);
+
+      if ($item->getId())
+        $similarData[] = $item->getData();
+    }
+
+    if (!isset($similarData))
+      return;
+
+    unset($item, $_similar);
+
+    $this->_loadStockData($product);
+
+    if ($item = $product->getData('stock_item'))
+      $item->setData('mventory_ignore_stock_update', true);
+
+    $product->setData(
+      'stock_data',
+      $this->_updateStockData($product->getData('stock_data'), $similarData)
+    );
+  }
+
+  private function _loadStockData ($product) {
+    $item = $product->getData('stock_item');
+
+    if ($product->getId()) {
+      $stock = Mage::getModel('cataloginventory/stock_item')
+        ->loadByProduct($product);
+
+      if ($stock->getId())
+        $item = $stock;
+    }
+
+    $data = $product->getData('stock_data');
+
+    if (!($item instanceof Mage_CatalogInventory_Model_Stock_Item))
+      $item = null;
+
+    if (!$data && $item)
+      $data = $item->getData();
+
+    $product
+      ->setData('stock_item', $item)
+      ->setData('stock_data', $data);
+  }
+
+  private function _updateStockData ($stock, $similar) {
+    foreach ($similar as $_similar) {
+      if (!$stock) {
+        $stock = $_similar;
+        continue;
+      }
+
+      if (!isset($stock['manage_stock']) && isset($_similar['manage_stock']))
+        $stock['manage_stock'] = $_similar['manage_stock'];
+
+      if (isset($_similar['qty']))
+        $stock['qty'] = isset($stock['qty'])
+                          ? $stock['qty'] + $_similar['qty']
+                            : $_similar['qty'];
+    }
+
+    return $stock;
+  }
 }

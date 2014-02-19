@@ -150,6 +150,12 @@
             <method>saveAttributesHash</method>
           </mventory_save_attributes_hash>
 
+          <mventory_remove_similar>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>removeSimilar</method>
+          </mventory_remove_similar>
+
           <mventory_unassign_from_configurable>
             <type>singleton</type>
             <class>mventory_tm/observer</class>
@@ -183,6 +189,12 @@
             <class>mventory_tm/observer</class>
             <method>updateDescriptionInConfigurable</method>
           </mventory_update_description_in_configurable>
+
+          <mventory_save_additional_skus>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>saveAdditionalSkus</method>
+          </mventory_save_additional_skus>
         </observers>
       </catalog_product_save_after>
 

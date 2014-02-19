@@ -1356,6 +1356,107 @@ class MVentory_Tm_Model_Observer {
     $product->setVisibility(4);
   }
 
+  public function removeSimilar ($observer) {
+    $product = $observer->getProduct();
+
+    if ($product->getData('mventory_assigned_to_configurable_after') === false
+        || $product->getTypeId()
+             == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE)
+      return $this;
+
+    if (!$hash = $product->getData('mv_attributes_hash'))
+      return;
+
+    $helper = Mage::helper('mventory_tm/product_configurable');
+
+    $attribute = $helper
+      ->getConfigurableAttribute($product->getAttributeSetId());
+
+    $code = $attribute->getAttributeCode();
+
+    if (($value = $product->getData($code)) === null)
+      return;
+
+    $store = $helper
+               ->getWebsite($product)
+               ->getDefaultStore();
+
+    //Load all similar products (same hash and same value on configurable attr)
+    $products = Mage::getResourceModel('catalog/product_collection')
+      ->addAttributeToSelect('*')
+      ->addAttributeToFilter('type_id', 'simple')
+      ->addAttributeToFilter('mv_attributes_hash', $hash)
+      ->addAttributeToFilter($code, $value)
+      ->addStoreFilter($store);
+
+    //Exclude current product if it exists
+    if ($id = $product->getId())
+      $products->addIdFilter($id, true);
+
+    if (!count($products))
+      return;
+
+    //Update current product with data from similar products, e.g. collect all
+    //stock
+    $helper->updateFromSimilar($product, $products);
+
+    //Load list of configurable products with same hash and use first
+    //product.
+    $configurable = Mage::getResourceModel('catalog/product_collection')
+      ->addAttributeToSelect('*')
+      ->addAttributeToFilter('type_id', 'configurable')
+      ->addAttributeToFilter('mv_attributes_hash', $hash)
+      ->addStoreFilter($store);
+
+    $configurable = $configurable->count()
+                      ? $configurable->getFirstItem()
+                        : null;
+
+    if ($configurable) {
+      $childrenIds = $helper->getChildrenIds($configurable);
+      unset($childrenIds[$id]);
+    }
+
+    //Unassigned similar product from the configurable if the product is
+    //child of the configurable
+    //Collect SKUs of similar products to store them as additional SKUs for
+    //the current product
+    foreach ($products as $_product) {
+      $_id = $_product->getId();
+
+      if ($configurable && in_array($_id, $childrenIds)) {
+        $helper
+          ->removeOption($configurable, $attribute, $_product)
+          ->unassignProduct($configurable, $_product);
+
+        unset($childrenIds[$_id]);
+      }
+
+      $skus[] = $_product->getSku();
+    }
+
+    $product->setData('mventory_additional_skus', $skus);
+
+    unset($_product, $_id, $skus);
+
+    //Save or remove (if it's has no children) configurable product.
+    if ($configurable)
+      if ($childrenIds) {
+        $configurable->save();
+      } else {
+        $configurable->delete();
+
+        if ($id)
+          $product
+            ->setVisibility(4)
+            ->setData('mventory_assigned_to_configurable_after', false);
+      }
+
+    //Remove all similar products
+    foreach ($products as $_product)
+      $_product->delete();
+  }
+
   public function assignToConfigurableBefore ($observer) {
     $product = $observer->getProduct();
 
@@ -1653,5 +1754,12 @@ class MVentory_Tm_Model_Observer {
       ->save();
 
     $configurable->save();
+  }
+
+  public function saveAdditionalSkus ($observer) {
+    $product = $observer->getProduct();
+
+    if ($skus = $product->getData('mventory_additional_skus'))
+      Mage::getResourceModel('mventory_tm/sku')->add($skus, $product->getId());
   }
 }
