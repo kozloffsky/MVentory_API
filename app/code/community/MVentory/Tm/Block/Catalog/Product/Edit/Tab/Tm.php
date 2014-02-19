@@ -106,7 +106,8 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   }
 
   public function getColsNumber () {
-    $categories = $this->getCategories();
+    if (!$categories = $this->getCategories())
+      return 0;
 
     $cols = 0;
 
