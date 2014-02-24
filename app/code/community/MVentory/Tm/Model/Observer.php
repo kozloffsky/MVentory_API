@@ -1760,6 +1760,10 @@ class MVentory_Tm_Model_Observer {
     $product = $observer->getProduct();
 
     if ($skus = $product->getData('mventory_additional_skus'))
-      Mage::getResourceModel('mventory_tm/sku')->add($skus, $product->getId());
+      Mage::getResourceModel('mventory_tm/sku')->add(
+        $skus,
+        $product->getId(),
+        Mage::helper('mventory_tm/product')->getWebsite($product)
+      );
   }
 }

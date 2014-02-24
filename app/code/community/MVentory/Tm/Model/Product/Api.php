@@ -700,8 +700,9 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                           $store = null,
                           $identifierType = null) {
 
-    $productId = Mage::helper('mventory_tm/product')
-                   ->getProductId($productId, $identifierType);
+    $helper = Mage::helper('mventory_tm/product');
+
+    $productId = $helper->getProductId($productId, $identifierType);
 
     if (!$productId)
       $this->_fault('product_not_exists');
@@ -731,7 +732,11 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       Mage::getResourceModel('mventory_tm/sku')->removeByProductId($productId);
 
     if ($skus) {
-      Mage::getResourceModel('mventory_tm/sku')->add($skus, $productId);
+      Mage::getResourceModel('mventory_tm/sku')->add(
+        $skus,
+        $productId,
+        $helper->getCurrentWebsite()
+      );
 
       $stock = Mage::getModel('cataloginventory/stock_item')
                  ->loadByProduct($productId);
