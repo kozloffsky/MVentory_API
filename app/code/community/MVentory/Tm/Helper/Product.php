@@ -127,8 +127,15 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
    * @return int|null
    */
   public function getProductId ($productId, $identifierType = null) {
-    if ($identifierType == 'barcode')
-      return (int) $this->getProductIdByBarcode($productId);
+    if ($identifierType == 'barcode') {
+      $id = (int) $this->getProductIdByBarcode($productId);
+
+      if ($id < 1)
+        $id = (int) Mage::getResourceModel('mventory_tm/sku')
+          ->getProductId($productId, $this->getCurrentWebsite());
+
+      return $id > 0 ? $id : null;
+    }
 
     if ($identifierType == 'id' && ((int) $productId > 0))
       return (int) $productId;

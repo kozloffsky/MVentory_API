@@ -1433,11 +1433,21 @@ class MVentory_Tm_Model_Observer {
       }
 
       $skus[] = $_product->getSku();
+      $skus[] = $_product->getData('product_barcode_');
+
+      if ($_skus = Mage::getResourceModel('mventory_tm/sku')->get($_id))
+        $skus = array_merge($skus, $_skus);
     }
 
-    $product->setData('mventory_additional_skus', $skus);
+    $product->setData(
+      'mventory_additional_skus',
+      array_diff(
+        array_unique($skus),
+        array($product->getSku(), $product->getData('product_barcode_'))
+      )
+    );
 
-    unset($_product, $_id, $skus);
+    unset($_product, $_id, $skus, $_skus);
 
     //Save or remove (if it's has no children) configurable product.
     if ($configurable)

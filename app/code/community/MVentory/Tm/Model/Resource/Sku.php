@@ -74,6 +74,20 @@ class MVentory_Tm_Model_Resource_Sku
     );
   }
 
+  public function get ($productId) {
+    $adapter = $this->_getReadAdapter();
+
+    $select = $adapter
+      ->select()
+      ->from($this->getMainTable(), array('sku'))
+      ->where('product_id = :product_id');
+
+    return (array) $adapter->fetchCol(
+      $select,
+      array('product_id' => $productId)
+    );
+  }
+
   public function removeByProductId ($id) {
     $this
       ->_getWriteAdapter()
