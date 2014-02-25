@@ -36,7 +36,7 @@ class MVentory_Tm_Model_Resource_Sku
     $adapter = $this->_getWriteAdapter();
     $table = $this->getMainTable();
 
-    $skus = array_diff($skus, $this->has($skus, $website));
+    $skus = array_diff($skus, $this->has($skus, $productId));
 
     foreach ($skus as $sku) {
       $data = new Varien_Object(array(
@@ -54,10 +54,7 @@ class MVentory_Tm_Model_Resource_Sku
     return $this;
   }
 
-  public function has ($skus, $website) {
-    if (!$websiteId = $website->getId())
-      return $this;
-
+  public function has ($skus, $productId) {
     $skus = (array) $skus;
 
     $adapter = $this->_getReadAdapter();
@@ -66,11 +63,11 @@ class MVentory_Tm_Model_Resource_Sku
                 ->select()
                 ->from($this->getMainTable(), array('sku'))
                 ->where('sku in (?)', $skus)
-                ->where('website_id = :website_id');
+                ->where('product_id = :product_id');
 
     return (array) $adapter->fetchCol(
       $select,
-      array('website_id' => $websiteId)
+      array('product_id' => $productId)
     );
   }
 
