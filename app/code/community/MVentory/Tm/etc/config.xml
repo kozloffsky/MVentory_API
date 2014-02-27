@@ -2,7 +2,7 @@
 <config>
   <modules>
     <MVentory_Tm>
-      <version>21</version>
+      <version>22</version>
     </MVentory_Tm>
   </modules>
 
@@ -345,6 +345,10 @@
         <from><![CDATA[#^/sku/#]]></from>
         <to><![CDATA[/mventory_tm/qr/scan/sku/]]></to>
       </mventory_tm_qr_get>
+      <mventory_app_config>
+        <from><![CDATA[#^/mventory-key/(.*)\.txt$#]]></from>
+        <to><![CDATA[/mventory_tm/app/profile/key/$1/]]></to>
+      </mventory_app_config>
     </rewrite>
 
     <cache>
@@ -495,6 +499,16 @@
           </tm_add_mathing_rules_block>
         </observers>
       </controller_action_layout_render_before_adminhtml_catalog_product_set_edit>
+
+      <api_user_save_after>
+        <observers>
+          <mventory_generate_link_for_profile>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>generateLinkForProfile</method>
+          </mventory_generate_link_for_profile>
+        </observers>
+      </api_user_save_after>
     </events>
 
     <layout>
@@ -530,6 +544,7 @@
         <add_to_websites>1</add_to_websites>
         <tax_class>0</tax_class>
         <cart-item-lifetime>1440</cart-item-lifetime>
+        <app_profile_link_lifetime>1440</app_profile_link_lifetime>
       </api>
     </mventory_tm>
 

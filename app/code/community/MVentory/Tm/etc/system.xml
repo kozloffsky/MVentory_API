@@ -217,6 +217,17 @@
 
               <sort_order>4</sort_order>
             </cart-item-lifetime>
+
+            <app_profile_link_lifetime translate="label">
+              <label>Lifetime of the link to the app profile (minutes)</label>
+              <frontend_type>text</frontend_type>
+
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>5</sort_order>
+            </app_profile_link_lifetime>
           </fields>
         </api>
 

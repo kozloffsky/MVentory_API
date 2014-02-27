@@ -14,6 +14,8 @@ class MVentory_Tm_Model_Observer {
   const XML_PATH_CANCEL_STATES = 'mventory_tm/order/cancel_states';
   const XML_PATH_CANCEL_PERIOD = 'mventory_tm/order/cancel_period';
 
+  const XML_PATH_CONFIG_LINK = 'mventory_tm/api/app_profile_link_lifetime';
+
   const SYNC_START_HOUR = 7;
   const SYNC_END_HOUR = 23;
 
@@ -1775,5 +1777,48 @@ class MVentory_Tm_Model_Observer {
         $product->getId(),
         Mage::helper('mventory_tm/product')->getWebsite($product)
       );
+  }
+
+  public function generateLinkForProfile ($observer) {
+    $helper = Mage::helper('mventory_tm');
+
+    if (!$customer = $helper->getCustomerByApiUser($observer->getObject()))
+      return;
+
+    if (($websiteId = $customer->getWebsiteId()) === null)
+      return;
+
+    $store = Mage::app()
+      ->getWebsite($websiteId)
+      ->getDefaultStore();
+
+    if ($store->getId() === null)
+      return;
+
+    $period = Mage::getStoreConfig(self::XML_PATH_CONFIG_LINK, $store) * 60;
+
+    if (!$period)
+      return;
+
+    $key = base64_encode(mcrypt_create_iv(12));
+
+    $customer
+      ->setData(
+          'mventory_app_profile_key',
+          $key . '-' . (microtime(true) + $period)
+        )
+      ->save();
+
+    $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, false);
+    $url = 'mventory://'
+           . substr($url, 7)
+           . 'mventory-key/'
+           . urlencode($key)
+           . '.txt';
+
+    $msg = $helper->__('App configuration URL:')
+           . ' <a href="' . $url . '">' . $url . '</a>';
+
+    Mage::getSingleton('adminhtml/session')->addNotice($msg);
   }
 }
