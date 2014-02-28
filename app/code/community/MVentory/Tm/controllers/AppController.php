@@ -62,7 +62,7 @@ class MVentory_Tm_AppController
       ->save();
 
     $customer
-      ->setData('mventory_app_profile_key', null)
+      ->setData('mventory_app_profile_key', '')
       ->save();
 
     $output = $user->getUsername() . "\n"
