@@ -4,7 +4,7 @@ class MVentory_Tm_AppController
   extends Mage_Core_Controller_Front_Action {
 
   public function profileAction () {
-    $key = urldecode($this->getRequest()->getParam('key'));
+    $key = $this->getRequest()->getParam('key');
 
     if (!($key && strlen($key) == 16)) {
       $this->norouteAction();
