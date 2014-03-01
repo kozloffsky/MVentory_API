@@ -1809,12 +1809,9 @@ class MVentory_Tm_Model_Observer {
         )
       ->save();
 
-    $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, false);
-    $url = 'mventory://'
-           . substr($url, 7)
+    $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, false)
            . 'mventory-key/'
-           . urlencode($key)
-           . '.txt';
+           . urlencode($key);
 
     $msg = $helper->__('App configuration URL:')
            . ' <a href="' . $url . '">' . $url . '</a>';

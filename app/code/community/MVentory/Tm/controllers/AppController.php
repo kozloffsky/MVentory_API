@@ -79,4 +79,25 @@ class MVentory_Tm_AppController
 
      $response->setBody($output);
   }
+
+  public function redirectAction () {
+    $key = $this->getRequest()->getParam('key');
+
+    if (!($key && strlen($key) == 16)) {
+      $this->norouteAction();
+      return;
+    }
+
+    $url = Mage::app()
+      ->getStore()
+      ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, false);
+
+    $url = 'mventory://'
+           . substr($url, 7)
+           . 'mventory-key/'
+           . urlencode($key)
+           . '.txt';
+
+    $this->_redirectUrl($url);
+  }
 }

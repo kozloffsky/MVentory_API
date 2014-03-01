@@ -349,6 +349,10 @@
         <from><![CDATA[#^/mventory-key/(.*)\.txt$#]]></from>
         <to><![CDATA[/mventory_tm/app/profile/key/$1/]]></to>
       </mventory_app_config>
+      <mventory_app_config_redirect>
+        <from><![CDATA[#^/mventory-key/(.*)$#]]></from>
+        <to><![CDATA[/mventory_tm/app/redirect/key/$1/]]></to>
+      </mventory_app_config_redirect>
     </rewrite>
 
     <cache>
