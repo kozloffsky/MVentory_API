@@ -30,6 +30,7 @@
       <page>
         <rewrite>
           <html_breadcrumbs>MVentory_Tm_Block_Html_Breadcrumbs</html_breadcrumbs>
+          <html_footer>MVentory_Tm_Block_Html_Footer</html_footer>
         </rewrite>
       </page>
     </blocks>
