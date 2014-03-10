@@ -1,6 +1,6 @@
 <?php
 
-class MVentory_Tm_Helper_CatalogData extends Mage_Catalog_Helper_Data {
+class MVentory_Tm_Helper_Mage_Catalog_Data extends Mage_Catalog_Helper_Data {
 
   /**
    * Same as Mage_Catalog_Helper_Data::getBreadcrumbPath(), but returns

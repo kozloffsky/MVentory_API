@@ -91,14 +91,14 @@
 
       <catalog>
         <rewrite>
-          <data>MVentory_Tm_Helper_CatalogData</data>
-          <image>MVentory_Tm_Helper_Image</image>
+          <data>MVentory_Tm_Helper_Mage_Catalog_Data</data>
+          <image>MVentory_Tm_Helper_Mage_Catalog_Image</image>
         </rewrite>
       </catalog>
 
       <sales>
         <rewrite>
-          <data>MVentory_Tm_Helper_SalesData</data>
+          <data>MVentory_Tm_Helper_Mage_Sales_Data</data>
         </rewrite>
       </sales>
     </helpers>

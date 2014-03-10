@@ -1,6 +1,6 @@
 <?php
 
-class MVentory_Tm_Helper_Image extends Mage_Catalog_Helper_Image {
+class MVentory_Tm_Helper_Mage_Catalog_Image extends Mage_Catalog_Helper_Image {
 
   /**
    * Initialize Helper to work with Image

@@ -1,6 +1,6 @@
 <?php
 
-class MVentory_Tm_Helper_SalesData extends Mage_Sales_Helper_Data {
+class MVentory_Tm_Helper_Mage_Sales_Data extends Mage_Sales_Helper_Data {
 
   /**
    * Check allow to send new order confirmation email
