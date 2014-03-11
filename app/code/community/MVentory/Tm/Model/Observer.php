@@ -1464,6 +1464,33 @@ class MVentory_Tm_Model_Observer {
             ->setData('mventory_assigned_to_configurable_after', false);
       }
 
+    $products = $products->getItems();
+
+    $_products = $products + array($product);
+
+    //Store distinct images from all similar products and values of media
+    //attributes in the product to preserve them.
+    //The images is saved in saveImagesAfterMerge() method after
+    //the product is saved
+    $data = array(
+      'images' => Mage::helper('mventory_tm/image')->getUniques($_products),
+      'values' => $helper->getMediaAttrs($_products)
+    );
+
+    $product->setData('mventory_add_images', $data);
+
+    //On product duplicate Magento copies image DB records from original product
+    //to duplicate one (records are shared). If the duplicate is similar
+    //to the original product, the original and its image records
+    //will be removed, so the duplicate won't have images.
+    //So to add images collected on previous step we need to unset value
+    //of media_gallery attribute, because on duplicate process images from the
+    //media_gallery attribute and collected image are same. It allows for
+    //addImages() method of MVentory_Tm_Helper_Product class to add all images
+    //to the duplicate
+    if ($product->getOrigIsDuplicate())
+      $product->unsMediaGallery();
+
     //Remove all similar products
     foreach ($products as $_product)
       $_product->delete();
@@ -1817,5 +1844,16 @@ class MVentory_Tm_Model_Observer {
            . ' <a href="' . $url . '">' . $url . '</a>';
 
     Mage::getSingleton('adminhtml/session')->addNotice($msg);
+  }
+
+  public function saveImagesAfterMerge ($observer) {
+    $product = $observer->getProduct();
+
+    if (!$data = $product->getData('mventory_add_images'))
+      return;
+
+    Mage::helper('mventory_tm/product')
+      ->addImages($product, $data['images'])
+      ->setAttributesValue($product->getId(), $data['values']);
   }
 }

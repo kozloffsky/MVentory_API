@@ -173,6 +173,12 @@
 
       <catalog_product_save_after>
         <observers>
+           <mventory_images_reset_ids>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>saveImagesAfterMerge</method>
+          </mventory_images_reset_ids>
+
           <mventory_assign_to_configurable_after>
             <type>singleton</type>
             <class>mventory_tm/observer</class>

@@ -420,4 +420,134 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
     return $stock;
   }
+
+  /**
+   * Loads media_gallery attribute. If product is specified it tries to get
+   * the attribute from list of loaded attributes in the product
+   *
+   * @param Mage_Catalog_Model_Product $product Product
+   *
+   * @return Mage_Eav_Model_Entity_Attribute
+   */
+  public function getMediaGalleryAttr ($product = null) {
+    if ($product && $product instanceof Mage_Catalog_Model_Product) {
+      $attrs = $product->getAttributes();
+
+      if (isset($attrs['media_gallery']))
+        return $attrs['media_gallery'];
+    }
+
+    return Mage::getModel('eav/entity_attribute')
+      ->loadByCode(Mage_Catalog_Model_Product::ENTITY, 'media_gallery');
+  }
+
+  /**
+   * Returns list of media attributes with values. It return values from last
+   * product in the list if no one product has all values for all media
+   * attributes
+   *
+   * @param array $products List of products
+   *
+   * @return array
+   */
+  public function getMediaAttrs ($products) {
+    $attrs = null;
+
+    foreach ($products as $product) {
+      $values = array();
+
+      if (!$attrs)
+        $attrs = $product->getMediaAttributes();
+
+      foreach ($attrs as $attr) {
+        $code = $attr->getAttributeCode();
+
+        if ($value = $product->getData($code))
+          $values[$code] = $value;
+      }
+
+      if (count($values) == count($attrs))
+        return $values;
+    }
+
+    return $values;
+  }
+
+  /**
+   * Returns list of images for the product
+   *
+   * @param Mage_Catalog_Model_Product $product Product
+   * @param Varien_Object $backend
+   * @param bool $fileAsKey Return array of images with image filename as a key
+   *
+   * @return array
+   */
+  public function getImages ($product, $backend = null, $fileAsKey = true) {
+    $gallery = $product->getMediaGallery('images');
+
+    if (!$gallery && $product->getId()) {
+      if (!$backend)
+        $backend = new Varien_Object(array(
+          'attribute' => $this->getMediaGalleryAttr($product)
+        ));
+
+      $gallery
+        = Mage::getResourceSingleton('catalog/product_attribute_backend_media')
+            ->loadGallery($product, $backend);
+
+      unset($backend);
+    }
+
+    if (!$gallery)
+      return array();
+
+    if (!$fileAsKey)
+      return $gallery;
+
+    foreach ($gallery as $image)
+      $images[$image['file']] = $image;
+
+    return $images;
+  }
+
+  /**
+   * Adds images to the product. It ignores existing product images.
+   *
+   * @param Mage_Catalog_Model_Product $product Product
+   * @param array $images
+   *
+   * @return MVentory_Tm_Helper_Product
+   */
+  public function addImages ($product, array $images) {
+    $_images = $this->getImages($product);
+
+    $resource
+      = Mage::getResourceSingleton('catalog/product_attribute_backend_media');
+
+    $id = $product->getId();
+    $storeId = $product->getStoreId();
+    $attrId = $this->getMediaGalleryAttr($product)->getAttributeId();
+
+    foreach ($images as $image) {
+      if (!isset($_images[$image['file']])) {
+        $resource->insertGalleryValueInStore(
+            array(
+              'value_id' => $resource->insertGallery(
+                array(
+                  'entity_id' => $id,
+                  'attribute_id' => $attrId,
+                  'value' => $image['file']
+                )
+              ),
+              'label'  => $image['label'],
+              'position' => (int) $image['position'],
+              'disabled' => (int) $image['disabled'],
+              'store_id' => $storeId
+            )
+          );
+      }
+    }
+
+    return $this;
+  }
 }
