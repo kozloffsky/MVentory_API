@@ -33,10 +33,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     }
 
     $price = (float) $price;
-
-    $qtyIsDecimal = is_float($qty);
-
-    $qty = (float) $qty;
+    $qty = $this->_parseQty($qty);
 
     $updateProduct = false;
 
@@ -112,7 +109,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
           $saveStockItem = true;
         }
 
-        if ($qtyIsDecimal) {
+        if (is_float($qty) && !$stockItem->getIsQtyDecimal()) {
           $stockItem
             ->setIsQtyDecimal(1);
 
@@ -248,7 +245,6 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
   }
 
   public function createOrderForMultipleProducts ($productsToOrder) {
-
   	$apiResult = array();
   	$apiResult['qtys'] = array();
   	
@@ -315,10 +311,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     foreach ($productsToOrder as &$productData)
     {
       $price = (float) $productData['price'];
-
-      $qtyIsDecimal = is_float($productData['qty']);
-
-      $qty = (float) $productData['qty'];
+      $qty = $this->_parseQty($productData['qty']);
 
       $updateProduct = false;
 
@@ -370,7 +363,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
           $saveStockItem = true;
         }
 
-        if ($qtyIsDecimal) {
+        if (is_float($qty) && !$stockItem->getIsQtyDecimal()) {
           $stockItem
             ->setIsQtyDecimal(1);
 
@@ -529,5 +522,12 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
     return Mage::getResourceModel('mventory_tm/cart_item')
       ->getCart($deleteBeforeTimestamp, $storeId);
+  }
+
+  private function _parseQty ($value) {
+    $iValue = (int) $value;
+    $fValue = (float) $value;
+
+    return $iValue == $fValue ? $iValue : $fValue;
   }
 }
