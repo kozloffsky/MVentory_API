@@ -41,7 +41,7 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
       $this->_fault('data_invalid',
                     Mage::helper('catalog')->__('The image is not specified.'));
 
-    $file = $data['file'];
+    $file = &$data['file'];
 
     if (!isset($file['name'], $file['mime'], $file['content']))
       $this->_fault('data_invalid',
