@@ -236,12 +236,6 @@
             <method>restoreDuplicateFlagInProduct</method>
           </tm_product_restore_duplicate_flag>
 
-          <mventory_tm_media_save_before>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>mediaSaveBefore</method>
-          </mventory_tm_media_save_before>
-
           <mventory_tm_upload_image_to_cdn>
             <type>singleton</type>
             <class>mventory_tm/observer</class>

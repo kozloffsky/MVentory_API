@@ -19,12 +19,6 @@ class MVentory_Tm_Model_Observer {
   const SYNC_START_HOUR = 7;
   const SYNC_END_HOUR = 23;
 
-  private $supportedImageTypes = array(
-    IMAGETYPE_GIF => 'gif',
-    IMAGETYPE_JPEG => 'jpeg',
-    IMAGETYPE_PNG => 'png'
-  );
-
   const TAG_TM_EMAILS = 'tag_tm_emails';
   const TAG_TM_FREE_SLOTS = 'tag_tm_free_slots';
 
@@ -485,75 +479,6 @@ class MVentory_Tm_Model_Observer {
           break;
         }
       }
-    }
-  }
-
-  public function mediaSaveBefore($observer) {
-    if (!function_exists('exif_read_data'))
-      return;
-
-    //There's nothing to process because we're using images
-    //from original product in duplicate
-    if ($observer->getProduct()->getIsDuplicate())
-      return;
-
-    $value = $observer->getImages();
-
-    $config = Mage::getSingleton('catalog/product_media_config');
-
-    foreach ($value['images'] as $image) {
-      if (isset($image['value_id']))
-        continue;
-
-      $imagePath = $config->getMediaPath($image['file']);
-
-      $exif = exif_read_data($imagePath);
-
-      if ($exif === false)
-        continue;
-
-      if (isset($exif['FileType']))
-        $imageType = $exif['FileType'];
-      else
-        continue;
-
-      if (!array_key_exists($imageType, $this->supportedImageTypes))
-        continue;
-
-      if (isset($exif['Orientation']))
-        $orientation = $exif['Orientation'];
-      elseif (isset($exif['IFD0']['Orientation']))
-        $orientation = $exif['IFD0']['Orientation'];
-      else
-        continue;
-
-      if (!in_array($orientation, array(3, 6, 8)))
-        continue;
-
-      $imageTypeName = $this->supportedImageTypes[$imageType];
-
-      $imageCreate = 'imagecreatefrom' . $imageTypeName;
-
-      $imageData = $imageCreate($imagePath);
-
-      switch($orientation) {
-        case 3:
-          $imageData = imagerotate($imageData, 180, 0);
-
-          break;
-        case 6:
-          $imageData = imagerotate($imageData, -90, 0);
-
-          break;
-        case 8:
-          $imageData = imagerotate($imageData, 90, 0);
-
-          break;
-      }
-
-      $imageSave = 'image' . $imageTypeName;
-
-      $imageSave($imageData, $imagePath, 100);
     }
   }
 

@@ -52,6 +52,13 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
       $this->_fault('data_invalid',
                     Mage::helper('catalog')->__('Invalid image type.'));
 
+    if (!$file['content'] = @base64_decode($file['content'], true))
+      $this->_fault(
+        'data_invalid',
+        Mage::helper('catalog')
+          ->__('The image contents is not valid base64 data.')
+      );
+
     $file['name'] = strtolower(trim($file['name']));
 
     //$storeId = Mage::helper('mventory_tm')->getCurrentStoreId($storeId);
@@ -98,6 +105,10 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
     //We don't use exclude feature
     $data['exclude'] = 0;
 
+    $file['content'] = base64_encode(
+      $this->_fixOrientation($name, $file['content'])
+    );
+
     $this->create($productId, $data, $storeId, $identifierType);
 
     $productApi = Mage::getModel('mventory_tm/product_api');
@@ -133,5 +144,30 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
       $this->_fault('product_not_exists');
 
     return $product;
+  }
+
+  private function _fixOrientation ($name, &$data) {
+    $io = new Varien_Io_File();
+
+    $tmp  = Mage::getBaseDir('var')
+            . DS
+            . 'api'
+            . DS
+            . $this->_getSession()->getSessionId();
+
+    try {
+      $io->checkAndCreateFolder($tmp);
+      $io->open(array('path' => $tmp));
+      $io->write($name, $data, 0666);
+
+      $path = $tmp . DS . $name;
+
+      if (Mage::helper('mventory_tm/image')->fixOrientation($path))
+        $data = $io->read($path);
+    } catch (Exception $e) {}
+
+    $io->rmdir($tmp, true);
+
+    return $data;
   }
 }
