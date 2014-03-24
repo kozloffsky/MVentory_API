@@ -1,17 +1,24 @@
 <?xml version="1.0"?>
 
 <config>
+  <tabs>
+    <mventory translate="label" module="mventory_tm">
+      <label>mVentory</label>
+      <sort_order>100</sort_order>
+    </mventory>
+  </tabs>
+
   <sections>
     <mventory_tm translate="label">
-      <label>mVentory</label>
-      <tab>sales</tab>
+      <label>Settings</label>
+      <tab>mventory</tab>
       <frontend_type>text</frontend_type>
 
       <show_in_default>1</show_in_default>
       <show_in_website>1</show_in_website>
       <show_in_store>0</show_in_store>
 
-      <sort_order>2000</sort_order>
+      <sort_order>0</sort_order>
 
       <groups>
         <settings translate="label">
