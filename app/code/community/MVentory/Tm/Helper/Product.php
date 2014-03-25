@@ -2,7 +2,7 @@
 
 class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
-  const ROOT_WEBSITE_PATH = 'mventory_tm/shop-interface/root_website';
+  const ROOT_WEBSITE_PATH = 'mventory_tm/api/root_website';
 
   protected $_tmFields = array(
     'account_id' => 'tm_account_id',

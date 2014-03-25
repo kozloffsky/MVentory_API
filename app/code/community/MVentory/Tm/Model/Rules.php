@@ -5,7 +5,7 @@ class MVentory_Tm_Model_Rules
   implements IteratorAggregate {
 
   const DEFAULT_RULE_ID = 'default_rule';
-  const LOST_CATEGORY_PATH = 'mventory_tm/shop-interface/lost_category';
+  const LOST_CATEGORY_PATH = 'mventory_tm/api/lost_category';
 
   /**
    * Initialize resource mode

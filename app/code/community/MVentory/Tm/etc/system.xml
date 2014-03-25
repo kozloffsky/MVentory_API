@@ -235,19 +235,7 @@
 
               <sort_order>5</sort_order>
             </app_profile_link_lifetime>
-          </fields>
-        </api>
 
-        <shop-interface translate="label" module="mventory_tm">
-          <label>Shop interface</label>
-
-          <show_in_default>1</show_in_default>
-          <show_in_website>1</show_in_website>
-          <show_in_store>0</show_in_store>
-
-          <sort_order>3</sort_order>
-
-          <fields>
             <lost_category translate="label">
               <label>LOST category ID</label>
               <frontend_type>text</frontend_type>
@@ -256,7 +244,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>2</sort_order>
+              <sort_order>6</sort_order>
             </lost_category>
 
             <root_website translate="label">
@@ -268,10 +256,10 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>3</sort_order>
+              <sort_order>7</sort_order>
             </root_website>
           </fields>
-        </shop-interface>
+        </api>
 
         <qr translate="label">
           <label>Labels</label>
