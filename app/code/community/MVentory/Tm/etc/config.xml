@@ -29,7 +29,6 @@
 
       <page>
         <rewrite>
-          <html_breadcrumbs>MVentory_Tm_Block_Html_Breadcrumbs</html_breadcrumbs>
           <html_footer>MVentory_Tm_Block_Html_Footer</html_footer>
         </rewrite>
       </page>
@@ -68,7 +67,6 @@
 
       <catalog>
         <rewrite>
-          <category>MVentory_Tm_Model_Category</category>
           <layer>MVentory_Tm_Model_Layer</layer>
           <layer_filter_attribute>MVentory_Tm_Model_Layer_Filter_Attribute</layer_filter_attribute>
           <product_url>MVentory_Tm_Model_Product_Url</product_url>
