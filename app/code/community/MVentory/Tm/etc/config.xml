@@ -71,7 +71,6 @@
           <category>MVentory_Tm_Model_Category</category>
           <layer>MVentory_Tm_Model_Layer</layer>
           <layer_filter_attribute>MVentory_Tm_Model_Layer_Filter_Attribute</layer_filter_attribute>
-          <product_image>MVentory_Tm_Model_Product_Image</product_image>
           <product_url>MVentory_Tm_Model_Product_Url</product_url>
         </rewrite>
       </catalog>
@@ -92,7 +91,6 @@
       <catalog>
         <rewrite>
           <data>MVentory_Tm_Helper_Mage_Catalog_Data</data>
-          <image>MVentory_Tm_Helper_Mage_Catalog_Image</image>
         </rewrite>
       </catalog>
 
@@ -235,12 +233,6 @@
             <class>mventory_tm/observer</class>
             <method>restoreDuplicateFlagInProduct</method>
           </tm_product_restore_duplicate_flag>
-
-          <mventory_tm_upload_image_to_cdn>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>uploadImageToCdn</method>
-          </mventory_tm_upload_image_to_cdn>
 
           <mventory_sync_images>
             <type>singleton</type>
