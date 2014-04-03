@@ -281,11 +281,16 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     {
       if (ctype_digit((string)$name) && strlen((string)$name)>=5)
       {
+        //Use 'left' join to include products without record
+        //for value of barcode attribute in DB
         $collection->addAttributeToFilter(
           array(
               array('attribute'=> 'name','like' => "%{$name}%"),
               array('attribute'=> 'sku','like' => "%{$name}%"),
-              array('attribute'=> 'product_barcode_','like' => "%{$name}%"))
+              array('attribute'=> 'product_barcode_','like' => "%{$name}%")
+          ),
+          null,
+          'left'
         );
       }
       else
