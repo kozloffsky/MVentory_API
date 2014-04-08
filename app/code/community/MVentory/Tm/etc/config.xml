@@ -464,6 +464,16 @@
     </acl>
 
     <events>
+      <core_block_abstract_prepare_layout_before>
+        <observers>
+          <mventory_add_create_api_user_button>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>addCreateApiUserButton</method>
+          </mventory_add_create_api_user_button>
+        </observers>
+      </core_block_abstract_prepare_layout_before>
+
       <core_block_abstract_prepare_layout_after>
         <observers>
           <tm-add-tab-to-product>
@@ -530,6 +540,10 @@
         <category-tm>
           <file>catalog/tm.xml</file>
         </category-tm>
+
+        <mventory>
+          <file>mventory.xml</file>
+        </mventory>
       </updates>
     </layout>
   </adminhtml>

@@ -1651,4 +1651,29 @@ class MVentory_Tm_Model_Observer {
       ->addImages($product, $data['images'])
       ->setAttributesValue($product->getId(), $data['values']);
   }
+
+  public function addCreateApiUserButton ($observer) {
+    $block = $observer->getData('block');
+
+    if ($block instanceof Mage_Adminhtml_Block_Customer_Edit) {
+      $url = $block->getUrl(
+        'mventory_tm/customer/createapiuser',
+        array(
+          '_current' => true,
+          'id' => $block->getCustomerId(),
+          'tab' => '{{tab_id}}'
+        )
+      );
+
+      $block->addButton(
+        'create_api_user',
+        array(
+          'label' => Mage::helper('mventory_tm')->__('Add to mVentory'),
+          'onclick' => 'setLocation(mv_prepare_url(\'' . $url . '\'))',
+          'class' => 'add'
+        ),
+        -1
+      );
+    }
+  }
 }
