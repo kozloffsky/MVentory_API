@@ -43,7 +43,9 @@ class MVentory_Tm_ImageController
     $path = $media->getMediaPath($fileName);
 
     if (!file_exists($path))
-      Mage::helper('mventory_tm/s3')
+      //!!!TODO: we need a better abstraction in S3CDN extension to not depend
+      //on it here
+      Mage::helper('cdn')
         ->download($path);
 
     $tokens = explode('.', $fileName);

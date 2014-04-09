@@ -277,8 +277,10 @@ class MVentory_Tm_Model_Connector {
                    ->getMediaPath(self::TM_MAX_IMAGE_SIZE . $image);
 
         if (!file_exists($image))
+          //!!!TODO: we need a better abstraction in S3CDN extension
+          //to not depend on it here
           $image
-            = Mage::helper('mventory_tm/s3')
+            = Mage::helper('cdn')
                 ->download($image, $this->_website, self::TM_MAX_IMAGE_SIZE);
 
         if (!$image)
