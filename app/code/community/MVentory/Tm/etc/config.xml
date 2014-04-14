@@ -474,6 +474,16 @@
         </observers>
       </core_block_abstract_prepare_layout_before>
 
+      <core_block_abstract_prepare_layout_before>
+        <observers>
+          <mventory_add_attribute_convert_button>
+            <type>singleton</type>
+            <class>mventory_tm/observer</class>
+            <method>addAttributeConvertButton</method>
+          </mventory_add_attribute_convert_button>
+        </observers>
+      </core_block_abstract_prepare_layout_before>
+
       <core_block_abstract_prepare_layout_after>
         <observers>
           <tm-add-tab-to-product>

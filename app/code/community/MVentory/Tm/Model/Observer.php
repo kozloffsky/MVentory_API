@@ -1676,4 +1676,38 @@ class MVentory_Tm_Model_Observer {
       );
     }
   }
+
+  public function addAttributeConvertButton ($observer) {
+    $block = $observer->getData('block');
+
+    if (!($block instanceof Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit))
+      return;
+
+    $attr = Mage::registry('entity_attribute');
+
+    if (!$id = $attr->getId())
+      return;
+
+    $url = $block->getUrl(
+        'mventory_tm/attribute/convert',
+        array(
+          '_current' => true,
+          //'id' => $id
+        )
+      );
+
+    $isConverted = substr($attr->getAttributeCode(), -1) === '_';
+
+    $block->addButton(
+      'convert_attribute',
+      array(
+        'label' => $isConverted
+                     ? Mage::helper('mventory_tm')->__('Remove from mVentory')
+                       : Mage::helper('mventory_tm')->__('Add to mVentory'),
+        'onclick' => 'setLocation(\'' . $url . '\')',
+        'class' => $isConverted ? 'delete' : 'add'
+      ),
+      -1
+    );
+  }
 }
