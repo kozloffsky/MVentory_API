@@ -1665,11 +1665,17 @@ class MVentory_Tm_Model_Observer {
         )
       );
 
+      $helper = Mage::helper('mventory_tm');
+
       $block->addButton(
         'create_api_user',
         array(
-          'label' => Mage::helper('mventory_tm')->__('Add to mVentory'),
-          'onclick' => 'setLocation(mv_prepare_url(\'' . $url . '\'))',
+          'label' => $helper->__('mVentory Access'),
+          'onclick' => sprintf(
+            'if (confirm(\'%s\')) setLocation(mv_prepare_url(\'%s\'))',
+            $helper->__('Allow database access via mVentory app?'),
+            $url
+          ),
           'class' => 'add'
         ),
         -1
