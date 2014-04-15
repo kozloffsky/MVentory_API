@@ -25,6 +25,14 @@
 class MVentory_Tm_AttributeController extends Mage_Adminhtml_Controller_Action
 {
 
+  const __ATTR_CHANGED = <<<'EOT'
+Warning: the attribute code changed from %s to %s
+EOT;
+
+  const __MORE_INFO = <<<'EOT'
+<a target="_blank" href="http://mventory.com/help/magento-attributes/">More info &hellip;</a>
+EOT;
+
   protected function _construct() {
     $this->setUsedModuleName('MVentory_Tm');
   }
@@ -60,6 +68,12 @@ class MVentory_Tm_AttributeController extends Mage_Adminhtml_Controller_Action
         ->setAttributeCode($code)
         ->save();
 
+      $session->addWarning($this->__(
+        self::__ATTR_CHANGED,
+        $attr->getOrigData('attribute_code'),
+        $attr->getData('attribute_code')
+      ));
+
       foreach (Mage::getModel('index/indexer')->getProcessesCollection() as $p)
         $p->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
 
@@ -78,6 +92,8 @@ class MVentory_Tm_AttributeController extends Mage_Adminhtml_Controller_Action
       $app->getCacheInstance()->flush();
 
       $session->addSuccess($helper->__('The cache storage has been flushed.'));
+
+      $session->addSuccess($this->__(self::__MORE_INFO));
     } catch (Exception $e) {
       $session->addError($e->getMessage());
     }
