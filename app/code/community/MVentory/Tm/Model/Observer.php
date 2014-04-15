@@ -1635,8 +1635,11 @@ class MVentory_Tm_Model_Observer {
            . 'mventory-key/'
            . urlencode($key);
 
-    $msg = $helper->__('App configuration URL:')
-           . ' <a href="' . $url . '">' . $url . '</a>';
+    $msg = $helper->__(
+      'mVentory configuration URL: %s (valid for %d hours)',
+      ' <a href="' . $url . '">' . $url . '</a>',
+      round($period / 3600)
+    );
 
     Mage::getSingleton('adminhtml/session')->addNotice($msg);
   }

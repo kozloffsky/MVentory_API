@@ -37,8 +37,10 @@ EOT;
 User with ID=%d is already registered for API access. Manage details at <a href="%s">API user details page</a>
 EOT;
 
-  const _NEED_HELP = <<<'EOT'
-Need <a target="_blank" href="http://mventory.com/help/configure-access/">help</a>?
+  const _HELP = <<<'EOT'
+Manage API access on <a href="%s">API user details page</a>
+<br />
+Visit <a target="_blank" href="http://mventory.com/help/configure-access/">mventory.com</a> for more info
 EOT;
 
   protected function _construct() {
@@ -106,7 +108,16 @@ EOT;
       return $this->_redirectToCustomer($cid, $e->getMessage(), 'error');
     }
 
-    $this->_redirectToCustomer($cid, self::_NEED_HELP);
+    $this->_redirectToCustomer(
+      $cid,
+      sprintf(
+        self::_HELP,
+        $this->getUrl(
+          'adminhtml/api_user/edit',
+          array('user_id' => $user->getUserId())
+        )
+      )
+    );
   }
 
   private function _redirectToCustomer ($id, $msg = null, $type = 'notice') {
