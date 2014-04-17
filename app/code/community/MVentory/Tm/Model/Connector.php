@@ -42,8 +42,6 @@ class MVentory_Tm_Model_Connector {
   const FREE = 3;
   const CUSTOM = 4;
 
-  const TM_MAX_IMAGE_SIZE = '670x502';
-
   const TITLE_MAX_LENGTH = 50;
   const DESCRIPTION_MAX_LENGTH = 2048;
 
@@ -54,6 +52,8 @@ class MVentory_Tm_Model_Connector {
     '5000-' => true, //Trade Me Jobs
     '9374-' => true, //Travel, events & activities
   );
+
+  private $_tmImageSize = array('width' => 670, 'height' => 502);
 
   private $_helper = null;
 
@@ -279,8 +279,8 @@ class MVentory_Tm_Model_Connector {
           ->setDestinationSubdir('image')
           ->setKeepFrame(false)
           ->setConstrainOnly(true)
-          ->setWidth(670)
-          ->setHeight(502)
+          ->setWidth($this->_tmImageSize['width'])
+          ->setHeight($this->_tmImageSize['height'])
           ->setBaseFile($image)
           ->resize()
           ->saveFile()
