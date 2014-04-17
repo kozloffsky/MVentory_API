@@ -38,16 +38,6 @@ class MVentory_Tm_ImageController
 
     $fileName = $dispretionPath . DS . $fileName;
 
-    $media = Mage::getModel('catalog/product_media_config');
-
-    $path = $media->getMediaPath($fileName);
-
-    if (!file_exists($path))
-      //!!!TODO: we need a better abstraction in S3CDN extension to not depend
-      //on it here
-      Mage::helper('cdn')
-        ->download($path);
-
     $tokens = explode('.', $fileName);
 
     $type = $tokens[count($tokens) - 1];
@@ -61,19 +51,21 @@ class MVentory_Tm_ImageController
     $height = $request->has('height') && is_numeric($request->get('height'))
                   ? (int) $request->get('height') : null;
 
-    if ($width || $height) {
-      $image = Mage::getModel('catalog/product_image');
-
-      $image
-        ->setBaseFile($fileName)
+    if ($width || $height)
+      ///!!!TODO: check if resized image exists before resizing it
+      $path = Mage::getModel('catalog/product_image')
+        ->setDestinationSubdir('image')
         ->setKeepFrame(false)
         ->setWidth($width)
         ->setHeight($height)
+        ->setBaseFile($fileName)
         ->resize()
-        ->saveFile();
-
-      $path = $image->getNewFile();
-    }
+        ->saveFile()
+        ->getNewFile();
+    else
+      $path = Mage::getModel('catalog/product_image')
+        ->setBaseFile($fileName)
+        ->getBaseFile();
 
     $this
       ->getResponse()

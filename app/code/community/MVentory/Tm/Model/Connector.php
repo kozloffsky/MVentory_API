@@ -273,18 +273,17 @@ class MVentory_Tm_Model_Connector {
       $image = $product->getImage();
 
       if ($image && $image != 'no_selection') {
-        $image = Mage::getSingleton('catalog/product_media_config')
-                   ->getMediaPath(self::TM_MAX_IMAGE_SIZE . $image);
 
-        if (!file_exists($image))
-          //!!!TODO: we need a better abstraction in S3CDN extension
-          //to not depend on it here
-          $image
-            = Mage::helper('cdn')
-                ->download($image, $this->_website, self::TM_MAX_IMAGE_SIZE);
-
-        if (!$image)
-          return 'Downloading image from S3 failed';
+        ///!!!TODO: check if resized image exists before resizing it
+        $image = Mage::getModel('catalog/product_image')
+          ->setDestinationSubdir('image')
+          ->setKeepFrame(false)
+          ->setWidth(670)
+          ->setHeight(502)
+          ->setBaseFile($image)
+          ->resize()
+          ->saveFile()
+          ->getNewFile();
 
         if (!file_exists($image))
           return 'Image doesn\'t exists';
