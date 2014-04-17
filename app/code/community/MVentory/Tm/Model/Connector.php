@@ -278,6 +278,7 @@ class MVentory_Tm_Model_Connector {
         $image = Mage::getModel('catalog/product_image')
           ->setDestinationSubdir('image')
           ->setKeepFrame(false)
+          ->setConstrainOnly(true)
           ->setWidth(670)
           ->setHeight(502)
           ->setBaseFile($image)

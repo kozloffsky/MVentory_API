@@ -56,6 +56,7 @@ class MVentory_Tm_ImageController
       $path = Mage::getModel('catalog/product_image')
         ->setDestinationSubdir('image')
         ->setKeepFrame(false)
+        ->setConstrainOnly(true)
         ->setWidth($width)
         ->setHeight($height)
         ->setBaseFile($fileName)
