@@ -48,7 +48,7 @@ The customer has to have the app already installed and when the link is clicked 
 
 ![](https://googledrive.com/host/0B5Pkcq-TVIqrNzliTXk5b3U4dWs/cust-access-links.png)
 
-You can manage finer details of the user access on `SOAP/XML/RPC - Users` page.
+You can manage finer details of the user access on `SOAP/XML/RPC - Users` page. Saving a user there regenerates the link without changing the API key until the link is accessed.
 
 ####Attributes
 
