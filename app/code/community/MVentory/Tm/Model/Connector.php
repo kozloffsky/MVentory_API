@@ -273,6 +273,13 @@ class MVentory_Tm_Model_Connector {
       $image = $product->getImage();
 
       if ($image && $image != 'no_selection') {
+        $store = $this->_website->getDefaultStore();
+        $changeStore = $store->getId != Mage::app()->getStore()->getId();
+
+        if ($changeStore) {
+          $emu = Mage::getModel('core/app_emulation');
+          $origEnv = $emu->startEnvironmentEmulation($store);
+        }
 
         ///!!!TODO: check if resized image exists before resizing it
         $image = Mage::getModel('catalog/product_image')
@@ -285,6 +292,11 @@ class MVentory_Tm_Model_Connector {
           ->resize()
           ->saveFile()
           ->getNewFile();
+
+        if ($changeStore)
+          $emu->stopEnvironmentEmulation($origEnv);
+
+        unset($store, $changeStore, $emu, $origEnv);
 
         if (!file_exists($image))
           return 'Image doesn\'t exists';
