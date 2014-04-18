@@ -1635,9 +1635,7 @@ EOT;
         )
       ->save();
 
-    $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, false)
-           . 'mventory-key/'
-           . urlencode($key);
+    $url = $store->getBaseUrl() . 'mventory-key/' . urlencode($key);
 
     $msg = $helper->__(
       self::__CONFIG_URL,
