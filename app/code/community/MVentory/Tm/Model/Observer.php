@@ -45,7 +45,7 @@ class MVentory_Tm_Model_Observer {
   const TAG_TM_FREE_SLOTS = 'tag_tm_free_slots';
 
   const __CONFIG_URL = <<<'EOT'
-mVentory configuration URL: %s (Can only be used once and is valid for %d hours)
+mVentory configuration URL: <a href="%1$s">%1$s</a> (Can only be used once and is valid for %2$d hours)
 EOT;
 
   public function removeListingFromTm ($observer) {
@@ -1635,11 +1635,9 @@ EOT;
         )
       ->save();
 
-    $url = $store->getBaseUrl() . 'mventory-key/' . urlencode($key);
-
     $msg = $helper->__(
       self::__CONFIG_URL,
-      ' <a href="' . $url . '">' . $url . '</a>',
+      $store->getBaseUrl() . 'mventory-key/' . urlencode($key),
       round($period / 3600)
     );
 
