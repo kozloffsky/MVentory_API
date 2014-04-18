@@ -1626,7 +1626,7 @@ EOT;
     if (!$period)
       return;
 
-    $key = base64_encode(mcrypt_create_iv(12));
+    $key = strtr(base64_encode(mcrypt_create_iv(12)), '+/=', '-_,');
 
     $customer
       ->setData(
