@@ -1621,7 +1621,7 @@ EOT;
     if ($store->getId() === null)
       return;
 
-    $period = Mage::getStoreConfig(self::XML_PATH_CONFIG_LINK, $store) * 60;
+    $period = $store->getConfig(self::XML_PATH_CONFIG_LINK) * 60;
 
     if (!$period)
       return;
