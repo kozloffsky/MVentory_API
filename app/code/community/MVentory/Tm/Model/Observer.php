@@ -44,6 +44,10 @@ class MVentory_Tm_Model_Observer {
   const TAG_TM_EMAILS = 'tag_tm_emails';
   const TAG_TM_FREE_SLOTS = 'tag_tm_free_slots';
 
+  const __CONFIG_URL = <<<'EOT'
+mVentory configuration URL: %s (Can only be used once and is valid for %d hours)
+EOT;
+
   public function removeListingFromTm ($observer) {
     if (Mage::registry('tm_disable_withdrawal'))
       return;
@@ -1636,7 +1640,7 @@ class MVentory_Tm_Model_Observer {
            . urlencode($key);
 
     $msg = $helper->__(
-      'mVentory configuration URL: %s (valid for %d hours)',
+      self::__CONFIG_URL,
       ' <a href="' . $url . '">' . $url . '</a>',
       round($period / 3600)
     );

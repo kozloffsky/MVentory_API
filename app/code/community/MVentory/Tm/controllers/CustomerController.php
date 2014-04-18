@@ -41,6 +41,8 @@ EOT;
 Manage API access on <a href="%s">API user details page</a>
 <br />
 Visit <a target="_blank" href="http://mventory.com/help/configure-access/">mventory.com</a> for more info
+<br />
+Save the XML-RPC user again to generate a new link
 EOT;
 
   protected function _construct() {
