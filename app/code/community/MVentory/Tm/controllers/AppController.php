@@ -26,10 +26,12 @@
 class MVentory_Tm_AppController
   extends Mage_Core_Controller_Front_Action {
 
+  const KEY_LENGTH = 16;
+
   public function profileAction () {
     $key = $this->getRequest()->getParam('key');
 
-    if (!($key && strlen($key) == 16)) {
+    if (!($key && strlen($key) == self::KEY_LENGTH)) {
       $this->norouteAction();
       return;
     }
@@ -69,7 +71,7 @@ class MVentory_Tm_AppController
 
     $timestamp = (float) substr(
       $customer->getData('mventory_app_profile_key'),
-      17
+      self::KEY_LENGTH + 1
     );
 
     if (!($timestamp && microtime(true) < $timestamp)) {
@@ -106,7 +108,7 @@ class MVentory_Tm_AppController
   public function redirectAction () {
     $key = $this->getRequest()->getParam('key');
 
-    if (!($key && strlen($key) == 16)) {
+    if (!($key && strlen($key) == self::KEY_LENGTH)) {
       $this->norouteAction();
       return;
     }
