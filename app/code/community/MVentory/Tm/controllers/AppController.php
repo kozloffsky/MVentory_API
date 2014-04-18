@@ -115,10 +115,10 @@ class MVentory_Tm_AppController
 
     $url = Mage::app()
       ->getStore()
-      ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, false);
+      ->getBaseUrl();
 
     $url = 'mventory://'
-           . substr($url, 7)
+           . substr($url, strpos($url, '//') + 2)
            . 'mventory-key/'
            . urlencode($key)
            . '.txt';
