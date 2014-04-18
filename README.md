@@ -50,6 +50,8 @@ The customer has to have the app already installed and when the link is clicked 
 
 You can manage finer details of the user access on `SOAP/XML/RPC - Users` page. Saving a user there regenerates the link without changing the API key until the link is accessed.
 
+Read more on https://github.com/mVentory/MVentory_Tm/wiki/User-configuration
+
 ####Attributes
 
 Magento has many product attributes, but only a few of them are used for product management. The app shows a few basic attributes by default: 
