@@ -28,7 +28,7 @@
 
   <sections>
     <mventory_tm translate="label">
-      <label>Settings</label>
+      <label>API</label>
       <tab>mventory</tab>
       <frontend_type>text</frontend_type>
 
