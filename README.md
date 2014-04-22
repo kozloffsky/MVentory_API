@@ -72,5 +72,5 @@ mVentory extension evaluates attributes from top down. The first matching rule i
 * Multiple attributes are combined using AND operand.
 * Used attribute and values are greyed out, but can be used as many times as needed. 
 
-
+Read more about [category matching rules](https://github.com/mVentory/MVentory_Tm/wiki/Category-mapping).
 
