@@ -107,6 +107,34 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
     return $productApi->fullInfo($productId, $identifierType);
   }
 
+  public function remove_ ($productId, $file, $identifierType = null) {
+    $image = $this->info($productId, $file, null, $identifierType);
+
+    $this->remove($productId, $file, $identifierType);
+
+    $productApi = Mage::getModel('mventory_tm/product_api');
+
+    if (!in_array('image', $image['types']))
+      $productApi->fullInfo($productId, $identifierType);
+
+    $images = $this->items($productId, null, $identifierType);
+
+    if (!$images)
+      $productApi->fullInfo($productId, $identifierType);
+
+    $this->update(
+      $productId,
+      $images[0]['file'],
+      array('types' => array_keys(
+        array_flip($images[0]['types']) + array_flip($image['types'])
+      )),
+      null,
+      $identifierType
+    );
+
+    return $productApi->fullInfo($productId, $identifierType);
+  }
+
   /**
    * Retrieve product
    *

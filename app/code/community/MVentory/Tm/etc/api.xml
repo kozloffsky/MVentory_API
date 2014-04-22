@@ -147,9 +147,25 @@
             <acl>mventory/catalog/product/media/update</acl>
           </update>
 
+          <!--
+            DEPRECATED
+
+            Original remove method for the old app versions.
+            Remove it after all customers will have updated their apps
+           -->
           <remove>
             <acl>mventory/catalog/product/media/remove</acl>
           </remove>
+
+          <!--
+            Rename back to 'remove' when the app will be updated to support it
+            and after all customers will have updated their apps
+          -->
+          <removeAndReturnInfo translate="title" module="mventory_tm">
+            <title>Upload new product image and return full info</title>
+            <method>remove_</method>
+            <acl>mventory/catalog/product/media/remove</acl>
+          </removeAndReturnInfo>
         </methods>
       </catalog_product_attribute_media>
 
