@@ -31,7 +31,7 @@ This section gives a brief configuration overview. See other sections for more d
 
 1. Create a Magento Customer with shipping and billing address configured in customer details (required to complete sales).
 2. Press `mVentory access` button.
-3. Email the generated link to the customer so that they open it on the device where the app is installed.
+3. Email the generated link to the customer so that they open it on the device where the app is installed. See [what happens when the link is clicked](https://googledrive.com/host/0B5Pkcq-TVIqrREFvbEwtRjVMd2s/profile-config-app.mp4)
 
 ![](https://googledrive.com/host/0B5Pkcq-TVIqrNzliTXk5b3U4dWs/cust-access-links.png)
 
