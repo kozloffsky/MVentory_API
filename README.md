@@ -29,28 +29,13 @@ This section gives a brief configuration overview. See other sections for more d
 
 ####User access
 
-Create a customer in the target store (the user will have access to that store only) or in the admin store (access to all stores).
-
-Make sure the customer has shipping and billing address configured in customer details (required to complete sales).
-
-![](https://googledrive.com/host/0B5Pkcq-TVIqrNzliTXk5b3U4dWs/cust-billing-addr.png)
-
-
-
-Save the customer and bring up the customer details on the screen. 
-
-Press `mVentory access` button.
-
-![](https://googledrive.com/host/0B5Pkcq-TVIqrNzliTXk5b3U4dWs/cust-mv-access-button.png)
-
-Email the generated link to the customer so that they open it on the device where the app is installed.
-The customer has to have the app already installed and when the link is clicked it will complete the app configuration automatically.
+1. Create a Magento Customer with shipping and billing address configured in customer details (required to complete sales).
+2. Press `mVentory access` button.
+3. Email the generated link to the customer so that they open it on the device where the app is installed.
 
 ![](https://googledrive.com/host/0B5Pkcq-TVIqrNzliTXk5b3U4dWs/cust-access-links.png)
 
-You can manage finer details of the user access on `SOAP/XML/RPC - Users` page. Saving a user there regenerates the link without changing the API key until the link is accessed.
-
-Read more on https://github.com/mVentory/MVentory_Tm/wiki/User-configuration
+You can manage [finer details](https://github.com/mVentory/MVentory_Tm/wiki/User-configuration) of the user access on `SOAP/XML/RPC - Users` page. 
 
 ####Attributes
 
