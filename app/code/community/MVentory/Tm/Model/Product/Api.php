@@ -192,16 +192,19 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     foreach ($tmAccounts as $id => $account)
       $tmOptions['tm_accounts'][$id] = $account['name'];
 
-    $tmOptions['preselected_categories'] = null;
-
     $product = Mage::getModel('catalog/product')->load($result['product_id']);
 
     $matchResult = Mage::getModel('mventory_tm/rules')
                      ->matchTmCategory($product );
 
-    if (isset($matchResult['id']) && $matchResult['id'] > 0)
+    if ($matchResult) {
+      $tmOptions['matched_category'] = $matchResult;
+
+      //!!!TODO: remove after the app upgrade. This is for compatibility with
+      //old versions of the app
       $tmOptions['preselected_categories'][$matchResult['id']]
         = $matchResult['category'];
+    }
 
     $result['tm_options'] = $tmOptions;
 
