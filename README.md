@@ -1,28 +1,23 @@
 MVentory_Tm
 ===========
 
-mVentory API extension for Magento works with [mVentory android app](https://play.google.com/store/apps/details?id=com.mageventory).
+mVentory API extension for Magento works with [mVentory Android app](https://play.google.com/store/apps/details?id=com.mageventory).
 
 
 ## Installation
 
-Install the extension from ().
-Log out of the admin and log back in if you do not see or cannot access mVentory group of tabs after the installation.
+*This extension requires mVentory_jQuery extension from (). Please install it first.*
 
-##### jQuery conflict
-This extension may fail to install if another mVentory extension is already installed because they use the same jQuery library from the same location.
-
-`CONNECT ERROR: Package file is invalid './js/jquery/jquery-min.js' already exists`
-
-You can delete the existing file and re-try the installation.
-
+Install mVentory_TM extension from (). Log out of the admin and log back in if you do not see or cannot access mVentory group of tabs after the installation.
 
 ## Configuration
 
 
 This section gives a brief configuration overview. See other sections for more detailed information.
 
-1. Grand user access via API
+The following steps, required for configuration, are outlined below:
+
+1. Grant user access via API
 2. Configure attributes to be used in the app
 3. Add category mapping
 4. Test
@@ -30,8 +25,8 @@ This section gives a brief configuration overview. See other sections for more d
 ####User access
 
 1. Create a Magento Customer with shipping and billing address configured in customer details (required to complete sales).
-2. Press `mVentory access` button.
-3. Email the generated link to the customer so that they open it on the device where the app is installed. See [what happens when the link is clicked](https://googledrive.com/host/0B5Pkcq-TVIqrREFvbEwtRjVMd2s/profile-config-app.mp4)
+2. Press `mVentory Access` button (see screenshot below).
+3. Email the generated link to the customer so that they open it on the device where the app is installed. The app will be configured automatically when the link is opened on the device. [This video](https://googledrive.com/host/0B5Pkcq-TVIqrREFvbEwtRjVMd2s/profile-config-app.mp4) shows what the customer will see when the link is opened.
 
 ![](https://googledrive.com/host/0B5Pkcq-TVIqrNzliTXk5b3U4dWs/cust-access-links.png)
 
@@ -39,7 +34,7 @@ You can manage [finer details](https://github.com/mVentory/MVentory_Tm/wiki/User
 
 ####Attributes
 
-Magento has many product attributes, but only a few of them are used for product management. The app shows a few basic attributes by default: 
+Magento has many product attributes, but only a few of them are used for product management in practice. The app shows a few basic attributes by default: 
 * Price
 * Weight
 * SKU
@@ -47,16 +42,16 @@ Magento has many product attributes, but only a few of them are used for product
 * Name
 * Description 
 
-Add an `_` (underscore) to the attribute code on attribute details page to inclkude it in the product details for the app. Existing attributes can have the underscore added / removed by pressing on `Add/Remove to mVentory` button.
+Other attributes are only shown in the product details in the app only if their *Attribute Code* ends with an `_` (underscore) character. Append an underscore character to the *Attribute Code* of all new attributes that you want to appear in the app. Existing attributes can have the underscore appended / removed by pressing on `Add to mVentory` / `Remove from mVentory` button.
 
-Note, changing an attribute code requires refreshing Magento indexes.
+Note: changing an attribute code requires refreshing Magento indexes.
 
-Attrbute code examples that are recognised by the app: `cpu_frequency_`, `age_`, `not_a_useful_attribute_`
-Ignored by the app: `cpu_frequency`, `age`, `not_a_useful_attribute`
+Attribute code examples that are recognised by the app: `cpu_frequency_`, `age_`, `not_a_useful_attribute_`.
+Ignored by the app: `cpu_frequency`, `age`, `not_a_useful_attribute`.
 
 Certain attributes are created by the extension and are reserved.
 
-mVentory has many special feature for manupulating attributes and their values. Read more on https://github.com/mVentory/MVentory_Tm/wiki/Attribute-features
+mVentory has many special feature sfor manipulating attributes and their values. Read more [here](https://github.com/mVentory/MVentory_Tm/wiki/Attribute-features).
 
 ####Category mapping
 The app does not allow the user to choose the category of the product. Instead, the categories are mapped based on product properties.
