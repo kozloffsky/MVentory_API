@@ -71,19 +71,14 @@ class MVentory_Tm_Model_Product_Attribute_Api
 
       $excludeAttribute = false;
 
-      foreach($attribute['frontend_label'] as $label)
-      {
-        if ($label['store_id'] == $storeId && strcmp($label['label'], '~') == 0)
-        {
-          $excludeAttribute = true;
-          break;
-        }
-      }
+      $label = $attribute['frontend_label'][0]['label'];
 
-      if ($excludeAttribute)
-      {
-        continue;
-      }
+      foreach($attribute['frontend_label'] as $_label)
+        if ($_label['store_id'] == $storeId)
+          if (($label = $_label['label']) == '~')
+            continue 2;
+          else
+            break;
 
       $attributes[] = array(
         'attribute_id' => $attribute['attribute_id'],
@@ -91,7 +86,14 @@ class MVentory_Tm_Model_Product_Attribute_Api
         'frontend_input' => $attribute['frontend_input'],
         'default_value' => $attribute['default_value'],
         'is_required' => $attribute['is_required'],
-        'frontend_label' => $attribute['frontend_label'],
+        'label' => $label,
+
+        //!!!DEPRECATED: replaced by 'label' key
+        //!!!TODO: remove after the app will have been upgraded
+        'frontend_label' => array(
+          array('store_id' => $storeId, 'label' => $label)
+        ),
+
         'options' => $this->optionsPerStoreView(
           $attribute['attribute_id'],
           $storeId
