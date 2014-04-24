@@ -31,7 +31,6 @@ class MVentory_Tm_Model_Observer {
   const XML_PATH_CDN_DIMENSIONS = 'mventory_tm/cdn/resizing_dimensions';
 
   const XML_PATH_CRON_INTERVAL = 'mventory_tm/settings/cron';
-  const XML_PATH_ENABLE_LISTING = 'mventory_tm/settings/enable_listing';
 
   const XML_PATH_CANCEL_STATES = 'mventory_tm/order/cancel_states';
   const XML_PATH_CANCEL_PERIOD = 'mventory_tm/order/cancel_period';
@@ -174,20 +173,6 @@ EOT;
       return;
 
     $product->setData('mv_created_date', time());
-  }
-
-  public function saveApiUserId ($observer) {
-    if (!$user = Mage::helper('mventory_tm')->getApiUser())
-      return;
-
-    $product = $observer
-                 ->getEvent()
-                 ->getProduct();
-
-    if ($product->getId())
-      return;
-
-    $product->setData('mv_created_userid', $user->getId());
   }
 
   public function sync ($schedule) {
@@ -963,22 +948,6 @@ EOT;
 
     if ($result)
       $product->setCategoryIds((string) $result);
-  }
-
-  public function setListOnTm ($observer) {
-    $product = $observer->getProduct();
-
-    if ($product->getId())
-      return;
-
-    $helper = Mage::helper('mventory_tm/product');
-
-    $website = $helper->getWebsite($product);
-
-    $relist
-      = (bool) $helper->getConfig(self::XML_PATH_ENABLE_LISTING, $website);
-
-    $product->setData('tm_relist', $relist);
   }
 
   public function updateDuplicate ($observer) {

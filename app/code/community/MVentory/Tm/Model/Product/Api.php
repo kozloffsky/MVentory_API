@@ -27,6 +27,8 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   const FETCH_LIMIT_PATH = 'mventory_tm/api/products-number-to-fetch';
   const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
 
+  const _ENABLE_LISTING = 'mventory_tm/settings/enable_listing';
+
   const CONF_TYPE = Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE;
 
   protected $_excludeFromProduct = array(
@@ -327,20 +329,28 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   public function createAndReturnInfo ($type, $set, $sku, $productData,
                                    $storeId = null) {
 
-    $id = Mage::helper('mventory_tm/product')->getProductId($sku, 'sku');
+    $helper = Mage::helper('mventory_tm/product');
+
+    $id = $helper->getProductId($sku, 'sku');
 
     if (! $id) {
-      $helper = Mage::helper('mventory_tm');
-
+      $productData['mv_created_userid'] = $helper->getApiUser()->getId();
       $productData['website_ids'] = $helper->getWebsitesForProduct();
 
       //Set visibility to "Catalog, Search" value
       $productData['visibility'] = 4;
 
+      $website = $helper->getCurrentWebsite();
+
       //if (!isset($productData['tax_class_id']))
         $productData['tax_class_id']
-          = (int) $helper->getConfig(self::TAX_CLASS_PATH,
-                                     $helper->getCurrentWebsite());
+          = (int) $helper->getConfig(self::TAX_CLASS_PATH, $website);
+
+      //!!!TODO: move to a separate extension; add event here for it
+      $productData['tm_relist'] = (bool) $helper->getConfig(
+        self::_ENABLE_LISTING,
+        $website
+      );
 
       //Use admin store ID to save values of attributes in the default scope
       $id = $this->create(
