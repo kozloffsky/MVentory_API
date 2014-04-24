@@ -326,7 +326,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     return $result;
   }
 
-  public function createAndReturnInfo ($type, $set, $sku, $productData,
+  public function createAndReturnInfo ($type, $set, $sku, $data,
                                    $storeId = null) {
 
     $helper = Mage::helper('mventory_tm/product');
@@ -334,20 +334,20 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $id = $helper->getProductId($sku, 'sku');
 
     if (! $id) {
-      $productData['mv_created_userid'] = $helper->getApiUser()->getId();
-      $productData['website_ids'] = $helper->getWebsitesForProduct();
+      $data['mv_created_userid'] = $helper->getApiUser()->getId();
+      $data['website_ids'] = $helper->getWebsitesForProduct();
 
       //Set visibility to "Catalog, Search" value
-      $productData['visibility'] = 4;
+      $data['visibility'] = 4;
 
       $website = $helper->getCurrentWebsite();
 
-      //if (!isset($productData['tax_class_id']))
-        $productData['tax_class_id']
+      //if (!isset($data['tax_class_id']))
+        $data['tax_class_id']
           = (int) $helper->getConfig(self::TAX_CLASS_PATH, $website);
 
       //!!!TODO: move to a separate extension; add event here for it
-      $productData['tm_relist'] = (bool) $helper->getConfig(
+      $data['tm_relist'] = (bool) $helper->getConfig(
         self::_ENABLE_LISTING,
         $website
       );
@@ -357,7 +357,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
         $type,
         $set,
         $sku,
-        $productData,
+        $data,
         Mage_Core_Model_App::ADMIN_STORE_ID
       );
     }
