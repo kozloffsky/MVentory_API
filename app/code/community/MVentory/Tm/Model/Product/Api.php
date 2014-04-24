@@ -327,13 +327,11 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   }
 
   public function createAndReturnInfo ($type, $set, $sku, $data,
-                                   $storeId = null) {
+                                       $storeId = null) {
 
     $helper = Mage::helper('mventory_tm/product');
 
-    $id = $helper->getProductId($sku, 'sku');
-
-    if (! $id) {
+    if (!$id = $helper->getProductId($sku, 'sku')) {
       $data['mv_created_userid'] = $helper->getApiUser()->getId();
       $data['website_ids'] = $helper->getWebsitesForProduct();
 
@@ -342,9 +340,10 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
       $website = $helper->getCurrentWebsite();
 
-      //if (!isset($data['tax_class_id']))
-        $data['tax_class_id']
-          = (int) $helper->getConfig(self::TAX_CLASS_PATH, $website);
+      $data['tax_class_id'] = (int) $helper->getConfig(
+        self::TAX_CLASS_PATH,
+        $website
+      );
 
       //!!!TODO: move to a separate extension; add event here for it
       $data['tm_relist'] = (bool) $helper->getConfig(
