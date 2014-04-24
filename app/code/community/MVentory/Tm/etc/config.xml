@@ -142,18 +142,6 @@
             <method>saveProductCreateDate</method>
           </mventory_tm_save_product_create_date>
 
-          <mventory_tm_save_api_user_id>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>saveApiUserId</method>
-          </mventory_tm_save_api_user_id>
-
-          <mventory_set_list_on_tm>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>setListOnTm</method>
-          </mventory_set_list_on_tm>
-
           <tm_match_category>
             <type>singleton</type>
             <class>mventory_tm/observer</class>
