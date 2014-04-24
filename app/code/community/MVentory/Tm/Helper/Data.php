@@ -25,6 +25,7 @@
 class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
 
   const ADD_TO_WEBSITES_PATH = 'mventory_tm/api/add_to_websites';
+  const _APPLY_RULES = 'mventory_tm/api/apply_rules';
 
   protected $_baseMediaUrl = null;
 
@@ -289,5 +290,12 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
       ->setSenderEmail($fromEmail)
       ->addBcc((string) Mage::getConfig()->getNode('default/' . $path))
       ->send($toEmail, $toName, $variables);
+  }
+
+  public function isObserverDisabled ($observer) {
+    return !$this->getConfig(
+      self::_APPLY_RULES,
+      Mage::helper('mventory_tm/product')->getWebsite($observer->getProduct())
+    );
   }
 }

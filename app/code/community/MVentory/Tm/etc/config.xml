@@ -546,6 +546,7 @@
         <cart-item-lifetime>1440</cart-item-lifetime>
         <app_profile_link_lifetime>1440</app_profile_link_lifetime>
         <default_role>mVentory</default_role>
+        <apply_rules>0</apply_rules>
       </api>
     </mventory_tm>
 

@@ -155,6 +155,9 @@ EOT;
   }
 
   public function populateAttributes ($observer) {
+    if (Mage::helper('mventory_tm/product')->isObserverDisabled($observer))
+      return;
+
     $event = $observer->getEvent();
 
     //Populate product attributes
@@ -774,6 +777,9 @@ EOT;
   }
 
   public function resetExcludeFlag ($observer) {
+    if (Mage::helper('mventory_tm/product')->isObserverDisabled($observer))
+      return;
+
     $images = $observer->getImages();
 
     foreach ($images['images'] as &$image)
@@ -943,6 +949,9 @@ EOT;
   }
 
   public function matchCategory ($observer) {
+    if (Mage::helper('mventory_tm/product')->isObserverDisabled($observer))
+      return;
+
     $product = $observer
                  ->getEvent()
                  ->getProduct();
