@@ -51,7 +51,9 @@ Ignored by the app: `cpu_frequency`, `age`, `not_a_useful_attribute`.
 
 Certain attributes are created by the extension and are reserved.
 
-mVentory has many special features for manipulating attributes and their values. Read more [here](https://github.com/mVentory/MVentory_Tm/wiki/Attribute-features).
+mVentory has many special features for manipulating attributes and their values.
+
+Read more [here](https://github.com/mVentory/MVentory_Tm/wiki/Attribute-features).
 
 ####Category mapping
 The app does not allow the user to choose the category of the product. Instead, the categories are mapped based on product properties.
