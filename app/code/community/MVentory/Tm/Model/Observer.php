@@ -23,13 +23,6 @@
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
 class MVentory_Tm_Model_Observer {
-
-  const XML_PATH_CDN_ACCESS_KEY = 'mventory_tm/cdn/access_key';
-  const XML_PATH_CDN_SECRET_KEY = 'mventory_tm/cdn/secret_key';
-  const XML_PATH_CDN_BUCKET = 'mventory_tm/cdn/bucket';
-  const XML_PATH_CDN_PREFIX = 'mventory_tm/cdn/prefix';
-  const XML_PATH_CDN_DIMENSIONS = 'mventory_tm/cdn/resizing_dimensions';
-
   const XML_PATH_CRON_INTERVAL = 'mventory_tm/settings/cron';
 
   const XML_PATH_CANCEL_STATES = 'mventory_tm/order/cancel_states';
