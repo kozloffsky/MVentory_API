@@ -53,7 +53,7 @@ Certain attributes are created by the extension and are reserved.
 
 mVentory has many special features for manipulating attributes and their values.
 
-Read more [here](https://github.com/mVentory/MVentory_Tm/wiki/Attribute-features).
+Read more about mVentory [attribute features](https://github.com/mVentory/MVentory_Tm/wiki/Attribute-features).
 
 ####Category mapping
 The Android app does not allow the user to manually choose the category of the product. A more streamlined approach is taken, where the categories are mapped to products based on their properties (expressed through the product attributes). This approach greatly simplifies category maangement.
