@@ -39,7 +39,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
 
     return $hasScopeCode
              ? Mage::app()->getWebsite($params['scope_code'])
-               : Mage::app()->getStore(true)->getWebsite();
+               : Mage::app()->getDefaultStoreView()->getWebsite();
   }
 
   public function getCurrentStoreId ($storeId = null) {
