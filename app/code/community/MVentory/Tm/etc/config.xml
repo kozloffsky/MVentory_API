@@ -497,10 +497,6 @@
 
     <layout>
       <updates>
-        <category-tm>
-          <file>catalog/tm.xml</file>
-        </category-tm>
-
         <mventory>
           <file>mventory.xml</file>
         </mventory>

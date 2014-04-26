@@ -20,6 +20,46 @@
 -->
 
 <layout>
+  <tm>
+    <update handle="jquery" />
+
+    <reference name="head">
+      <action method="addJs">
+        <script>jquery/jquery-uitablefilter.js</script>
+      </action>
+
+      <action method="addJs">
+        <script>tm/adminhtml/categories.js</script>
+      </action>
+
+      <action method="addCss"><name>tm/styles.css</name></action>
+    </reference>
+  </tm>
+
+  <adminhtml_catalog_product_edit>
+    <update handle="tm" />
+  </adminhtml_catalog_product_edit>
+
+  <adminhtml_catalog_product_set_edit>
+    <update handle="tm" />
+
+    <reference name="head">
+      <action method="addJs">
+        <script>jquery/jquery-ui-custom-min.js</script>
+      </action>
+
+      <action method="addJs">
+        <script>tm/adminhtml/matching_rules.js</script>
+      </action>
+    </reference>
+
+    <reference name="content">
+      <block type="mventory_tm/catalog_product_attribute_set_matchingrules" after="content.child1" name="tm.rules">
+        <block type="mventory_tm/catalog_product_attribute_set_matchingrules_categories" name="tm.rules.categories" as="categories" template="catalog/product/attribute/set/rules/categories.phtml" />
+      </block>
+    </reference>
+  </adminhtml_catalog_product_set_edit>
+
   <adminhtml_customer_edit>
     <reference name="js">
       <block type="adminhtml/template" template="mventory_tm/customer/edit/js.phtml" name="mventory.customer.edit.js" as="mventory_customer_edit_js"></block>
