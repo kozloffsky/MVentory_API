@@ -25,11 +25,7 @@
 class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
 
   protected $_attrs = null;
-
   protected $_categories = null;
-  protected $_tmCategories = null;
-
-  protected $_usedTmCategories = array();
 
   protected function _construct () {
     $this->_attrs['-1'] = array(
@@ -82,9 +78,6 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
       $this->_attrs[$option->getAttributeId()]['values'][$option->getId()]
         = $option->getValue();
 
-    $this->_tmCategories = Mage::getModel('mventory_tm/connector')
-                             ->getTmCategories();
-
     $this->_categories = Mage::getResourceModel('catalog/category_collection')
                            ->addNameToResult()
                            ->load()
@@ -97,8 +90,10 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
    * @return MVentory_Tm_Block_Matching
    */
   protected function _prepareLayout () {
+    parent::_prepareLayout();
+
     $data = array(
-      'id' => 'tm-reset-rule-button',
+      'id' => 'mventory-rule-reset',
       'label' => Mage::helper('mventory_tm')->__('Reset rule')
     );
 
@@ -107,10 +102,10 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
                 ->createBlock('adminhtml/widget_button')
                 ->setData($data);
 
-    $this->setChild('reset_rule_button', $button);
+    $this->setChild('button_rule_reset', $button);
 
     $data = array(
-      'id' => 'tm-save-rule-button',
+      'id' => 'mventory-rule-save',
       'class' => 'disabled',
       'label' => Mage::helper('mventory_tm')->__('Save rule')
     );
@@ -120,31 +115,9 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
                 ->createBlock('adminhtml/widget_button')
                 ->setData($data);
 
-    $this->setChild('save_rule_button', $button);
+    $this->setChild('button_rule_save', $button);
 
-    $data = array(
-      'id' => 'tm-categories-button',
-      'label' => Mage::helper('mventory_tm')->__('Select TM category')
-    );
-
-    $button = $this
-                ->getLayout()
-                ->createBlock('adminhtml/widget_button')
-                ->setData($data);
-
-    $this->setChild('categories_button', $button);
-
-    $data = array(
-      'id' => 'tm-ignore-button',
-      'label' => Mage::helper('mventory_tm')->__('Don\'t list on TM')
-    );
-
-    $button = $this
-                ->getLayout()
-                ->createBlock('adminhtml/widget_button')
-                ->setData($data);
-
-    $this->setChild('ignore_button', $button);
+    return $this;
   }
 
   protected function _getAttributesJson () {
@@ -156,18 +129,7 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
       ->loadBySetId($this->_getSetId());
   }
 
-  protected function _getAddRuleButtonHtml () {
-    return $this->getChildHtml('add_rule_button');
-  }
-
   protected function _getUrlsJson () {
-    $params = array(
-      'type' => MVentory_Tm_Block_Categories::TYPE_RADIO
-    );
-
-    $categories = $this
-                    ->getUrl('mventory_tm/adminhtml_tm/categories/', $params);
-
     $params = array(
       'set_id' => $this->_getSetId(),
       'ajax' => true
@@ -177,15 +139,9 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
     $remove = $this->getUrl('mventory_tm/matching/remove/', $params);
     $reorder = $this->getUrl('mventory_tm/matching/reorder/', $params);
 
-    return Mage::helper('core')->jsonEncode(compact('categories',
-                                                    'addrule',
+    return Mage::helper('core')->jsonEncode(compact('addrule',
                                                     'remove',
                                                     'reorder'));
-  }
-
-  protected function _getUsedTmCategories () {
-    return Mage::helper('core')
-             ->jsonEncode(array_unique($this->_usedTmCategories, SORT_NUMERIC));
   }
 
   /**
@@ -211,10 +167,7 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
     $default = ($id == MVentory_Tm_Model_Matching::DEFAULT_RULE_ID);
 
     $category = $data['category'];
-    $tmCategory = $data['tm_category'];
-
     $hasCategory = false;
-    $hasTmCategory = false;
 
     if ($category == null)
       $category = $this->__('Category not selected');
@@ -223,22 +176,6 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
     else {
       $hasCategory = true;
       $category = $this->_categories[$category]['name'];
-    }
-
-    if ($tmCategory == -1) {
-      $hasTmCategory = true;
-
-      $tmCategory = $this->__('Don\'t list on TM');
-    } else if ($tmCategory == null)
-      $tmCategory = $this->__('TM category not selected');
-    else if (!isset($this->_tmCategories[$tmCategory]))
-      $tmCategory = $this->__('TM category doesn\'t exist anymore');
-    else {
-      $hasTmCategory = true;
-
-      $this->_usedTmCategories[] = (int) $tmCategory;
-
-      $tmCategory = implode(' - ', $this->_tmCategories[$tmCategory]['name']);
     }
 
     $attrs = array();
@@ -273,8 +210,6 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
       'default' => $default,
       'category' => $category,
       'has_category' => $hasCategory,
-      'tm_category' => $tmCategory,
-      'has_tm_category' => $hasTmCategory,
       'attrs' => $attrs
     );
   }

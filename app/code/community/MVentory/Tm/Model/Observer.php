@@ -924,10 +924,10 @@ EOT;
       ->getLayout()
       ->getBlock('content');
 
-    $matching = $content->getChild('tm.rules');
+    $matching = $content->getChild('mventory.matching');
 
     $content
-      ->unsetChild('tm.rules')
+      ->unsetChild('mventory.matching')
       ->append($matching);
   }
 

@@ -19,66 +19,63 @@ jQuery(document).ready(function ($) {
   var new_rule = {
     'id': null,
     'category': null,
-    'tm_category': null,
     'attrs' : []
   };
 
   var rules = [];
 
-  var $rules = $('#tm-matching-rules')
-  var $rule_template = $('#tm-matching-rules').find('> .tm-template');
-  var $new_rule = $('#tm-matching-new-rule > .tm-inner');
-  var $new_attr = $new_rule.find('> .tm-matching-new-attr');
-  var $categories_wrapper = $('#categories-wrapper');
+  var $rules = $('#mventory-rules')
+  var $rule_template = $rules.children('.mventory-rule-template');
+  var $new_rule = $('#mventory-rule-new').children('.mventory-inner');
+  var $new_attr = $new_rule.children('.mventory-rule-new-attr');
+  var $categories_wrapper = $('#mventory-categories-wrapper');
 
-  var $save_rule_button = $('#tm-save-rule-button');
-
-  var $tm_category = $('#tm-category');
-  var $magento_category = $('#magento-category');
+  var $save_rule_button = $('#mventory-rule-save');
+  var $magento_category = $('#mventory-categories');
 
   var default_magento_category_text = $magento_category.html();
 
   $new_attr
-    .find('> div > .tm-rule-attr')
+    .find('> div > .mventory-rule-new-attr-name')
     .on('change', function () {
       var $this = $(this);
       var attr_id = $this.val();
 
-      var attr = tm_attrs[attr_id];
+      var attr = mventory_attrs[attr_id];
 
-      var $parent = $this.parents('.tm-matching-new-attr');
+      var $parent = $this.parents('.mventory-rule-new-attr');
 
       if (!$parent.next().length)
         $new_rule.append(reset_attr(clone_attr()));
 
       var $values = $parent
-                      .removeClass('tm-not-completed')
-                      .find('> div > .tm-rule-value')
+                      .removeClass('mventory-state-not-completed')
+                      .find('> div > .mventory-rule-new-attr-value')
                       .empty();
 
       for (var i in attr.values)
         $values.append($('<option>', {
           value: i,
           text: attr.values[i],
-          class: attr.used_values[i] ? 'used-value' : ''
+          class: attr.used_values[i] ? 'mventory-state-used-value' : ''
         }));
 
       $values.change();
     });
 
   $new_attr
-    .find('> div > .tm-rule-value')
+    .find('> div > .mventory-rule-new-attr-value')
     .on('change', function () {
       new_rule.attrs = get_attrs();
       update_save_rule_button_state();
     });
 
   $new_attr
-    .find('> .tm-matching-new-attr-buttons > .tm-remove-button')
+    .find('> .mventory-rule-new-attr-buttons > .mventory-rule-remove')
     .on('click', function () {
-      var $parent = $(this).parents('.tm-matching-new-attr');
+      var $parent = $(this).parents('.mventory-rule-new-attr');
 
-      if ($parent.hasClass('tm-not-completed'))
+      if ($parent.hasClass('mventory-state-not-completed'))
         return false;
 
       $parent.remove();
@@ -95,7 +92,7 @@ jQuery(document).ready(function ($) {
 
     new_rule.id = new_rule.attrs.length
                     ? 'rule' + new Date().getTime()
-                      : TM_DEFAULT_RULE_ID;
+                      : MVENTORY_RULE_DEFAULT_ID;
 
     submit_rule(new_rule);
 
@@ -103,40 +100,40 @@ jQuery(document).ready(function ($) {
       var attr = new_rule.attrs[i];
 
       $new_rule
-        .find('> .tm-matching-new-attr')
+        .find('> .mventory-rule-new-attr')
         .last()
-        .find('> div > .tm-rule-attr > [value="' + attr.id + '"]')
-        .addClass('used-attr');
+        .find('> div > .mventory-rule-new-attr-name > [value="' + attr.id + '"]')
+        .addClass('mventory-state-used-attr');
 
       $.map($.makeArray(attr.value), function (value, index) {
-        tm_attrs[attr.id]['used_values'][value * 1] = true;
+        mventory_attrs[attr.id]['used_values'][value * 1] = true;
       });
     }
 
-    var $default_rule = $('#' + TM_DEFAULT_RULE_ID);
+    var $default_rule = $('#' + MVENTORY_RULE_DEFAULT_ID);
 
-    if (new_rule.id == TM_DEFAULT_RULE_ID && $default_rule.length) {
+    if (new_rule.id == MVENTORY_RULE_DEFAULT_ID && $default_rule.length) {
       update_categories_names($default_rule);
     } else {
       var $rule = $rule_template
                     .clone(true)
-                    .removeClass('tm-template')
+                    .removeClass('mventory-rule-template')
                     .attr('id', new_rule.id);
 
-      var $list = $rule.find('> .tm-matching-rule-attrs > .tm-inner');
+      var $list = $rule.find('> .mventory-rule-attrs > .mventory-inner');
       var $attr_template = $list.find('> :first-child');
 
       update_categories_names($rule);
 
-      if (new_rule.id == TM_DEFAULT_RULE_ID)
+      if (new_rule.id == MVENTORY_RULE_DEFAULT_ID)
         $attr_template
           .clone()
-          .html(TM_DEFAULT_RULE_TITLE)
+          .html(MVENTORY_RULE_DEFAULT_TITLE)
           .appendTo($list);
       else
         for (var i = 0; i < new_rule.attrs.length; i++) {
           var attr = new_rule.attrs[i];
-          var attr_data = tm_attrs[attr.id];
+          var attr_data = mventory_attrs[attr.id];
 
           var value = $.map($.makeArray(attr.value), function (value, index) {
             return attr_data.values[value];
@@ -145,11 +142,11 @@ jQuery(document).ready(function ($) {
           var $values = $attr_template.clone();
 
           $values
-            .find('> .tm-matching-rule-attr-name')
+            .children('.mventory-rule-attr-name')
             .html(attr_data.label);
 
           $values
-            .find('> .tm-matching-rule-attr-value')
+            .children('.mventory-rule-attr-value')
             .html(value.join(', '));
 
           $list.append($values);
@@ -163,13 +160,6 @@ jQuery(document).ready(function ($) {
         $rules.append($rule);
     }
 
-    if (new_rule.tm_category > 0)
-      $('#tm_categories')
-        .find('> tbody > tr > .radio > .category-check')
-        .filter('[value="' + new_rule.tm_category + '"]')
-        .parents('tr')
-        .addClass('selected-row');
-
     rules.push(new_rule);
 
     clear_attrs();
@@ -178,66 +168,15 @@ jQuery(document).ready(function ($) {
     update_save_rule_button_state();
   });
 
-  $('#tm-reset-rule-button').on('click', function () {
+  $('#mventory-rule-reset').on('click', function () {
     clear_attrs();
     uncheck_category();
 
     update_save_rule_button_state();
   });
 
-  $('#tm-categories-button').on('click', function () {
-    $('#loading-mask').show();
-
-    $.ajax({
-      url: tm_urls['categories'],
-      data: { selected_categories: tm_used_categories },
-      dataType: 'html',
-      success: function (data, text_status, xhr) {
-        $('#tm_categories_wrapper').html(data);
-
-        $('#tm-categories-button').remove();
-
-        var $table = $('#tm_categories');
-
-        tm_apply_table_handlers($table, function (e) {
-          var $this = $(this);
-
-          var $tds = $this.find('>');
-
-          var $radio = $tds
-                         .filter('.radio')
-                         .find('> .category-check')
-                         .prop('checked', true);
-
-          new_rule.tm_category = $radio.val();
-
-          var name = $tds
-                       .not('[class]')
-                       .map(function () {
-                         var text = $(this).text();
-
-                         return text.length ? text : null;
-                       })
-                       .get()
-                       .join(' - ');
-
-          $tm_category.text(name);
-
-          update_save_rule_button_state();
-        });
-
-        $('#tm_filter').on('keyup', function () {
-          $.uiTableFilter($table, $(this).val());
-        });
-      },
-      complete: function (xhr, text_status) {
-        $('#loading-mask').hide();
-      }
-    });
-  });
-
   $rules
-    .find('> .tm-matching-rule > .tm-remove-button')
+    .find('> .mventory-rule > .mventory-rule-remove')
     .on('click', function () {
       var $rule = $(this).parent();
 
@@ -250,7 +189,7 @@ jQuery(document).ready(function ($) {
 
   $rules.sortable({
     items: '[id^="rule"]',
-    placeholder: 'tm-rule-placeholder box',
+    placeholder: 'mventory-rule-placeholder box',
     forcePlaceholderSize: true,
     axis: 'y',
     containment: 'parent',
@@ -267,22 +206,16 @@ jQuery(document).ready(function ($) {
     return false;
   });
 
-  $('#tm-ignore-button').on('click', function () {
-    new_rule.tm_category = -1;
-    $tm_category.text(TM_DONT_LIST_ON_TM_TITLE);
-    update_save_rule_button_state();
-  });
-
   function clone_attr () {
     return $new_rule
-             .find('> .tm-matching-new-attr')
+             .find('> .mventory-rule-new-attr')
              .last()
              .clone(true);
   }
 
   function reset_attr ($attr) {
     return $attr
-             .find('> .tm-rule-attr')
+             .children('.mventory-rule-new-attr-name')
                .val('-1')
              .end();
   }
@@ -291,7 +224,7 @@ jQuery(document).ready(function ($) {
     var $attr = clone_attr();
 
     $new_rule
-      .find('> .tm-matching-new-attr')
+      .find('> .mventory-rule-new-attr')
       .remove();
 
     reset_attr($attr)
@@ -301,22 +234,16 @@ jQuery(document).ready(function ($) {
   }
 
   function uncheck_category () {
-    $('#tm_categories')
-      .find('> tbody > tr > .radio > .category-check:checked')
-      .prop('checked', false);
-
-    $tm_category.empty();
     $magento_category.text(default_magento_category_text);
 
     new_rule.category = null;
-    new_rule.tm_category = null;
   }
 
   function get_attrs () {
     var attrs = [];
 
     $new_rule
-      .find('> .tm-matching-new-attr')
+      .find('> .mventory-rule-new-attr')
       .each(function () {
         var attr = get_attr($(this));
 
@@ -329,14 +256,14 @@ jQuery(document).ready(function ($) {
 
   function get_attr ($attrs) {
     return {
-      id: $attrs.find('> div > .tm-rule-attr').val(),
-      value: $attrs.find('> div > .tm-rule-value').val()
+      id: $attrs.find('> div > .mventory-rule-new-attr-name').val(),
+      value: $attrs.find('> div > .mventory-rule-new-attr-value').val()
     }
   }
 
   function submit_rule (rule) {
     $.ajax({
-      url: tm_urls['addrule'],
+      url: mventory_urls['addrule'],
       type: 'POST',
       data: { rule: JSON.stringify(rule), form_key: FORM_KEY },
       success: function (data, text_status, xhr) {
@@ -349,7 +276,7 @@ jQuery(document).ready(function ($) {
 
   function remove_rule (rule_id) {
     $.ajax({
-      url: tm_urls['remove'],
+      url: mventory_urls['remove'],
       type: 'POST',
       data: { rule_id: rule_id, form_key: FORM_KEY },
       success: function (data, text_status, xhr) {
@@ -362,7 +289,7 @@ jQuery(document).ready(function ($) {
 
   function reorder_rules (ids) {
     $.ajax({
-      url: tm_urls['reorder'],
+      url: mventory_urls['reorder'],
       type: 'POST',
       data: { ids: ids, form_key: FORM_KEY },
       success: function (data, text_status, xhr) {
@@ -374,31 +301,19 @@ jQuery(document).ready(function ($) {
   }
 
   function update_save_rule_button_state () {
-    if (new_rule.tm_category > 0 || new_rule.tm_category == -1
-        || new_rule.category)
+    if (new_rule.category)
       $save_rule_button.removeClass('disabled');
     else
       $save_rule_button.addClass('disabled');
   }
 
   function update_categories_names ($rule) {
-    $categories
-      = $rule
-          .find('> .tm-matching-rule-categories > .tm-inner > .tm-rule-category');
-
-    var $category = $categories
-                      .filter('.tm-category')
-                      .text($tm_category.text());
-
-    if (!(new_rule.tm_category > 0 || new_rule.tm_category == -1))
-      $category.addClass('tm-rule-no-category');
-
-    var $category = $categories
-                      .filter('.magento-category')
-                      .text($magento_category.text());
+    $category = $rule
+      .find('> .mventory-rule-categories .mventory-rule-category')
+      .text($magento_category.text())
 
     if (!new_rule.category)
-      $category.addClass('tm-rule-no-category');
+      $category.addClass('mventory-state-no-category');
   }
 
   function select_category (id, name) {
@@ -410,5 +325,5 @@ jQuery(document).ready(function ($) {
     update_save_rule_button_state();
   }
 
-  window.tm_select_category = select_category;
+  window.mventory_select_category = select_category;
 });

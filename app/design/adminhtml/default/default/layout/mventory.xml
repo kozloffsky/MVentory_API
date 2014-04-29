@@ -39,13 +39,11 @@
 
       <action method="addJs"><js>jquery/jquery-ui-custom-min.js</js></action>
       <action method="addJs"><js>mventory/matching.js</js></action>
-      <action method="addJs"><js>jquery/jquery-uitablefilter.js</js></action>
-      <action method="addJs"><js>tm/adminhtml/categories.js</js></action>
     </reference>
 
     <reference name="content">
-      <block type="mventory_tm/matching" name="tm.rules" template="mventory_tm/matching.phtm">
-        <block type="mventory_tm/matching_categories" name="tm.rules.categories" as="categories" template="mventory_tm/matching/categories.phtml" />
+      <block type="mventory_tm/matching" name="mventory.matching" template="mventory_tm/matching.phtml">
+        <block type="mventory_tm/matching_categories" name="mventory.matching.categories" as="categories" template="mventory_tm/matching/categories.phtml" />
       </block>
     </reference>
   </adminhtml_catalog_product_set_edit>

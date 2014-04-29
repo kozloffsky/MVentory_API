@@ -26,32 +26,32 @@ $_rules = $this->_getRules();
     <tr>
       <td style="width:100%;">
         <h3 class="icon-head head-product-attribute-sets">
-          <?php echo $this->__('TM Categories Matching'); ?>
+          <?php echo $this->__('Categories Matching'); ?>
         </h3>
       </td>
     </tr>
   </table>
 </div>
 
-<div id="tm-matching-rules">
+<div id="mventory-rules">
 
 <?php foreach ($_rules as $id => $_rule): ?>
   <?php $rule = $this->_prepareRule($_rule); ?>
 
-  <div id="<?php echo $id; ?>" class="tm-matching-rule box clear">
+  <div id="<?php echo $id; ?>" class="mventory-rule box clear">
 
-    <div class="tm-remove-button">&#x274C;</div>
+    <div class="mventory-rule-remove">&#x274C;</div>
 
-    <div class="tm-matching-rule-attrs">
-      <div class="tm-inner">
+    <div class="mventory-rule-attrs">
+      <div class="mventory-inner">
 
       <?php if ($rule['default']): ?>
-        <div class="tm-matching-rule-attr clear"><?php echo $this->__('Default rule'); ?></div>
+        <div class="mventory-rule-attr clear"><?php echo $this->__('Default rule'); ?></div>
       <?php else: ?>
         <?php foreach ($rule['attrs'] as $label => $values): ?>
-          <div class="tm-matching-rule-attr clear">
-            <div class="tm-matching-rule-attr-name"><?php echo $label; ?></div>
-            <div class="tm-matching-rule-attr-value"><?php echo $values; ?></div>
+          <div class="mventory-rule-attr clear">
+            <div class="mventory-rule-attr-name"><?php echo $label; ?></div>
+            <div class="mventory-rule-attr-value"><?php echo $values; ?></div>
           </div>
         <?php endforeach; ?>
       <?php endif; ?>
@@ -59,10 +59,9 @@ $_rules = $this->_getRules();
       </div>
     </div>
 
-    <div class="tm-matching-rule-categories">
-      <div class="tm-inner">
-        <div class="tm-rule-category magento-category <?php if (!$rule['has_category']) echo 'tm-rule-no-category'; ?>"><?php echo $rule['category']; ?></div>
-        <div class="tm-rule-category tm-category <?php if (!$rule['has_tm_category']) echo 'tm-rule-no-category'; ?>"><?php echo $rule['tm_category']; ?></div>
+    <div class="mventory-rule-categories">
+      <div class="mventory-inner">
+        <div class="mventory-rule-category<?php if (!$rule['has_category']) echo ' mventory-state-no-category'; ?>"><?php echo $rule['category']; ?></div>
       </div>
     </div>
 
@@ -70,25 +69,24 @@ $_rules = $this->_getRules();
 
 <?php endforeach; ?>
 
-  <div class="tm-matching-rule box clear tm-template">
+  <div class="mventory-rule box clear mventory-rule-template">
 
-    <div class="tm-remove-button">&#x274C;</div>
+    <div class="mventory-rule-remove">&#x274C;</div>
 
-    <div class="tm-matching-rule-attrs">
-      <div class="tm-inner">
+    <div class="mventory-rule-attrs">
+      <div class="mventory-inner">
 
-        <div class="tm-matching-rule-attr clear">
-          <div class="tm-matching-rule-attr-name"></div>
-          <div class="tm-matching-rule-attr-value"></div>
+        <div class="mventory-rule-attr clear">
+          <div class="mventory-rule-attr-name"></div>
+          <div class="mventory-rule-attr-value"></div>
         </div>
 
       </div>
     </div>
 
-    <div class="tm-matching-rule-categories">
-      <div class="tm-inner">
-        <div class="tm-rule-category magento-category"></div>
-        <div class="tm-rule-category tm-category"></div>
+    <div class="mventory-rule-categories">
+      <div class="mventory-inner">
+        <div class="mventory-rule-category"></div>
       </div>
     </div>
 
@@ -96,70 +94,58 @@ $_rules = $this->_getRules();
 
 </div>
 
-<div id="tm-matching-new-rule-wrapper" class="box clear">
-  <div id="tm-matching-new-rule" class="tm-matching-rule-attrs">
-    <div class="tm-inner clear">
-      <div class="tm-matching-new-attr tm-not-completed">
+<div class="box clear">
+  <div id="mventory-rule-new" class="mventory-rule-attrs">
+    <div class="mventory-inner clear">
+      <div class="mventory-rule-new-attr mventory-state-not-completed">
 
-        <div class="tm-matching-new-attr-buttons">
-          <a class="tm-remove-button">&#x274C;</a>
+        <div class="mventory-rule-new-attr-buttons">
+          <a class="mventory-rule-remove">&#x274C;</a>
         </div>
 
         <div>
-          <select class="tm-rule-attr">
+          <select class="mventory-rule-new-attr-name">
             <?php foreach ($this->_attrs as $id => $attr): ?>
-            <option <?php if ($attr['used']) echo 'class="used-attr"'; ?> value="<?php echo $id; ?>"><?php echo $attr['label']; ?></option>
+            <option <?php if ($attr['used']) echo 'class="mventory-state-used-attr"'; ?> value="<?php echo $id; ?>"><?php echo $attr['label']; ?></option>
             <?php endforeach; ?>
           </select>
         </div>
 
-        <div class="tm-rule-arrow">&#8681;</div>
+        <div class="mventory-rule-new-arrow">&#8681;</div>
 
         <div>
-          <select class="tm-rule-value" multiple="multiple"></select>
+          <select class="mventory-rule-new-attr-value" multiple="multiple"></select>
         </div>
 
       </div>
     </div>
   </div>
 
-  <div class="tm-matching-rule-categories">
-    <div class="tm-inner">
-      <div class="tm-rule-category">
-        <a id="magento-category" href="#">Select category</a>
-        <div id="categories-wrapper">
+  <div class="mventory-rule-categories">
+    <div class="mventory-inner">
+      <div class="mventory-rule-category">
+        <a id="mventory-categories" href="#">Select category</a>
+        <div id="mventory-categories-wrapper">
           <?php echo $this->getChildHtml('categories'); ?>
         </div>
       </div>
-
-      <div class="tm-rule-category">
-        <span id="tm-category"></span>
-        <br />
-        <?php echo $this->getChildHtml('categories_button'); ?>
-        <?php echo $this->getChildHtml('ignore_button'); ?>
-      </div>
     </div>
   </div>
 
-  <div id="tm-matching-new-rule-buttons">
-    <?php echo $this->getChildHtml('reset_rule_button'); ?>
-    <?php echo $this->getChildHtml('save_rule_button'); ?>
+  <div id="mventory-rule-new-buttons">
+    <?php echo $this->getChildHtml('button_rule_reset'); ?>
+    <?php echo $this->getChildHtml('button_rule_save'); ?>
   </div>
 </div>
-
-<div id="tm_categories_wrapper" class="grid"></div>
 
 <script type="text/javascript">
 //<![CDATA[
 
-TM_DEFAULT_RULE_ID = '<?php echo MVentory_Tm_Model_Matching::DEFAULT_RULE_ID; ?>';
+MVENTORY_RULE_DEFAULT_ID = '<?php echo MVentory_Tm_Model_Matching::DEFAULT_RULE_ID; ?>';
+MVENTORY_RULE_DEFAULT_TITLE = '<?php echo $this->__('Default rule'); ?>';
 
-TM_DEFAULT_RULE_TITLE = '<?php echo $this->__('Default rule'); ?>';
-TM_DONT_LIST_ON_TM_TITLE = "<?php echo $this->__('Don\'t list on TM'); ?>";
-
-tm_attrs = <?php echo $this->_getAttributesJson(); ?>;
-tm_urls = <?php echo $this->_getUrlsJson(); ?>;
-tm_used_categories = <?php echo $this->_getUsedTmCategories(); ?>;
+mventory_attrs = <?php echo $this->_getAttributesJson(); ?>;
+mventory_urls = <?php echo $this->_getUrlsJson(); ?>;
 
 //]]>
 </script>

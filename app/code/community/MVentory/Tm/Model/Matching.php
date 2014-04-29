@@ -26,7 +26,7 @@ class MVentory_Tm_Model_Matching
   extends Mage_Core_Model_Abstract
   implements IteratorAggregate {
 
-  const DEFAULT_RULE_ID = 'default_rule';
+  const DEFAULT_RULE_ID = 'mventory_default_rule';
   const LOST_CATEGORY_PATH = 'mventory_tm/api/lost_category';
 
   /**
@@ -146,68 +146,6 @@ class MVentory_Tm_Model_Matching
       return false;
 
     return $categoryId;
-  }
-
-  public function matchTmCategory ($product) {
-    if (($setId = $product->getAttributeSetId()) === false)
-      return false;
-
-    $this->loadBySetId($setId);
-
-    if (!$this->getId())
-      return false;
-
-    $_attributes = array();
-
-    foreach ($product->getAttributes() as $code => $attribute)
-      $_attributes[$attribute->getId()] = $code;
-
-    unset($attribute, $code);
-
-    $categoryId = null;
-
-    $rules = $this->getData('rules');
-
-    foreach ($rules as $rule) {
-      foreach ($rule['attrs'] as $attribute) {
-        if (!isset($_attributes[$attribute['id']]))
-          continue;
-
-        $code = $_attributes[$attribute['id']];
-
-        $productValue = (array) $product->getData($code);
-        $ruleValue = (array) $attribute['value'];
-
-        if (!count(array_intersect($productValue, $ruleValue)))
-          continue 2;
-      }
-
-      if (isset($rule['tm_category'])) {
-        $categoryId = (int) $rule['tm_category'];
-
-        break;
-      }
-    }
-
-    if ($categoryId == -1)
-      return false;
-
-    if ($categoryId == null && isset($rules[self::DEFAULT_RULE_ID]))
-      $categoryId = (int) $rules[self::DEFAULT_RULE_ID]['tm_category'];
-
-    if (!$categoryId)
-      return false;
-
-    $categories = Mage::getModel('mventory_tm/connector')
-                    ->getTmCategories();
-
-    if (!isset($categories[$categoryId]))
-      return false;
-
-    return array(
-      'id' => $categoryId,
-      'category' => implode(' / ', $categories[$categoryId]['name'])
-    );
   }
 
   protected function _getLostCategoryId ($product) {

@@ -51,7 +51,8 @@ Ext.EventManager.onDocumentReady (function () {
   tree.setRootNode(root);
 
   tree.addListener('click', function (node, e) {
-    tm_select_category(node.id, node.text);
+    if (typeof window.mventory_select_category == 'function')
+      mventory_select_category(node.id, node.text);
   });
 
   buildCategoryTree(root, <?php echo $this->getTreeJson() ?>);
