@@ -20,27 +20,27 @@
 -->
 
 <layout>
-  <tm>
+  <adminhtml_catalog_product_edit>
     <update handle="jquery" />
 
     <reference name="head">
+      <action method="addCss"><css>mventory/css/styles.css</css></action>
+
       <action method="addJs"><js>jquery/jquery-uitablefilter.js</js></action>
       <action method="addJs"><js>tm/adminhtml/categories.js</js></action>
-
-      <action method="addCss"><css>mventory/css/styles.css</css></action>
     </reference>
-  </tm>
-
-  <adminhtml_catalog_product_edit>
-    <update handle="tm" />
   </adminhtml_catalog_product_edit>
 
   <adminhtml_catalog_product_set_edit>
-    <update handle="tm" />
+    <update handle="jquery" />
 
     <reference name="head">
+      <action method="addCss"><css>mventory/css/styles.css</css></action>
+
       <action method="addJs"><js>jquery/jquery-ui-custom-min.js</js></action>
       <action method="addJs"><js>mventory/matching.js</js></action>
+      <action method="addJs"><js>jquery/jquery-uitablefilter.js</js></action>
+      <action method="addJs"><js>tm/adminhtml/categories.js</js></action>
     </reference>
 
     <reference name="content">
