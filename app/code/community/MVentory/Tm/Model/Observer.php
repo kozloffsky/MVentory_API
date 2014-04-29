@@ -918,12 +918,17 @@ EOT;
   }
 
   public function addMatchingRulesBlock ($observer) {
-    Mage::app()
+    $content = Mage::app()
       ->getFrontController()
       ->getAction()
       ->getLayout()
-      ->getBlock('content')
-      ->sortChildren(true);
+      ->getBlock('content');
+
+    $matching = $content->getChild('tm.rules');
+
+    $content
+      ->unsetChild('tm.rules')
+      ->append($matching);
   }
 
   public function matchCategory ($observer) {

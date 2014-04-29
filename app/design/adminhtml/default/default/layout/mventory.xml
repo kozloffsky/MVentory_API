@@ -54,7 +54,7 @@
     </reference>
 
     <reference name="content">
-      <block type="mventory_tm/catalog_product_attribute_set_matchingrules" after="content.child1" name="tm.rules">
+      <block type="mventory_tm/catalog_product_attribute_set_matchingrules" name="tm.rules">
         <block type="mventory_tm/catalog_product_attribute_set_matching_categories" name="tm.rules.categories" as="categories" template="catalog/product/attribute/set/rules/categories.phtml" />
       </block>
     </reference>
