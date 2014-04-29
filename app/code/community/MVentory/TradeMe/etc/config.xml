@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+
+<!--
+/**
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Creative Commons License BY-NC-ND.
+ * NonCommercial — You may not use the material for commercial purposes.
+ * NoDerivatives — If you remix, transform, or build upon the material,
+ * you may not distribute the modified material.
+ * See the full license at http://creativecommons.org/licenses/by-nc-nd/4.0/
+ *
+ * See http://mventory.com/legal/licensing/ for other licensing options.
+ *
+ * @package MVentory/TradeMe
+ * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
+ * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
+ * @author Anatoly A. Kazantsev <anatoly@mventory.com>
+ */
+-->
+
+<config>
+  <modules>
+    <MVentory_TradeMe>
+      <version>1</version>
+    </MVentory_TradeMe>
+  </modules>
+
+  <global>
+    <models>
+      <trademe>
+        <class>MVentory_TradeMe_Model</class>
+        <resourceModel>trademe_resource</resourceModel>
+      </trademe>
+
+      <trademe_resource>
+        <class>MVentory_TradeMe_Model_Resource</class>
+
+        <entities>
+          <matching_rules>
+            <table>trademe_matching_rules</table>
+          </matching_rules>
+        </entities>
+      </trademe_resource>
+    </models>
+
+    <resources>
+      <trademe_setup>
+        <setup>
+          <module>MVentory_TradeMe</module>
+        </setup>
+      </trademe_setup>
+    </resources>
+
+    <blocks>
+      <trademe>
+        <class>MVentory_TradeMe_Block</class>
+      </trademe>
+    </blocks>
+
+    <helpers>
+      <trademe>
+        <class>MVentory_TradeMe_Helper</class>
+      </trademe>
+    </helpers>
+  </global>
+
+  <adminhtml>
+    <events>
+      <controller_action_layout_render_before_adminhtml_catalog_product_set_edit>
+        <observers>
+          <trademe_sort_children>
+            <type>singleton</type>
+            <class>MVentory_TradeMe_Model_Observer</class>
+            <method>sortChildren</method>
+          </trademe_sort_children>
+        </observers>
+      </controller_action_layout_render_before_adminhtml_catalog_product_set_edit>
+    </events>
+
+    <layout>
+      <updates>
+        <trademe>
+          <file>trademe.xml</file>
+        </trademe>
+      </updates>
+    </layout>
+  </adminhtml>
+
+  <admin>
+    <routers>
+      <trademe_adminhtml>
+        <use>admin</use>
+        <args>
+          <module>MVentory_TradeMe</module>
+          <frontName>trademe</frontName>
+        </args>
+      </trademe_adminhtml>
+    </routers>
+  </admin>
+</config>
