@@ -22,7 +22,7 @@
  * @package MVentory/TM
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_RuleController
+class MVentory_Tm_MatchingController
   extends Mage_Adminhtml_Controller_Action {
 
   protected function _construct() {

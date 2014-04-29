@@ -176,9 +176,9 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
       'ajax' => true
     );
 
-    $addrule = $this->getUrl('mventory_tm/rule/append/', $params);
-    $remove = $this->getUrl('mventory_tm/rule/remove/', $params);
-    $reorder = $this->getUrl('mventory_tm/rule/reorder/', $params);
+    $addrule = $this->getUrl('mventory_tm/matching/append/', $params);
+    $remove = $this->getUrl('mventory_tm/matching/remove/', $params);
+    $reorder = $this->getUrl('mventory_tm/matching/reorder/', $params);
 
     return Mage::helper('core')->jsonEncode(compact('categories',
                                                     'addrule',
