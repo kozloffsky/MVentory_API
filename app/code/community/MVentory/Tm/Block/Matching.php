@@ -32,7 +32,7 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
   protected $_usedTmCategories = array();
 
   protected function _construct () {
-    $this->setTemplate('catalog/product/attribute/set/matching_rules.phtml');
+    $this->setTemplate('mventory_tm/matching.phtml');
 
     $this->_attrs['-1'] = array(
       'label' => $this->__('Select an attribute...'),
