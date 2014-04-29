@@ -32,7 +32,7 @@
         <script>tm/adminhtml/categories.js</script>
       </action>
 
-      <action method="addCss"><name>tm/styles.css</name></action>
+      <action method="addCss"><name>mventory/css/styles.css</name></action>
     </reference>
   </tm>
 
