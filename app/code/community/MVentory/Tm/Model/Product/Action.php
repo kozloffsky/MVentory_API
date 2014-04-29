@@ -295,7 +295,8 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
       if (!$product->getId())
         continue;
 
-      $category = Mage::getModel('mventory_tm/rules')->matchCategory($product);
+      $category = Mage::getModel('mventory_tm/matching')
+        ->matchCategory($product);
 
       if ($category) {
         $product

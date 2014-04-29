@@ -97,7 +97,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $this->_preselectedCategories = array();
 
-    $matchResult = Mage::getModel('mventory_tm/rules')
+    $matchResult = Mage::getModel('mventory_tm/matching')
                      ->matchTmCategory($this->getProduct());
 
     if (isset($matchResult['id']) && $matchResult['id'] > 0) {

@@ -400,7 +400,7 @@ EOT;
         else if (!isset($accounts[$accountId]))
           continue;
 
-      $matchResult = Mage::getModel('mventory_tm/rules')
+      $matchResult = Mage::getModel('mventory_tm/matching')
                        ->matchTmCategory($product);
 
       if (!(isset($matchResult['id']) && $matchResult['id'] > 0))
@@ -937,7 +937,7 @@ EOT;
     if ($product->getTmCategoryMatched())
       return;
 
-    $result = Mage::getModel('mventory_tm/rules')->matchCategory($product);
+    $result = Mage::getModel('mventory_tm/matching')->matchCategory($product);
 
     if ($result)
       $product->setCategoryIds((string) $result);

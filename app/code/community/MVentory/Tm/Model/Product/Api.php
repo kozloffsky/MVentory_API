@@ -196,7 +196,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $product = Mage::getModel('catalog/product')->load($result['product_id']);
 
-    $matchResult = Mage::getModel('mventory_tm/rules')
+    $matchResult = Mage::getModel('mventory_tm/matching')
                      ->matchTmCategory($product );
 
     if ($matchResult) {
@@ -624,7 +624,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $this->_fault('product_not_exists');
     }
 
-    $match = Mage::getModel('mventory_tm/rules')->matchTmCategory($product);
+    $match = Mage::getModel('mventory_tm/matching')->matchTmCategory($product);
 
     if (!(isset($match['id']) && $match['id'] > 0))
       $this->_fault('unable_to_match_tm_category');

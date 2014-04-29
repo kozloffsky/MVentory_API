@@ -155,7 +155,8 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
   }
 
   protected function _getRules () {
-    return Mage::getModel('mventory_tm/rules')->loadBySetId($this->_getSetId());
+    return Mage::getModel('mventory_tm/matching')
+      ->loadBySetId($this->_getSetId());
   }
 
   protected function _getAddRuleButtonHtml () {
@@ -210,7 +211,7 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
 
   protected function _prepareRule ($data) {
     $id = $data['id'];
-    $default = ($id == MVentory_Tm_Model_Rules::DEFAULT_RULE_ID);
+    $default = ($id == MVentory_Tm_Model_Matching::DEFAULT_RULE_ID);
 
     $category = $data['category'];
     $tmCategory = $data['tm_category'];

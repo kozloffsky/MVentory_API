@@ -22,7 +22,7 @@
  * @package MVentory/TM
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Rules
+class MVentory_Tm_Model_Matching
   extends Mage_Core_Model_Abstract
   implements IteratorAggregate {
 
@@ -34,7 +34,7 @@ class MVentory_Tm_Model_Rules
    *
    */
   protected function _construct () {
-    $this->_init('mventory_tm/rules');
+    $this->_init('mventory_tm/matching');
   }
 
   public function loadBySetId ($setId, $cleanRules = true) {
