@@ -24,15 +24,10 @@
     <update handle="jquery" />
 
     <reference name="head">
-      <action method="addJs">
-        <script>jquery/jquery-uitablefilter.js</script>
-      </action>
+      <action method="addJs"><js>jquery/jquery-uitablefilter.js</js></action>
+      <action method="addJs"><js>tm/adminhtml/categories.js</js></action>
 
-      <action method="addJs">
-        <script>tm/adminhtml/categories.js</script>
-      </action>
-
-      <action method="addCss"><name>mventory/css/styles.css</name></action>
+      <action method="addCss"><css>mventory/css/styles.css</css></action>
     </reference>
   </tm>
 
@@ -44,13 +39,8 @@
     <update handle="tm" />
 
     <reference name="head">
-      <action method="addJs">
-        <script>jquery/jquery-ui-custom-min.js</script>
-      </action>
-
-      <action method="addJs">
-        <script>mventory/matching.js</script>
-      </action>
+      <action method="addJs"><js>jquery/jquery-ui-custom-min.js</js></action>
+      <action method="addJs"><js>mventory/matching.js</js></action>
     </reference>
 
     <reference name="content">
