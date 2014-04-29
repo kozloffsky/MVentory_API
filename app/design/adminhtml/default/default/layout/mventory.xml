@@ -54,8 +54,8 @@
     </reference>
 
     <reference name="content">
-      <block type="mventory_tm/catalog_product_attribute_set_matchingrules" name="tm.rules">
-        <block type="mventory_tm/catalog_product_attribute_set_matching_categories" name="tm.rules.categories" as="categories" template="catalog/product/attribute/set/rules/categories.phtml" />
+      <block type="mventory_tm/matching" name="tm.rules">
+        <block type="mventory_tm/matching_categories" name="tm.rules.categories" as="categories" template="catalog/product/attribute/set/rules/categories.phtml" />
       </block>
     </reference>
   </adminhtml_catalog_product_set_edit>

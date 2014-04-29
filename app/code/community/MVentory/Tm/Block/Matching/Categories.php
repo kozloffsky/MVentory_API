@@ -22,7 +22,7 @@
  * @package MVentory/TM
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matching_Categories
+class MVentory_Tm_Block_Matching_Categories
   extends Mage_Adminhtml_Block_Catalog_Category_Abstract {
 
   /**

@@ -22,8 +22,7 @@
  * @package MVentory/TM
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
-  extends Mage_Adminhtml_Block_Template {
+class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
 
   protected $_attrs = null;
 
@@ -97,7 +96,7 @@ class MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
   /**
    * Prepare layout
    *
-   * @return MVentory_Tm_Block_Catalog_Product_Attribute_Set_Matchingrules
+   * @return MVentory_Tm_Block_Matching
    */
   protected function _prepareLayout () {
     $data = array(
