@@ -92,7 +92,7 @@ class MVentory_Tm_AppController
 
     $output = $user->getUsername() . "\n"
               . $apiKey . "\n"
-              . $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . "\n";
+              . $store->getBaseUrl() . "\n";
 
     $response = $this->getResponse();
 
