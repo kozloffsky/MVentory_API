@@ -31,7 +31,7 @@ jQuery(document).ready(function ($) {
 
   var $save_rule_button = $('#trademe-rule-save');
 
-  var $category = $('#trademe-category');
+  var $category = $('#trademe-rule-new-category');
 
   $new_attr
     .find('> div > .trademe-rule-new-attr-name')
@@ -256,6 +256,12 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  $('#trademe-rule-ignore').on('click', function () {
+    new_rule.category = -1;
+    $category.text(TRADEME_DONT_LIST_TITLE);
+    update_save_rule_button_state();
+  });
+
   function clone_attr () {
     return $new_rule
              .find('> .trademe-rule-new-attr')
@@ -354,7 +360,7 @@ jQuery(document).ready(function ($) {
   }
 
   function update_save_rule_button_state () {
-    if (new_rule.category > 0)
+    if (new_rule.category > 0 || new_rule.category == -1)
       $save_rule_button.removeClass('disabled');
     else
       $save_rule_button.addClass('disabled');
@@ -365,7 +371,7 @@ jQuery(document).ready(function ($) {
       .find('> .trademe-rule-categories .trademe-rule-category')
       .text($category.text())
 
-    if (new_rule.category < 1)
+    if (!(new_rule.category > 0 || new_rule.category == -1))
       $_category.addClass('trademe-state-no-category');
   }
 });

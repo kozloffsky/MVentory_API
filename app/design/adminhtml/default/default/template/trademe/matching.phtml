@@ -124,8 +124,9 @@ $_rules = $this->_getRules();
   <div class="trademe-rule-categories">
     <div class="trademe-inner">
       <div class="trademe-rule-category">
-        <span id="trademe-category"></span>
+        <span id="trademe-rule-new-category"></span>
         <?php echo $this->getChildHtml('button_rule_categories'); ?>
+        <?php echo $this->getChildHtml('button_rule_ignore'); ?>
       </div>
     </div>
   </div>
@@ -143,6 +144,7 @@ $_rules = $this->_getRules();
 
 TRADEME_RULE_DEFAULT_ID = '<?php echo MVentory_TradeMe_Model_Matching::DEFAULT_RULE_ID; ?>';
 TRADEME_RULE_DEFAULT_TITLE = '<?php echo $this->__('Default rule'); ?>';
+TRADEME_DONT_LIST_TITLE = "<?php echo $this->__('Don\'t list on TradeMe'); ?>";
 
 trademe_attrs = <?php echo $this->_getAttributesJson(); ?>;
 trademe_urls = <?php echo $this->_getUrlsJson(); ?>;

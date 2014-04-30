@@ -129,6 +129,18 @@ class MVentory_TradeMe_Block_Matching
                 ->setData($data);
 
     $this->setChild('button_rule_categories', $button);
+
+    $data = array(
+      'id' => 'trademe-rule-ignore',
+      'label' => Mage::helper('trademe')->__('Don\'t list on TradeMe')
+    );
+
+    $button = $this
+      ->getLayout()
+      ->createBlock('adminhtml/widget_button')
+      ->setData($data);
+
+    $this->setChild('button_rule_ignore', $button);
   }
 
   protected function _getAttributesJson () {
@@ -195,14 +207,23 @@ class MVentory_TradeMe_Block_Matching
 
     $category = $data['category'];
 
-    $hasCategory = isset($this->_categories[$category]);
+    $hasCategory = isset($this->_categories[$category]) || $category == -1;
 
-    if ($hasCategory) {
-      $this->_usedCategories[] = (int) $category;
+    switch (true) {
+      case ($category == -1):
+        $category = $this->__('Don\'t list on TradeMe');
 
-      $category = implode(' - ', $this->_categories[$category]['name']);
-    } else
-      $category = $this->__('Category doesn\'t exist anymore');
+        break;
+
+      case $hasCategory:
+        $this->_usedCategories[] = (int) $category;
+        $category = implode(' - ', $this->_categories[$category]['name']);
+
+        break;
+
+      default:
+        $category = $this->__('Category doesn\'t exist anymore');
+    }
 
     $attrs = array();
 

@@ -141,3 +141,7 @@
 .trademe-state-no-category {
   color: lightgray;
 }
+
+#trademe-rule-new-category {
+  display: block;
+}
