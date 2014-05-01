@@ -11,52 +11,42 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * TM categories table block
+ * TradeMe categories table block
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Categories extends Mage_Core_Block_Template {
+class MVentory_TradeMe_Block_Categories extends Mage_Core_Block_Template
+{
 
   const TYPE_CHECKBOX = 'checkbox';
   const TYPE_RADIO = 'radio';
 
-  private $_selectedCategories = null;
+  const URL = 'http://www.trademe.co.nz';
 
-  protected function _construct() {
-    parent::_construct();
-
-    $this->setTemplate('tm/categories.phtml');
-  }
+  private $_categories = null;
 
   /**
-   * Return TM categories
+   * Return list of categories
    *
    * @return array
    */
   public function getCategories () {
-    return Mage::getModel('mventory_tm/connector')
-             ->getTmCategories();
+    if ($this->_categories === null)
+      $this->_categories =  Mage::getModel('mventory_tm/connector')
+        ->getTmCategories();
+
+    return $this->_categories;
   }
 
   /**
-   * Return TM URL
-   *
-   * @return string
-   */
-  public function getTmUrl () {
-    return 'http://www.trademe.co.nz';
-  }
-
-  /**
-   * Calculate required number of columns to show TM categories
-   * in a table
+   * Calculate required number of columns in table
    *
    * @return int
    */
@@ -72,6 +62,12 @@ class MVentory_Tm_Block_Categories extends Mage_Core_Block_Template {
     return $cols;
   }
 
+  /**
+   * Set type of category selector: single or multiple
+   *
+   * @param string $type Type of selector
+   * @return MVentory_TradeMe_Block_Categories
+   */
   public function setInputType ($type) {
     if (!($type == self::TYPE_CHECKBOX || $type == self::TYPE_RADIO))
       $type = self::TYPE_CHECKBOX;

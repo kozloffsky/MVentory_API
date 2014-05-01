@@ -157,11 +157,10 @@ class MVentory_TradeMe_Block_Matching
 
   protected function _getUrlsJson () {
     $params = array(
-      'type' => MVentory_Tm_Block_Categories::TYPE_RADIO
+      'type' => MVentory_TradeMe_Block_Categories::TYPE_RADIO
     );
 
-    $categories = $this
-                    ->getUrl('mventory_tm/adminhtml_tm/categories/', $params);
+    $categories = $this->getUrl('trademe/categories', $params);
 
     $params = array(
       'set_id' => $this->_getSetId(),

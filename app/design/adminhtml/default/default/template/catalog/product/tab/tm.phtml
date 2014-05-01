@@ -74,7 +74,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
     <label class="tm-option">
       <?php echo $this->getAttributeLabel('tm_add_fees'); ?>:
-      <select id="tm_tab_add_fees" class="select" name="product[tm_add_fees]">
+      <select id="trademe-tab-add-fees" class="select" name="product[tm_add_fees]">
         <?php foreach ($this->getAttributeOptions('tm_add_fees') as $value => $label): ?>
         <option value="<?php echo $value; ?>" <?php if ($value == $_addTmFees) echo 'selected="selected"'; ?>><?php echo $label; ?></option>
         <?php endforeach; ?>
@@ -96,7 +96,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
     <label class="tm-option">
       <?php echo $this->getAttributeLabel('tm_shipping_type'); ?>:
-      <select id="tm_tab_shipping_type" class="select" name="product[tm_shipping_type]">
+      <select id="trademe-tab-shipping-type" class="select" name="product[tm_shipping_type]">
         <?php foreach ($this->getAttributeOptions('tm_shipping_type') as $value => $label): ?>
         <option value="<?php echo $value; ?>" <?php if ($value == $_shippingType) echo 'selected="selected"'; ?>><?php echo $label; ?></option>
         <?php endforeach; ?>
@@ -115,16 +115,16 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 </div>
 
 <p>
-  Total price: $<span id="tm_total_price"><?php echo number_format($_totalPrice, 2); ?></span>
-  <span id="tm_price_parts"<?php if (!($_shippingRate || $_tmFees)) echo ' style="display: none;"'; ?>>
+  Total price: $<span id="trademe-total-price"><?php echo number_format($_totalPrice, 2); ?></span>
+  <span id="trademe-price"<?php if (!($_shippingRate || $_tmFees)) echo ' style="display: none;"'; ?>>
     ($<?php echo number_format($_product->getPrice(), 2); ?>
 
-    <span id="tm_shipping_rate_wrapper"<?php if (!$_shippingRate) echo ' style="display: none;"'; ?>>
-      + $<span id="tm_shipping_rate"><?php echo number_format($_shippingRate, 2); ?></span> (shipping)
+    <span id="trademe-wrapper-shipping-rate"<?php if (!$_shippingRate) echo ' style="display: none;"'; ?>>
+      + $<span id="trademe-shippingrate"><?php echo number_format($_shippingRate, 2); ?></span> (shipping)
     </span>
 
-    <span id="tm_fees_wrapper"<?php if (!$_tmFees) echo ' style="display: none;"'; ?>>
-      + $<span id="tm_fees"><?php echo number_format($_tmFees, 2); ?></span> (commission)
+    <span id="trademe-wrapper-fees"<?php if (!$_tmFees) echo ' style="display: none;"'; ?>>
+      + $<span id="trademe-fees"><?php echo number_format($_tmFees, 2); ?></span> (commission)
     </span>)
   </span>
 </p>
@@ -157,7 +157,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 </table>
 
 <div class="grid">
-  <table id="tm_selected_categories" class="data" cellspacing="0">
+  <table id="trademe-selected-categories" class="data" cellspacing="0">
     <colgroup>
       <col width='1' />
 
@@ -169,7 +169,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
     </colgroup>
 
     <tbody>
-      <tr id="tm_no_selected_message" class="even <?php echo count($_preselectedCategories) ? 'no-display' : ''; ?>">
+      <tr id="trademe-message-no-selected" class="even <?php echo count($_preselectedCategories) ? 'no-display' : ''; ?>">
         <td class="empty-text a-center last" colspan="<?php echo $_cols + 3; ?>">
           <?php echo $this->__('No category selected. Please, select category from the list below.'); ?>
         </td>
@@ -180,7 +180,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
         <tr class="pointer">
           <td class="checkbox">
-            <input type="radio" class="category-check" name="tm_category"  value="<?php echo $id; ?>" <?php echo $_checked ? 'checked="checked"' : '' ?> />
+            <input type="radio" class="trademe-category-selector" name="trademe_category"  value="<?php echo $id; ?>" <?php echo $_checked ? 'checked="checked"' : '' ?> />
           </td>
 
           <?php for ($n = 0; $n <= $_cols; ++$n): ?>
@@ -199,7 +199,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
           <?php $attrs = $this->getPreparedAttributes($id); ?>
 
           <?php if ($attrs): ?>
-          <tr class="category-attrs">
+          <tr class="trademe-category-attributes">
             <td><?php echo $this->__('Attributes'); ?>:</td>
             <td colspan=<?php echo $_cols + 2; ?> class="last">
 
@@ -239,12 +239,12 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
 <?php echo $this->getCategoriesButton(); ?>
 
-<div id="tm_categories_wrapper" class="grid"></div>
+<div id="trademe-categories-wrapper" class="grid"></div>
 
 <script type="text/javascript">
 //<![CDATA[
 
-tm_categories_for_product(<?php echo $this->getUrlTemplates() ?>);
+trademe_categories(<?php echo $this->getUrlTemplates() ?>);
 
 jQuery(document).ready(function ($) {
   var tm_data = <?php echo Zend_Json::encode($this->prepareDataForJs()) ?>;
@@ -285,13 +285,18 @@ jQuery(document).ready(function ($) {
         $option.val(-1);
     }
 
-    tm_update_total_price(tm_data['product']['price'], account);
+    trademe_update_total_price(tm_data['product']['price'], account);
   });
 
-  $('#tm_tab_add_fees, #tm_tab_shipping_type').on('change', function () {
-    tm_update_total_price(tm_data['product']['price'],
-                          tm_data['accounts'][$('#tm_account').val()]);
-  })
+  $('#trademe-tab-add-fees, #trademe-tab-shipping-type').on(
+    'change',
+    function () {
+      trademe_update_total_price(
+        tm_data['product']['price'],
+        tm_data['accounts'][$('#tm_account').val()]
+      );
+    }
+  )
 });
 
 //]]>

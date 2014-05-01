@@ -25,9 +25,10 @@
 
     <reference name="head">
       <action method="addCss"><css>mventory/css/styles.css</css></action>
+      <action method="addCss"><css>trademe/css/styles.css</css></action>
 
       <action method="addJs"><js>jquery/jquery-uitablefilter.js</js></action>
-      <action method="addJs"><js>tm/adminhtml/categories.js</js></action>
+      <action method="addJs"><js>trademe/categories.js</js></action>
     </reference>
   </adminhtml_catalog_product_edit>
 

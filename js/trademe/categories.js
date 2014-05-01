@@ -68,7 +68,7 @@ function apply_table_handlers ($target, row_click_handler) {
       mouseover: highlight_category,
       mouseout: dehighlight_category
     })
-    .find('> .checkbox > .category-check')
+    .find('> .checkbox > .trademe-category-selector')
     .on('click', function () {
       $this = $(this);
 
@@ -91,11 +91,11 @@ function categories_table (url_templates, on_add, on_remove) {
 
         $all_categories_button.hide();
 
-        var $table = $('#tm_categories');
+        var $table = $('#trademe-categories');
 
         apply_table_handlers($table, row_click_handler_wrapper);
 
-        $('#tm_filter').on('keyup', function () {
+        $('#trademe-categories-filter').on('keyup', function () {
           $.uiTableFilter($table, $(this).val());
         });
       },
@@ -109,7 +109,7 @@ function categories_table (url_templates, on_add, on_remove) {
     var $this = $(this);
     var $selected_table = $('#tm_selected_categories');
 
-    var $checkbox = $this.find('> .checkbox > .category-check');
+    var $checkbox = $this.find('> .checkbox > .trademe-category-selector');
 
     if (!$checkbox.prop('checked')) {
       $checkbox.prop('checked', true);
@@ -119,17 +119,20 @@ function categories_table (url_templates, on_add, on_remove) {
                .removeClass('even odd on-mouse')
                .appendTo($selected_table.children('tbody'));
 
-      $this.addClass('selected-row');
+      $this.addClass('trademe-state-selected');
 
       on_add($_tr);
     } else {
       $checkbox.prop('checked', false);
-      $this.removeClass('selected-row');
+      $this.removeClass('trademe-state-selected');
 
       var id = $checkbox.val();
 
       $selected_table
-        .find('> tbody > tr > .checkbox > .category-check[value="' + id + '"]')
+        .find(
+          '> tbody > tr > .checkbox > .trademe-category-selector[value="' + id
+          + '"]'
+        )
         .parents('tr')
         .next('.category-attrs')
           .remove()
@@ -155,8 +158,8 @@ function tm_categories_for_product (url_templates) {
     $('#tm_no_selected_message').addClass('no-display');
 
     $tr
-      .find('> .checkbox > .category-check')
-      .prop('name', 'tm_category')
+      .find('> .checkbox > .trademe-category-selector')
+      .prop('name', 'trademe_category')
       .prop('type', 'radio');
 
     apply_table_handlers($tr, row_click_handler);
@@ -166,7 +169,7 @@ function tm_categories_for_product (url_templates) {
 
   function on_remove () {
     var $inputs = $selected_categories
-                    .find('> tbody > tr > .checkbox > .category-check');
+      .find('> tbody > tr > .checkbox > .trademe-category-selector');
 
     if (!$inputs.length) {
       $('#tm_no_selected_message').removeClass('no-display');
@@ -199,7 +202,7 @@ function tm_categories_for_product (url_templates) {
 
   function row_click_handler () {
     $(this)
-      .find('> .checkbox > .category-check')
+      .find('> .checkbox > .trademe-category-selector')
       .prop('checked', true);
 
     $submit.removeClass('disabled');

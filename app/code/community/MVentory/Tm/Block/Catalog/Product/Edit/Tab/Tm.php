@@ -145,7 +145,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     $submit = $this->getUrl('mventory_tm/adminhtml_index/submit/',
                             array('id' => $productId));
 
-    $categories = $this->getUrl('mventory_tm/adminhtml_tm/categories/',
+    $categories = $this->getUrl('trademe/categories',
                                 array('product_id' => $productId));
     $update = $this->getUrl('mventory_tm/adminhtml_index/update/',
                                 array('id' => $productId));
@@ -159,7 +159,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     $label = $this->__('Submit');
     $class = $enabled ? '' : 'disabled';
 
-    return $this->getButtonHtml($label, null, $class, 'tm_submit_button');
+    return $this->getButtonHtml($label, null, $class, 'trademe-submit');
   }
 
   public function getStatusButton () {
@@ -185,13 +185,13 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   public function getUpdateButton () {
     $label = $this->__('Update');
 
-    return $this->getButtonHtml($label, null, '', 'tm_update_button');
+    return $this->getButtonHtml($label, null, '', 'trademe-update');
   }
 
   public function getCategoriesButton () {
     $label = $this->__('Show all categories');
 
-    return $this->getButtonHtml($label, null, '', 'tm_categories_button');
+    return $this->getButtonHtml($label, null, '', 'trademe-categories-show');
   }
 
   public function getPreparedAttributes ($tmCategoryId) {

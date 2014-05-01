@@ -11,15 +11,15 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * TM categories table
+ * TradeMe categories table
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
 
@@ -31,13 +31,12 @@ $_categories = $this->getCategories();
 $_selectedCategories = $this->getSelectedCategories();
 
 $_type = $this->getInputType();
-$_tmUrl = $this->getTmUrl();
 
 $_cols = $this->getColsNumber() - 1;
 
 ?>
 
-<table id="tm_categories" class="data" cellspacing="0">
+<table id="trademe-categories" class="data" cellspacing="0">
   <colgroup>
     <col width='1' />
 
@@ -53,7 +52,7 @@ $_cols = $this->getColsNumber() - 1;
       <th></th>
       <th colspan="<?php echo $_cols + 2; ?>">
         <div class="field-100">
-          <input id="tm_filter" class="input-text no-changes" type="text" />
+          <input id="trademe-categories-filter" class="input-text no-changes" type="text" />
         </div>
       </th>
     </tr>
@@ -69,11 +68,11 @@ $_cols = $this->getColsNumber() - 1;
       $isSelected = in_array($id, $_selectedCategories);
 
       if ($isSelected)
-        $classes .= ' selected-row';
+        $classes .= ' trademe-state-selected';
     ?>
     <tr class="<?php echo $classes ?>">
       <td class="<?php echo $_type; ?>">
-        <input type="<?php echo $_type; ?>" class="category-check" <?php if ($_type == MVentory_Tm_Block_Categories::TYPE_RADIO) echo 'name="tm_category"'; ?>value="<?php echo $id; ?>" />
+        <input type="<?php echo $_type; ?>" class="trademe-category-selector" <?php if ($_type == MVentory_TradeMe_Block_Categories::TYPE_RADIO) echo 'name="trademe_category"'; ?>value="<?php echo $id; ?>" />
       </td>
 
       <?php for ($n = 0; $n <= $_cols; ++$n): ?>
@@ -81,7 +80,7 @@ $_cols = $this->getColsNumber() - 1;
       <?php endfor; ?>
 
       <td class="last">
-        <a href="<?php echo $_tmUrl . $category['path']; ?>">
+        <a href="<?php echo MVentory_TradeMe_Block_Categories::URL . $category['path']; ?>">
           <?php echo $this->__('View'); ?>
         </a>
       </td>

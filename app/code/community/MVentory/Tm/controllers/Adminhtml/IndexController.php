@@ -37,8 +37,8 @@ class MVentory_Tm_Adminhtml_IndexController
               ? $helper->getTmFields($params['product'])
                 : array();
 
-    $data['category'] = isset($params['tm_category'])
-                          ? $params['tm_category']
+    $data['category'] = isset($params['trademe_category'])
+                          ? $params['trademe_category']
                             : null;
 
     $session = Mage::getSingleton('adminhtml/session');
@@ -232,8 +232,8 @@ class MVentory_Tm_Adminhtml_IndexController
               ? $helper->getTmFields($params['product'])
                 : array();
 
-    $data['category'] = isset($params['tm_category'])
-                          ? $params['tm_category']
+    $data['category'] = isset($params['trademe_category'])
+                          ? $params['trademe_category']
                             : null;
 
     $product = Mage::getModel('catalog/product')->load($params['id']);

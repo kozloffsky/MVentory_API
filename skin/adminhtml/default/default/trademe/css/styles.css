@@ -145,3 +145,9 @@
 #trademe-rule-new-category {
   display: block;
 }
+
+/* Table of TradeMe categories */
+
+.grid .trademe-state-selected {
+  background-color: #FCF5DD;
+}

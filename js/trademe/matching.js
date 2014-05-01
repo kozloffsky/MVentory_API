@@ -159,11 +159,11 @@ jQuery(document).ready(function ($) {
     }
 
     if (new_rule.category > 0)
-      $('#tm_categories')
-        .find('> tbody > tr > .radio > .category-check')
+      $('#trademe-categories')
+        .find('> tbody > tr > .radio > .trademe-category-selector')
         .filter('[value="' + new_rule.category + '"]')
         .parents('tr')
-        .addClass('selected-row');
+        .addClass('trademe-state-selected');
 
     rules.push(new_rule);
 
@@ -192,16 +192,16 @@ jQuery(document).ready(function ($) {
 
         $('#trademe-rule-categories').remove();
 
-        var $table = $('#tm_categories');
+        var $table = $('#trademe-categories');
 
-        tm_apply_table_handlers($table, function (e) {
+        trademe_categories_handlers($table, function (e) {
           var $this = $(this);
 
           var $tds = $this.find('>');
 
           var $radio = $tds
                          .filter('.radio')
-                         .find('> .category-check')
+                         .find('> .trademe-category-selector')
                          .prop('checked', true);
 
           new_rule.category = $radio.val();
@@ -221,7 +221,7 @@ jQuery(document).ready(function ($) {
           update_save_rule_button_state();
         });
 
-        $('#tm_filter').on('keyup', function () {
+        $('#trademe-categories-filter').on('keyup', function () {
           $.uiTableFilter($table, $(this).val());
         });
       },
@@ -289,8 +289,8 @@ jQuery(document).ready(function ($) {
   }
 
   function uncheck_category () {
-    $('#tm_categories')
-      .find('> tbody > tr > .radio > .category-check:checked')
+    $('#trademe-categories')
+      .find('> tbody > tr > .radio > .trademe-category-selector:checked')
       .prop('checked', false);
 
     $category.empty();

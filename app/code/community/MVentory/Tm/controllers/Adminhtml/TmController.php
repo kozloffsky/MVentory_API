@@ -30,31 +30,6 @@ class MVentory_Tm_Adminhtml_TmController
   }
 
   /**
-   * Return table with TM categories
-   *
-   * @return null
-   */
-  public function categoriesAction () {
-    $request = $this->getRequest();
-
-    if (!is_array($ids = $request->getParam('selected_categories')))
-      $ids = array();
-
-    if (!$type = $request->getParam('type'))
-      $type = MVentory_Tm_Block_Categories::TYPE_CHECKBOX;
-
-    $body = $this
-              ->getLayout()
-              ->createBlock('mventory_tm/categories')
-              //Set selected categories
-              ->setSelectedCategories($ids)
-              ->setInputType($type)
-              ->toHtml();
-
-    $this->getResponse()->setBody($body);
-  }
-
-  /**
    * Obtaines a request token and sends URL to authorize endpoint
    *
    * @return null
