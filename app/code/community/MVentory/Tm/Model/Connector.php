@@ -312,7 +312,11 @@ class MVentory_Tm_Model_Connector {
       $title = $product->getName();
 
       if (strlen($title) > self::TITLE_MAX_LENGTH)
-        $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
+        $title = htmlspecialchars(substr($title, 0, self::TITLE_MAX_LENGTH - 1))
+                 . '&#8230;';
+      else
+        $title = htmlspecialchars($title);
+
       //elseif ($productShippingType == 'tab_ShipParcel'
       //        && $shippingType == self::FREE
       //        && isset($account['free_shipping_cost'])
@@ -322,8 +326,6 @@ class MVentory_Tm_Model_Connector {
       //  if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
       //    $title = $freeShippingTitle;
       //}
-
-      $title = htmlspecialchars($title);
 
       $price = $product->getPrice();
 
