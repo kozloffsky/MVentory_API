@@ -435,8 +435,8 @@ class MVentory_Tm_Model_Connector {
 
           foreach ($attributes as $attributeName => $attributeValue) {
             $xml .= '<Attribute>';
-            $xml .= '<Name>' . $attributeName . '</Name>';
-            $xml .= '<Value>' . $attributeValue . '</Value>';
+            $xml .= '<Name>' . htmlspecialchars($attributeName) . '</Name>';
+            $xml .= '<Value>' . htmlspecialchars($attributeValue) . '</Value>';
             $xml .= '</Attribute>';
           }
 
