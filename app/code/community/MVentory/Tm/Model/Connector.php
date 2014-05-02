@@ -259,14 +259,14 @@ class MVentory_Tm_Model_Connector {
         $description = $this->processDescription($descriptionTmpl, $_data);
 
         unset($_data);
-
-        $description = htmlspecialchars($description);
       }
 
       if (strlen($description) > self::DESCRIPTION_MAX_LENGTH)
         return 'Length of the description exceeded the limit of '
                .  self::DESCRIPTION_MAX_LENGTH
                . ' characters';
+
+      $description = htmlspecialchars($description);
 
       $photoId = null;
 
@@ -309,7 +309,7 @@ class MVentory_Tm_Model_Connector {
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling.xml');
       $client->setMethod(Zend_Http_Client::POST);
 
-      $title = htmlspecialchars($product->getName());
+      $title = $product->getName();
 
       if (strlen($title) > self::TITLE_MAX_LENGTH)
         $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
@@ -322,6 +322,8 @@ class MVentory_Tm_Model_Connector {
       //  if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
       //    $title = $freeShippingTitle;
       //}
+
+      $title = htmlspecialchars($title);
 
       $price = $product->getPrice();
 
