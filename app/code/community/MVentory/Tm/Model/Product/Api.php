@@ -774,8 +774,20 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     unset($data['account_id']);
 
     $data['listing'] = $product['tm_current_listing_id'] > 0
-                         ? $product['tm_current_listing_id']
+                         ? (int) $product['tm_current_listing_id']
                            : null;
+
+    if ($data['listing']) {
+      $data['listing_url']
+        = 'http://www.'
+          . (
+              $helper->getConfig(MVentory_Tm_Model_Tm::SANDBOX_PATH, $website)
+                ? 'tmsandbox'
+                  : 'trademe'
+            )
+          . '.co.nz/Browse/Listing.aspx?id='
+          . $data['listing'];
+    }
 
     $data['shipping_types']
       = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
