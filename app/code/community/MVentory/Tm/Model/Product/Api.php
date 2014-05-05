@@ -159,78 +159,22 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $result['images'] = $images;
 
-    //TM specific details start here
+    $result['auction']['trademe'] = $this->_prepareTrademeData(
+      $result,
+      $website
+    );
 
-    $helper = Mage::helper('mventory_tm/tm');
+    //!!!TODO: remove after the app upgrade. This is for compatibility with
+    //old versions of the app
+    $result['tm_options'] = $this->_getTmOptions($result);
 
-    $tmAccounts = $helper->getAccounts($website);
-
-    $tmAccountId = isset($result['tm_account_id'])
-                     ? $result['tm_account_id']
-                       : null;
-
-    $tmAccount = $tmAccountId && isset($tmAccounts[$tmAccountId])
-                   ? $tmAccounts[$tmAccountId]
-                     : null;
-
-    $tmOptions = Mage::helper('mventory_tm/product')
-                    ->getTmFields($result, $tmAccount);
-
-    //!!!FIXME: temp. workaround for the app
-    $tmOptions['add_tm_fees'] = $tmOptions['add_fees'];
-
-    if ($listingId = Mage::helper('mventory_tm/product')
-                       ->getListingId($productId))
-      $tmOptions['tm_listing_id'] = $listingId;
-
-    $shippingTypes
-      = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
-          ->getAllOptions();
-
-    $tmOptions['shipping_types_list'] = $shippingTypes;
-
-    $tmOptions['tm_accounts'] = array();
-
-    foreach ($tmAccounts as $id => $account)
-      $tmOptions['tm_accounts'][$id] = $account['name'];
-
-    $product = Mage::getModel('catalog/product')->load($result['product_id']);
-
-    $matchResult = Mage::getModel('trademe/matching')->matchCategory($product);
-
-    if ($matchResult) {
-      $tmOptions['matched_category'] = $matchResult;
-
-      //!!!TODO: remove after the app upgrade. This is for compatibility with
-      //old versions of the app
-      $tmOptions['preselected_categories'][$matchResult['id']]
-        = $matchResult['category'];
-    }
-
-    $result['tm_options'] = $tmOptions;
-
-    //Add shipping rate if product's shipping type is 'tab_ShipTransport'
-    if (isset($result['mv_shipping_']) && $tmAccount) {
-      $do = false;
-
-      //Iterate over all attributes...
-      foreach ($result['set_attributes'] as $attribute)
-        //... to find attribute with shipping type info, then...
-        if ($attribute['attribute_code'] == 'mv_shipping_')
-          //... iterate over all its options...
-          foreach ($attribute['options'] as $option)
-            //... to find option with same value as in product and with
-            //label equals 'tab_ShipTransport'
-            if ($option['value'] == $result['mv_shipping_']
-                && $do = ($option['label'] == 'tab_ShipTransport'))
-              break 2;
-
-      if ($do)
-        $result['shipping_rate']
-          = $helper->getShippingRate(new Varien_Object($result),
-                                     $tmAccount['name'],
-                                     $website);
-    }
+    //!!!TODO: remove after the app upgrade. This is for compatibility with
+    //old versions of the app
+    if (isset($result['auction']['trademe']['shipping_rate']))
+      $result['_shipping_rate']
+        = $result['auction']['trademe']['shipping_rate'];
+    else
+      $result['shipping_rate'] = null;
 
      $helper = Mage::helper('mventory_tm/product_configurable');
 
@@ -811,5 +755,96 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $date = Mage::getModel('core/date')->date();
 
     return $qty . ', ' . $date . ', ' . $user->getId();
+  }
+
+  private function _prepareTrademeData ($product, $website) {
+    $helper = Mage::helper('mventory_tm/tm');
+
+    $accounts = $helper->getAccounts($website);
+
+    $id = isset($product['tm_account_id']) ? $product['tm_account_id'] : null;
+    $account = $id && isset($accounts[$id]) ? $accounts[$id] : null;
+
+    $data = Mage::helper('mventory_tm/product')
+      ->getTmFields($product, $account);
+
+    //!!!TODO: fix getTmFields() method and all code which is used it
+    //to use 'account' instead 'account _id'
+    $data['account'] = $data['account_id'];
+    unset($data['account_id']);
+
+    $data['listing'] = $product['tm_current_listing_id'] > 0
+                         ? $product['tm_current_listing_id']
+                           : null;
+
+    $data['shipping_types']
+      = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
+          ->getAllOptions();
+
+    foreach ($accounts as $id => $account)
+      $data['accounts'][$id] = $account['name'];
+
+    $matchResult = Mage::getModel('trademe/matching')->matchCategory(
+      Mage::getModel('catalog/product')->load($product['product_id'])
+    );
+
+    if ($matchResult)
+      $data['matched_category'] = $matchResult;
+
+    //Add shipping rate if product's shipping type is 'tab_ShipTransport'
+    if (isset($product['mv_shipping_']) && $account) {
+      $do = false;
+
+      //Iterate over all attributes...
+      foreach ($product['set_attributes'] as $attribute)
+        //... to find attribute with shipping type info, then...
+        if ($attribute['attribute_code'] == 'mv_shipping_')
+          //... iterate over all its options...
+          foreach ($attribute['options'] as $option)
+            //... to find option with same value as in product and with
+            //label equals 'tab_ShipTransport'
+            if ($option['value'] == $product['mv_shipping_']
+                && $do = ($option['label'] == 'tab_ShipTransport'))
+              break 2;
+
+      if ($do)
+        $data['shipping_rate'] = $helper->getShippingRate(
+          new Varien_Object($product),
+          $account['name'],
+          $website
+        );
+    }
+
+    return $data;
+  }
+
+  /**
+   * !!!TODO: remove after the app upgrade. This is for compatibility with
+   * old versions of the app
+   */
+  private function _getTmOptions ($product) {
+    $data = $product['auction']['trademe'];
+
+    $data['account_id'] = $data['account'];
+    $data['add_tm_fees'] = $data['add_fees'];
+    $data['tm_listing_id'] = $data['listing'];
+    $data['shipping_types_list'] = $data['shipping_types'];
+
+    if (isset($data['accounts']))
+      $data['tm_accounts'] = $data['accounts'];
+
+    if (isset($data['matched_category']))
+      $data['preselected_categories'][$data['matched_category']['id']]
+        = $data['matched_category']['category'];
+
+    unset(
+      $data['account'],
+      $data['listing'],
+      $data['shipping_types'],
+      $data['accounts'],
+      $data['shipping_rate']
+    );
+
+    return $data;
   }
 }
