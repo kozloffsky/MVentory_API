@@ -11,20 +11,20 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * TM controller
+ * TradeMe listing controller
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Adminhtml_IndexController
-  extends Mage_Adminhtml_Controller_Action {
-
+class MVentory_TradeMe_ListingController
+  extends Mage_Adminhtml_Controller_Action
+{
   public function submitAction () {
     $helper = Mage::helper('mventory_tm/product');
     $request = $this->getRequest();
@@ -43,9 +43,9 @@ class MVentory_Tm_Adminhtml_IndexController
 
     $session = Mage::getSingleton('adminhtml/session');
 
-    //Store TM params in session to use them on mVentory tab
-    //when submit is failed
-    $session->setData('tm_params', $data);
+    //Store TradeMe data in session to use it on TradeMe tab
+    //when submit fails
+    $session->setData('trademe_data', $data);
 
     if (!(isset($data['account_id']) && $data['account_id'])) {
       $session->addError($helper->__('Please, select account'));
@@ -104,8 +104,8 @@ class MVentory_Tm_Adminhtml_IndexController
       ->setTmCurrentListingId($result)
       ->save();
 
-    //Remove TM options from the session on successful submit
-    $session->unsetData('tm_params');
+    //Remove TradeMe data from the session on successful submit
+    $session->unsetData('trademe_data');
 
     $this->_redirect('adminhtml/catalog_product/edit/id/' . $productId);
   }

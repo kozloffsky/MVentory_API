@@ -434,16 +434,6 @@
         </observers>
       </core_block_abstract_prepare_layout_before>
 
-      <core_block_abstract_prepare_layout_after>
-        <observers>
-          <tm-add-tab-to-product>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>addTabToProduct</method>
-          </tm-add-tab-to-product>
-        </observers>
-      </core_block_abstract_prepare_layout_after>
-
       <adminhtml_init_system_config>
         <observers>
           <tm-add-accounts-to-config>

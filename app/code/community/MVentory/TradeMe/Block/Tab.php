@@ -11,25 +11,28 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * TM categories
+ * TradeMe tab
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
-  extends Mage_Adminhtml_Block_Widget {
+class MVentory_TradeMe_Block_Tab
+  extends Mage_Adminhtml_Block_Widget
+  implements Mage_Adminhtml_Block_Widget_Tab_Interface
+{
+  const URL = 'http://www.trademe.co.nz';
 
   private $_helper = null;
   private $_website = null;
   private $_preselectedCategories = null;
 
-  //TM options from the session
+  //TradeMe options from the session
   private $_session = null;
 
   private $_accounts = null;
@@ -45,21 +48,21 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
 
     $productId = $product->getId();
 
-    //Get TM parameters from the session
+    //Get TradeMe parameters from the session
     $session = Mage::getSingleton('adminhtml/session');
 
-    $this->_session = $session->getData('tm_params');
-    $session->unsetData('tm_params');
+    $this->_session = $session->getData('trademe_data');
+    $session->unsetData('trademe_data');
 
-    $tmHelper = Mage::helper('mventory_tm/tm');
+    $helper = Mage::helper('mventory_tm/tm');
 
     $this->_accountId = isset($this->_session['account_id'])
                           ? $this->_session['account_id']
-                            : $tmHelper
+                            : $helper
                                 ->getAccountId($productId, $this->_website);
 
     $this->_accounts = $this->_helper->prepareAccounts(
-      $tmHelper->getAccounts($this->_website),
+      $helper->getAccounts($this->_website),
       $product
     );
 
@@ -71,15 +74,49 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
       $this->_accountId = false;
 
     if (count($this->_accounts)) {
-      //if ($tmHelper->getShippingType($product) != 'tab_ShipParcel')
+      //if ($helper->getShippingType($product) != 'tab_ShipParcel')
         foreach ($this->_accounts as $id => $data)
           unset($this->_accounts[$id]['free_shipping_cost']);
 
       $this->_calculateShippingRates();
-      $this->_calculateTmFees();
+      $this->_calculateFees();
     }
+  }
 
-    $this->setTemplate('catalog/product/tab/tm.phtml');
+  /**
+   * Return Tab label
+   *
+   * @return string
+   */
+  public function getTabLabel() {
+    return $this->__('TradeMe');
+  }
+
+  /**
+   * Return Tab title
+   *
+   * @return string
+   */
+  public function getTabTitle() {
+    return $this->__('TradeMe');
+  }
+
+  /**
+   * Can show tab in tabs
+   *
+   * @return boolean
+   */
+  public function canShowTab() {
+    return true;
+  }
+
+  /**
+   * Tab is hidden
+   *
+   * @return boolean
+   */
+  public function isHidden() {
+    return false;
   }
 
   public function getProduct () {
@@ -133,21 +170,17 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return $cols;
   }
 
-  public function getTmUrl () {
-    return 'http://www.trademe.co.nz';
-  }
-
   public function getUrlTemplates () {
     $productId = $this
                    ->getProduct()
                    ->getId();
 
-    $submit = $this->getUrl('mventory_tm/adminhtml_index/submit/',
+    $submit = $this->getUrl('trademe/listing/submit/',
                             array('id' => $productId));
 
     $categories = $this->getUrl('trademe/categories',
                                 array('product_id' => $productId));
-    $update = $this->getUrl('mventory_tm/adminhtml_index/update/',
+    $update = $this->getUrl('trademe/listing/update/',
                                 array('id' => $productId));
 
     return Zend_Json::encode(compact('submit', 'categories','update'));
@@ -165,7 +198,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   public function getStatusButton () {
     $label = $this->__('Check status');
     $onclick = 'setLocation(\''
-               . $this->getUrl('mventory_tm/adminhtml_index/check/',
+               . $this->getUrl('trademe/listing/check/',
                                array('id' => $this->getProduct()->getId()))
                . '\')';
 
@@ -175,7 +208,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
   public function getRemoveButton () {
     $label = $this->__('Remove');
     $onclick = 'setLocation(\''
-               . $this->getUrl('mventory_tm/adminhtml_index/remove/',
+               . $this->getUrl('trademe/listing/remove/',
                                array('id' => $this->getProduct()->getId()))
                . '\')';
 
@@ -194,8 +227,8 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return $this->getButtonHtml($label, null, '', 'trademe-categories-show');
   }
 
-  public function getPreparedAttributes ($tmCategoryId) {
-    $attributes = Mage::helper('mventory_tm/tm')->getAttributes($tmCategoryId);
+  public function getPreparedAttributes ($categoryId) {
+    $attributes = Mage::helper('mventory_tm/tm')->getAttributes($categoryId);
 
     if (!$attributes)
       return;
@@ -232,7 +265,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return (int) $this->_getAttributeValue($attr, $field);
   }
 
-  public function getAddTmFees () {
+  public function getAddFees () {
     return (int) $this->_getAttributeValue('tm_add_fees', 'add_fees');
   }
 
@@ -314,18 +347,18 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
     return isset($account['shipping_rate']) ? $account['shipping_rate'] : null;
   }
 
-  public function getTmFees () {
+  public function getFees () {
     if (!isset($this->_accounts[$this->_accountId]))
       return 0;
 
     $account = $this->_accounts[$this->_accountId];
 
-    $addTmfees = $this->getAddTmFees();
+    $addFees = $this->getAddFees();
 
-    if ($addTmfees == -1)
-      $addTmfees = $account['add_fees'];
+    if ($addFees == -1)
+      $addFees = $account['add_fees'];
 
-    if (!$addTmfees)
+    if (!$addFees)
       return 0;
 
     //$shippingType = $this->getShippingType();
@@ -402,7 +435,7 @@ class MVentory_Tm_Block_Catalog_Product_Edit_Tab_Tm
         );
   }
 
-  protected function _calculateTmFees () {
+  protected function _calculateFees () {
     $helper = Mage::helper('mventory_tm/tm');
 
     $price = $this

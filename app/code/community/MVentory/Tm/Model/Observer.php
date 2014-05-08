@@ -564,25 +564,6 @@ EOT;
       ->addItem('categorymatch', compact('label', 'url'));
   }
 
-  public function addTabToProduct ($observer) {
-    $block =  $observer->getEvent()->getBlock();
-
-    if (!$block instanceof Mage_Adminhtml_Block_Catalog_Product_Edit_Tabs)
-      return;
-
-    if (!($block->getProduct()->getAttributeSetId()
-          || $block->getRequest()->getParam('set', null)))
-      return;
-
-    $label = Mage::helper('mventory_tm')->__('mVentory');
-    $content = $block
-                 ->getLayout()
-                 ->createBlock('mventory_tm/catalog_product_edit_tab_tm')
-                 ->toHtml();
-
-    $block->addTab('tm', compact('label', 'content'));
-  }
-
   public function addSiteSwitcher ($observer) {
     $layout = $observer->getEvent()->getLayout();
 

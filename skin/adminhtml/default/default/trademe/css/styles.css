@@ -151,3 +151,13 @@
 .grid .trademe-state-selected {
   background-color: #FCF5DD;
 }
+
+/* TradeMe tab */
+
+#product_info_tabs_trademe_content .a-right button {
+  margin-left: 4px;
+}
+
+#product_info_tabs_trademe_content .trademe-option {
+  padding-right: 10px;
+}

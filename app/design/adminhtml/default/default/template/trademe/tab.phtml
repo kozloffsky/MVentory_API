@@ -11,7 +11,7 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
@@ -25,10 +25,9 @@ $_preselectedCategories = $this->getPreselectedCategories();
 $_cols = $this->getColsNumber() - 1;
 
 $_productUrl = Mage::helper('mventory_tm/product')->getUrl($_product);
-$_tmUrl = $this->getTmUrl();
 
 $_allowBuyNow = $this->getAllowBuyNow();
-$_addTmFees = $this->getAddTmFees();
+$_addFees = $this->getAddFees();
 $_shippingType = $this->getShippingType();
 $_pickup = $this->getPickup();
 $_relist = $this->getRelist();
@@ -36,8 +35,8 @@ $_avoidWithdrawal = $this->getAvoidWithdrawal();
 $_accounts = $this->getAccounts();
 
 $_shippingRate = $this->getShippingRate();
-$_tmFees = $this->getTmFees();
-$_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
+$_fees = $this->getFees();
+$_totalPrice = $_product->getPrice() + $_shippingRate + $_fees;
 
 ?>
 
@@ -45,7 +44,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
 <div class="entry-edit">
   <fieldset>
-    <label class="tm-option">
+    <label class="trademe-option">
       <?php echo $this->getAttributeLabel('tm_relist'); ?>:
       <select class="select" name="product[tm_relist]">
         <?php foreach ($this->getAttributeOptions('tm_relist') as $value => $label): ?>
@@ -54,7 +53,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
       </select>
     </label>
 
-    <label class="tm-option">
+    <label class="trademe-option">
       <?php echo $this->getAttributeLabel('tm_avoid_withdrawal'); ?>:
       <select class="select" name="product[tm_avoid_withdrawal]">
         <?php foreach ($this->getAttributeOptions('tm_avoid_withdrawal') as $value => $label): ?>
@@ -63,7 +62,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
       </select>
     </label>
 
-    <label class="tm-option">
+    <label class="trademe-option">
       <?php echo $this->getAttributeLabel('tm_allow_buy_now'); ?>:
       <select class="select" name="product[tm_allow_buy_now]">
         <?php foreach ($this->getAttributeOptions('tm_allow_buy_now') as $value => $label): ?>
@@ -72,11 +71,11 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
       </select>
     </label>
 
-    <label class="tm-option">
+    <label class="trademe-option">
       <?php echo $this->getAttributeLabel('tm_add_fees'); ?>:
       <select id="trademe-tab-add-fees" class="select" name="product[tm_add_fees]">
         <?php foreach ($this->getAttributeOptions('tm_add_fees') as $value => $label): ?>
-        <option value="<?php echo $value; ?>" <?php if ($value == $_addTmFees) echo 'selected="selected"'; ?>><?php echo $label; ?></option>
+        <option value="<?php echo $value; ?>" <?php if ($value == $_addFees) echo 'selected="selected"'; ?>><?php echo $label; ?></option>
         <?php endforeach; ?>
       </select>
     </label>
@@ -85,7 +84,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
 <div class="entry-edit">
   <fieldset>
-    <label class="tm-option">
+    <label class="trademe-option">
       <?php echo $this->__('Account: '); ?>
       <select id="tm_account" class="select" name="product[tm_account_id]">
         <?php foreach ($_accounts as $acc): ?>
@@ -94,7 +93,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
       </select>
     </label>
 
-    <label class="tm-option">
+    <label class="trademe-option">
       <?php echo $this->getAttributeLabel('tm_shipping_type'); ?>:
       <select id="trademe-tab-shipping-type" class="select" name="product[tm_shipping_type]">
         <?php foreach ($this->getAttributeOptions('tm_shipping_type') as $value => $label): ?>
@@ -103,7 +102,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
       </select>
     </label>
 
-    <label class="tm-option">
+    <label class="trademe-option">
       <?php echo $this->getAttributeLabel('tm_pickup'); ?>:
       <select class="select" name="product[tm_pickup]">
         <?php foreach ($this->getAttributeOptions('tm_pickup') as $value => $label): ?>
@@ -116,15 +115,15 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 
 <p>
   Total price: $<span id="trademe-total-price"><?php echo number_format($_totalPrice, 2); ?></span>
-  <span id="trademe-price"<?php if (!($_shippingRate || $_tmFees)) echo ' style="display: none;"'; ?>>
+  <span id="trademe-price"<?php if (!($_shippingRate || $_fees)) echo ' style="display: none;"'; ?>>
     ($<?php echo number_format($_product->getPrice(), 2); ?>
 
     <span id="trademe-wrapper-shipping-rate"<?php if (!$_shippingRate) echo ' style="display: none;"'; ?>>
       + $<span id="trademe-shippingrate"><?php echo number_format($_shippingRate, 2); ?></span> (shipping)
     </span>
 
-    <span id="trademe-wrapper-fees"<?php if (!$_tmFees) echo ' style="display: none;"'; ?>>
-      + $<span id="trademe-fees"><?php echo number_format($_tmFees, 2); ?></span> (commission)
+    <span id="trademe-wrapper-fees"<?php if (!$_fees) echo ' style="display: none;"'; ?>>
+      + $<span id="trademe-fees"><?php echo number_format($_fees, 2); ?></span> (commission)
     </span>)
   </span>
 </p>
@@ -142,7 +141,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
         (<?php echo $this->__('ID'); ?>: <?php echo $_product->getTmCurrentListingId(); ?>  )
         <?php endif; ?>
       </td>
-      <td class="tm-actions a-right">
+      <td class="a-right">
       <?php
         if ($_product->getTmCurrentListingId()) {
           echo $this->getStatusButton();
@@ -190,7 +189,7 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
           <?php endfor; ?>
 
           <td class="last">
-            <a href="<?php echo $_tmUrl . $_categories[$id]['path']; ?>">
+            <a href="<?php echo MVentory_TradeMe_Block_Tab::URL . $_categories[$id]['path']; ?>">
               <?php echo $this->__('View'); ?>
             </a>
           </td>
@@ -247,11 +246,11 @@ $_totalPrice = $_product->getPrice() + $_shippingRate + $_tmFees;
 trademe_categories(<?php echo $this->getUrlTemplates() ?>);
 
 jQuery(document).ready(function ($) {
-  var tm_data = <?php echo Zend_Json::encode($this->prepareDataForJs()) ?>;
+  var data = <?php echo Zend_Json::encode($this->prepareDataForJs()) ?>;
   var limit = <?php echo MVentory_Tm_Model_Connector::TITLE_MAX_LENGTH; ?>;
 
-  var $options = $('#product_info_tabs_tm_content')
-                   .find('.tm-option')
+  var $options = $('#product_info_tabs_trademe_content')
+                   .find('.trademe-option')
                    .children()
                    .filter(':input');
 
@@ -275,7 +274,7 @@ jQuery(document).ready(function ($) {
   });
 
   $('#tm_account').on('change', function () {
-    var account = tm_data['accounts'][$(this).val()];
+    var account = data['accounts'][$(this).val()];
 
     for (var key in account) {
       var $option = $options.filter('[name*="tm_' + key + '"]')
@@ -285,15 +284,15 @@ jQuery(document).ready(function ($) {
         $option.val(-1);
     }
 
-    trademe_update_total_price(tm_data['product']['price'], account);
+    trademe_update_total_price(data['product']['price'], account);
   });
 
   $('#trademe-tab-add-fees, #trademe-tab-shipping-type').on(
     'change',
     function () {
       trademe_update_total_price(
-        tm_data['product']['price'],
-        tm_data['accounts'][$('#tm_account').val()]
+        data['product']['price'],
+        data['accounts'][$('#tm_account').val()]
       );
     }
   )
