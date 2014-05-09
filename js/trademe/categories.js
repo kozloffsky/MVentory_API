@@ -9,7 +9,7 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
@@ -87,7 +87,7 @@ function categories_table (url_templates, on_add, on_remove) {
       url: url_templates['categories'],
       dataType: 'html',
       success: function (data, text_status, xhr) {
-        $('#tm_categories_wrapper').html(data);
+        $('#trademe-categories-wrapper').html(data);
 
         $all_categories_button.hide();
 
@@ -107,7 +107,7 @@ function categories_table (url_templates, on_add, on_remove) {
 
   function row_click_handler (on_add, on_remove) {
     var $this = $(this);
-    var $selected_table = $('#tm_selected_categories');
+    var $selected_table = $('#trademe-selected-categories');
 
     var $checkbox = $this.find('> .checkbox > .trademe-category-selector');
 
@@ -147,15 +147,15 @@ function categories_table (url_templates, on_add, on_remove) {
     return row_click_handler.call(this, on_add, on_remove);
   }
 
-  var $all_categories_button = $('#tm_categories_button')
+  var $all_categories_button = $('#trademe-categories-show')
                                  .on('click', show_all_categories_handler);
 }
 
-function tm_categories_for_product (url_templates) {
-  var $selected_categories = $('#tm_selected_categories');
+function categories_for_product (url_templates) {
+  var $selected_categories = $('#trademe-selected-categories');
 
   function on_add ($tr) {
-    $('#tm_no_selected_message').addClass('no-display');
+    $('#trademe-message-no-selected').addClass('no-display');
 
     $tr
       .find('> .checkbox > .trademe-category-selector')
@@ -172,8 +172,8 @@ function tm_categories_for_product (url_templates) {
       .find('> tbody > tr > .checkbox > .trademe-category-selector');
 
     if (!$inputs.length) {
-      $('#tm_no_selected_message').removeClass('no-display');
-      $('#tm_submit_button').addClass('disabled');
+      $('#trademe-message-no-selected').removeClass('no-display');
+      $('#trademe-categories-show').addClass('disabled');
 
       return;
     }
@@ -208,19 +208,19 @@ function tm_categories_for_product (url_templates) {
     $submit.removeClass('disabled');
   }
 
-  var $submit = $('#tm_submit_button').on('click', submit_handler);
-  var $update = $('#tm_update_button').on('click', update_handler);
+  var $submit = $('#trademe-submit').on('click', submit_handler);
+  var $update = $('#trademe-update').on('click', update_handler);
 
   apply_table_handlers($selected_categories, row_click_handler);
   categories_table(url_templates, on_add, on_remove);
 }
 
 function update_total_price (price, data) {
-  var $price_parts = $('#tm_price_parts');
+  var $price_parts = $('#trademe-price');
 
   var price = parseFloat(price);
 
-  var shipping_type_value = $('#tm_tab_shipping_type').val();
+  var shipping_type_value = $('#trademe-tab-shipping-type').val();
 
   if (shipping_type_value == -1)
     shipping_type_value = data['shipping_type'];
@@ -229,29 +229,28 @@ function update_total_price (price, data) {
                         ? parseFloat(data['free_shipping_cost'])
                           : parseFloat(data['shipping_rate']);
 
-  var tm_fees = shipping_type_value == 3 //Free shipping
+  var fees = shipping_type_value == 3 //Free shipping
                   ? parseFloat(data['free_shipping_fees'])
                     : parseFloat(data['fees']);
 
-  var add_fees_value = $('#tm_tab_add_fees').val();
+  var add_fees_value = $('#trademe-tab-add-fees').val();
 
   if (add_fees_value == -1)
     add_fees_value = data['add_fees'];
 
-  var add_tm_fees = add_fees_value == 1 && tm_fees;
+  var add_fees = add_fees_value == 1 && fees;
 
-  if (!(shipping_rate || add_tm_fees)) {
+  if (!(shipping_rate || add_fees)) {
     $price_parts.hide();
 
-    $('#tm_total_price').html((price).toFixed(2));
+    $('#trademe-total-price').html((price).toFixed(2));
 
     return;
   }
 
   var $shipping_rate_wrapper = $price_parts
-                                 .children('#tm_shipping_rate_wrapper');
-
-  var $fees_wrapper = $price_parts.children('#tm_fees_wrapper');
+        .children('#trademe-wrapper-shipping-rate'),
+      $fees_wrapper = $price_parts.children('#trademe-wrapper-fees');
 
   if (shipping_rate) {
     $shipping_rate_wrapper.show();
@@ -260,23 +259,23 @@ function update_total_price (price, data) {
   } else
     $shipping_rate_wrapper.hide();
 
-  if (add_tm_fees) {
+  if (add_fees) {
     $fees_wrapper.show();
 
-    price += tm_fees;
+    price += fees;
   } else
     $fees_wrapper.hide();
 
-  $('#tm_shipping_rate').html(shipping_rate.toFixed(2));
-  $('#tm_fees').html(tm_fees.toFixed(2));
-  $('#tm_total_price').html((price).toFixed(2));
+  $('#trademe-shippingrate').html(shipping_rate.toFixed(2));
+  $('#trademe-fees').html(fees.toFixed(2));
+  $('#trademe-total-price').html((price).toFixed(2));
 
   $price_parts.show();
 }
 
 //Export functions to global namespace
-window.tm_categories_for_product = tm_categories_for_product;
-window.tm_update_total_price = update_total_price;
-window.tm_apply_table_handlers = apply_table_handlers;
+window.trademe_categories = categories_for_product;
+window.trademe_update_total_price = update_total_price;
+window.trademe_categories_handlers = apply_table_handlers;
 
 })(jQuery)
