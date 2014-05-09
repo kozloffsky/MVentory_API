@@ -76,6 +76,26 @@
           </trademe_sort_children>
         </observers>
       </controller_action_layout_render_before_adminhtml_catalog_product_set_edit>
+
+      <adminhtml_init_system_config>
+        <observers>
+          <trademe-add-accounts-to-config>
+            <type>singleton</type>
+            <class>MVentory_TradeMe_Model_Observer</class>
+            <method>addAccountsToConfig</method>
+          </trademe-add-accounts-to-config>
+        </observers>
+      </adminhtml_init_system_config>
+
+      <model_config_data_save_before>
+        <observers>
+          <trademe-restore-new-account-in-config>
+            <type>singleton</type>
+            <class>MVentory_TradeMe_Model_Observer</class>
+            <method>restoreNewAccountInConfig</method>
+          </trademe-restore-new-account-in-config>
+        </observers>
+      </model_config_data_save_before>
     </events>
 
     <layout>
@@ -85,6 +105,26 @@
         </trademe>
       </updates>
     </layout>
+
+    <acl>
+      <resources>
+        <admin>
+          <children>
+            <system>
+              <children>
+                <config>
+                  <children>
+                    <trademe>
+                      <title>mVentory TradeMe</title>
+                    </trademe>
+                  </children>
+                </config>
+              </children>
+            </system>
+          </children>
+        </admin>
+      </resources>
+    </acl>
   </adminhtml>
 
   <admin>
@@ -98,4 +138,12 @@
       </trademe_adminhtml>
     </routers>
   </admin>
+
+  <default>
+    <trademe>
+      <settings>
+        <enable_listing>1</enable_listing>
+      </settings>
+    </trademe>
+  </default>
 </config>

@@ -11,31 +11,22 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * Source model for stores which includes empty option
+ * TradeMe config model
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_System_Config_Source_Store
-  extends Mage_Adminhtml_Model_System_Config_Source_Store {
-
-  public function toOptionArray () {
-    if ($this->_options !== null)
-      return $this->_options;
-
-    parent::toOptionArray();
-
-    if (!$this->_options)
-      return $this->_options;
-
-    array_unshift($this->_options, array('label' => '', 'value' => ''));
-
-    return $this->_options;
-  }
+class MVentory_TradeMe_Model_Config
+{
+  const SANDBOX = 'trademe/settings/sandbox';
+  const CRON_INTERVAL = 'trademe/settings/cron';
+  const MAPPING_STORE = 'trademe/settings/mapping_store';
+  const ENABLE_LISTING = 'trademe/settings/enable_listing';
+  const LIST_AS_NEW = 'trademe/settings/list_as_new';
 }

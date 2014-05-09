@@ -434,26 +434,6 @@
         </observers>
       </core_block_abstract_prepare_layout_before>
 
-      <adminhtml_init_system_config>
-        <observers>
-          <tm-add-accounts-to-config>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>addAccountsToConfig</method>
-          </tm-add-accounts-to-config>
-        </observers>
-      </adminhtml_init_system_config>
-
-      <model_config_data_save_before>
-        <observers>
-          <tm-restore-new-account-in-config>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>restoreNewAccountInConfig</method>
-          </tm-restore-new-account-in-config>
-        </observers>
-      </model_config_data_save_before>
-
       <api_user_authenticated>
         <observers>
           <tm_check_access_to_website>
@@ -496,15 +476,6 @@
 
   <default>
     <mventory_tm>
-      <settings>
-        <allow_buy_now>1</allow_buy_now>
-        <add_tm_fees>0</add_tm_fees>
-        <shipping_type>1</shipping_type>
-        <avoid_withdrawal>1</avoid_withdrawal>
-        <pickup>0</pickup>
-        <enable_listing>1</enable_listing>
-      </settings>
-
       <qr>
         <rows>10</rows>
         <columns>15</columns>

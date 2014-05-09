@@ -11,24 +11,24 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * Config form fieldset renderer
+ * TradeMe settings fieldset renderer
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_System_Config_Form_Fieldset_Settings
-  extends Mage_Adminhtml_Block_System_Config_Form_Fieldset {
-
+class MVentory_TradeMe_Block_Settings
+  extends Mage_Adminhtml_Block_System_Config_Form_Fieldset
+{
   protected function _getExtraJs ($element, $tooltipsExist = false) {
     $js = "
-      function tm_auth_account (account_id) {
-        if ($('tm_button_auth_' + account_id).hasClassName('disabled'))
+      function trademe_auth_account (account_id) {
+        if ($('trademe_button_auth_' + account_id).hasClassName('disabled'))
           return;
 
         new Ajax.Request('" . $this->getAuthorizeUrl() . "', {
@@ -57,7 +57,7 @@ class MVentory_Tm_Block_System_Config_Form_Fieldset_Settings
   }
 
   public function getAuthorizeUrl () {
-    $route = 'mventory_tm/adminhtml_tm/authenticateaccount';
+    $route = 'trademe/account/authenticate';
     $params = array('website' => $this->getRequest()->getParam('website', ''));
 
     return $this->getUrl($route, $params);

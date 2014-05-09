@@ -11,19 +11,19 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * TM authentication model
+ * TradeMe account model
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Tm_Auth extends MVentory_Tm_Model_Tm {
-
+class MVentory_TradeMe_Model_Account extends MVentory_Tm_Model_Tm
+{
   protected $_accountId = null;
   protected $_website = null;
 
@@ -35,7 +35,7 @@ class MVentory_Tm_Model_Tm_Auth extends MVentory_Tm_Model_Tm {
 
     $helper = Mage::helper('mventory_tm/tm');
 
-    $host = $helper->getConfig(self::SANDBOX_PATH, $website)
+    $host = $helper->getConfig(MVentory_TradeMe_Model_Config::SANDBOX, $website)
               ? 'tmsandbox'
                 : 'trademe';
 
@@ -44,7 +44,7 @@ class MVentory_Tm_Model_Tm_Auth extends MVentory_Tm_Model_Tm {
     $accounts = $helper->getAccounts($website);
     $account = $accounts[$accountId];
 
-    $route = 'mventory_tm/adminhtml_tm/authorizeaccount';
+    $route = 'trademe/account/authorise';
     $params = array(
       'account_id' => $accountId,
       'website' => $website);
@@ -72,17 +72,17 @@ class MVentory_Tm_Model_Tm_Auth extends MVentory_Tm_Model_Tm {
       return null;
 
     Mage::getSingleton('core/session')
-      ->setTmRequestToken(serialize($requestToken));
+      ->setTradeMeRequestToken(serialize($requestToken));
 
     $params = array('scope' => 'MyTradeMeRead,MyTradeMeWrite');
 
     return $consumer->getRedirectUrl($params);
   }
 
-  public function authorize ($data) {
+  public function authorise ($data) {
     $session = Mage::getSingleton('core/session');
 
-    $requestToken = $session->getTmRequestToken();
+    $requestToken = $session->getTradeMeRequestToken();
 
     if (!$requestToken)
       return;
@@ -96,7 +96,7 @@ class MVentory_Tm_Model_Tm_Auth extends MVentory_Tm_Model_Tm {
       Zend_Oauth_Token::TOKEN_SECRET_PARAM_KEY => $token->getTokenSecret()
     );
 
-    $path = 'mventory_tm/' . $this->_accountId . '/access_token';
+    $path = 'trademe/' . $this->_accountId . '/access_token';
     $websiteId = Mage::app()
                    ->getWebsite($this->_website)
                    ->getId();
@@ -107,7 +107,7 @@ class MVentory_Tm_Model_Tm_Auth extends MVentory_Tm_Model_Tm {
 
     Mage::app()->reinitStores();
 
-    $session->setTmRequestToken(null);
+    $session->setTradeMeRequestToken(null);
 
     return true;
   }

@@ -26,9 +26,6 @@ class MVentory_Tm_Model_Connector {
 
   const LOG_FILE = 'tm.log';
 
-  const SANDBOX_PATH = 'mventory_tm/settings/sandbox';
-  const LIST_AS_NEW_PATH = 'mventory_tm/settings/list_as_new';
-
   const CACHE_TYPE_TM = 'tm';
   const CACHE_TAG_TM = 'TM';
   const CACHE_TM_CATEGORIES = 'TM_CATEGORIES';
@@ -105,7 +102,7 @@ class MVentory_Tm_Model_Connector {
     if ($this->_config)
       return $this->_config;
 
-    $host = $this->_getConfig(self::SANDBOX_PATH)
+    $host = $this->_getConfig(MVentory_TradeMe_Model_Config::SANDBOX)
               ? 'tmsandbox'
                 : 'trademe';
 
@@ -1135,7 +1132,10 @@ class MVentory_Tm_Model_Connector {
     return ($value = $product->getData('mv_condition_')) === null
            || in_array(
                 $value,
-                explode(',', $this->_getConfig(self::LIST_AS_NEW_PATH))
+                explode(
+                  ',',
+                  $this->_getConfig(MVentory_TradeMe_Model_Config::LIST_AS_NEW)
+                )
               );
   }
 

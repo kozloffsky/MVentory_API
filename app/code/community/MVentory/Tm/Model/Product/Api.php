@@ -27,8 +27,6 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   const FETCH_LIMIT_PATH = 'mventory_tm/api/products-number-to-fetch';
   const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
 
-  const _ENABLE_LISTING = 'mventory_tm/settings/enable_listing';
-
   const CONF_TYPE = Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE;
 
   protected $_excludeFromProduct = array(
@@ -290,7 +288,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
       //!!!TODO: move to a separate extension; add event here for it
       $data['tm_relist'] = (bool) $helper->getConfig(
-        self::_ENABLE_LISTING,
+        MVentory_TradeMe_Model_Config::ENABLE_LISTING,
         $website
       );
 
@@ -781,7 +779,10 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $data['listing_url']
         = 'http://www.'
           . (
-              $helper->getConfig(MVentory_Tm_Model_Tm::SANDBOX_PATH, $website)
+              $helper->getConfig(
+                MVentory_TradeMe_Model_Config::SANDBOX,
+                $website
+              )
                 ? 'tmsandbox'
                   : 'trademe'
             )

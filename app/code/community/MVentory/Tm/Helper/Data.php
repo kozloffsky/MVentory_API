@@ -228,7 +228,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
   }
 
   public function isSandboxMode ($websiteId) {
-    $path = MVentory_Tm_Model_Connector::SANDBOX_PATH;
+    $path = MVentory_TradeMe_Model_Config::SANDBOX;
 
     return $this->getConfig($path, $websiteId) == true;
   }

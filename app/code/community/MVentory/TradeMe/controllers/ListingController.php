@@ -89,7 +89,7 @@ class MVentory_TradeMe_ListingController
       return;
     }
 
-    $path = MVentory_Tm_Model_Connector::SANDBOX_PATH;
+    $path = MVentory_TradeMe_Model_Config::SANDBOX;
     $website = $helper->getWebsite($product);
 
     $host = $helper->getConfig($path, $website) ? 'tmsandbox' : 'trademe';
@@ -123,7 +123,7 @@ class MVentory_TradeMe_ListingController
     $helper = Mage::helper('mventory_tm/product');
 
     if ($result === true) {
-      $path = MVentory_Tm_Model_Connector::SANDBOX_PATH;
+      $path = MVentory_TradeMe_Model_Config::SANDBOX;
       $website = $helper->getWebsite($product);
 
       $host = $helper->getConfig($path, $website) ? 'tmsandbox' : 'trademe';
@@ -157,7 +157,7 @@ class MVentory_TradeMe_ListingController
       $connector = Mage::getModel('mventory_tm/connector');
       $result = $connector->check($product);
 
-      $path = MVentory_Tm_Model_Connector::SANDBOX_PATH;
+      $path = MVentory_TradeMe_Model_Config::SANDBOX;
       $website = $helper->getWebsite($product);
 
       $host = $helper->getConfig($path, $website) ? 'tmsandbox' : 'trademe';

@@ -11,7 +11,7 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
@@ -19,18 +19,19 @@
 /**
  * Backend model for cron field
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_System_Config_Backend_Cron
-  extends Mage_Core_Model_Config_Data {
+class MVentory_TradeMe_Model_Setting_Backend_Cron
+  extends Mage_Core_Model_Config_Data
+{
 
-  const PATH = 'crontab/jobs/tm_sync_';
+  const PATH = 'crontab/jobs/trademe_sync_';
 
   /**
    * Create or remove cron records from config after saving cron interval
    *
-   * @return MVentory_Tm_Model_System_Config_Backend_Cron
+   * @return MVentory_TradeMe_Model_Settings_Backend_Cron
    */
   protected function _afterSave () {
 
@@ -73,8 +74,9 @@ class MVentory_Tm_Model_System_Config_Backend_Cron
           ->setData($data)
           ->save();
       } catch (Exception $e) {
-        throw new Exception(Mage::helper('mventory_tm')
-                              ->__('Unable to save the cron expression.'));
+        throw new Exception(
+          Mage::helper('trademe')->__('Unable to save the cron expression.')
+        );
       }
 
     return $this;
@@ -85,7 +87,7 @@ class MVentory_Tm_Model_System_Config_Backend_Cron
    * Remove cron records from config after settinh website's cron interval
    * to use default value
    *
-   * @return MVentory_Tm_Model_System_Config_Backend_Cron
+   * @return MVentory_TradeMe_Model_Settings_Backend_Cron
    */
   protected function _afterDelete () {
     if ($this->getScope() != 'websites')

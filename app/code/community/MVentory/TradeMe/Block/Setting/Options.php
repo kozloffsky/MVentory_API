@@ -11,19 +11,18 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * Button for exporting rates in CSV format for the volume based shipping
- * carrier
+ * Button for exporting options of TradeMe accounts
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_System_Config_Form_Field_Exportoptions
+class MVentory_TradeMe_Block_Setting_Options
   extends Mage_Adminhtml_Block_System_Config_Form_Field {
 
   protected function _getElementHtml (Varien_Data_Form_Element_Abstract $elem) {
@@ -31,7 +30,7 @@ class MVentory_Tm_Block_System_Config_Form_Field_Exportoptions
                  ->getRequest()
                  ->getParam('website', '');
 
-    $url = $this->getUrl('mventory_tm/options/export', compact('website'))
+    $url = $this->getUrl('trademe/options/export', compact('website'))
            . 'options.csv';
 
     $data = array(

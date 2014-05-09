@@ -11,18 +11,18 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * Grid of the TM options for CSV generation
+ * Grid of the TradeMe options for CSV generation
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Options
+class MVentory_TradeMe_Block_Options
   extends Mage_Adminhtml_Block_Widget_Grid {
 
   protected $_helper = null;
@@ -49,10 +49,10 @@ class MVentory_Tm_Block_Options
       'free_shipping_cost' => 'Free shipping cost',
       'allow_buy_now' => 'Allow Buy Now',
       'avoid_withdrawal' => 'Avoid withdrawal',
-      'add_fees' => 'Add TM fees',
+      'add_fees' => 'Add fees',
       'allow_pickup' => 'Allow pickup',
       'category_image' => 'Add category image',
-      'buyer' => 'TM buyer ID',
+      'buyer' => 'Buyer ID',
       'duration' => 'Listing duration',
       'shipping_options' => 'Shipping options',
       'footer' => 'Footer description'
@@ -62,7 +62,7 @@ class MVentory_Tm_Block_Options
   /**
    * Prepare options collection
    *
-   * @return MVentory_Tm_Block_Options
+   * @return MVentory_TradeMe_Block_Options
    */
   protected function _prepareCollection () {
     $collection = new Varien_Data_Collection();
@@ -103,7 +103,6 @@ class MVentory_Tm_Block_Options
    * Return array with empty options for all shipping types
    *
    * @param array $shippingTypes
-   *
    * @return array
    */
   protected function _fillShippingTypes ($shippingTypes) {
@@ -128,7 +127,7 @@ class MVentory_Tm_Block_Options
   /**
    * Prepare table columns
    *
-   * @return Mage_Adminhtml_Block_Widget_Grid
+   * @return MVentory_TradeMe_Block_Options
    */
   protected function _prepareColumns () {
     foreach ($this->_options as $id => $label)
@@ -149,7 +148,7 @@ class MVentory_Tm_Block_Options
    *   ...
    *   <price>,<method>
    *
-   * $param string $options Shipping options
+   * @param string $options Shipping options
    * @return string
    */
   protected function _exportShippingOptions ($options) {

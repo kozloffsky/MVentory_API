@@ -11,22 +11,22 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * TM controller
+ * TradeMe account controller
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Adminhtml_TmController
-  extends Mage_Adminhtml_Controller_Action {
-
+class MVentory_TradeMe_AccountController
+  extends Mage_Adminhtml_Controller_Action
+{
   protected function _construct() {
-    $this->setUsedModuleName('MVentory_Tm');
+    $this->setUsedModuleName('MVentory_TradeMe');
   }
 
   /**
@@ -34,7 +34,7 @@ class MVentory_Tm_Adminhtml_TmController
    *
    * @return null
    */
-  public function authenticateAccountAction () {
+  public function authenticateAction () {
     $accountId = $this->getRequest()->getParam('account_id');
     $website = $this->getRequest()->getParam('website');
 
@@ -53,7 +53,7 @@ class MVentory_Tm_Adminhtml_TmController
       return;
     }
 
-    $auth = new MVentory_Tm_Model_Tm_Auth($accountId, $website);
+    $auth = new MVentory_TradeMe_Model_Account($accountId, $website);
 
     $ajaxRedirect = $auth->authenticate();
 
@@ -77,18 +77,18 @@ class MVentory_Tm_Adminhtml_TmController
 
   /**
    * Action for oAuth callback URL.
-   * Redirects back to TM config page if account is successfully authorized
+   * Redirects back to TradeMe config page if account is successfully authorised
    *
    * @return null
    */
-  public function authorizeAccountAction () {
+  public function authoriseAction () {
     $request = $this->getRequest();
 
     $accountId = $request->getParam('account_id');
     $website = $request->getParam('website');
 
     $params = array(
-      'section' => 'mventory_tm',
+      'section' => 'trademe',
       'website' => $website
     );
 
@@ -101,9 +101,9 @@ class MVentory_Tm_Adminhtml_TmController
       return;
     }
 
-    $auth = new MVentory_Tm_Model_Tm_Auth($accountId, $website);
+    $auth = new MVentory_TradeMe_Model_Account($accountId, $website);
 
-    $result = $auth->authorize($request->getParams());
+    $result = $auth->authorise($request->getParams());
 
     if ($result) {
       $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);

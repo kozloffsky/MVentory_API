@@ -11,20 +11,20 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * Auhorize button for TM account
+ * Fieldset for TradeMe account
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_System_Config_Form_Fieldset_Account
-  extends Mage_Adminhtml_Block_System_Config_Form_Fieldset {
-
+class MVentory_TradeMe_Block_Account
+  extends Mage_Adminhtml_Block_System_Config_Form_Fieldset
+{
   protected function _getHeaderCommentHtml ($element) {
     $comment = $element->getComment()
                  ? '<div class="comment">' . $element->getComment() . '</div>'
@@ -33,9 +33,9 @@ class MVentory_Tm_Block_System_Config_Form_Fieldset_Account
     $accountId = $element->getGroup()->getName();
 
     $data = array(
-      'id' => 'tm_button_auth_' . $accountId,
-      'label' => $this->__('Authorize'),
-      'onclick' => 'javascript:tm_auth_account(\''
+      'id' => 'trademe_button_auth_' . $accountId,
+      'label' => $this->__('Authorise'),
+      'onclick' => 'javascript:trademe_auth_account(\''
                    . $accountId
                    . '\'); return false;'
     );

@@ -11,25 +11,31 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * Backend model for TM options uploading button
+ * Source model for list of stores with empty option
  *
- * @package MVentory/TM
+ * @package MVentory/Trademe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_System_Config_Backend_Options
-  extends Mage_Core_Model_Config_Data {
+class MVentory_TradeMe_Model_Setting_Source_Store
+  extends Mage_Adminhtml_Model_System_Config_Source_Store
+{
+  public function toOptionArray () {
+    if ($this->_options !== null)
+      return $this->_options;
 
-  public function _beforeSave () {
-    $this->unsValue();
-  }
+    parent::toOptionArray();
 
-  public function _afterSave () {
-    Mage::helper('mventory_tm/tm')->importOptions($this);
+    if (!$this->_options)
+      return $this->_options;
+
+    array_unshift($this->_options, array('label' => '', 'value' => ''));
+
+    return $this->_options;
   }
 }

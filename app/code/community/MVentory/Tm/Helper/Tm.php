@@ -24,8 +24,6 @@
  */
 class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
-  const XML_PATH_MAPPING_STORE_ID = 'mventory_tm/settings/mapping_store';
-
   const COUNTRY_CODE = 'NZ';
 
   const LISTING_DURATION_MAX = 7;
@@ -242,11 +240,11 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
     $configData = Mage::getModel('adminhtml/config_data')
                     ->setWebsite($website->getCode())
-                    ->setSection('mventory_tm');
+                    ->setSection('trademe');
 
     $configData->load();
 
-    $groups = $configData->getConfigDataValue('mventory_tm')->asArray();
+    $groups = $configData->getConfigDataValue('trademe')->asArray();
 
     $accounts = array();
 
@@ -340,7 +338,7 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
   public function getMappingStore () {
     return Mage::app()->getStore(
-      (int) parent::getConfig(self::XML_PATH_MAPPING_STORE_ID)
+      (int) parent::getConfig(MVentory_TradeMe_Model_Config::MAPPING_STORE)
     );
   }
 
@@ -660,7 +658,7 @@ class MVentory_Tm_Helper_Tm extends MVentory_Tm_Helper_Data {
 
     foreach ($accounts as $id => $data)
       $config->saveConfig(
-        'mventory_tm/' . $id . '/shipping_types',
+        'trademe/' . $id . '/shipping_types',
         serialize($data),
         'websites',
         $websiteId
