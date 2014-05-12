@@ -112,7 +112,7 @@
             </app_profile_link_lifetime>
 
             <lost_category translate="label">
-              <label>LOST category ID</label>
+              <label>Default category ID</label>
               <frontend_type>text</frontend_type>
 
               <show_in_default>1</show_in_default>
