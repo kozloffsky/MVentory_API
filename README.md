@@ -1,7 +1,7 @@
 MVentory_Tm
 ===========
 
-mVentory API extension for Magento works with [mVentory Android app](https://play.google.com/store/apps/details?id=com.mageventory) ([sourcecode repository](https://github.com/mVentory/app)).
+mVentory API extension for Magento provides the [mVentory Android app](https://play.google.com/store/apps/details?id=com.mageventory) ([source code repository](https://github.com/mVentory/app)) with access to the e-commerce platform. 
 
 
 ## Installation
