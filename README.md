@@ -12,4 +12,4 @@ Install mVentory_TM extension using standard Magento Extension installation proc
 
 ## Configuration
 
-Detailed configuration instructions can be found at [www.mVentory.com](www.mVentory.com/configuration).
+Detailed configuration instructions can be found at [www.mVentory.com](http://www.mVentory.com/configuration).
