@@ -13,3 +13,9 @@ Install mVentory_TM extension using standard Magento Extension installation proc
 ## Configuration
 
 Detailed configuration instructions can be found at [www.mVentory.com](http://www.mVentory.com/configuration).
+
+## License
+
+This extension is released under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+
+A waiver to the non-commercial clause is available from http://mventory.com.
