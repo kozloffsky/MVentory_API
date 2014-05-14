@@ -86,6 +86,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
         'frontend_input' => $attribute['frontend_input'],
         'default_value' => $attribute['default_value'],
         'is_required' => $attribute['is_required'],
+        'is_configurable' => $attribute['is_configurable'],
         'label' => $label,
 
         //!!!DEPRECATED: replaced by 'label' key
