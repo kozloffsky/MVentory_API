@@ -112,33 +112,9 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     if (isset($_result[0]))
       $result = array_merge($result, $_result[0]);
 
-    $productAttribute = Mage::getModel('catalog/product_attribute_api');
-
-    $_result = $productAttribute->items($result['set']);
-
-    $result['set_attributes'] = array();
-
-    foreach ($_result as $_attr) {
-      if (substr($_attr['code'], -1) != '_')
-        continue;
-
-      $attr = $productAttribute->info($_attr['attribute_id'], $storeId);
-
-      $attr = array(
-        'attribute_code' => $attr['attribute_code'],
-        'frontend_input' => $attr['frontend_input'],
-        'default_value' => $attr['default_value'],
-        'is_configurable' => $attr['is_configurable'],
-        'frontend_label' => $attr['frontend_label'],
-        'options' => array()
-      );
-
-      if ($_attr['type'] == 'select' || $_attr['type'] == 'multiselect')
-        $attr['options']
-          = $productAttribute->options($_attr['attribute_id'], $storeId);
-
-      $result['set_attributes'][] = $attr;
-    }
+    $result['set_attributes']
+      = Mage::getModel('mventory_tm/product_attribute_api')
+          ->fullInfoList($result['set']);
 
     $productAttributeMedia
       = Mage::getModel('catalog/product_attribute_media_api');
