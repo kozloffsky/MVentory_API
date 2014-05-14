@@ -56,9 +56,48 @@ class MVentory_Tm_Model_Product_Attribute_Api
     'options_container' => true,
   );
 
-  public function fullInfoList ($setId) {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId(null);
+  /**
+   * Get information about attribute with list of options
+   *
+   * @param integer|string $attribute attribute ID or code
+   * @return array
+   */
+  public function info ($attribute) {
+    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
 
+    $data = parent::info($attribute);
+
+    $label = $data['frontend_label'][0]['label'];
+
+    foreach($data['frontend_label'] as $_label)
+      if ($_label['store_id'] == $storeId) {
+        $label = $_label['label'];
+        break;
+      }
+
+    return array(
+      'attribute_id' => $data['attribute_id'],
+      'attribute_code' => $data['attribute_code'],
+      'frontend_input' => $data['frontend_input'],
+      'default_value' => $data['default_value'],
+      'is_required' => $data['is_required'],
+      'is_configurable' => $data['is_configurable'],
+      'label' => $label,
+
+      //!!!DEPRECATED: replaced by 'label' key
+      //!!!TODO: remove after the app will have been upgraded
+      'frontend_label' => array(
+        array('store_id' => $storeId, 'label' => $label)
+      ),
+
+      'options' => $this->optionsPerStoreView(
+        $data['attribute_id'],
+        $storeId
+      )
+    );
+  }
+
+  public function fullInfoList ($setId) {
     $_attributes = $this->items($setId);
 
     $attributes = array();
@@ -69,37 +108,10 @@ class MVentory_Tm_Model_Product_Attribute_Api
 
       $attribute = $this->info($_attribute['attribute_id']);
 
-      $excludeAttribute = false;
+      if ($attribute['label'] == '~')
+        continue;
 
-      $label = $attribute['frontend_label'][0]['label'];
-
-      foreach($attribute['frontend_label'] as $_label)
-        if ($_label['store_id'] == $storeId)
-          if (($label = $_label['label']) == '~')
-            continue 2;
-          else
-            break;
-
-      $attributes[] = array(
-        'attribute_id' => $attribute['attribute_id'],
-        'attribute_code' => $attribute['attribute_code'],
-        'frontend_input' => $attribute['frontend_input'],
-        'default_value' => $attribute['default_value'],
-        'is_required' => $attribute['is_required'],
-        'is_configurable' => $attribute['is_configurable'],
-        'label' => $label,
-
-        //!!!DEPRECATED: replaced by 'label' key
-        //!!!TODO: remove after the app will have been upgraded
-        'frontend_label' => array(
-          array('store_id' => $storeId, 'label' => $label)
-        ),
-
-        'options' => $this->optionsPerStoreView(
-          $attribute['attribute_id'],
-          $storeId
-        )
-      );
+      $attributes[] = $attribute;
     }
 
     return $attributes;
@@ -173,11 +185,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
       } catch (Exception $e) {}
     }
 
-    $info = $this->info($attributeId);
-
-    $info['options'] = $this->optionsPerStoreView($attributeId, $storeId);
-
-    return $info;
+    return $this->info($attributeId);
   }
 
   private function getOptionLabels($storeId, $attributeId)
