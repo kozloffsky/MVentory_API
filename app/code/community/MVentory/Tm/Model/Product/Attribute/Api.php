@@ -87,7 +87,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
       //!!!DEPRECATED: replaced by 'label' key
       //!!!TODO: remove after the app will have been upgraded
       'frontend_label' => array(
-        array('store_id' => $storeId, 'label' => $label)
+        array('store_id' => 0, 'label' => $label)
       ),
 
       'options' => $this->optionsPerStoreView(
