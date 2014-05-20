@@ -63,6 +63,18 @@
         <class>MVentory_TradeMe_Helper</class>
       </trademe>
     </helpers>
+
+    <events>
+      <checkout_type_onepage_save_order_after>
+        <observers>
+          <trademe_remove_listing>
+            <type>singleton</type>
+            <class>MVentory_TradeMe_Model_Observer</class>
+            <method>removeListing</method>
+          </trademe_remove_listing>
+        </observers>
+      </checkout_type_onepage_save_order_after>
+    </events>
   </global>
 
   <adminhtml>

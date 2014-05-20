@@ -267,16 +267,6 @@
         </observers>
       </cataloginventory_stock_item_save_after>
 
-      <checkout_type_onepage_save_order_after>
-        <observers>
-          <mventory_tm_save_order_after>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>removeListingFromTm</method>
-          </mventory_tm_save_order_after>
-        </observers>
-      </checkout_type_onepage_save_order_after>
-
       <adminhtml_catalog_product_grid_prepare_massaction>
         <observers>
           <mventory_tm_product_name_rebuild>

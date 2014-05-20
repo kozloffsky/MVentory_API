@@ -54,7 +54,7 @@ class MVentory_TradeMe_Model_Setting_Backend_Cron
     $path = self::PATH . $code;
 
     $node = array(
-      $path . '/run/model' => 'mventory_tm/observer::sync',
+      $path . '/run/model' => 'trademe/observer::sync',
       $path . '/schedule/cron_expr' => '*/' . $value . ' * * * *',
       //Store website code in cron record
       $path . '/website' => $code
