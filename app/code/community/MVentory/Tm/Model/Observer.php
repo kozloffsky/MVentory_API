@@ -252,6 +252,16 @@ EOT;
             $website
           );
 
+          if (!isset($accountData['shipping_types'][$shippingType]['buyer'])) {
+            MVentory_Tm_Model_Connector::debug(
+              'Error: shipping type ' . $shippingType . ' doesn\t exists in '
+              . $accountData['name'] . ' account. Product SKU: '
+              . $sku
+            );
+
+            continue;
+          }
+
           $buyer = $accountData['shipping_types'][$shippingType]['buyer'];
 
           //API function for creating order requires curren store to be set
