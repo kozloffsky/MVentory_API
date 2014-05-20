@@ -1222,7 +1222,7 @@ class MVentory_Tm_Model_Connector {
 
     $callee = $backtrace[1];
 
-    $name = '[' . $callee['line'] . '] '
+    $name = (isset($callee['line']) ? '[' . $callee['line'] . '] ' : '')
             . $callee['class']
             . $callee['type']
             . $callee['function'];
