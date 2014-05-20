@@ -344,11 +344,6 @@
                 <sort_order>4</sort_order>
               </delete>
 
-              <submit_to_tm translate="title" module="mventory_tm">
-                <title>Send product to TM</title>
-                <sort_order>5</sort_order>
-              </submit_to_tm>
-
               <media translate="title" module="catalog">
                 <title>Product Images</title>
                 <sort_order>6</sort_order>

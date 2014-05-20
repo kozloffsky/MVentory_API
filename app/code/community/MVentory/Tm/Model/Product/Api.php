@@ -534,43 +534,6 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                  'month_loaded' => (double)$monthLoaded);
   }
 
-  public function submitToTM ($productId, $tmData) {
-    $product = $this->_getProduct($productId, null, 'id');
-
-    if (is_null($product->getId())) {
-      $this->_fault('product_not_exists');
-    }
-
-    $match = Mage::getModel('trademe/matching')->matchCategory($product);
-
-    if (!(isset($match['id']) && $match['id'] > 0))
-      $this->_fault('unable_to_match_tm_category');
-
-    $connector = Mage::getModel('mventory_tm/connector');
-
-    $connectorResult = $connector->send(
-      $product,
-      $match['id'],
-      $tmData['account_id']
-    );
-
-    if (is_int($connectorResult)) {
-      $product
-        ->setTmCurrentListingId($connectorResult)
-        ->setTmListingId($connectorResult)
-        ->save();
-    }
-
-    $result = $this->fullInfo($productId, 'id');
-
-    if (!is_int($connectorResult))
-    {
-      $result['tm_error'] = $connectorResult;
-    }
-
-    return $result;
-  }
-
   /**
    * Delete product
    *

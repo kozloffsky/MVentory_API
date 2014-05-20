@@ -1,0 +1,91 @@
+<!--
+/**
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Creative Commons License BY-NC-ND.
+ * NonCommercial — You may not use the material for commercial purposes.
+ * NoDerivatives — If you remix, transform, or build upon the material,
+ * you may not distribute the modified material.
+ * See the full license at http://creativecommons.org/licenses/by-nc-nd/4.0/
+ *
+ * See http://mventory.com/legal/licensing/ for other licensing options.
+ *
+ * @package MVentory/TradeMe
+ * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
+ * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
+ */
+-->
+
+<config>
+  <api>
+    <resources>
+      <trademe_product>
+        <model>trademe/product_api</model>
+        <acl>trademe/product</acl>
+
+        <methods>
+          <submit translate="title" module="trademe">
+            <title>Submit product to TradeMe</title>
+            <acl>trademe/product/submit</acl>
+          </submit>
+        </methods>
+
+        <faults module="trademe">
+          <unable_to_match_category>
+            <code>201</code>
+            <message>Unable to match TradeMe category</message>
+          </unable_to_match_category>
+        </faults>
+      </trademe_product>
+
+      <catalog_product>
+        <model>trademe/product_api</model>
+
+        <methods>
+          <submitToTM translate="title" module="trademe">
+            <title>Submit product to TradeMe</title>
+            <acl>mventory/catalog/product/submit_to_tm</acl>
+            <method>submit</method>
+          </submitToTM>
+        </methods>
+
+         <faults module="trademe">
+          <unable_to_match_category>
+            <code>201</code>
+            <message>Unable to match TradeMe category</message>
+          </unable_to_match_category>
+        </faults>
+      </catalog_product>
+    </resources>
+
+    <acl>
+      <resources>
+        <trademe translate="title" module="trademe">
+          <title>TradeMe</title>
+          <sort_order>-1</sort_order>
+
+          <product translate="title" module="trademe">
+            <title>Product</title>
+            <sort_order>1</sort_order>
+
+            <submit translate="title" module="trademe">
+              <title>Submit product to TradeMe</title>
+              <sort_order>1</sort_order>
+            </submit>
+          </product>
+        </trademe>
+
+        <mventory>
+          <catalog>
+            <product>
+              <submit_to_tm translate="title" module="trademe">
+                <title>Submit product to TradeMe</title>
+                <sort_order>5</sort_order>
+              </submit_to_tm>
+            </product>
+          </catalog>
+        </mventory>
+      </resources>
+    </acl>
+  </api>
+</config>
