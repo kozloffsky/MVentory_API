@@ -227,12 +227,6 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     return Mage::registry('is_admin_logged') === true;
   }
 
-  public function isSandboxMode ($websiteId) {
-    $path = MVentory_TradeMe_Model_Config::SANDBOX;
-
-    return $this->getConfig($path, $websiteId) == true;
-  }
-
   public function isMobile () {
     $storeId = $this->getCurrentStoreId();
     $code = 'site_version_' . $storeId;

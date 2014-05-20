@@ -734,7 +734,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   private function _prepareTrademeData ($product, $website) {
     $helper = Mage::helper('mventory_tm/tm');
 
-    $accounts = $helper->getAccounts($website);
+    $accounts = Mage::helper('trademe')->getAccounts($website);
 
     $id = isset($product['tm_account_id']) ? $product['tm_account_id'] : null;
     $account = $id && isset($accounts[$id]) ? $accounts[$id] : null;
@@ -797,7 +797,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
               break 2;
 
       if ($do)
-        $data['shipping_rate'] = $helper->getShippingRate(
+        $data['shipping_rate'] = Mage::helper('trademe')->getShippingRate(
           new Varien_Object($product),
           $account['name'],
           $website

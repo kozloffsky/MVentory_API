@@ -106,7 +106,7 @@ class MVentory_TradeMe_AccountController
     $result = $auth->authorise($request->getParams());
 
     if ($result) {
-      $accounts = Mage::helper('mventory_tm/tm')->getAccounts($website);
+      $accounts = Mage::helper('trademe')->getAccounts($website);
       $accountName = $accounts[$accountId]['name'];
 
       $message = '"' . $accountName . '" account is successfully authorized';

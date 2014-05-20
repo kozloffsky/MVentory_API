@@ -293,8 +293,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
    * @return array
    */
   public function prepareAccounts ($accounts, $product) {
-    $shippingType = Mage::helper('mventory_tm/tm')
-                      ->getShippingType($product, true);
+    $shippingType = $this->getShippingType($product, true);
 
     foreach ($accounts as &$account) {
       if (isset($account['shipping_types'][$shippingType])) {
@@ -571,5 +570,25 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     }
 
     return $this;
+  }
+
+  /**
+   * Returns value of mv_shipping_ attribute from specified product
+   *
+   * @param Mage_Catalog_Model_Product $product
+   * @param boolean $rawValue
+   * @return mixin Value of the attribute
+   */
+  public function getShippingType ($product, $rawValue = false) {
+    $attributeCode = 'mv_shipping_';
+
+    if ($rawValue)
+      return $product->getData($attributeCode);
+
+    $attributes = $product->getAttributes();
+
+    return isset($attributes[$attributeCode])
+             ? $attributes[$attributeCode]->getFrontend()->getValue($product)
+               : null;
   }
 }

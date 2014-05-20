@@ -54,15 +54,13 @@ class MVentory_TradeMe_Block_Tab
     $this->_session = $session->getData('trademe_data');
     $session->unsetData('trademe_data');
 
-    $helper = Mage::helper('mventory_tm/tm');
-
     $this->_accountId = isset($this->_session['account_id'])
                           ? $this->_session['account_id']
-                            : $helper
+                            : Mage::helper('trademe')
                                 ->getAccountId($productId, $this->_website);
 
     $this->_accounts = $this->_helper->prepareAccounts(
-      $helper->getAccounts($this->_website),
+      Mage::helper('trademe')->getAccounts($this->_website),
       $product
     );
 
@@ -74,7 +72,7 @@ class MVentory_TradeMe_Block_Tab
       $this->_accountId = false;
 
     if (count($this->_accounts)) {
-      //if ($helper->getShippingType($product) != 'tab_ShipParcel')
+      //if ($this->_helper->getShippingType($product) != 'tab_ShipParcel')
         foreach ($this->_accounts as $id => $data)
           unset($this->_accounts[$id]['free_shipping_cost']);
 
@@ -228,7 +226,7 @@ class MVentory_TradeMe_Block_Tab
   }
 
   public function getPreparedAttributes ($categoryId) {
-    $attributes = Mage::helper('mventory_tm/tm')->getAttributes($categoryId);
+    $attributes = Mage::helper('trademe')->getAttributes($categoryId);
 
     if (!$attributes)
       return;
@@ -422,7 +420,7 @@ class MVentory_TradeMe_Block_Tab
   }
 
   protected function _calculateShippingRates () {
-    $helper = Mage::helper('mventory_tm/tm');
+    $helper = Mage::helper('trademe');
 
     $product = $this->getProduct();
 
@@ -436,7 +434,7 @@ class MVentory_TradeMe_Block_Tab
   }
 
   protected function _calculateFees () {
-    $helper = Mage::helper('mventory_tm/tm');
+    $helper = Mage::helper('trademe');
 
     $price = $this
                ->getProduct()

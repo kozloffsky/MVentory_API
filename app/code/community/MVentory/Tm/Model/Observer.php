@@ -71,7 +71,7 @@ EOT;
       $product = Mage::getModel('catalog/product')->load($productId);
 
       $website = $productHelper->getWebsite($product);
-      $accounts = $tmHelper->getAccounts($website);
+      $accounts = Mage::helper('trademe')->getAccounts($website);
       $accounts = $productHelper->prepareAccounts($accounts, $product);
 
       $accountId = $product->getTmCurrentAccountId();
@@ -106,7 +106,7 @@ EOT;
         $price = $product->getPrice() * 5;
 
         if ($tmFields['add_fees'])
-          $price = $tmHelper->addFees($price);
+          $price = Mage::helper('trademe')->addFees($price);
 
         $result = Mage::getModel('mventory_tm/connector')
                     ->update($product, array('StartPrice' => $price));
@@ -124,7 +124,7 @@ EOT;
         //Send email with error message to website's general contact address
 
         $productUrl = $productHelper->getUrl($product);
-        $listingId = $tmHelper->getListingUrl($product);
+        $listingId = Mage::helper('trademe')->getListingUrl($product);
 
         $subject = 'TM: error on removing listing';
         $message = 'Error on increasing price or withdrawing listing ('
@@ -140,7 +140,7 @@ EOT;
       }
 
       $productHelper->setListingId(0, $productId);
-      $tmHelper->setCurrentAccountId($productId, null);
+      Mage::helper('trademe')->setCurrentAccountId($productId, null);
     }
   }
 
@@ -180,7 +180,7 @@ EOT;
     $tmHelper = Mage::helper('mventory_tm/tm');
 
     //Load TM accounts which are used in specified website
-    $accounts = $tmHelper->getAccounts($website);
+    $accounts = Mage::helper('trademe')->getAccounts($website);
 
     //Unset Random pseudo-account
     unset($accounts[null]);
@@ -356,7 +356,7 @@ EOT;
       if (!is_array($syncData))
         $syncData = array(
           'free_slots' => 0,
-          'duration' => MVentory_Tm_Helper_Tm::LISTING_DURATION_MAX
+          'duration' => MVentory_TradeMe_Helper_Data::LISTING_DURATION_MAX
         );
 
       $freeSlots = $accountData['max_listings']
@@ -422,7 +422,7 @@ EOT;
 
       shuffle($accountIds);
 
-      $shippingType = $tmHelper->getShippingType($product, true);
+      $shippingType = $helper->getShippingType($product, true);
 
       foreach ($accountIds as $accountId) {
         $accountData = $accounts[$accountId];
@@ -476,9 +476,8 @@ EOT;
             ->save();
 
           if (!--$accounts[$accountId]['free_slots']) {
-            $accountData['sync_data']['duration'] = $tmHelper->getDuration(
-              $accountData['shipping_types'][$shippingType]
-            );
+            $accountData['sync_data']['duration'] = Mage::helper('trademe')
+              ->getDuration($accountData['shipping_types'][$shippingType]);
 
             Mage::app()->saveCache(
               serialize($accountData['sync_data']),

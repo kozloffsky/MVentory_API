@@ -41,7 +41,7 @@ class MVentory_TradeMe_Model_Account extends MVentory_Tm_Model_Tm
 
     $siteUrl = 'https://secure.' . $host . '.co.nz/Oauth/';
 
-    $accounts = $helper->getAccounts($website);
+    $accounts = Mage::helper('trademe')->getAccounts($website);
     $account = $accounts[$accountId];
 
     $route = 'trademe/account/authorise';

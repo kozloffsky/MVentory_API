@@ -30,6 +30,6 @@ class MVentory_TradeMe_Model_Setting_Backend_Options
   }
 
   public function _afterSave () {
-    Mage::helper('mventory_tm/tm')->importOptions($this);
+    Mage::helper('trademe')->importOptions($this);
   }
 }

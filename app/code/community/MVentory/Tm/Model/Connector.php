@@ -153,7 +153,7 @@ class MVentory_Tm_Model_Connector {
     else
       $this->_accountId = $data;
 
-    $accounts = Mage::helper('mventory_tm/tm')->getAccounts($this->_website);
+    $accounts = Mage::helper('trademe')->getAccounts($this->_website);
 
     if ($this->_accountId)
       $this->_accountData = $accounts[$this->_accountId];
@@ -329,7 +329,7 @@ class MVentory_Tm_Model_Connector {
       //if ($shippingType != self::FREE) {
 
         //Add shipping rate using Volume/Weight based shipping method
-        $price += $tmHelper->getShippingRate(
+        $price += Mage::helper('trademe')->getShippingRate(
                     $product,
                     $account['name'],
                     $this->_website
@@ -346,7 +346,7 @@ class MVentory_Tm_Model_Connector {
 
       //Apply fees to price of the product if it's allowed
       $price = isset($tmData['add_fees']) && $tmData['add_fees']
-                  ? $tmHelper->addFees($price)
+                  ? Mage::helper('trademe')->addFees($price)
                     : $price;
 
       $buyNow = '';
@@ -354,7 +354,9 @@ class MVentory_Tm_Model_Connector {
       if (isset($tmData['allow_buy_now']) && $tmData['allow_buy_now'])
         $buyNow = '<BuyNowPrice>' . $price . '</BuyNowPrice>';
 
-      $duration = $this->_durations[$tmHelper->getDuration($account)];
+      $duration = $this->_durations[
+        Mage::helper('trademe')->getDuration($account)
+      ];
 
       $shippingTypes
         = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
@@ -416,7 +418,7 @@ class MVentory_Tm_Model_Connector {
         $attributes = Mage::helper('mventory_tm/product')->fillTmAttributes(
           $product,
           $attributes,
-          $tmHelper->getMappingStore()
+          Mage::helper('trademe')->getMappingStore()
         );
 
         if ($attributes['error']) {
@@ -485,7 +487,7 @@ class MVentory_Tm_Model_Connector {
 
     $this->getWebsiteId($product);
 
-    $accountId = Mage::helper('mventory_tm/tm')
+    $accountId = Mage::helper('trademe')
                    ->getCurrentAccountId($product->getId());
 
     $this->setAccountId($accountId);
@@ -662,7 +664,7 @@ class MVentory_Tm_Model_Connector {
         //if ($shippingType != self::FREE) {
 
           //Add shipping rate using Volume/Weight based shipping method
-          $price += $helper->getShippingRate(
+          $price += Mage::helper('trademe')->getShippingRate(
                       $product,
                       $account['name'],
                       $this->_website
@@ -679,7 +681,7 @@ class MVentory_Tm_Model_Connector {
 
         //Apply fees to price of the product if it's allowed
         $price = isset($formData['add_fees']) && $formData['add_fees']
-                   ? $helper->addFees($price)
+                   ? Mage::helper('trademe')->addFees($price)
                      : $price;
 
         $parameters['StartPrice'] = $price;
@@ -728,7 +730,7 @@ class MVentory_Tm_Model_Connector {
       }
 
       //set Duration
-      $item['Duration'] = $helper->getDuration($account);
+      $item['Duration'] = Mage::helper('trademe')->getDuration($account);
 
       //Set pickup option
       if (!isset($parameters['Pickup']) && isset($formData['pickup']))
@@ -824,7 +826,7 @@ class MVentory_Tm_Model_Connector {
   public function relist ($product) {
     $this->getWebsiteId($product);
 
-    $accountId = Mage::helper('mventory_tm/tm')
+    $accountId = Mage::helper('trademe')
                    ->getCurrentAccountId($product->getId());
 
     $this->setAccountId($accountId);
@@ -1139,16 +1141,17 @@ class MVentory_Tm_Model_Connector {
               );
   }
 
+  //!!!TODO: remove method
   protected function _getDuration ($account) {
     if (!(isset($account['duration'])
           && $duration = (int) $account['duration']))
-      return MVentory_Tm_Helper_Tm::LISTING_DURATION_MAX;
+      return MVentory_TradeMe_Helper_Data::LISTING_DURATION_MAX;
 
-    if ($duration < MVentory_Tm_Helper_Tm::LISTING_DURATION_MIN)
-      return MVentory_Tm_Helper_Tm::LISTING_DURATION_MIN;
+    if ($duration < MVentory_TradeMe_Helper_Data::LISTING_DURATION_MIN)
+      return MVentory_TradeMe_Helper_Data::LISTING_DURATION_MIN;
 
-    if ($duration > MVentory_Tm_Helper_Tm::LISTING_DURATION_MAX)
-      return MVentory_Tm_Helper_Tm::LISTING_DURATION_MAX;
+    if ($duration > MVentory_TradeMe_Helper_Data::LISTING_DURATION_MAX)
+      return MVentory_TradeMe_Helper_Data::LISTING_DURATION_MAX;
 
     return $duration;
   }
