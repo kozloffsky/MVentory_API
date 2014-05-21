@@ -221,17 +221,17 @@ class MVentory_TradeMe_Model_Observer {
           $price = $product->getPrice();
           $qty = 1;
 
-          $shippingType = $helper->getAttributesValue(
+          $shipping = $helper->getAttributesValue(
             $product->getId(),
             'mv_shipping_',
             $website
           );
 
-          if (!isset($accountData['shipping_types'][$shippingType]['buyer'])) {
+          if (!isset($accountData['shipping_types'][$shipping]['buyer'])) {
             Mage::log('here');
 
             MVentory_Tm_Model_Connector::debug(
-              'Error: shipping type ' . $shippingType . ' doesn\t exists in '
+              'Error: shipping type ' . $shipping . ' doesn\t exists in '
               . $accountData['name'] . ' account. Product SKU: '
               . $sku
             );
@@ -239,7 +239,7 @@ class MVentory_TradeMe_Model_Observer {
             continue;
           }
 
-          $buyer = $accountData['shipping_types'][$shippingType]['buyer'];
+          $buyer = $accountData['shipping_types'][$shipping]['buyer'];
 
           //API function for creating order requires curren store to be set
           Mage::app()->setCurrentStore($store);
