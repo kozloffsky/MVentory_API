@@ -244,6 +244,11 @@ class MVentory_TradeMe_Model_Observer {
           //API function for creating order requires curren store to be set
           Mage::app()->setCurrentStore($store);
 
+          //Remember current website to use in API functions. The value is
+          //used in getCurrentWebsite() helper function
+          Mage::unregister('mventory_website');
+          Mage::register('mventory_website', $website, true);
+
           //Set global flag to prevent removing product from TradeMe during
           //order creating. No need to remove it because it was bought
           //on TradeMe. The flag is used in removeListing() method
@@ -258,6 +263,8 @@ class MVentory_TradeMe_Model_Observer {
           //Make order for the product
           Mage::getModel('mventory_tm/cart_api')
             ->createOrderForProduct($sku, $price, $qty, $buyer);
+
+          Mage::unregister('mventory_website');
         }
 
         $helper->setListingId(0, $product->getId());

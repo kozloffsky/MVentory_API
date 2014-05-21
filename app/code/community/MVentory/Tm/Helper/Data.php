@@ -30,6 +30,11 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
   protected $_baseMediaUrl = null;
 
   public function getCurrentWebsite () {
+    //Use website stored in the registry. It's used for calls ood API function
+    //from non-API context
+    if ($website = Mage::registry('mventory_website'))
+      return $website;
+
     $params =  Mage::registry('application_params');
 
     $hasScopeCode = isset($params)
