@@ -237,7 +237,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
 
       if (isset($optionLabels[$option->getId()])) {
         $optionLabel = $optionLabels[$option->getId()];
-      } else {
+      } elseif (isset($defaultOptionLabels[$option->getId()])) {
         $optionLabel = $defaultOptionLabels[$option->getId()];
       }
 
