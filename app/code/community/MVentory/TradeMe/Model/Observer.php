@@ -206,68 +206,72 @@ class MVentory_TradeMe_Model_Observer {
       $accountData['listings'] = $connector->massCheck($products);
 
       foreach ($products as $product) {
-        if ($product->getIsSelling())
-          continue;
+        try {
+          if ($product->getIsSelling())
+            continue;
 
-        $result = $connector->check($product);
+          $result = $connector->check($product);
 
-        if (!$result || $result == 3)
-          continue;
+          if (!$result || $result == 3)
+            continue;
 
-        --$accountData['listings'];
+          --$accountData['listings'];
 
-        if ($result == 2) {
-          $sku = $product->getSku();
-          $price = $product->getPrice();
-          $qty = 1;
+          if ($result == 2) {
+            $sku = $product->getSku();
+            $price = $product->getPrice();
+            $qty = 1;
 
-          $shipping = $helper->getAttributesValue(
-            $product->getId(),
-            'mv_shipping_',
-            $website
-          );
-
-          if (!isset($accountData['shipping_types'][$shipping]['buyer'])) {
-            Mage::log('here');
-
-            MVentory_Tm_Model_Connector::debug(
-              'Error: shipping type ' . $shipping . ' doesn\t exists in '
-              . $accountData['name'] . ' account. Product SKU: '
-              . $sku
+            $shipping = $helper->getAttributesValue(
+              $product->getId(),
+              'mv_shipping_',
+              $website
             );
 
-            continue;
+            if (!isset($accountData['shipping_types'][$shipping]['buyer'])) {
+              MVentory_Tm_Model_Connector::debug(
+                'Error: shipping type ' . $shipping . ' doesn\t exists in '
+                . $accountData['name'] . ' account. Product SKU: '
+                . $sku
+              );
+
+              continue;
+            }
+
+            $buyer = $accountData['shipping_types'][$shipping]['buyer'];
+
+            //API function for creating order requires curren store to be set
+            Mage::app()->setCurrentStore($store);
+
+            //Remember current website to use in API functions. The value is
+            //used in getCurrentWebsite() helper function
+            Mage::unregister('mventory_website');
+            Mage::register('mventory_website', $website, true);
+
+            //Set global flag to prevent removing product from TradeMe during
+            //order creating. No need to remove it because it was bought
+            //on TradeMe. The flag is used in removeListing() method
+            Mage::register('trademe_disable_withdrawal', true, true);
+
+            //Set global flag to enable our dummy shipping method
+            Mage::register('tm_allow_dummyshipping', true, true);
+
+            //Set customer ID for API access checks
+            Mage::register('tm_api_customer', $buyer, true);
+
+            //Make order for the product
+            Mage::getModel('mventory_tm/cart_api')
+              ->createOrderForProduct($sku, $price, $qty, $buyer);
+
+            Mage::unregister('mventory_website');
           }
 
-          $buyer = $accountData['shipping_types'][$shipping]['buyer'];
-
-          //API function for creating order requires curren store to be set
-          Mage::app()->setCurrentStore($store);
-
-          //Remember current website to use in API functions. The value is
-          //used in getCurrentWebsite() helper function
+          $helper->setListingId(0, $product->getId());
+        } catch (Exception $e) {
           Mage::unregister('mventory_website');
-          Mage::register('mventory_website', $website, true);
 
-          //Set global flag to prevent removing product from TradeMe during
-          //order creating. No need to remove it because it was bought
-          //on TradeMe. The flag is used in removeListing() method
-          Mage::register('trademe_disable_withdrawal', true, true);
-
-          //Set global flag to enable our dummy shipping method
-          Mage::register('tm_allow_dummyshipping', true, true);
-
-          //Set customer ID for API access checks
-          Mage::register('tm_api_customer', $buyer, true);
-
-          //Make order for the product
-          Mage::getModel('mventory_tm/cart_api')
-            ->createOrderForProduct($sku, $price, $qty, $buyer);
-
-          Mage::unregister('mventory_website');
+          Mage::logException($e);
         }
-
-        $helper->setListingId(0, $product->getId());
       }
 
       if ($accountData['listings'] < 0)
