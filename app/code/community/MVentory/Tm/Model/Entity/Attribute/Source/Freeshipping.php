@@ -42,12 +42,12 @@ class MVentory_Tm_Model_Entity_Attribute_Source_Freeshipping
 
         array(
           'label' => $helper->__('Yes'),
-          'value' => MVentory_Tm_Model_Connector::FREE,
+          'value' => MVentory_TradeMe_Model_Config::SHIPPING_FREE,
         ),
 
         array(
           'label' => $helper->__('No'),
-          'value' => MVentory_Tm_Model_Connector::UNDECIDED,
+          'value' => MVentory_TradeMe_Model_Config::SHIPPING_UNDECIDED,
         ),
       );
     }
@@ -75,8 +75,8 @@ class MVentory_Tm_Model_Entity_Attribute_Source_Freeshipping
    */
   public function toArray () {
     return array(
-      MVentory_Tm_Model_Connector::UNDECIDED => 'Undecided',
-      MVentory_Tm_Model_Connector::FREE => 'Free'
+      MVentory_TradeMe_Model_Config::SHIPPING_UNDECIDED => 'Undecided',
+      MVentory_TradeMe_Model_Config::SHIPPING_FREE => 'Free'
     );
   }
 }

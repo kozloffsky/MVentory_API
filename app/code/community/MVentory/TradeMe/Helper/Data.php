@@ -66,10 +66,9 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
   );
 
   public function getAttributes ($categoryId) {
-    $model = Mage::getModel('mventory_tm/connector');
+    $model = new MVentory_TradeMe_Model_Api();
 
-    $attrs = $model
-      ->getTmCategoryAttrs($categoryId);
+    $attrs = $model->getCategoryAttrs($categoryId);
 
     if (!(is_array($attrs) && count($attrs)))
       return null;

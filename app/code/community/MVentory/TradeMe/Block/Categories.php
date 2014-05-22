@@ -39,8 +39,7 @@ class MVentory_TradeMe_Block_Categories extends Mage_Core_Block_Template
    */
   public function getCategories () {
     if ($this->_categories === null)
-      $this->_categories =  Mage::getModel('mventory_tm/connector')
-        ->getTmCategories();
+      $this->_categories = (new MVentory_TradeMe_Model_Api())->getCategories();
 
     return $this->_categories;
   }

@@ -122,8 +122,7 @@ class MVentory_TradeMe_Block_Tab
   }
 
   public function getCategories () {
-    return Mage::getModel('mventory_tm/connector')
-             ->getTmCategories();
+    return (new MVentory_TradeMe_Model_Api())->getCategories();
   }
 
   public function getPreselectedCategories () {
@@ -337,7 +336,7 @@ class MVentory_TradeMe_Block_Tab
     //if ($shippingType == -1 || $shippingType == null)
     //  $shippingType = $account['shipping_type'];
 
-    //if ($shippingType == MVentory_Tm_Model_Connector::FREE)
+    //if ($shippingType == MVentory_TradeMe_Model_Config::SHIPPING_FREE)
     //  return isset($account['free_shipping_cost'])
     //           ? $account['free_shipping_cost']
     //             : null;
@@ -364,7 +363,7 @@ class MVentory_TradeMe_Block_Tab
     //if ($shippingType == -1 || $shippingType == null)
     //  $shippingType = $account['shipping_type'];
 
-    //return $shippingType == MVentory_Tm_Model_Connector::FREE
+    //return $shippingType == MVentory_TradeMe_Model_Config::SHIPPING_FREE
     //         ? $account['free_shipping_fees']
     //           : $account['fees'];
 

@@ -199,7 +199,7 @@ class MVentory_TradeMe_Model_Observer {
       //if ($customer->getId())
       //  $products->addPriceData($customer->getGroupId());
 
-      $connector = Mage::getModel('mventory_tm/connector')
+      $connector = (new MVentory_TradeMe_Model_Api())
         ->setWebsiteId($website->getId())
         ->setAccountId($accountId);
 
@@ -229,8 +229,8 @@ class MVentory_TradeMe_Model_Observer {
             );
 
             if (!isset($accountData['shipping_types'][$shipping]['buyer'])) {
-              MVentory_Tm_Model_Connector::debug(
-                'Error: shipping type ' . $shipping . ' doesn\t exists in '
+              MVentory_TradeMe_Model_Api::debug(
+                'Error: shipping type ' . $shippingType . ' doesn\t exists in '
                 . $accountData['name'] . ' account. Product SKU: '
                 . $sku
               );
@@ -423,8 +423,8 @@ class MVentory_TradeMe_Model_Observer {
         if ($minimalPrice && ($product->getPrice() < $minimalPrice))
           continue;
 
-        $result = Mage::getModel('mventory_tm/connector')
-                    ->send($product, $matchResult['id'], $accountId);
+        $result = (new MVentory_TradeMe_Model_Api())
+          ->send($product, $matchResult['id'], $accountId);
 
         if (trim($result) == 'Insufficient balance') {
           $cacheId = array(
@@ -551,13 +551,13 @@ class MVentory_TradeMe_Model_Observer {
         if ($fields['add_fees'])
           $price = $trademe->addFees($price);
 
-        $result = Mage::getModel('mventory_tm/connector')
+        $result = (new MVentory_TradeMe_Model_Api())
           ->update($product, array('StartPrice' => $price));
 
         if (!is_int($result))
           $hasError = true;
       } else {
-        $result = Mage::getModel('mventory_tm/connector')->remove($product);
+        $result = (new MVentory_TradeMe_Model_Api())->remove($product);
 
         if ($result !== true)
           $hasError = true;

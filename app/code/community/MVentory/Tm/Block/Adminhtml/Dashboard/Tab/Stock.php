@@ -114,13 +114,13 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
 
       // save to cache if needed
       if (self::USE_CACHE
-          && $cache->canUse(MVentory_Tm_Model_Connector::CACHE_TYPE_TM)) {
+          && $cache->canUse(MVentory_TradeMe_Model_Config::CACHE_TYPE)) {
         $cache->save($this->_totalStockQty,
                      "total_stock_qty_" . $storeId,
-                     array(MVentory_Tm_Model_Connector::CACHE_TAG_TM));
+                     array(MVentory_TradeMe_Model_Config::CACHE_TAG));
         $cache->save($this->_totalStockValue,
                      "total_stock_value_" . $storeId,
-                     array(MVentory_Tm_Model_Connector::CACHE_TAG_TM));
+                     array(MVentory_TradeMe_Model_Config::CACHE_TAG));
       }
     }
   }

@@ -75,6 +75,16 @@
         </observers>
       </checkout_type_onepage_save_order_after>
     </events>
+
+    <cache>
+      <types>
+        <trademe module="trademe" translate="label,description">
+          <label>MVentory TradeMe Cache</label>
+          <description>TradeMe categories and attributes cache</description>
+          <tags>TRADEME</tags>
+        </trademe>
+      </types>
+    </cache>
   </global>
 
   <adminhtml>

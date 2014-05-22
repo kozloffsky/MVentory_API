@@ -42,12 +42,12 @@ class MVentory_Tm_Model_Entity_Attribute_Source_Pickup
 
         array(
           'label' => $helper->__('Buyer can pickup'),
-          'value' => MVentory_Tm_Model_Tm::PICKUP_ALLOW,
+          'value' => MVentory_TradeMe_Model_Config::PICKUP_ALLOW,
         ),
 
         array(
           'label' => $helper->__('No pickups'),
-          'value' => MVentory_Tm_Model_Tm::PICKUP_FORBID,
+          'value' => MVentory_TradeMe_Model_Config::PICKUP_FORBID,
         ),
       );
     }

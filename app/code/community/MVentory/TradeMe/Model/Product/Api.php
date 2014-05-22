@@ -35,7 +35,7 @@ class MVentory_TradeMe_Model_Product_Api extends MVentory_Tm_Model_Product_Api
     if (!(isset($match['id']) && $match['id'] > 0))
       $this->_fault('unable_to_match_category');
 
-    $connector = Mage::getModel('mventory_tm/connector');
+    $connector = new MVentory_TradeMe_Model_Api();
 
     $result = $connector->send(
       $product,

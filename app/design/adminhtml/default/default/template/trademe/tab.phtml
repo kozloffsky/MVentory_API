@@ -247,7 +247,7 @@ trademe_categories(<?php echo $this->getUrlTemplates() ?>);
 
 jQuery(document).ready(function ($) {
   var data = <?php echo Zend_Json::encode($this->prepareDataForJs()) ?>;
-  var limit = <?php echo MVentory_Tm_Model_Connector::TITLE_MAX_LENGTH; ?>;
+  var limit = <?php echo MVentory_TradeMe_Model_Config::TITLE_MAX_LENGTH; ?>;
 
   var $options = $('#product_info_tabs_trademe_content')
                    .find('.trademe-option')

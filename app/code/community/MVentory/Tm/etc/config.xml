@@ -305,16 +305,6 @@
       </mventory_app_config_redirect>
     </rewrite>
 
-    <cache>
-      <types>
-        <tm module="mventory_tm" translate="label,description">
-          <label>MVentory TM Cache</label>
-          <description>TM categories and attributes cache</description>
-          <tags>TM</tags>
-        </tm>
-      </types>
-    </cache>
-
     <template>
       <email>
         <mventory_negative_balance translate="label">

@@ -135,8 +135,7 @@ class MVentory_TradeMe_Model_Matching
     if (!$categoryId)
       return false;
 
-    $categories = Mage::getModel('mventory_tm/connector')
-                    ->getTmCategories();
+    $categories = (new MVentory_TradeMe_Model_Api())->getCategories();
 
     if (!isset($categories[$categoryId]))
       return false;

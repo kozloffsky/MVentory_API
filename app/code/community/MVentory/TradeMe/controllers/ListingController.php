@@ -77,7 +77,7 @@ class MVentory_TradeMe_ListingController
       return;
     }
 
-    $connector = Mage::getModel('mventory_tm/connector');
+    $connector = new MVentory_TradeMe_Model_Api();
 
     $result = $connector->send($product, $data['category'], $data);
 
@@ -116,7 +116,7 @@ class MVentory_TradeMe_ListingController
     $result = 'Error';
 
     if ($product->getId()) {
-      $connector = Mage::getModel('mventory_tm/connector');
+      $connector = new MVentory_TradeMe_Model_Api();
       $result = $connector->remove($product);
     }
 
@@ -154,7 +154,7 @@ class MVentory_TradeMe_ListingController
     $helper = Mage::helper('mventory_tm/product');
 
     if ($product->getId()) {
-      $connector = Mage::getModel('mventory_tm/connector');
+      $connector = new MVentory_TradeMe_Model_Api();
       $result = $connector->check($product);
 
       $path = MVentory_TradeMe_Model_Config::SANDBOX;
@@ -247,8 +247,7 @@ class MVentory_TradeMe_ListingController
       return;
     }
 
-    $result = Mage::getModel('mventory_tm/connector')
-                ->update($product, null, $data);
+    $result = (new MVentory_TradeMe_Model_Api())->update($product, null, $data);
 
     if (!is_int($result)) {
       Mage::getSingleton('adminhtml/session')->addError($helper->__($result));

@@ -11,46 +11,33 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * TM connector model
+ * TradeMe API
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Connector {
+class MVentory_TradeMe_Model_Api {
 
-  const LOG_FILE = 'tm.log';
+  const LOG_FILE = 'trademe.log';
 
-  const CACHE_TYPE_TM = 'tm';
-  const CACHE_TAG_TM = 'TM';
-  const CACHE_TM_CATEGORIES = 'TM_CATEGORIES';
-  const CACHE_TM_CATEGORY_ATTRS = 'TM_CATEGORY_ATTRS';
+  const CACHE_CATEGORIES = 'TRADEME_CATEGORIES';
+  const CACHE_CATEGORY_ATTRS = 'TRADEME_CATEGORY_ATTRS';
 
-  //TM shipping types
-  //const UNKNOWN = 0;
-  //const NONE = 0;
-  const UNDECIDED = 1;
-  //const PICKUP = 2;
-  const FREE = 3;
-  const CUSTOM = 4;
-
-  const TITLE_MAX_LENGTH = 50;
-  const DESCRIPTION_MAX_LENGTH = 2048;
-
-  //List of TM categories to ignore. Categories are selected by its number.
-  private $_ignoreTmCategories = array(
+  //List of TradeMe categories to ignore. Categories are selected by its number
+  private $_ignoreCategories = array(
     '0001-' => true, //Trade Me Motors
     '0350-' => true, //Trade Me Property
     '5000-' => true, //Trade Me Jobs
     '9374-' => true, //Travel, events & activities
   );
 
-  private $_tmImageSize = array('width' => 670, 'height' => 502);
+  private $_imageSize = array('width' => 670, 'height' => 502);
 
   private $_helper = null;
 
@@ -94,8 +81,8 @@ class MVentory_Tm_Model_Connector {
 
   private function _getConfig ($path) {
     return $this
-             ->_helper
-             ->getConfig($path, $this->_website);
+      ->_helper
+      ->getConfig($path, $this->_website);
   }
 
   private function getConfig () {
@@ -112,11 +99,11 @@ class MVentory_Tm_Model_Connector {
       'signatureMethod' => 'HMAC-SHA1',
       'siteUrl' => 'https://secure.' . $host . '.co.nz/Oauth/',
       'requestTokenUrl'
-                     => 'https://secure.' . $host . '.co.nz/Oauth/RequestToken',
+        => 'https://secure.' . $host . '.co.nz/Oauth/RequestToken',
       'userAuthorisationUrl'
-                        => 'https://secure.' . $host . '.co.nz/Oauth/Authorize',
+        => 'https://secure.' . $host . '.co.nz/Oauth/Authorize',
       'accessTokenUrl'
-               => 'https://secure.' . $host . '.co.nz/Oauth/AccessToken',
+        => 'https://secure.' . $host . '.co.nz/Oauth/AccessToken',
       'consumerKey' => $this->_accountData['key'],
       'consumerSecret' => $this->_accountData['secret']
     );
@@ -135,8 +122,8 @@ class MVentory_Tm_Model_Connector {
 
   private function getWebsiteId ($product) {
     $this->_website = $this
-                        ->_helper
-                        ->getWebsite($product);
+      ->_helper
+      ->getWebsite($product);
   }
 
   public function setWebsiteId ($websiteId) {
@@ -175,64 +162,47 @@ class MVentory_Tm_Model_Connector {
     return $token->setParams(unserialize($data));
   }
 
-  public function send ($product, $categoryId, $_tmData) {
+  public function send ($product, $categoryId, $data) {
     self::debug();
 
     $this->getWebsiteId($product);
-    $this->setAccountId($_tmData);
+    $this->setAccountId($data);
 
-    $account = Mage::helper('mventory_tm/product')
-                 ->prepareAccounts(array($this->_accountData), $product);
+    $account = $this
+      ->_helper
+      ->prepareAccounts(array($this->_accountData), $product);
 
     $account = $account[0];
 
     if (!isset($account['shipping_type']))
       return 'No settings for product\'s shipping type';
 
-    $updateTmOptions = is_array($_tmData);
-
-    if (!$updateTmOptions)
-      $tmData = Mage::helper('mventory_tm/product')
-                  ->getTmFields($product, $account);
+    if (!$isUpdateOptions = is_array($data))
+      $_data = $this
+        ->_helper
+        ->getTmFields($product, $account);
     else {
-      $tmData = $_tmData;
+      $_data = $data;
 
-      foreach ($tmData as $key => $value)
+      foreach ($_data as $key => $value)
         if ($value == -1 && isset($account[$key]))
-          $tmData[$key] = $account[$key];
+          $_data[$key] = $account[$key];
     }
 
-    self::debug(array('Final TM options: ' => $tmData));
+    self::debug(array('Final TradeMe options: ' => $_data));
 
     $return = 'Error';
 
     if ($accessToken = $this->auth()) {
+      if (!$categoryId)
+        return 'Product doesn\'t have matched TradeMe category';
 
-      //$categories = Mage::getModel('catalog/category')->getCollection()
-      //    ->addAttributeToSelect('mventory_tm_category')
-      //    ->addFieldToFilter('entity_id', array('in' => $product->getCategoryIds()));
+      //$productShippingType = $this->_helper->getShippingType($product);
 
-      //$categoryId = null;
-
-      //foreach ($categories as $category) {
-      //  if ($category->getMventoryTmCategory()) {
-      //    $categoryId = $category->getMventoryTmCategory();
-      //    break;
-      //  }
-      //}
-
-      if (!$categoryId) {
-        return 'Product doesn\'t have matched tm category';
-      }
-
-      $tmHelper = Mage::helper('mventory_tm/tm');
-
-      //$productShippingType = $tmHelper->getShippingType($product);
-
-      //$shippingType = isset($tmData['shipping_type'])
-      //                  ? $tmData['shipping_type']
-      //                    : self::UNDECIDED;
-      $shippingType = self::UNDECIDED;
+      //$shippingType = isset($_data['shipping_type'])
+      //                  ? $_data['shipping_type']
+      //                    : MVentory_TradeMe_Model_Config::SHIPPING_UNDECIDED;
+      $shippingType = MVentory_TradeMe_Model_Config::SHIPPING_UNDECIDED;
 
       Mage::unregister('product');
       Mage::register('product', $product);
@@ -242,25 +212,25 @@ class MVentory_Tm_Model_Connector {
       $description = '';
 
       if ($descriptionTmpl) {
-        $_data = $product->getData();
-
         //if ($productShippingType == 'tab_ShipFree'
         //    || ($productShippingType == 'tab_ShipParcel'
-        //        && $shippingType == self::FREE
+        //        && $shippingType == MVentory_TradeMe_Model_Config::SHIPPING_FREE
         //        && isset($account['free_shipping_cost'])
         //        && $account['free_shipping_cost'] > 0))
         //  $_data['free_shipping_text'] = isset($account['free_shipping_text'])
         //                                   ? $account['free_shipping_text']
         //                                     : '';
 
-        $description = $this->processDescription($descriptionTmpl, $_data);
-
-        unset($_data);
+        $description = $this->processDescription(
+          $descriptionTmpl,
+          $product->getData()
+        );
       }
 
-      if (strlen($description) > self::DESCRIPTION_MAX_LENGTH)
+      if (strlen($description)
+            > MVentory_TradeMe_Model_Config::DESCRIPTION_MAX_LENGTH)
         return 'Length of the description exceeded the limit of '
-               .  self::DESCRIPTION_MAX_LENGTH
+               .  MVentory_TradeMe_Model_Config::DESCRIPTION_MAX_LENGTH
                . ' characters';
 
       $description = htmlspecialchars($description);
@@ -283,8 +253,8 @@ class MVentory_Tm_Model_Connector {
           ->setDestinationSubdir('image')
           ->setKeepFrame(false)
           ->setConstrainOnly(true)
-          ->setWidth($this->_tmImageSize['width'])
-          ->setHeight($this->_tmImageSize['height'])
+          ->setWidth($this->_imageSize['width'])
+          ->setHeight($this->_imageSize['height'])
           ->setBaseFile($image)
           ->resize()
           ->saveFile()
@@ -302,38 +272,44 @@ class MVentory_Tm_Model_Connector {
           return $photoId;
       }
 
+      $helper = Mage::helper('trademe');
+
       $client = $accessToken->getHttpClient($this->getConfig());
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling.xml');
       $client->setMethod(Zend_Http_Client::POST);
 
       $title = $product->getName();
 
-      if (strlen($title) > self::TITLE_MAX_LENGTH)
-        $title = htmlspecialchars(substr($title, 0, self::TITLE_MAX_LENGTH - 1))
-                 . '&#8230;';
+      if (strlen($title) > MVentory_TradeMe_Model_Config::TITLE_MAX_LENGTH)
+        $title = htmlspecialchars(substr(
+          $title,
+          0,
+          MVentory_TradeMe_Model_Config::TITLE_MAX_LENGTH - 1
+        ))
+        . '&#8230;';
       else
         $title = htmlspecialchars($title);
 
       //elseif ($productShippingType == 'tab_ShipParcel'
-      //        && $shippingType == self::FREE
+      //        && $shippingType == MVentory_TradeMe_Model_Config::SHIPPING_FREE
       //        && isset($account['free_shipping_cost'])
       //        && $account['free_shipping_cost'] > 0) {
       //  $freeShippingTitle = $title . ', free shipping';
 
-      //  if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
+      //  if (strlen($freeShippingTitle) <= MVentory_TradeMe_Model_Config::TITLE_MAX_LENGTH)
       //    $title = $freeShippingTitle;
       //}
 
       $price = $product->getPrice();
 
-      //if ($shippingType != self::FREE) {
+      //if ($shippingType != MVentory_TradeMe_Model_Config::SHIPPING_FREE) {
 
         //Add shipping rate using Volume/Weight based shipping method
-        $price += Mage::helper('trademe')->getShippingRate(
-                    $product,
-                    $account['name'],
-                    $this->_website
-                  );
+        $price += $helper->getShippingRate(
+          $product,
+          $account['name'],
+          $this->_website
+        );
       //} else {
 
       //  //Add free shippih cost if product's shipping type is 'tab_ShipParcel'
@@ -345,18 +321,16 @@ class MVentory_Tm_Model_Connector {
       //}
 
       //Apply fees to price of the product if it's allowed
-      $price = isset($tmData['add_fees']) && $tmData['add_fees']
-                  ? Mage::helper('trademe')->addFees($price)
+      $price = isset($_data['add_fees']) && $_data['add_fees']
+                  ? $helper->addFees($price)
                     : $price;
 
       $buyNow = '';
 
-      if (isset($tmData['allow_buy_now']) && $tmData['allow_buy_now'])
+      if (isset($_data['allow_buy_now']) && $_data['allow_buy_now'])
         $buyNow = '<BuyNowPrice>' . $price . '</BuyNowPrice>';
 
-      $duration = $this->_durations[
-        Mage::helper('trademe')->getDuration($account)
-      ];
+      $duration = $this->_durations[$helper->getDuration($account)];
 
       $shippingTypes
         = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
@@ -367,7 +341,7 @@ class MVentory_Tm_Model_Connector {
 
       unset($shippingTypes);
 
-      $pickup = $this->_getPickup($tmData, $account);
+      $pickup = $this->_getPickup($_data, $account);
       $pickup = $this->_pickupValues[$pickup];
 
       $isBrandNew = (int) $this->_getIsBrandNew($product);
@@ -412,13 +386,13 @@ class MVentory_Tm_Model_Connector {
 <PaymentMethod>BankDeposit</PaymentMethod>
 </PaymentMethods>';
 
-      $attributes = $this->getTmCategoryAttrs($categoryId);
+      $attributes = $this->getCategoryAttrs($categoryId);
 
       if ($attributes) {
-        $attributes = Mage::helper('mventory_tm/product')->fillTmAttributes(
+        $attributes = $this->_helper->fillTmAttributes(
           $product,
           $attributes,
-          Mage::helper('trademe')->getMappingStore()
+          $helper->getMappingStore()
         );
 
         if ($attributes['error']) {
@@ -445,8 +419,6 @@ class MVentory_Tm_Model_Connector {
         }
       }
 
-      unset($tmHelper);
-
       $xml .= '</ListingRequest>';
 
       $client->setRawData($xml, 'application/xml');
@@ -457,11 +429,10 @@ class MVentory_Tm_Model_Connector {
       if ($xml) {
         if ((string)$xml->Success == 'true') {
 
-          if ($updateTmOptions) {
-            $tmData['account_id'] = $this->_accountId;
+          if ($isUpdateOptions) {
+            $_data['account_id'] = $this->_accountId;
 
-            Mage::helper('mventory_tm/product')
-              ->setTmFields($product, $_tmData);
+            $this->_helper->setTmFields($product, $data);
           }
 
           $product->setTmCurrentAccountId($this->_accountId);
@@ -534,12 +505,12 @@ class MVentory_Tm_Model_Connector {
     $this->getWebsiteId($product);
     $this->setAccountId($product->getTmCurrentAccountId());
 
-    $json = $this->_loadTmListingDetailsAuth($listingId);
+    $json = $this->_loadListingDetailsAuth($listingId);
 
     if (!$json)
       return;
 
-    $item = $this->_parseTmListingDetails($json);
+    $item = $this->_parseListingDetails($json);
 
     if (is_string($item)) {
       self::debug('Error on retrieving listing details '
@@ -576,15 +547,15 @@ class MVentory_Tm_Model_Connector {
     $accountId = $product->getTmCurrentAccountId();
     $this->setAccountId($accountId);
 
-    $account = Mage::helper('mventory_tm/product')
-                 ->prepareAccounts(array($this->_accountData), $product);
+    $account = $this->_helper->prepareAccounts(
+      array($this->_accountData),
+      $product
+    );
 
     $account = $account[0];
 
     if (!isset($account['shipping_type']))
       return 'No settings for product\'s shipping type';
-
-    $helper = Mage::helper('mventory_tm/tm');
 
     $listingId = $product->getTmCurrentListingId();
     $return = 'Error';
@@ -594,18 +565,23 @@ class MVentory_Tm_Model_Connector {
 
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling/Edit.json');
       $client->setMethod(Zend_Http_Client::POST);
-      $json = $this->_loadTmListingDetailsAuth($listingId);
+      $json = $this->_loadListingDetailsAuth($listingId);
 
       if (!$json){
         self::debug('Unable to retrieve data for listing ' . $listingId);
 
-        $helper->sendEmail('Unable to retrieve data for TM listing ',
-          $return.' product id '.$product->getId().' listing id '.$listingId);
+        $this->_helper->sendEmail(
+          'Unable to retrieve data for TradeMe listing ',
+          $return . ' product id ' . $product->getId() . ' listing id '
+            . $listingId
+        );
 
-        return 'Unable to retrieve data from TM';
+        return 'Unable to retrieve data from TradeMe';
       }
 
-      $item = $this->_parseTmListingDetails($json);
+      $helper = Mage::helper('trademe');
+
+      $item = $this->_parseListingDetails($json);
       $item = $this->_listingDetailsToEditingRequest($item);
 
       $formData = $_formData;
@@ -617,11 +593,11 @@ class MVentory_Tm_Model_Connector {
 
       //$shippingType = isset($formData['shipping_type'])
       //                  ? $formData['shipping_type']
-      //                    : self::UNDECIDED;
+      //                    : MVentory_TradeMe_Model_Config::SHIPPING_UNDECIDED;
 
-      $shippingType = self::UNDECIDED;
+      $shippingType = MVentory_TradeMe_Model_Config::SHIPPING_UNDECIDED;
 
-      //$productShippingType = $helper->getShippingType($product);
+      //$productShippingType = $this->_helper->getShippingType($product);
 
       if (!isset($parameters['Category']) && isset($formData['category'])
           && $formData['category'])
@@ -630,15 +606,20 @@ class MVentory_Tm_Model_Connector {
       if (!isset($parameters['Title'])) {
         $title = $product->getName();
 
-        if (strlen($title) > self::TITLE_MAX_LENGTH)
-          $title = substr($title, 0, self::TITLE_MAX_LENGTH - 3) . '...';
+        if (strlen($title) > MVentory_TradeMe_Model_Config::TITLE_MAX_LENGTH)
+          //!!!TODO: use hellip instead 3 dots, see send() method
+          $title = substr(
+            $title,
+            0,
+            MVentory_TradeMe_Model_Config::TITLE_MAX_LENGTH - 3
+          ) . '...';
         //elseif ($productShippingType == 'tab_ShipParcel'
-        //        && $shippingType == self::FREE
+        //        && $shippingType == MVentory_TradeMe_Model_Config::SHIPPING_FREE
         //        && isset($account['free_shipping_cost'])
         //        && $account['free_shipping_cost'] > 0) {
         //  $freeShippingTitle = $title . ', free shipping';
 
-        //  if (strlen($freeShippingTitle) <= self::TITLE_MAX_LENGTH)
+        //  if (strlen($freeShippingTitle) <= MVentory_TradeMe_Model_Config::TITLE_MAX_LENGTH)
         //    $title = $freeShippingTitle;
         //}
 
@@ -649,7 +630,7 @@ class MVentory_Tm_Model_Connector {
         if (isset($account['shipping_options']) && $account['shipping_options'])
           foreach ($account['shipping_options'] as $shippingOption)
             $parameters['ShippingOptions'][] = array(
-              'Type' => self::CUSTOM,
+              'Type' => MVentory_TradeMe_Model_Config::SHIPPING_CUSTOM,
               'Price' => $shippingOption['price'],
               'Method' => $shippingOption['method'],
             );
@@ -661,14 +642,14 @@ class MVentory_Tm_Model_Connector {
 
         $price = $product->getPrice();
 
-        //if ($shippingType != self::FREE) {
+        //if ($shippingType != MVentory_TradeMe_Model_Config::SHIPPING_FREE) {
 
           //Add shipping rate using Volume/Weight based shipping method
-          $price += Mage::helper('trademe')->getShippingRate(
-                      $product,
-                      $account['name'],
-                      $this->_website
-                    );
+          $price += $helper->getShippingRate(
+            $product,
+            $account['name'],
+            $this->_website
+          );
         //} else {
 
         //  //Add free shippih cost if product's shipping type is 'tab_ShipParcel'
@@ -681,7 +662,7 @@ class MVentory_Tm_Model_Connector {
 
         //Apply fees to price of the product if it's allowed
         $price = isset($formData['add_fees']) && $formData['add_fees']
-                   ? Mage::helper('trademe')->addFees($price)
+                   ? $helper->addFees($price)
                      : $price;
 
         $parameters['StartPrice'] = $price;
@@ -710,7 +691,7 @@ class MVentory_Tm_Model_Connector {
 
           //if ($productShippingType == 'tab_ShipFree'
           //    || ($productShippingType == 'tab_ShipParcel'
-          //        && $shippingType == self::FREE
+          //        && $shippingType == MVentory_TradeMe_Model_Config::SHIPPING_FREE
           //        && isset($account['free_shipping_cost'])
           //        && $account['free_shipping_cost'] > 0))
           //  $_data['free_shipping_text'] = isset($account['free_shipping_text'])
@@ -730,7 +711,7 @@ class MVentory_Tm_Model_Connector {
       }
 
       //set Duration
-      $item['Duration'] = Mage::helper('trademe')->getDuration($account);
+      $item['Duration'] = $helper->getDuration($account);
 
       //Set pickup option
       if (!isset($parameters['Pickup']) && isset($formData['pickup']))
@@ -757,8 +738,7 @@ class MVentory_Tm_Model_Connector {
 
       if (isset($jsonResponse->Success) && $jsonResponse->Success == 'true') {
         if ($_formData) {
-          Mage::helper('mventory_tm/product')
-            ->setTmFields($product, $_formData);
+          $this->_helper->setTmFields($product, $_formData);
 
           $product->save();
         }
@@ -769,25 +749,33 @@ class MVentory_Tm_Model_Connector {
         if (isset($jsonResponse->Description) && (string)$jsonResponse->Description) {
           $return = (string)$jsonResponse->Description;
         } elseif (isset($jsonResponse->ErrorDescription)
-            && (string)$jsonResponse->ErrorDescription) {
+                  && (string)$jsonResponse->ErrorDescription) {
             $return = (string)$jsonResponse->ErrorDescription;
         }
 
-        $helper->sendEmail('Unable to update TM listing ',
-          $return.' product id '.$product->getId().' listing id '.$listingId);
+        $this->_helper->sendEmail(
+          'Unable to update TradeMe listing ',
+          $return .' product id ' . $product->getId() . ' listing id '
+            . $listingId
+        );
 
-        self::debug('Error on updating listing ' . $listingId
-                    . ' (' . $return . ')');
+        self::debug(
+          'Error on updating listing ' . $listingId . ' (' . $return . ')'
+        );
       }
   	}
-  	else{
-  	  $helper->sendEmail('Unable to auth TM',
-        $return.' product id '.$product->getId().' listing id '.$listingId);
+  	else {
+  	  $this->_helper->sendEmail(
+        'Unable to auth TradeMe',
+        $return . ' product id ' . $product->getId() . ' listing id '
+          . $listingId
+      );
 
-  	  self::debug('Unable to auth when trying to update listing details '
-  	    . $listingId
-  	    );
+  	  self::debug(
+        'Unable to auth when trying to update listing details ' . $listingId
+  	   );
   	}
+
     return $return;
   }
 
@@ -801,7 +789,10 @@ class MVentory_Tm_Model_Connector {
     }
 
     $client = $accessToken->getHttpClient($this->getConfig());
-    $client->setUri('https://api.' . $this->_host . '.co.nz/v1/MyTradeMe/SellingItems/All.json');
+    $client->setUri(
+      'https://api.' . $this->_host
+        . '.co.nz/v1/MyTradeMe/SellingItems/All.json'
+    );
     $client->setMethod(Zend_Http_Client::GET);
 
     //Request more rows than number of products to be sure that all listings
@@ -827,7 +818,7 @@ class MVentory_Tm_Model_Connector {
     $this->getWebsiteId($product);
 
     $accountId = Mage::helper('trademe')
-                   ->getCurrentAccountId($product->getId());
+      ->getCurrentAccountId($product->getId());
 
     $this->setAccountId($accountId);
 
@@ -854,11 +845,13 @@ class MVentory_Tm_Model_Connector {
     $response = Zend_Json::decode($response->getBody());
 
     if (!$response['Success']) {
-      Mage::log('TM: error on relisting '
-                . $listingId
-                . ' ('
-                . $response['Description']
-                . ')');
+      Mage::log(
+        'TradeMe: error on relisting '
+        . $listingId
+        . ' ('
+        . $response['Description']
+        . ')'
+      );
 
       return false;
     }
@@ -903,8 +896,7 @@ class MVentory_Tm_Model_Connector {
 
       self::debug($msg);
 
-      Mage::helper('mventory_tm')
-        ->sendEmail('Unable to upload image to TM', $msg);
+      $this->_helper->sendEmail('Unable to upload image to TradeMe', $msg);
 
       return $result['Description'];
     }
@@ -941,12 +933,12 @@ class MVentory_Tm_Model_Connector {
                      : '';
 
     $_attrs = Mage::app()
-              ->getLayout()
-              ->createBlock('mventory_tm/product_view_attributes')
-              ->getAdditionalData(
-                  array('product_barcode_', 'mv_created_date'),
-                  false
-                );
+      ->getLayout()
+      ->createBlock('mventory_tm/product_view_attributes')
+      ->getAdditionalData(
+          array('product_barcode_', 'mv_created_date'),
+          false
+        );
 
     $attrs = '';
 
@@ -969,7 +961,7 @@ class MVentory_Tm_Model_Connector {
     return trim($description);
   }
 
-  public function _loadTmCategories () {
+  public function _loadCategories () {
     $options = array(
       CURLOPT_URL => 'http://api.trademe.co.nz/v1/Categories.json',
       CURLOPT_RETURNTRANSFER => true,
@@ -987,7 +979,7 @@ class MVentory_Tm_Model_Connector {
     return $output;
   }
 
-  public function _loadTmCategoryAttrs ($categoryId) {
+  public function _loadCategoryAttrs ($categoryId) {
     $options = array(
       CURLOPT_URL => 'http://api.trademe.co.nz/v1/Categories/'
                      . $categoryId
@@ -1007,7 +999,7 @@ class MVentory_Tm_Model_Connector {
     return $output;
   }
 
-  public function _loadTmListingDetails ($listingId) {
+  public function _loadListingDetails ($listingId) {
     $options = array(
       CURLOPT_URL => 'http://api.'
                      . $this->_host
@@ -1029,7 +1021,7 @@ class MVentory_Tm_Model_Connector {
     return $output;
   }
 
-  public function _loadTmListingDetailsAuth ($listingId) {
+  public function _loadListingDetailsAuth ($listingId) {
     if (!$accessToken = $this->auth())
       return;
 
@@ -1052,15 +1044,15 @@ class MVentory_Tm_Model_Connector {
     return $response->getBody();
   }
 
-  public function _parseTmCategories (&$list, $categories, $names = array()) {
+  public function _parseCategories (&$list, $categories, $names = array()) {
     foreach ($categories as $category) {
-      if (isset($this->_ignoreTmCategories[$category['Number']]))
+      if (isset($this->_ignoreCategories[$category['Number']]))
         continue;
 
       $_names = array_merge($names, array($category['Name']));
 
       if (isset($category['Subcategories']))
-        $this->_parseTmCategories($list, $category['Subcategories'], $_names);
+        $this->_parseCategories($list, $category['Subcategories'], $_names);
       else {
         $id = explode('-', $category['Number']);
         $id = (int) $id[count($id) - 2];
@@ -1073,7 +1065,7 @@ class MVentory_Tm_Model_Connector {
     }
   }
 
-  public function _parseTmListingDetails ($details) {
+  public function _parseListingDetails ($details) {
     $details = json_decode($details, true);
 
     if (isset($details['ErrorDescription']))
@@ -1116,18 +1108,18 @@ class MVentory_Tm_Model_Connector {
     if (isset($data['pickup'])) {
       $pickup = (int) $data['pickup'];
 
-      if ($pickup == MVentory_Tm_Model_Tm::PICKUP_ALLOW
-          || $pickup == MVentory_Tm_Model_Tm::PICKUP_DEMAND
-          || $pickup == MVentory_Tm_Model_Tm::PICKUP_FORBID)
+      if ($pickup == MVentory_TradeMe_Model_Config::PICKUP_ALLOW
+          || $pickup == MVentory_TradeMe_Model_Config::PICKUP_DEMAND
+          || $pickup == MVentory_TradeMe_Model_Config::PICKUP_FORBID)
         return $pickup;
     }
 
     return isset($account['allow_pickup']) && $account['allow_pickup']
-             ? MVentory_Tm_Model_Tm::PICKUP_ALLOW
-               : MVentory_Tm_Model_Tm::PICKUP_FORBID;
+             ? MVentory_TradeMe_Model_Config::PICKUP_ALLOW
+               : MVentory_TradeMe_Model_Config::PICKUP_FORBID;
 
     if (!isset($account['allow_pickup']))
-      return MVentory_Tm_Model_Tm::PICKUP_FORBID;
+      return MVentory_TradeMe_Model_Config::PICKUP_FORBID;
   }
 
   protected function _getIsBrandNew ($product) {
@@ -1156,13 +1148,13 @@ class MVentory_Tm_Model_Connector {
     return $duration;
   }
 
-  public function getTmCategories () {
+  public function getCategories () {
     $app = Mage::app();
 
-    if ($list = $app->loadCache(self::CACHE_TM_CATEGORIES))
+    if ($list = $app->loadCache(self::CACHE_CATEGORIES))
       return unserialize($list);
 
-    $json = $this->_loadTmCategories();
+    $json = $this->_loadCategories();
 
     if (!$json)
       return null;
@@ -1173,41 +1165,41 @@ class MVentory_Tm_Model_Connector {
 
     $list = array();
 
-    $this->_parseTmCategories($list, $categories['Subcategories']);
+    $this->_parseCategories($list, $categories['Subcategories']);
 
     unset($categories);
 
-    if ($app->useCache(self::CACHE_TYPE_TM))
+    if ($app->useCache(MVentory_TradeMe_Model_Config::CACHE_TYPE))
       $app->saveCache(
         serialize($list),
-        self::CACHE_TM_CATEGORIES,
-        array(self::CACHE_TAG_TM)
+        self::CACHE_CATEGORIES,
+        array(MVentory_TradeMe_Model_Config::CACHE_TAG)
       );
 
     return $list;
   }
 
-  public function getTmCategoryAttrs ($categoryId) {
+  public function getCategoryAttrs ($categoryId) {
     if (!$categoryId)
       return null;
 
     $app = Mage::app();
 
-    if ($attrs = $app->loadCache(self::CACHE_TM_CATEGORY_ATTRS . $categoryId))
+    if ($attrs = $app->loadCache(self::CACHE_CATEGORY_ATTRS . $categoryId))
       return unserialize($attrs);
 
-    $json = $this->_loadTmCategoryAttrs($categoryId);
+    $json = $this->_loadCategoryAttrs($categoryId);
 
     if (!$json)
       return null;
 
     $attrs = json_decode($json, true);
 
-    if ($app->useCache(self::CACHE_TYPE_TM))
+    if ($app->useCache(MVentory_TradeMe_Model_Config::CACHE_TYPE))
       $app->saveCache(
         serialize($attrs),
-        self::CACHE_TM_CATEGORY_ATTRS . $categoryId,
-        array(self::CACHE_TAG_TM)
+        self::CACHE_CATEGORY_ATTRS . $categoryId,
+        array(MVentory_TradeMe_Model_Config::CACHE_TAG)
       );
 
     return $attrs;
