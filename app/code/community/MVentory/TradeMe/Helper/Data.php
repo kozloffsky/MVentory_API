@@ -65,6 +65,19 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     ),
   );
 
+  protected $_fields = array(
+    'account_id' => 'tm_account_id',
+    'shipping_type' => 'tm_shipping_type',
+    'allow_buy_now' => 'tm_allow_buy_now',
+    'add_fees' => 'tm_add_fees',
+    'avoid_withdrawal' => 'tm_avoid_withdrawal',
+  );
+
+  protected $_fieldsWithoutDefaults = array(
+    'relist' => 'tm_relist',
+    'pickup' => 'tm_pickup'
+  );
+
   public function getAttributes ($categoryId) {
     $model = new MVentory_TradeMe_Model_Api();
 
@@ -263,6 +276,33 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
   }
 
   /**
+   * Prepare accounts for the specified product.
+   * Leave TradeMe options for product's shipping type only
+   *
+   * @param array $accounts TradeMe accounts
+   * @param Mage_Catalog_Model_Product $product Product
+   *
+   * @return array
+   */
+  public function prepareAccounts ($accounts, $product) {
+    $shippingType = Mage::helper('mventory_tm/product')->getShippingType(
+      $product,
+      true
+    );
+
+    foreach ($accounts as &$account) {
+      if (isset($account['shipping_types'][$shippingType])) {
+        $account['shipping_type'] = $shippingType;
+        $account = $account + $account['shipping_types'][$shippingType];
+      }
+
+      unset($account['shipping_types']);
+    }
+
+    return $accounts;
+  }
+
+  /**
    * Return account ID which will be used for the next listing of specified
    * product on TradeMe
    *
@@ -319,6 +359,149 @@ class MVentory_TradeMe_Helper_Data extends Mage_Core_Helper_Abstract
     );
 
     return $this;
+  }
+
+  /**
+   * Returns listing ID linked to the product
+   *
+   * @param int $productId Product's ID
+   * @return string Listing ID
+   */
+  public function getListingId ($productId) {
+    return Mage::helper('mventory_tm')->getAttributesValue(
+      $productId,
+      'tm_current_listing_id'
+    );
+  }
+
+  /**
+   * Sets value of listing ID attribute in the product
+   *
+   * @param int|string $listingId Listing ID
+   * @param int $productId Product's ID
+   * @return MVentory_TradeMe_Helper_Data
+   */
+  public function setListingId ($listingId, $productId) {
+    Mage::helper('mventory_tm')->setAttributesValue(
+      $productId,
+      array('tm_current_listing_id' => $listingId)
+    );
+
+    return $this;
+  }
+
+  /**
+   * Extracts data for TradeMe options from product or from optional
+   * account data if the product doesn't have attribute values
+   *
+   * @param Mage_Catalog_Model_Product|array $product Product's data
+   * @param array $account TradeMe account data
+   *
+   * @return array TradeMe options
+   */
+  public function getFields ($product, $account = null) {
+    if ($product instanceof Mage_Catalog_Model_Product)
+      $product = $product->getData();
+
+    $fields = array();
+
+    foreach ($this->_fields as $name => $code) {
+      $value = isset($product[$code])
+                         ? $product[$code]
+                           : null;
+
+      if (!($account && ($value == '-1' || $value === null)))
+        $fields[$name] = $value;
+      else
+        $fields[$name] = isset($account[$name]) ? $account[$name] : null;
+    }
+
+    foreach ($this->_fieldsWithoutDefaults as $name => $code)
+      $fields[$name] = isset($product[$code]) ? $product[$code] : null;
+
+    return $fields;
+  }
+
+  /**
+   * Sets TradeMe options in product
+   *
+   * @param Mage_Catalog_Model_Product|array $product Product
+   * @param array $fields Trademe options data
+   *
+   * @return MVentory_TradeMe_Helper_Data
+   */
+  public function setFields ($product, $fields) {
+    $_fields = $this->_fields + $this->_fieldsWithoutDefaults;
+
+    foreach ($_fields as $name => $code)
+      if (isset($fields[$name]))
+        $product->setData($code, $fields[$name]);
+
+    return $this;
+  }
+
+  public function fillAttributes ($product, $attrs, $store) {
+    $storeId = $store->getId();
+
+    foreach ($attrs as $attr)
+      $_attrs[strtolower($attr['Name'])] = $attr;
+
+    unset($attrs);
+
+    foreach ($product->getAttributes() as $code => $pAttr) {
+      $input = $pAttr->getFrontendInput();
+
+      if (!($input == 'select' || $input == 'multiselect'))
+        continue;
+
+      $frontend = $pAttr->getFrontend();
+
+      $defaultValue = $frontend->getValue($product);
+      $attributeStoreId = $pAttr->getStoreId();
+
+      $pAttr->setStoreId($storeId);
+      $value = $frontend->getValue($product);
+      $pAttr->setStoreId($attributeStoreId);
+
+      if ($defaultValue == $value)
+        continue;
+
+      $value = trim($value);
+
+      if (!$value)
+        continue;
+
+      $parts = explode(':', $value, 2);
+
+      if (!(count($parts) == 2 && $parts[0]))
+        return array(
+          'error' => true,
+          'no_match' => $code
+        );
+
+      $name = strtolower(rtrim($parts[0]));
+      $value = ltrim($parts[1]);
+
+      if (!isset($_attrs[$name]))
+        continue;
+
+      $attr = $_attrs[$name];
+
+      $value = trim($value);
+
+      if (!$value && $attr['IsRequiredForSell'])
+        return array(
+          'error' => true,
+          'required' => $attr['DisplayName']
+        );
+
+      $result[$attr['Name']] = $value;
+    }
+
+    return array(
+      'error' => false,
+      'attributes' => isset($result) ? $result : null
+    );
   }
 
   public function getMappingStore () {

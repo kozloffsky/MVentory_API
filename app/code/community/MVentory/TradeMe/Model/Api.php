@@ -165,22 +165,19 @@ class MVentory_TradeMe_Model_Api {
   public function send ($product, $categoryId, $data) {
     self::debug();
 
+    $helper = Mage::helper('trademe');
+
     $this->getWebsiteId($product);
     $this->setAccountId($data);
 
-    $account = $this
-      ->_helper
-      ->prepareAccounts(array($this->_accountData), $product);
-
+    $account = $helper->prepareAccounts(array($this->_accountData), $product);
     $account = $account[0];
 
     if (!isset($account['shipping_type']))
       return 'No settings for product\'s shipping type';
 
     if (!$isUpdateOptions = is_array($data))
-      $_data = $this
-        ->_helper
-        ->getTmFields($product, $account);
+      $_data = $helper->getFields($product, $account);
     else {
       $_data = $data;
 
@@ -271,8 +268,6 @@ class MVentory_TradeMe_Model_Api {
         if (!is_int($photoId = $this->uploadImage($image)))
           return $photoId;
       }
-
-      $helper = Mage::helper('trademe');
 
       $client = $accessToken->getHttpClient($this->getConfig());
       $client->setUri('https://api.' . $this->_host . '.co.nz/v1/Selling.xml');
@@ -389,7 +384,7 @@ class MVentory_TradeMe_Model_Api {
       $attributes = $this->getCategoryAttrs($categoryId);
 
       if ($attributes) {
-        $attributes = $this->_helper->fillTmAttributes(
+        $attributes = $helper->fillAttributes(
           $product,
           $attributes,
           $helper->getMappingStore()
@@ -432,7 +427,7 @@ class MVentory_TradeMe_Model_Api {
           if ($isUpdateOptions) {
             $_data['account_id'] = $this->_accountId;
 
-            $this->_helper->setTmFields($product, $data);
+            $helper->setFields($product, $data);
           }
 
           $product->setTmCurrentAccountId($this->_accountId);
@@ -539,6 +534,8 @@ class MVentory_TradeMe_Model_Api {
   public function update ($product, $parameters = null, $_formData = null) {
     self::debug();
 
+    $helper = Mage::helper('trademe');
+
     $this->getWebsiteId($product);
 
     if ($_formData && isset($_formData['account_id']))
@@ -547,11 +544,7 @@ class MVentory_TradeMe_Model_Api {
     $accountId = $product->getTmCurrentAccountId();
     $this->setAccountId($accountId);
 
-    $account = $this->_helper->prepareAccounts(
-      array($this->_accountData),
-      $product
-    );
-
+    $account = $helper->prepareAccounts(array($this->_accountData), $product);
     $account = $account[0];
 
     if (!isset($account['shipping_type']))
@@ -578,8 +571,6 @@ class MVentory_TradeMe_Model_Api {
 
         return 'Unable to retrieve data from TradeMe';
       }
-
-      $helper = Mage::helper('trademe');
 
       $item = $this->_parseListingDetails($json);
       $item = $this->_listingDetailsToEditingRequest($item);
@@ -738,7 +729,7 @@ class MVentory_TradeMe_Model_Api {
 
       if (isset($jsonResponse->Success) && $jsonResponse->Success == 'true') {
         if ($_formData) {
-          $this->_helper->setTmFields($product, $_formData);
+          $helper->setFields($product, $_formData);
 
           $product->save();
         }

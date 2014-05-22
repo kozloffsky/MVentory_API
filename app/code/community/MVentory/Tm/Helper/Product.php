@@ -26,19 +26,6 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
   const ROOT_WEBSITE_PATH = 'mventory_tm/api/root_website';
 
-  protected $_tmFields = array(
-    'account_id' => 'tm_account_id',
-    'shipping_type' => 'tm_shipping_type',
-    'allow_buy_now' => 'tm_allow_buy_now',
-    'add_fees' => 'tm_add_fees',
-    'avoid_withdrawal' => 'tm_avoid_withdrawal',
-  );
-
-  protected $_tmFieldsWithoutDefaults = array(
-    'relist' => 'tm_relist',
-    'pickup' => 'tm_pickup'
-  );
-
   /**
    * Returns product's category
    *
@@ -114,30 +101,6 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     return rtrim($baseUrl, '/')
            . '/'
            . $product->getUrlPath($this->getCategory($product));
-  }
-
-  /**
-   * Returns TM listing ID linked to the product
-   *
-   * @param int $productId Product's ID
-   *
-   * @return string Listing ID
-   */
-  public function getListingId ($productId) {
-    return $this->getAttributesValue($productId, 'tm_current_listing_id');
-  }
-
-  /**
-   * Sets value of TM listing ID attribute in the product
-   *
-   * @param int|string $listingId Listing ID
-   * @param int $productId Product's ID
-   *
-   */
-  public function setListingId ($listingId, $productId) {
-    $attribute = array('tm_current_listing_id' => $listingId);
-
-    $this->setAttributesValue($productId, $attribute);
   }
 
   /**
@@ -231,144 +194,6 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
                           ->getId();
 
     return $productWebsiteId == $userWebsiteId;
-  }
-
-  /**
-   * Extracts data for TM options from product or from optional account data
-   * if the product doesn't have attribute values
-   *
-   * @param Mage_Catalog_Model_Product|array $product Product's data
-   * @param array $account TM account data 
-   *
-   * @return array TM options
-   */
-  public function getTmFields ($product, $account = null) {
-    if ($product instanceof Mage_Catalog_Model_Product)
-      $product = $product->getData();
-
-    $fields = array();
-
-    foreach ($this->_tmFields as $name => $code) {
-      $value = isset($product[$code])
-                         ? $product[$code]
-                           : null;
-
-      if (!($account && ($value == '-1' || $value === null)))
-        $fields[$name] = $value;
-      else
-        $fields[$name] = isset($account[$name]) ? $account[$name] : null;
-    }
-
-    foreach ($this->_tmFieldsWithoutDefaults as $name => $code)
-      $fields[$name] = isset($product[$code]) ? $product[$code] : null;
-
-    return $fields;
-  }
-
-  /**
-   * Sets TM options in product
-   *
-   * @param Mage_Catalog_Model_Product|array $product Product
-   * @param array $fields TM options data
-   *
-   * @return MVentory_Tm_Helper_Product
-   */
-  public function setTmFields ($product, $fields) {
-    $tmFields = $this->_tmFields + $this->_tmFieldsWithoutDefaults;
-
-    foreach ($tmFields as $name => $code)
-      if (isset($fields[$name]))
-        $product->setData($code, $fields[$name]);
-
-    return $this;
-  }
-
-  /**
-   * Prepare TM accounts for the specified product.
-   * Leave TM options for product's shipping type only
-   *
-   * @param array $accounts TM accounts
-   * @param Mage_Catalog_Model_Product $product Product
-   *
-   * @return array
-   */
-  public function prepareAccounts ($accounts, $product) {
-    $shippingType = $this->getShippingType($product, true);
-
-    foreach ($accounts as &$account) {
-      if (isset($account['shipping_types'][$shippingType])) {
-        $account['shipping_type'] = $shippingType;
-        $account = $account + $account['shipping_types'][$shippingType];
-      }
-
-      unset($account['shipping_types']);
-    }
-
-    return $accounts;
-  }
-
-  public function fillTmAttributes ($product, $tmAttributes, $store) {
-    $storeId = $store->getId();
-
-    foreach ($tmAttributes as $tmAttribute)
-      $_tmAttributes[strtolower($tmAttribute['Name'])] = $tmAttribute;
-
-    unset($tmAttributes);
-
-    foreach ($product->getAttributes() as $code => $attribute) {
-      $input = $attribute->getFrontendInput();
-
-      if (!($input == 'select' || $input == 'multiselect'))
-        continue;
-
-      $frontend = $attribute->getFrontend();
-
-      $defaultValue = $frontend->getValue($product);
-      $attributeStoreId = $attribute->getStoreId();
-
-      $attribute->setStoreId($storeId);
-      $value = $frontend->getValue($product);
-      $attribute->setStoreId($attributeStoreId);
-
-      if ($defaultValue == $value)
-        continue;
-
-      $value = trim($value);
-
-      if (!$value)
-        continue;
-
-      $parts = explode(':', $value, 2);
-
-      if (!(count($parts) == 2 && $parts[0]))
-        return array(
-          'error' => true,
-          'no_match' => $code
-        );
-
-      $name = strtolower(rtrim($parts[0]));
-      $value = ltrim($parts[1]);
-
-      if (!isset($_tmAttributes[$name]))
-        continue;
-
-      $tmAttribute = $_tmAttributes[$name];
-
-      $value = trim($value);
-
-      if (!$value && $_tmAttribute['IsRequiredForSell'])
-        return array(
-          'error' => true,
-          'required' => $tmAttribute['DisplayName']
-        );
-
-      $result[$tmAttribute['Name']] = $value;
-    }
-
-    return array(
-      'error' => false,
-      'attributes' => isset($result) ? $result : null
-    );
   }
 
   public function updateFromSimilar ($product, $similar) {

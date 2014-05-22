@@ -34,7 +34,7 @@ class MVentory_TradeMe_ListingController
     $productId = isset($params['id']) ? $params['id'] : null;
 
     $data = isset($params['product']) && is_array($params['product'])
-              ? $helper->getTmFields($params['product'])
+              ? Mage::helper('trademe')->getFields($params['product'])
                 : array();
 
     $data['category'] = isset($params['trademe_category'])
@@ -229,7 +229,7 @@ class MVentory_TradeMe_ListingController
     }
 
     $data = isset($params['product']) && is_array($params['product'])
-              ? $helper->getTmFields($params['product'])
+              ? Mage::helper('trademe')->getFields($params['product'])
                 : array();
 
     $data['category'] = isset($params['trademe_category'])

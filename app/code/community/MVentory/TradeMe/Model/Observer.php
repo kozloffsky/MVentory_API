@@ -266,7 +266,7 @@ class MVentory_TradeMe_Model_Observer {
             Mage::unregister('mventory_website');
           }
 
-          $helper->setListingId(0, $product->getId());
+          $trademe->setListingId(0, $product->getId());
         } catch (Exception $e) {
           Mage::unregister('mventory_website');
 
@@ -500,7 +500,7 @@ class MVentory_TradeMe_Model_Observer {
       $productId = (int) $item->getProductId();
 
       //We can use default store ID because the attribute is global
-      $listingId = $productHelper->getListingId($productId);
+      $listingId = $trademe->getListingId($productId);
 
       if (!$listingId)
         continue;
@@ -515,7 +515,7 @@ class MVentory_TradeMe_Model_Observer {
 
       $website = $productHelper->getWebsite($product);
       $accounts = $trademe->getAccounts($website);
-      $accounts = $productHelper->prepareAccounts($accounts, $product);
+      $accounts = $trademe->prepareAccounts($accounts, $product);
 
       $accountId = $product->getTmCurrentAccountId();
 
@@ -526,7 +526,7 @@ class MVentory_TradeMe_Model_Observer {
       //Avoid withdrawal by default
       $avoidWithdrawal = true;
 
-      $fields = $productHelper->getTmFields($product, $account);
+      $fields = $trademe->getFields($product, $account);
 
       $attrs = $product->getAttributes();
 
@@ -582,8 +582,9 @@ class MVentory_TradeMe_Model_Observer {
         continue;
       }
 
-      $productHelper->setListingId(0, $productId);
-      $trademe->setCurrentAccountId($productId, null);
+      $trademe
+        ->setListingId(0, $productId)
+        ->setCurrentAccountId($productId, null);
     }
   }
 }

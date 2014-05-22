@@ -695,17 +695,17 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   }
 
   private function _prepareTrademeData ($product, $website) {
-    $helper = Mage::helper('mventory_tm/tm');
+    $helper = Mage::helper('mventory_tm/product');
+    $trademe = Mage::helper('trademe');
 
-    $accounts = Mage::helper('trademe')->getAccounts($website);
+    $accounts = $trademe->getAccounts($website);
 
     $id = isset($product['tm_account_id']) ? $product['tm_account_id'] : null;
     $account = $id && isset($accounts[$id]) ? $accounts[$id] : null;
 
-    $data = Mage::helper('mventory_tm/product')
-      ->getTmFields($product, $account);
+    $data = $trademe->getFields($product, $account);
 
-    //!!!TODO: fix getTmFields() method and all code which is used it
+    //!!!TODO: fix getFields() method and all code which is used it
     //to use 'account' instead 'account _id'
     $data['account'] = $data['account_id'];
     unset($data['account_id']);

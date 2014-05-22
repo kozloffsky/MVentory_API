@@ -54,13 +54,15 @@ class MVentory_TradeMe_Block_Tab
     $this->_session = $session->getData('trademe_data');
     $session->unsetData('trademe_data');
 
+    $trademe = Mage::helper('trademe');
+
     $this->_accountId = isset($this->_session['account_id'])
                           ? $this->_session['account_id']
-                            : Mage::helper('trademe')
+                            : $trademe
                                 ->getAccountId($productId, $this->_website);
 
-    $this->_accounts = $this->_helper->prepareAccounts(
-      Mage::helper('trademe')->getAccounts($this->_website),
+    $this->_accounts = $trademe->prepareAccounts(
+      $trademe->getAccounts($this->_website),
       $product
     );
 
