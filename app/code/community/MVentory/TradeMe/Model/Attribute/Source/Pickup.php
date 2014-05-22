@@ -11,20 +11,20 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * Source model for shipping type field
+ * Source model for pickup field
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Entity_Attribute_Source_Freeshipping
-  extends Mage_Eav_Model_Entity_Attribute_Source_Boolean {
-
+class MVentory_TradeMe_Model_Attribute_Source_Pickup
+  extends Mage_Eav_Model_Entity_Attribute_Source_Abstract
+{
   /**
    * Retrieve all options array
    *
@@ -32,7 +32,7 @@ class MVentory_Tm_Model_Entity_Attribute_Source_Freeshipping
    */
   public function getAllOptions () {
     if (is_null($this->_options)) {
-      $helper = Mage::helper('mventory_tm');
+      $helper = Mage::helper('trademe');
 
       $this->_options = array(
         array(
@@ -41,18 +41,32 @@ class MVentory_Tm_Model_Entity_Attribute_Source_Freeshipping
         ),
 
         array(
-          'label' => $helper->__('Yes'),
-          'value' => MVentory_TradeMe_Model_Config::SHIPPING_FREE,
+          'label' => $helper->__('Buyer can pickup'),
+          'value' => MVentory_TradeMe_Model_Config::PICKUP_ALLOW,
         ),
 
         array(
-          'label' => $helper->__('No'),
-          'value' => MVentory_TradeMe_Model_Config::SHIPPING_UNDECIDED,
+          'label' => $helper->__('No pickups'),
+          'value' => MVentory_TradeMe_Model_Config::PICKUP_FORBID,
         ),
       );
     }
 
     return $this->_options;
+  }
+
+  /**
+   * Retrieve option array
+   *
+   * @return array
+   */
+  public function getOptionArray () {
+    $options = array();
+
+    foreach ($this->getAllOptions() as $option)
+      $options[$option['value']] = $option['label'];
+
+    return $options;
   }
 
   /**
@@ -66,18 +80,6 @@ class MVentory_Tm_Model_Entity_Attribute_Source_Freeshipping
     unset($options[-1]);
 
     return $options;
-  }
-
-  /**
-   * Get options in "key-value" format
-   *
-   * @return array
-   */
-  public function toArray () {
-    return array(
-      MVentory_TradeMe_Model_Config::SHIPPING_UNDECIDED => 'Undecided',
-      MVentory_TradeMe_Model_Config::SHIPPING_FREE => 'Free'
-    );
   }
 }
 

@@ -333,7 +333,7 @@ class MVentory_TradeMe_Model_Api {
       $duration = $this->_durations[$helper->getDuration($account)];
 
       $shippingTypes
-        = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
+        = Mage::getModel('trademe/attribute_source_freeshipping')
             ->toArray();
 
       $shippingType

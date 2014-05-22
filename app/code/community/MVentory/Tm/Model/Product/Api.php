@@ -730,7 +730,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     }
 
     $data['shipping_types']
-      = Mage::getModel('mventory_tm/entity_attribute_source_freeshipping')
+      = Mage::getModel('trademe/attribute_source_freeshipping')
           ->getAllOptions();
 
     foreach ($accounts as $id => $account)

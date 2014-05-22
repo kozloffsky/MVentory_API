@@ -11,35 +11,29 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
+ * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
 
 /**
- * Source model for Yes/No field
+ * Resource serup model
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Entity_Attribute_Source_Boolean
-  extends Mage_Eav_Model_Entity_Attribute_Source_Boolean {
+class MVentory_TradeMe_Model_Resource_Setup
+  extends Mage_Catalog_Model_Resource_Setup
+{
+  public function addAttributes ($attrs) {
+    $entityTypeId = $this->getEntityTypeId('catalog_product');
+    $setId = $this->getDefaultAttributeSetId($entityTypeId);
+    $groupId = $this->getDefaultAttributeGroupId($entityTypeId, $setId);
 
-  /**
-   * Retrieve all options array
-   *
-   * @return array
-   */
-  public function getAllOptions () {
-    if (is_null($this->_options)) {
-      parent::getAllOptions();
-
-      array_unshift($this->_options, array(
-        'label' => Mage::helper('mventory_tm')->__('Default'),
-        'value' => -1
-      ));
-    }
-
-    return $this->_options;
+    foreach ($attrs as $name => $attr)
+      $this
+        ->addAttribute($entityTypeId, $name, $attr)
+        ->addAttributeToGroup($entityTypeId, $setId, $groupId, $name);
   }
 }

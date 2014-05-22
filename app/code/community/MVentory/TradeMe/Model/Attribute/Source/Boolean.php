@@ -11,17 +11,35 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
- * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
 
-$entityTypeId = $this->getEntityTypeId(Mage_Catalog_Model_Product::ENTITY);
+/**
+ * Source model for Yes/No/Default field
+ *
+ * @package MVentory/TradeMe
+ * @author Anatoly A. Kazantsev <anatoly@mventory.com>
+ */
+class MVentory_TradeMe_Model_Attribute_Source_Boolean
+  extends Mage_Eav_Model_Entity_Attribute_Source_Boolean
+{
+  /**
+   * Retrieve all options array
+   *
+   * @return array
+   */
+  public function getAllOptions () {
+    if (is_null($this->_options)) {
+      parent::getAllOptions();
 
-$this->updateAttribute($entityTypeId, 'tm_relist', 'frontend_input', 'select');
-$this->updateAttribute($entityTypeId, 'tm_relist', 'is_visible', true);
-$this->updateAttribute($entityTypeId,
-                       'tm_relist',
-                       'source_model',
-                       'eav/entity_attribute_source_boolean');
+      array_unshift($this->_options, array(
+        'label' => Mage::helper('trademe')->__('Default'),
+        'value' => -1
+      ));
+    }
+
+    return $this->_options;
+  }
+}

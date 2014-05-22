@@ -48,6 +48,7 @@
       <trademe_setup>
         <setup>
           <module>MVentory_TradeMe</module>
+          <class>MVentory_TradeMe_Model_Resource_Setup</class>
         </setup>
       </trademe_setup>
     </resources>

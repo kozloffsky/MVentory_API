@@ -11,20 +11,20 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
 
 /**
- * Source model for pickup field
+ * Source model for account field
  *
- * @package MVentory/TM
+ * @package MVentory/TradeMe
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Entity_Attribute_Source_Pickup
-  extends Mage_Eav_Model_Entity_Attribute_Source_Abstract {
-
+class MVentory_TradeMe_Model_Attribute_Source_Accounts
+  extends Mage_Eav_Model_Entity_Attribute_Source_Abstract
+{
   /**
    * Retrieve all options array
    *
@@ -32,23 +32,11 @@ class MVentory_Tm_Model_Entity_Attribute_Source_Pickup
    */
   public function getAllOptions () {
     if (is_null($this->_options)) {
-      $helper = Mage::helper('mventory_tm');
-
       $this->_options = array(
         array(
-          'label' => $helper->__('Default'),
-          'value' => -1
-        ),
-
-        array(
-          'label' => $helper->__('Buyer can pickup'),
-          'value' => MVentory_TradeMe_Model_Config::PICKUP_ALLOW,
-        ),
-
-        array(
-          'label' => $helper->__('No pickups'),
-          'value' => MVentory_TradeMe_Model_Config::PICKUP_FORBID,
-        ),
+          'label' => Mage::helper('trademe')->__('Random'),
+          'value' =>  null
+        )
       );
     }
 
@@ -61,26 +49,27 @@ class MVentory_Tm_Model_Entity_Attribute_Source_Pickup
    * @return array
    */
   public function getOptionArray () {
-    $options = array();
+    $_options = array();
 
     foreach ($this->getAllOptions() as $option)
-      $options[$option['value']] = $option['label'];
+      $_options[$option['value']] = $option['label'];
 
-    return $options;
+    return $_options;
   }
 
   /**
-   * Options getter
+   * Get a text for option value
    *
-   * @return array
+   * @param string|integer $value
+   * @return string
    */
-  public function toOptionArray () {
-    $options = $this->getOptionArray();
+  public function getOptionText ($value) {
+    $options = $this->getAllOptions();
 
-    unset($options[-1]);
+    foreach ($options as $option)
+     if ($option['value'] == $value)
+      return $option['label'];
 
-    return $options;
+    return false;
   }
 }
-
-?>
