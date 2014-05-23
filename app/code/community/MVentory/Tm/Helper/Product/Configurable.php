@@ -89,7 +89,6 @@ class MVentory_Tm_Helper_Product_Configurable
     $data['mv_attributes_hash'] = $product->getData('mv_attributes_hash');
 
     //Reset value of attributes
-    $data['tm_relist'] = 0;
     $data['product_barcode_'] = null;
     $data['mv_stock_journal'] = null;
 
