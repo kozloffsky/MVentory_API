@@ -587,4 +587,128 @@ class MVentory_TradeMe_Model_Observer {
         ->setCurrentAccountId($productId, null);
     }
   }
+
+  public function addTradeMeData ($observer) {
+    $website = $observer->getWebsite();
+    $product = $observer
+      ->getProduct()
+      ->getData();
+
+    $helper = Mage::helper('mventory_tm/product');
+    $trademe = Mage::helper('trademe');
+
+    $accounts = $trademe->getAccounts($website);
+
+    $id = isset($product['tm_account_id']) ? $product['tm_account_id'] : null;
+    $account = $id && isset($accounts[$id]) ? $accounts[$id] : null;
+
+    $data = $trademe->getFields($product, $account);
+
+    //!!!TODO: fix getFields() method and all code which is used it
+    //to use 'account' instead 'account _id'
+    $data['account'] = $data['account_id'];
+    unset($data['account_id']);
+
+    $data['listing'] = $product['tm_current_listing_id'] > 0
+                         ? (int) $product['tm_current_listing_id']
+                           : null;
+
+    if ($data['listing']) {
+      $data['listing_url']
+        = 'http://www.'
+          . ($trademe->isSandboxMode($website) ? 'tmsandbox' : 'trademe')
+          . '.co.nz/Browse/Listing.aspx?id='
+          . $data['listing'];
+    }
+
+    $data['shipping_types']
+      = Mage::getModel('trademe/attribute_source_freeshipping')
+          ->getAllOptions();
+
+    foreach ($accounts as $id => $account)
+      $data['accounts'][$id] = $account['name'];
+
+    $matchResult = Mage::getModel('trademe/matching')->matchCategory(
+      Mage::getModel('catalog/product')->load($product['product_id'])
+    );
+
+    if ($matchResult)
+      $data['matched_category'] = $matchResult;
+
+    //Add shipping rate if product's shipping type is 'tab_ShipTransport'
+    if (isset($product['mv_shipping_']) && $account) {
+      $do = false;
+
+      //Iterate over all attributes...
+      foreach ($product['set_attributes'] as $attribute)
+        //... to find attribute with shipping type info, then...
+        if ($attribute['attribute_code'] == 'mv_shipping_')
+          //... iterate over all its options...
+          foreach ($attribute['options'] as $option)
+            //... to find option with same value as in product and with
+            //label equals 'tab_ShipTransport'
+            if ($option['value'] == $product['mv_shipping_']
+                && $do = ($option['label'] == 'tab_ShipTransport'))
+              break 2;
+
+      if ($do) {
+        $rate = Mage::helper('trademe')->getShippingRate(
+          $observer->getProduct(),
+          $account['name'],
+          $website
+        );
+
+        if ($rate !== null)
+          $data['shipping_rate'] = $rate;
+      }
+    }
+
+    $product['auction']['trademe'] = $data;
+
+    //!!!TODO: remove after the app upgrade. This is for compatibility with
+    //old versions of the app
+    $product['tm_options'] = $this->_getTmOptions($product);
+
+    //!!!TODO: remove after the app upgrade. This is for compatibility with
+    //old versions of the app
+    if (isset($product['auction']['trademe']['shipping_rate']))
+      $product['shipping_rate']
+        = $product['auction']['trademe']['shipping_rate'];
+    else
+      $product['shipping_rate'] = null;
+
+    $observer
+      ->getProduct()
+      ->setData($product);
+  }
+
+  /**
+   * !!!TODO: remove after the app upgrade. This is for compatibility with
+   * old versions of the app
+   */
+  private function _getTmOptions ($product) {
+    $data = $product['auction']['trademe'];
+
+    $data['account_id'] = $data['account'];
+    $data['add_tm_fees'] = $data['add_fees'];
+    $data['tm_listing_id'] = $data['listing'];
+    $data['shipping_types_list'] = $data['shipping_types'];
+
+    if (isset($data['accounts']))
+      $data['tm_accounts'] = $data['accounts'];
+
+    if (isset($data['matched_category']))
+      $data['preselected_categories'][$data['matched_category']['id']]
+        = $data['matched_category']['category'];
+
+    unset(
+      $data['account'],
+      $data['listing'],
+      $data['shipping_types'],
+      $data['accounts'],
+      $data['shipping_rate']
+    );
+
+    return $data;
+  }
 }
