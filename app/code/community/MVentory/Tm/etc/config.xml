@@ -304,16 +304,6 @@
         <to><![CDATA[/mventory_tm/app/redirect/key/$1/]]></to>
       </mventory_app_config_redirect>
     </rewrite>
-
-    <template>
-      <email>
-        <mventory_negative_balance translate="label">
-          <label>Negative balance</label>
-          <file>mventory/negative_balance.txt</file>
-          <type>text</type>
-        </mventory_negative_balance>
-      </email>
-    </template>
   </global>
 
   <frontend>

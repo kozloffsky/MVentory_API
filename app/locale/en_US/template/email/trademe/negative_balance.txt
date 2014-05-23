@@ -1,0 +1,11 @@
+<!--@subject Negative balance @-->
+<!--@vars { "var account": "TradeMe account name" } @-->
+Hey trader,
+
+Your TradeMe account {{var account}} has a negative balance.
+I am not worried about TradeMe going unpaid, but it negatively impacts your sales because they won't let me re-list your products.
+
+You'd better top it up.
+
+Cheers,
+Your website

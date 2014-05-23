@@ -77,6 +77,16 @@
       </checkout_type_onepage_save_order_after>
     </events>
 
+    <template>
+      <email>
+        <trademe_negative_balance translate="label">
+          <label>TradeMe: negative balance</label>
+          <file>trademe/negative_balance.txt</file>
+          <type>text</type>
+        </trademe_negative_balance>
+      </email>
+    </template>
+
     <cache>
       <types>
         <trademe module="trademe" translate="label,description">
