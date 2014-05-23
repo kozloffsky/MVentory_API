@@ -28,6 +28,8 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
   protected $_totalStockValue;
 
   const USE_CACHE = false;
+  const CACHE_TYPE = 'mventory';
+  const CACHE_TAG = 'MVENTORY';
 
   public function __construct() {
     parent::__construct();
@@ -113,14 +115,18 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
       }
 
       // save to cache if needed
-      if (self::USE_CACHE
-          && $cache->canUse(MVentory_TradeMe_Model_Config::CACHE_TYPE)) {
-        $cache->save($this->_totalStockQty,
-                     "total_stock_qty_" . $storeId,
-                     array(MVentory_TradeMe_Model_Config::CACHE_TAG));
-        $cache->save($this->_totalStockValue,
-                     "total_stock_value_" . $storeId,
-                     array(MVentory_TradeMe_Model_Config::CACHE_TAG));
+      if (self::USE_CACHE && $cache->canUse(self::CACHE_TYPE)) {
+        $cache->save(
+          $this->_totalStockQty,
+          'total_stock_qty_' . $storeId,
+          array(self::CACHE_TAG)
+        );
+
+        $cache->save(
+          $this->_totalStockValue,
+          'total_stock_value_' . $storeId,
+          array(srlf::CACHE_TAG)
+        );
       }
     }
   }

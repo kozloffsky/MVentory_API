@@ -304,6 +304,16 @@
         <to><![CDATA[/mventory_tm/app/redirect/key/$1/]]></to>
       </mventory_app_config_redirect>
     </rewrite>
+
+    <cache>
+      <types>
+        <mventory module="mventory_tm" translate="label,description">
+          <label>mVentory Cache</label>
+          <description>Cache for various mVentory parts</description>
+          <tags>MVENTORY</tags>
+        </mventory>
+      </types>
+    </cache>
   </global>
 
   <frontend>
