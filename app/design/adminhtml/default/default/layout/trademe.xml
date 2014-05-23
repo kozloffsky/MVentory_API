@@ -38,11 +38,11 @@
 
   <adminhtml_catalog_product_set_edit>
     <update handle="jquery" />
+    <update handle="jquery_ui" />
 
     <reference name="head">
       <action method="addCss"><css>trademe/css/styles.css</css></action>
 
-      <action method="addJs"><js>jquery/jquery-ui-custom-min.js</js></action>
       <action method="addJs"><js>trademe/matching.js</js></action>
       <action method="addJs"><js>trademe/uitablefilter.js</js></action>
       <action method="addJs"><js>trademe/categories.js</js></action>
