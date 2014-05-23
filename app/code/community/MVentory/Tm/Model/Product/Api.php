@@ -252,12 +252,6 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
         $website
       );
 
-      //!!!TODO: move to a separate extension; add event here for it
-      $data['tm_relist'] = (bool) $helper->getConfig(
-        MVentory_TradeMe_Model_Config::ENABLE_LISTING,
-        $website
-      );
-
       //Use admin store ID to save values of attributes in the default scope
       $id = $this->create(
         $type,

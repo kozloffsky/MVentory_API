@@ -120,6 +120,16 @@
         </observers>
       </model_config_data_save_before>
 
+      <catalog_product_save_before>
+        <observers>
+          <trademe_set_allow_listing_flag>
+            <type>singleton</type>
+            <class>MVentory_TradeMe_Model_Observer</class>
+            <method>setAllowListingFlag</method>
+          </trademe_set_allow_listing_flag>
+        </observers>
+      </catalog_product_save_before>
+
       <mventory_api_product_info>
         <observers>
           <trademe_remove_listing>

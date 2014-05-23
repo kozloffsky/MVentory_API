@@ -684,6 +684,23 @@ class MVentory_TradeMe_Model_Observer {
       ->setData($product);
   }
 
+  public function setAllowListingFlag ($observer) {
+    $product = $observer->getProduct();
+
+    if ($product->getId())
+      return;
+
+    $helper = Mage::helper('mventory_tm');
+
+    $product->setData(
+      'tm_relist',
+      (bool) $helper->getConfig(
+        MVentory_TradeMe_Model_Config::ENABLE_LISTING,
+        $helper->getCurrentWebsite()
+      )
+    );
+  }
+
   /**
    * !!!TODO: remove after the app upgrade. This is for compatibility with
    * old versions of the app
