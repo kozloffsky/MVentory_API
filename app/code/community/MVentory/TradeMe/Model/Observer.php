@@ -190,8 +190,8 @@ class MVentory_TradeMe_Model_Observer {
         ->addAttributeToSelect('tm_relist')
         ->addAttributeToSelect('price')
         ->addAttributeToFilter('type_id', 'simple')
-        ->addFieldToFilter('tm_current_listing_id', array('neq' => ''))
-        ->addFieldToFilter('tm_current_account_id', array('eq' => $accountId))
+        ->addAttributeToFilter('tm_current_listing_id', array('neq' => ''))
+        ->addAttributeToFilter('tm_current_account_id', $accountId)
         ->addStoreFilter($store);
 
       //!!!Commented to allow loading out of stock products
