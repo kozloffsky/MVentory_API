@@ -166,8 +166,6 @@ class MVentory_Tm_Block_Product_View_Attributes
       }
     }
 
-    unset($data['tm_listing_id']);
-
     return $data;
   }
 }

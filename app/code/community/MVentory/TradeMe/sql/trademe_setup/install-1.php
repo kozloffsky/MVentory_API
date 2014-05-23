@@ -43,7 +43,6 @@ $attrs = array(
     'global' => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
 
     //Fields from Mage_Catalog_Model_Resource_Setup
-    'visible_on_front' => true,
     'used_in_product_listing' => true,
     'is_configurable' => false
   ),
