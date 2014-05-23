@@ -80,11 +80,6 @@
             <acl>mventory/statistics</acl>
           </statistics>
 
-          <submitToTM translate="title" module="mventory_tm">
-            <title>Send product to TM</title>
-            <acl>mventory/catalog/product/submit_to_tm</acl>
-          </submitToTM>
-
           <update>
             <acl>mventory/catalog/product/update</acl>
           </update>
@@ -93,13 +88,6 @@
             <acl>mventory/catalog/product/delete</acl>
           </delete>
         </methods>
-
-        <faults module="mventory_tm">
-          <unable_to_match_tm_category>
-            <code>201</code>
-            <message>Unable to match TM category</message>
-          </unable_to_match_tm_category>
-        </faults>
       </catalog_product>
 
       <catalog_product_attribute>
