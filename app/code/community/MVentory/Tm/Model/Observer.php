@@ -332,10 +332,21 @@ EOT;
   }
 
   public function hideProductsWithoutSmallImages ($observer) {
-    $observer
-      ->getCollection()
-      ->addAttributeToFilter('small_image',
-                             array('nin' => array('no_selection', '')));
+    $collection = $observer->getCollection();
+
+    //Apply filter for 'small_image' only if there's no other filters for
+    //the attribute in the collection
+    $select = $collection->getSelect();
+    $wherePart = $select->getPart(Zend_Db_Select::WHERE);
+
+    foreach ($wherePart as $i => $condition)
+      if (strpos($condition, 'small_image') !== false)
+        return;
+
+    $collection->addAttributeToFilter(
+      'small_image',
+      array('nin' => array('no_selection', ''))
+    );
   }
 
   /**
