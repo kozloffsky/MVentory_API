@@ -63,15 +63,17 @@ EOT;
     if (!$cid = $customer->getId())
       return $this->_redirect('adminhtml/customer');
 
-    $isValid = 0;
+    $address = $customer->getPrimaryBillingAddress();
 
-    foreach ($customer->getPrimaryAddresses() as $address)
-      if ($address->validate())
-        $isValid
-          += $address->getIsPrimaryBilling() + $address->getIsPrimaryShipping();
-
-    if ($isValid != 2)
+    if (!($address && $address->getId()))
       return $this->_redirectToCustomer($cid, self::_NO_ADDRESS, 'error');
+
+    $address = $customer->getPrimaryShippingAddress();
+
+    if (!($address && $address->getId()))
+      return $this->_redirectToCustomer($cid, self::_NO_ADDRESS, 'error');
+
+    unset($address);
 
     $user = Mage::getModel('api/user')->loadByUsername($cid);
 
