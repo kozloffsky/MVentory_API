@@ -327,16 +327,6 @@
           </tm_add_switcher>
         </observers>
       </controller_action_layout_generate_blocks_after>
-
-      <catalog_block_product_list_collection>
-        <observers>
-          <tm_hide_products_without_small_image>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>hideProductsWithoutSmallImages</method>
-          </tm_hide_products_without_small_image>
-        </observers>
-      </catalog_block_product_list_collection>
     </events>
   </frontend>
 

@@ -331,24 +331,6 @@ EOT;
       $apiUser->setId(null);
   }
 
-  public function hideProductsWithoutSmallImages ($observer) {
-    $collection = $observer->getCollection();
-
-    //Apply filter for 'small_image' only if there's no other filters for
-    //the attribute in the collection
-    $select = $collection->getSelect();
-    $wherePart = $select->getPart(Zend_Db_Select::WHERE);
-
-    foreach ($wherePart as $i => $condition)
-      if (strpos($condition, 'small_image') !== false)
-        return;
-
-    $collection->addAttributeToFilter(
-      'small_image',
-      array('nin' => array('no_selection', ''))
-    );
-  }
-
   /**
    * Unset is_duplicate flag to prevent coping image files
    * in Mage_Catalog_Model_Product_Attribute_Backend_Media::beforeSave() method
