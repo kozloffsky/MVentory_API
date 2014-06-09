@@ -115,12 +115,12 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
     $productApi = Mage::getModel('mventory_tm/product_api');
 
     if (!in_array('image', $image['types']))
-      $productApi->fullInfo($productId, $identifierType);
+      return $productApi->fullInfo($productId, $identifierType);
 
     $images = $this->items($productId, null, $identifierType);
 
     if (!$images)
-      $productApi->fullInfo($productId, $identifierType);
+      return $productApi->fullInfo($productId, $identifierType);
 
     $this->update(
       $productId,
