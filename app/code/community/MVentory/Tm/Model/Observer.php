@@ -493,7 +493,17 @@ EOT;
     } else
       $configurable->delete();
 
-    $product->setVisibility(4);
+    //Set visibility of the product to 'Catalog, Search' value if it has images
+    //otherwise use the value of Product visibility setting
+    //from the product's website
+    $product->setVisibility(
+      $helper->getImages($product, null, false)
+        ? Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH
+          : (int) $helper->getConfig(
+              MVentory_Tm_Model_Config::_API_VISIBILITY,
+              $helper->getWebsite($product)
+            )
+    );
   }
 
   public function removeSimilar ($observer) {

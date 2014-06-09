@@ -104,6 +104,18 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
 
     $productApi = Mage::getModel('mventory_tm/product_api');
 
+    //Set product's visibility to 'catalog and search' if product doesn't have
+    //small image before addind the image
+    if (!$hasSmallImage)
+      $productApi->update(
+        $productId,
+        array(
+          'visibility' => Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH
+        ),
+        null,
+        $identifierType
+      );
+
     return $productApi->fullInfo($productId, $identifierType);
   }
 
@@ -111,15 +123,27 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
     $image = $this->info($productId, $file, null, $identifierType);
 
     $this->remove($productId, $file, $identifierType);
+    $images = $this->items($productId, null, $identifierType);
 
     $productApi = Mage::getModel('mventory_tm/product_api');
 
-    if (!in_array('image', $image['types']))
+    if (!$images) {
+      $helper = Mage::helper('mventory_tm/product');
+
+      $productApi->update(
+        $productId,
+        array('visibility' => (int) $helper->getConfig(
+          MVentory_Tm_Model_Config::_API_VISIBILITY,
+          $helper->getWebsite($productId)
+        )),
+        null,
+        $identifierType
+      );
+
       return $productApi->fullInfo($productId, $identifierType);
+    }
 
-    $images = $this->items($productId, null, $identifierType);
-
-    if (!$images)
+    if (!in_array('image', $image['types']))
       return $productApi->fullInfo($productId, $identifierType);
 
     $this->update(

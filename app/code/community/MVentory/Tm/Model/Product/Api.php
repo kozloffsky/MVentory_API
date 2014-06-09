@@ -242,10 +242,13 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $data['mv_created_userid'] = $helper->getApiUser()->getId();
       $data['website_ids'] = $helper->getWebsitesForProduct();
 
-      //Set visibility to "Catalog, Search" value
-      $data['visibility'] = 4;
-
       $website = $helper->getCurrentWebsite();
+
+      //Set visibility to website's default value
+      $data['visibility'] = (int) $helper->getConfig(
+        MVentory_Tm_Model_Config::_API_VISIBILITY,
+        $website
+      );
 
       $data['tax_class_id'] = (int) $helper->getConfig(
         self::TAX_CLASS_PATH,
