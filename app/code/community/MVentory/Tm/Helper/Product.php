@@ -329,7 +329,10 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
    * @return array
    */
   public function getImages ($product, $backend = null, $fileAsKey = true) {
-    $gallery = $product->getMediaGallery('images');
+    $gallery = is_array($gallery = $product->getMediaGallery('images'))
+                 ? $gallery
+                   : null;
+
 
     if (!$gallery && $product->getId()) {
       if (!$backend)
