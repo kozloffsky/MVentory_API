@@ -122,6 +122,18 @@
               <sort_order>6</sort_order>
             </lost_category>
 
+            <product_visiblity translate="label">
+              <label>Default product visibility</label>
+              <frontend_type>select</frontend_type>
+              <source_model>mventory_tm/system_config_source_visibility</source_model>
+
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+
+              <sort_order>7</sort_order>
+            </product_visiblity>
+
             <root_website translate="label">
               <label>Root Website</label>
               <frontend_type>select</frontend_type>
@@ -131,7 +143,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>7</sort_order>
+              <sort_order>8</sort_order>
             </root_website>
 
             <default_role translate="label">
@@ -142,7 +154,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>8</sort_order>
+              <sort_order>9</sort_order>
             </default_role>
 
             <apply_rules translate="label">
@@ -154,7 +166,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
 
-              <sort_order>9</sort_order>
+              <sort_order>10</sort_order>
             </apply_rules>
           </fields>
         </api>

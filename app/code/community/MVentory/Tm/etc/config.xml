@@ -462,6 +462,7 @@
         <app_profile_link_lifetime>1440</app_profile_link_lifetime>
         <default_role>mVentory</default_role>
         <apply_rules>0</apply_rules>
+        <product_visiblity>1</product_visiblity>
       </api>
     </mventory_tm>
 
