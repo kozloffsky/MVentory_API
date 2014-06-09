@@ -620,12 +620,14 @@ EOT;
     //attributes in the product to preserve them.
     //The images is saved in saveImagesAfterMerge() method after
     //the product is saved
-    $data = array(
-      'images' => Mage::helper('mventory_tm/image')->getUniques($_products),
-      'values' => $helper->getMediaAttrs($_products)
-    );
+    if ($images = Mage::helper('mventory_tm/image')->getUniques($_products)) {
+      $data = array(
+        'images' => $images,
+        'values' => $helper->getMediaAttrs($_products)
+      );
 
-    $product->setData('mventory_add_images', $data);
+      $product->setData('mventory_add_images', $data);
+    }
 
     //On product duplicate Magento copies image DB records from original product
     //to duplicate one (records are shared). If the duplicate is similar
