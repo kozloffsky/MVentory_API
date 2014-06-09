@@ -125,9 +125,10 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
     $this->update(
       $productId,
       $images[0]['file'],
-      array('types' => array_keys(
-        array_flip($images[0]['types']) + array_flip($image['types'])
-      )),
+      array(
+        'types' => array('image', 'small_image', 'thumbnail'),
+        'exclude' => 0
+      ),
       null,
       $identifierType
     );
