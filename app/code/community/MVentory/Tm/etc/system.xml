@@ -50,9 +50,10 @@
           <sort_order>2</sort_order>
 
           <fields>
-            <products-number-to-fetch  translate="label">
+            <products-number-to-fetch  translate="label comment">
               <label>Number of products to fetch</label>
               <frontend_type>text</frontend_type>
+              <comment>To appear in the products screen in phone app</comment>
 
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
@@ -76,8 +77,9 @@
               <sort_order>2</sort_order>
             </add_to_websites>
 
-            <tax_class translate="label">
+            <tax_class translate="label comment">
               <label>Default tax</label>
+              <comment>Default tax for products created via the phone app</comment>
 
               <frontend_type>select</frontend_type>
               <source_model>tax/class_source_product</source_model>
@@ -89,8 +91,9 @@
               <sort_order>3</sort_order>
             </tax_class>
 
-            <cart-item-lifetime translate="label">
+            <cart-item-lifetime translate="label comment">
               <label>Cart item lifetime (minutes)</label>
+              <comment>Time before a product is removed from the phone app cart</comment>
               <frontend_type>text</frontend_type>
 
               <show_in_default>1</show_in_default>
@@ -100,8 +103,9 @@
               <sort_order>4</sort_order>
             </cart-item-lifetime>
 
-            <app_profile_link_lifetime translate="label">
+            <app_profile_link_lifetime translate="label comment">
               <label>Lifetime of the link to the app profile (minutes)</label>
+              <comment>Lifetime of the app configuration link for new mVentory users</comment>
               <frontend_type>text</frontend_type>
 
               <show_in_default>1</show_in_default>
@@ -111,8 +115,9 @@
               <sort_order>5</sort_order>
             </app_profile_link_lifetime>
 
-            <lost_category translate="label">
+            <lost_category translate="label comment">
               <label>Default category ID</label>
+              <comment>Category for products without matching category mapping rules</comment>
               <frontend_type>text</frontend_type>
 
               <show_in_default>1</show_in_default>
@@ -122,8 +127,9 @@
               <sort_order>6</sort_order>
             </lost_category>
 
-            <product_visiblity translate="label">
+            <product_visiblity translate="label comment">
               <label>Default product visibility</label>
+              <comment>Applies to products without photos that have been created via the phone app</comment>
               <frontend_type>select</frontend_type>
               <source_model>mventory_tm/system_config_source_visibility</source_model>
 
@@ -134,8 +140,9 @@
               <sort_order>7</sort_order>
             </product_visiblity>
 
-            <root_website translate="label">
-              <label>Root Website</label>
+            <root_website translate="label comment">
+              <label>Parent Website</label>
+              <comment>Select No, unless directed otherwise</comment>
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
 
@@ -146,8 +153,9 @@
               <sort_order>8</sort_order>
             </root_website>
 
-            <default_role translate="label">
+            <default_role translate="label comment">
               <label>Default API role</label>
+              <comment>Default API role name for new mVentory API users</comment>
               <frontend_type>text</frontend_type>
 
               <show_in_default>1</show_in_default>
@@ -157,8 +165,9 @@
               <sort_order>9</sort_order>
             </default_role>
 
-            <apply_rules translate="label">
-              <label>Apply rules on product save in the admin interface</label>
+            <apply_rules translate="label comment">
+              <label>Apply mVentory API rules on product save in the admin interface</label>
+              <comment>e.g. category mapping rules, automatic product naming rules</comment>
               <frontend_type>select</frontend_type>
               <source_model>adminhtml/system_config_source_yesno</source_model>
 
@@ -169,6 +178,7 @@
               <sort_order>10</sort_order>
             </apply_rules>
           </fields>
+          <comment><![CDATA[<B>WARNING:</B> Additional options require configuration at website level.]]></comment>
         </api>
 
         <qr translate="label">
