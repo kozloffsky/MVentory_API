@@ -292,9 +292,12 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
   }
 
   public function isObserverDisabled ($observer) {
-    return !$this->getConfig(
+    $isApiRequest = Mage::getSingleton('api/server')->getAdapter() != null;
+    $applyRules = (bool) $this->getConfig(
       self::_APPLY_RULES,
       Mage::helper('mventory_tm/product')->getWebsite($observer->getProduct())
     );
+
+    return !($isApiRequest || $applyRules);
   }
 }
