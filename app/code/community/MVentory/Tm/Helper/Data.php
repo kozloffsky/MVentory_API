@@ -24,7 +24,6 @@
  */
 class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
 
-  const ADD_TO_WEBSITES_PATH = 'mventory_tm/api/add_to_websites';
   const _APPLY_RULES = 'mventory_tm/api/apply_rules';
 
   protected $_baseMediaUrl = null;
@@ -120,20 +119,10 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
   }
 
   /**
-   * !!!TODO: move to product helper
+   * !!!TODO: remove method; fix dependent code
    */
   public function getWebsitesForProduct () {
-    $website = $this->getCurrentWebsite();
-
-    $websites = $this->getConfig(self::ADD_TO_WEBSITES_PATH, $website);
-    $websites = explode(',', $websites);
-
-    $website = $website->getId();
-
-    if (!in_array($website, $websites))
-      $websites[] = $website;
-
-    return $websites;
+    return $this->getCurrentWebsite();
   }
 
   /**

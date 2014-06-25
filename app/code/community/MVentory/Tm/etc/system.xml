@@ -62,21 +62,6 @@
               <sort_order>1</sort_order>
             </products-number-to-fetch>
 
-            <add_to_websites translate="label comment">
-              <label>Add product to websites</label>
-              <comment>Hold Ctrl to select multiple categories</comment>
-
-              <frontend_type>multiselect</frontend_type>
-              <source_model>mventory_tm/system_config_source_addtowebsite</source_model>
-              <!--<backend_model>mventory_tm/config_data_websites</backend_model>-->
-
-              <show_in_default>0</show_in_default>
-              <show_in_website>1</show_in_website>
-              <show_in_store>0</show_in_store>
-
-              <sort_order>2</sort_order>
-            </add_to_websites>
-
             <tax_class translate="label comment">
               <label>Default tax</label>
               <comment>Default tax for products created via the phone app</comment>
