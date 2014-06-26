@@ -8,7 +8,7 @@ mVentory API extension for Magento provides the [mVentory Android app](https://p
 
 *This extension requires [mVentory_jQuery](https://github.com/mVentory/MVentory_jQuery). Please install it first.*
 
-Install mVentory_TM extension using standard Magento Extension installation process. Log out of the admin and log back in if you do not see or cannot access mVentory API configuration options in _Configuration_ -> _System_.
+Install mVentory_API extension using standard Magento Extension installation process. Log out of the admin and log back in if you do not see or cannot access mVentory API configuration options in _Configuration_ -> _System_.
 
 ## Configuration
 
