@@ -33,7 +33,7 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
 
   public function __construct() {
     parent::__construct();
-    $this->setTemplate('mventory_tm/dashboard/tab/stock.phtml');
+    $this->setTemplate('mventory/dashboard/tab/stock.phtml');
   }
 
   /**
