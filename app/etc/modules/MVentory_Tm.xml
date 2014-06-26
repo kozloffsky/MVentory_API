@@ -19,10 +19,10 @@
 -->
 
 <config>
-    <modules>
-        <MVentory_Tm>
-            <active>true</active>
-            <codePool>community</codePool>
-        </MVentory_Tm>
-    </modules>
+  <modules>
+    <MVentory_Tm>
+      <active>true</active>
+      <codePool>community</codePool>
+    </MVentory_Tm>
+  </modules>
 </config>
