@@ -80,8 +80,7 @@ class MVentory_API_Block_Carrier_Volumerate_Grid
    * @return Mage_Adminhtml_Block_Widget_Grid
    */
   protected function _prepareColumns () {
-    $helper = Mage::helper('adminhtml');
-    $tmHelper = Mage::helper('mventory');
+    $helper = Mage::helper('mventory');
 
     $columns = array(
       'shipping_type' => array(
@@ -104,11 +103,11 @@ class MVentory_API_Block_Carrier_Volumerate_Grid
         'default' => '*',
       ),
       'weight' => array(
-        'header' => $tmHelper->__('Weight'),
+        'header' => $helper->__('Weight'),
         'index' => 'weight',
       ),
       'volume' => array(
-        'header' => $tmHelper->__('Volume'),
+        'header' => $helper->__('Volume'),
         'index' => 'volume',
       ),
       'price' => array(
