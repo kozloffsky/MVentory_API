@@ -129,23 +129,23 @@
     <events>
       <catalog_product_save_before>
         <observers>
-          <mventory_tm_product_save_before>
+          <mventory_populate_attributes>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>populateAttributes</method>
-          </mventory_tm_product_save_before>
+          </mventory_populate_attributes>
 
-          <mventory_tm_save_product_create_date>
+          <mventory_save_product_create_date>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>saveProductCreateDate</method>
-          </mventory_tm_save_product_create_date>
+          </mventory_save_product_create_date>
 
-          <tm_match_category>
+          <mventory_match_category>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>matchCategory</method>
-          </tm_match_category>
+          </mventory_match_category>
 
           <mventory_save_attributes_hash>
             <type>singleton</type>
@@ -175,11 +175,11 @@
 
       <catalog_product_save_after>
         <observers>
-           <mventory_images_reset_ids>
+           <mventory_save_images_after_merge>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>saveImagesAfterMerge</method>
-          </mventory_images_reset_ids>
+          </mventory_save_images_after_merge>
 
           <mventory_assign_to_configurable_after>
             <type>singleton</type>
@@ -209,11 +209,11 @@
 
       <catalog_model_product_duplicate>
         <observers>
-          <tm_product_unset_duplicate_flag>
+          <mventory_unset_duplicate_flag_in_product>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>unsetDuplicateFlagInProduct</method>
-          </tm_product_unset_duplicate_flag>
+          </mventory_unset_duplicate_flag_in_product>
 
           <mventory_update_duplicate>
             <type>singleton</type>
@@ -232,11 +232,11 @@
             <method>resetExcludeFlag</method>
           </mventory_reset_exclude_flag>
 
-          <tm_product_restore_duplicate_flag>
+          <mventory_restore_duplicate_flag_in_product>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>restoreDuplicateFlagInProduct</method>
-          </tm_product_restore_duplicate_flag>
+          </mventory_restore_duplicate_flag_in_product>
 
           <mventory_sync_images>
             <type>singleton</type>
@@ -248,11 +248,11 @@
 
       <catalog_controller_product_init>
         <observers>
-          <mventory_tm_product_init>
+          <mventory_product_init>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>productInit</method>
-          </mventory_tm_product_init>
+          </mventory_product_init>
         </observers>
       </catalog_controller_product_init>
 
@@ -268,32 +268,32 @@
 
       <adminhtml_catalog_product_grid_prepare_massaction>
         <observers>
-          <mventory_tm_product_name_rebuild>
+          <mventory_add_product_name_rebuild_massaction>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>addProductNameRebuildMassaction</method>
-          </mventory_tm_product_name_rebuild>
+          </mventory_add_product_name_rebuild_massaction>
 
-          <mventory_tm_product_attributes_populate>
+          <mventory_add_product_attributes_populate_massaction>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>addProductAttributesPopulateMassaction</method>
-          </mventory_tm_product_attributes_populate>
+          </mventory_add_product_attributes_populate_massaction>
 
-          <tm_product_category_match>
+          <mventory_add_product_category_match_massaction>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>addProductCategoryMatchMassaction</method>
-          </tm_product_category_match>
+          </mventory_add_product_category_match_massaction>
         </observers>
       </adminhtml_catalog_product_grid_prepare_massaction>
     </events>
 
     <rewrite>
-      <mventory_tm_qr_get>
+      <mventory_qr_scan>
         <from><![CDATA[#^/sku/#]]></from>
         <to><![CDATA[/mventory/qr/scan/sku/]]></to>
-      </mventory_tm_qr_get>
+      </mventory_qr_scan>
       <mventory_app_config>
         <from><![CDATA[#^/mventory-key/(.*)\.txt$#]]></from>
         <to><![CDATA[/mventory/app/profile/key/$1/]]></to>
@@ -317,32 +317,32 @@
 
   <admin>
     <routers>
-      <mventory_tm_adminhtml>
+      <mventory_adminhtml>
         <use>admin</use>
         <args>
           <module>MVentory_Tm</module>
           <frontName>mventory</frontName>
         </args>
-      </mventory_tm_adminhtml>
+      </mventory_adminhtml>
     </routers>
   </admin>
 
   <frontend>
     <routers>
-      <mventory_tm>
+      <mventory>
         <use>standard</use>
         <args>
           <module>MVentory_Tm</module>
           <frontName>mventory</frontName>
         </args>
-      </mventory_tm>
+      </mventory>
     </routers>
 
     <layout>
       <updates>
-        <page-tm-additions>
+        <mventory>
           <file>mventory.xml</file>
-        </page-tm-additions>
+        </mventory>
       </updates>
     </layout>
   </frontend>
@@ -357,7 +357,7 @@
                 <config>
                   <children>
                     <mventory>
-                      <title>mVentory Tm</title>
+                      <title>mVentory API</title>
                     </mventory>
                   </children>
                 </config>
@@ -391,21 +391,21 @@
 
       <api_user_authenticated>
         <observers>
-          <tm_check_access_to_website>
+          <mventory_check_access_to_website>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>checkAccessToWebsite</method>
-          </tm_check_access_to_website>
+          </mventory_check_access_to_website>
         </observers>
       </api_user_authenticated>
 
       <controller_action_layout_render_before_adminhtml_catalog_product_set_edit>
         <observers>
-          <tm_add_mathing_rules_block>
+          <mventory_add_mathing_rules_block>
             <type>singleton</type>
             <class>mventory/observer</class>
             <method>addMatchingRulesBlock</method>
-          </tm_add_mathing_rules_block>
+          </mventory_add_mathing_rules_block>
         </observers>
       </controller_action_layout_render_before_adminhtml_catalog_product_set_edit>
 
