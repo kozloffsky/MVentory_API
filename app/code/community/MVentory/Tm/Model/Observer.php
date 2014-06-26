@@ -90,7 +90,7 @@ EOT;
   public function addProductNameRebuildMassaction ($observer) {
     $block = $observer->getBlock();
 
-    $route = 'mventory_tm/catalog_product/massNameRebuild';
+    $route = 'mventory/catalog_product/massNameRebuild';
 
     $label = Mage::helper('mventory')->__('Rebuild product name');
     $url = $block->getUrl($route, array('_current' => true));
@@ -106,7 +106,7 @@ EOT;
   public function addProductAttributesPopulateMassaction ($observer) {
     $block = $observer->getBlock();
 
-    $route = 'mventory_tm/catalog_product/massAttributesPopulate';
+    $route = 'mventory/catalog_product/massAttributesPopulate';
 
     $label = Mage::helper('mventory')->__('Populate product attributes');
     $url = $block->getUrl($route, array('_current' => true));
@@ -119,7 +119,7 @@ EOT;
   public function addProductCategoryMatchMassaction ($observer) {
     $block = $observer->getBlock();
 
-    $route = 'mventory_tm/catalog_product/massCategoryMatch';
+    $route = 'mventory/catalog_product/massCategoryMatch';
 
     $label = Mage::helper('mventory')->__('Match product category');
     $url = $block->getUrl($route, array('_current' => true));
@@ -979,7 +979,7 @@ EOT;
 
     if ($block instanceof Mage_Adminhtml_Block_Customer_Edit) {
       $url = $block->getUrl(
-        'mventory_tm/customer/createapiuser',
+        'mventory/customer/createapiuser',
         array(
           '_current' => true,
           'id' => $block->getCustomerId(),
@@ -1017,7 +1017,7 @@ EOT;
       return;
 
     $url = $block->getUrl(
-        'mventory_tm/attribute/convert',
+        'mventory/attribute/convert',
         array(
           '_current' => true,
           //'id' => $id

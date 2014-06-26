@@ -292,15 +292,15 @@
     <rewrite>
       <mventory_tm_qr_get>
         <from><![CDATA[#^/sku/#]]></from>
-        <to><![CDATA[/mventory_tm/qr/scan/sku/]]></to>
+        <to><![CDATA[/mventory/qr/scan/sku/]]></to>
       </mventory_tm_qr_get>
       <mventory_app_config>
         <from><![CDATA[#^/mventory-key/(.*)\.txt$#]]></from>
-        <to><![CDATA[/mventory_tm/app/profile/key/$1/]]></to>
+        <to><![CDATA[/mventory/app/profile/key/$1/]]></to>
       </mventory_app_config>
       <mventory_app_config_redirect>
         <from><![CDATA[#^/mventory-key/(.*)$#]]></from>
-        <to><![CDATA[/mventory_tm/app/redirect/key/$1/]]></to>
+        <to><![CDATA[/mventory/app/redirect/key/$1/]]></to>
       </mventory_app_config_redirect>
     </rewrite>
 
@@ -321,7 +321,7 @@
         <use>admin</use>
         <args>
           <module>MVentory_Tm</module>
-          <frontName>mventory_tm</frontName>
+          <frontName>mventory</frontName>
         </args>
       </mventory_tm_adminhtml>
     </routers>
@@ -333,7 +333,7 @@
         <use>standard</use>
         <args>
           <module>MVentory_Tm</module>
-          <frontName>mventory_tm</frontName>
+          <frontName>mventory</frontName>
         </args>
       </mventory_tm>
     </routers>

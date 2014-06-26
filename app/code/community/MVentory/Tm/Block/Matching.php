@@ -135,9 +135,9 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
       'ajax' => true
     );
 
-    $addrule = $this->getUrl('mventory_tm/matching/append/', $params);
-    $remove = $this->getUrl('mventory_tm/matching/remove/', $params);
-    $reorder = $this->getUrl('mventory_tm/matching/reorder/', $params);
+    $addrule = $this->getUrl('mventory/matching/append/', $params);
+    $remove = $this->getUrl('mventory/matching/remove/', $params);
+    $reorder = $this->getUrl('mventory/matching/reorder/', $params);
 
     return Mage::helper('core')->jsonEncode(compact('addrule',
                                                     'remove',
