@@ -95,7 +95,6 @@
       <core>
         <rewrite>
           <convert>MVentory_Tm_Model_Core_Convert</convert>
-          <design_package>MVentory_Tm_Model_Design_Package</design_package>
         </rewrite>
       </core>
     </models>
@@ -315,20 +314,6 @@
       </types>
     </cache>
   </global>
-
-  <frontend>
-    <events>
-      <controller_action_layout_generate_blocks_after>
-        <observers>
-          <tm_add_switcher>
-            <type>singleton</type>
-            <class>mventory_tm/observer</class>
-            <method>addSiteSwitcher</method>
-          </tm_add_switcher>
-        </observers>
-      </controller_action_layout_generate_blocks_after>
-    </events>
-  </frontend>
 
   <admin>
     <routers>

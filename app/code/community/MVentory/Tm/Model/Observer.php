@@ -129,38 +129,6 @@ EOT;
       ->addItem('categorymatch', compact('label', 'url'));
   }
 
-  public function addSiteSwitcher ($observer) {
-    $layout = $observer->getEvent()->getLayout();
-
-    $storeId = Mage::app()->getStore()->getId();
-    $code = 'site_version_' . $storeId;
-
-    $session = Mage::getSingleton('core/session');
-
-    $cookieValue = Mage::getModel('core/cookie')->get($code);
-    $sessionValue = $session->getData($code);
-
-    $identifier = 'desktop_footer_links_';
-
-    //Check current site version
-    if ($cookieValue == 'mobile'
-        || ($cookieValue === false && $sessionValue == 'mobile')) {
-      $session->unsetData($code);
-
-      $identifier = 'mobile_footer_links_';
-    }
-
-    $identifier .= $storeId;
-    //Append cms block to the footer
-    $block = $layout
-               ->createBlock('cms/block')
-               ->setBlockId($identifier);
-
-    //Check if footer block exists. It doesn't exist in AJAX requests
-    if ($footer = $layout->getBlock('footer'))
-      $footer->append($block);
-  }
-
   public function syncImages ($observer) {
     $product = $observer->getProduct();
 
