@@ -342,7 +342,7 @@ EOT;
                  ->getEvent()
                  ->getProduct();
 
-    if ($product->getTmCategoryMatched())
+    if ($product->getIsMventoryCategoryMatched())
       return;
 
     $result = Mage::getModel('mventory/matching')->matchCategory($product);

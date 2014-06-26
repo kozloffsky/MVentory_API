@@ -301,7 +301,7 @@ class MVentory_API_Model_Product_Action extends Mage_Core_Model_Abstract {
       if ($category) {
         $product
           ->setCategoryIds((string) $category)
-          ->setTmCategoryMatched(true)
+          ->setIsMventoryCategoryMatched(true)
           ->save();
 
         $n++;
