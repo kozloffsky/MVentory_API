@@ -11,7 +11,7 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/API
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
@@ -20,7 +20,7 @@
  * Button for exporting rates in CSV format for the volume based shipping
  * carrier
  *
- * @package MVentory/TM
+ * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
 class MVentory_Tm_Block_System_Config_Form_Field_Exportrates

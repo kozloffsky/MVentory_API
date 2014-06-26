@@ -11,7 +11,7 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/API
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
@@ -19,7 +19,7 @@
 /**
  * Sales order shippment API
  *
- * @package MVentory/TM
+ * @package MVentory/API
  */
 class MVentory_Tm_Model_Order_Shipment_Api extends Mage_Sales_Model_Order_Shipment_Api {
 

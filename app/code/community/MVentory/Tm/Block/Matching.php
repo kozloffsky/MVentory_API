@@ -11,7 +11,7 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/API
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
@@ -19,7 +19,7 @@
 /**
  * Block for list of category matching rules
  *
- * @package MVentory/TM
+ * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
 class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {

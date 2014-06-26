@@ -11,7 +11,7 @@
  *
  * See http://mventory.com/legal/licensing/ for other licensing options.
  *
- * @package MVentory/TM
+ * @package MVentory/API
  * @copyright Copyright (c) 2014 mVentory Ltd. (http://mventory.com)
  * @license http://creativecommons.org/licenses/by-nc-nd/4.0/
  */
@@ -19,7 +19,7 @@
 /**
  * Controller for product attribute
  *
- * @package MVentory/TM
+ * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
 class MVentory_Tm_AttributeController extends Mage_Adminhtml_Controller_Action
