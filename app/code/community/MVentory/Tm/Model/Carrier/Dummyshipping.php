@@ -31,7 +31,7 @@ class MVentory_API_Model_Carrier_Dummyshipping
 
   public function collectRates (Mage_Shipping_Model_Rate_Request $request) {
     if (!((Mage::getSingleton('api/server')->getAdapter() != null
-           || Mage::registry('tm_allow_dummyshipping'))
+           || Mage::registry('mventory_allow_dummyshipping'))
           && $this->getConfigFlag('active')))
       return false;
 

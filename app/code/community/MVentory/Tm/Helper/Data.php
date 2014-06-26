@@ -79,7 +79,7 @@ class MVentory_API_Helper_Data extends Mage_Core_Helper_Abstract {
    * @return null|Mage_Customer_Model_Customer
    */
   public function getCustomerByApiUser ($user = null) {
-    $customerId = Mage::registry('tm_api_customer');
+    $customerId = Mage::registry('mventory_api_customer');
 
     if ($customerId === null) {
       if (!$user && !($user = $this->getApiUser()))
