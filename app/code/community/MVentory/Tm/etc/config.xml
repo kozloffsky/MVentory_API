@@ -118,12 +118,12 @@
     </helpers>
 
     <resources>
-      <mventory_tm_setup>
+      <mventory_setup>
         <setup>
           <module>MVentory_Tm</module>
           <class>MVentory_Tm_Model_Resource_Setup</class>
         </setup>
-      </mventory_tm_setup>
+      </mventory_setup>
     </resources>
 
     <events>
