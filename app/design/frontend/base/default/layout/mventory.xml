@@ -21,7 +21,7 @@
 <layout version="0.1.0">
   <default>
     <reference name="head">
-      <action method="addCss"><stylesheet>css/mventory-tm/styles.css</stylesheet></action>
+      <action method="addCss"><stylesheet>mventory/css/styles.css</stylesheet></action>
     </reference>
   </default>
 </layout>
