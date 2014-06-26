@@ -27,7 +27,7 @@
   </tabs>
 
   <sections>
-    <mventory_tm translate="label">
+    <mventory translate="label">
       <label>API</label>
       <tab>mventory</tab>
       <frontend_type>text</frontend_type>
@@ -263,7 +263,7 @@
           </fields>
         </qr>
       </groups>
-    </mventory_tm>
+    </mventory>
 
     <carriers>
       <groups>

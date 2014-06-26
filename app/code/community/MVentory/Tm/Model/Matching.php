@@ -27,7 +27,6 @@ class MVentory_Tm_Model_Matching
   implements IteratorAggregate {
 
   const DEFAULT_RULE_ID = 'mventory_default_rule';
-  const LOST_CATEGORY_PATH = 'mventory_tm/api/lost_category';
 
   /**
    * Initialize resource mode
@@ -151,7 +150,7 @@ class MVentory_Tm_Model_Matching
   protected function _getLostCategoryId ($product) {
     $helper = Mage::helper('mventory/product');
 
-    return $helper->getConfig(self::LOST_CATEGORY_PATH,
+    return $helper->getConfig(MVentory_Tm_Model_Config::_LOST_CATEGORY,
                               $helper->getWebsite($product));
   }
 

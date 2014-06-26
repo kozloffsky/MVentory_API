@@ -356,9 +356,9 @@
               <children>
                 <config>
                   <children>
-                    <mventory_tm>
+                    <mventory>
                       <title>mVentory Tm</title>
-                    </mventory_tm>
+                    </mventory>
                   </children>
                 </config>
               </children>
@@ -430,7 +430,7 @@
   </adminhtml>
 
   <default>
-    <mventory_tm>
+    <mventory>
       <qr>
         <rows>10</rows>
         <columns>15</columns>
@@ -449,7 +449,7 @@
         <apply_rules>0</apply_rules>
         <product_visiblity>1</product_visiblity>
       </api>
-    </mventory_tm>
+    </mventory>
 
     <carriers>
       <dummyshipping>

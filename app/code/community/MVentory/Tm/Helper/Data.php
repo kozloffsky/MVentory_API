@@ -24,8 +24,6 @@
  */
 class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
 
-  const _APPLY_RULES = 'mventory_tm/api/apply_rules';
-
   protected $_baseMediaUrl = null;
 
   public function getCurrentWebsite () {
@@ -283,7 +281,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
   public function isObserverDisabled ($observer) {
     $isApiRequest = Mage::getSingleton('api/server')->getAdapter() != null;
     $applyRules = (bool) $this->getConfig(
-      self::_APPLY_RULES,
+      MVentory_Tm_Model_Config::_APPLY_RULES,
       Mage::helper('mventory/product')->getWebsite($observer->getProduct())
     );
 

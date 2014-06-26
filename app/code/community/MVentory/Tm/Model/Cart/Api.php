@@ -24,8 +24,6 @@
  */
 class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
-  const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
-
   public function createOrderForProduct ($sku, $price, $qty, $customerId,
                                          $transactionId = null, $name = null,
                                          $taxClass = null) {
@@ -65,8 +63,10 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
     if (!$productId) {
       if ($taxClass == null)
-        $taxClass = (int) $helper->getConfig(self::TAX_CLASS_PATH,
-                                             $helper->getCurrentWebsite());
+        $taxClass = (int) $helper->getConfig(
+          MVentory_Tm_Model_Config::_TAX_CLASS,
+          $helper->getCurrentWebsite()
+        );
 
       $product
         ->setWebsiteIds($helper->getWebsitesForProduct())
@@ -538,7 +538,9 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
   function getCart()
   {
-    $cartItemLifeTime = Mage::getStoreConfig('mventory_tm/api/cart-item-lifetime');
+    $cartItemLifeTime = Mage::getStoreConfig(
+      MVentory_Tm_Model_Config::_ITEM_LIFETIME
+    );
     $deleteBeforeTimestamp = time() - $cartItemLifeTime*60;
     $storeId = Mage::helper('mventory')->getCurrentStoreId(null);
 

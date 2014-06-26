@@ -24,9 +24,6 @@
  */
 class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
-  const FETCH_LIMIT_PATH = 'mventory_tm/api/products-number-to-fetch';
-  const TAX_CLASS_PATH = 'mventory_tm/api/tax_class';
-
   const CONF_TYPE = Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE;
 
   protected $_excludeFromProduct = array(
@@ -172,7 +169,10 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   public function limitedList ($name = null, $categoryId = null, $page = 1) {
     $storeId = Mage::helper('mventory')->getCurrentStoreId();
 
-    $limit = (int) Mage::getStoreConfig(self::FETCH_LIMIT_PATH, $storeId);
+    $limit = (int) Mage::getStoreConfig(
+      MVentory_Tm_Model_Config::_FETCH_LIMIT,
+      $storeId
+    );
 
     if ($categoryId) {
       $category = Mage::getModel('catalog/category')
@@ -251,7 +251,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       );
 
       $data['tax_class_id'] = (int) $helper->getConfig(
-        self::TAX_CLASS_PATH,
+        MVentory_Tm_Model_Config::_TAX_CLASS,
         $website
       );
 

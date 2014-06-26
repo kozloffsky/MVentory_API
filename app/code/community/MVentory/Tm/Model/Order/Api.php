@@ -28,8 +28,9 @@ class MVentory_Tm_Model_Order_Api extends Mage_Sales_Model_Order_Api {
     $storeId = Mage::helper('mventory')->getCurrentStoreId();
 
     $limit = (int) Mage::getStoreConfig(
-                     MVentory_Tm_Model_Product_Api::FETCH_LIMIT_PATH,
-                     $storeId);
+      MVentory_Tm_Model_Config::_FETCH_LIMIT,
+      $storeId
+    );
 
     $collection = Mage::getModel("sales/order")
                     ->getCollection();

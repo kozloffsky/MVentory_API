@@ -45,13 +45,15 @@ class MVentory_Tm_QrController extends Mage_Core_Controller_Front_Action
 
   protected function _generateLabels ()
   {
-    $size = Mage::getStoreConfig('mventory_tm/qr/size');
-    $rows = Mage::getStoreConfig('mventory_tm/qr/rows');
-    $cols = Mage::getStoreConfig('mventory_tm/qr/columns');
-    $pages = Mage::getStoreConfig('mventory_tm/qr/pages');
-    $css = Mage::getStoreConfig('mventory_tm/qr/css');
-    $copies = Mage::getStoreConfig('mventory_tm/qr/copies');
-    $baseUrl = Mage::getStoreConfig('mventory_tm/qr/base_url') ? Mage::getStoreConfig('mventory_tm/qr/base_url') : Mage::getBaseUrl();
+    $size = Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_SIZE);
+    $rows = Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_ROWS);
+    $cols = Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_COLUMNS);
+    $pages = Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_PAGES);
+    $css = Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_CSS);
+    $copies = Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_COPIES);
+    $baseUrl = Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_URL)
+                 ? Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_URL)
+                   : Mage::getBaseUrl();
 
     if (preg_match("#https?://#", $baseUrl) === 0) {
       $baseUrl = 'http://' . $baseUrl;
@@ -157,12 +159,14 @@ class MVentory_Tm_QrController extends Mage_Core_Controller_Front_Action
                                     $images = false,
                                     $codes = false) {
 
-    $size = Mage::getStoreConfig('mventory_tm/qr/size');
-    $pages = (int) Mage::getStoreConfig('mventory_tm/qr/pages');
-    $rows = (int) Mage::getStoreConfig('mventory_tm/qr/rows');
-    $columns = (int) Mage::getStoreConfig('mventory_tm/qr/columns');
-    $baseUrl = Mage::getStoreConfig('mventory_tm/qr/base_url')
-                 ? Mage::getStoreConfig('mventory_tm/qr/base_url')
+    $size = Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_SIZE);
+    $pages = (int) Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_PAGES);
+    $rows = (int) Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_ROWS);
+    $columns = (int) Mage::getStoreConfig(
+      MVentory_Tm_Model_Config::_QR_COLUMNS
+    );
+    $baseUrl = Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_URL)
+                 ? Mage::getStoreConfig(MVentory_Tm_Model_Config::_QR_URL)
                    : Mage::getBaseUrl();
 
     if (preg_match("#https?://#", $baseUrl) === 0)

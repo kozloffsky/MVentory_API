@@ -23,11 +23,6 @@
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
 class MVentory_Tm_Model_Observer {
-  const XML_PATH_CANCEL_STATES = 'mventory_tm/order/cancel_states';
-  const XML_PATH_CANCEL_PERIOD = 'mventory_tm/order/cancel_period';
-
-  const XML_PATH_CONFIG_LINK = 'mventory_tm/api/app_profile_link_lifetime';
-
   const __CONFIG_URL = <<<'EOT'
 mVentory configuration URL: <a href="%1$s">%1$s</a> (Can only be used once and is valid for %2$d hours)
 EOT;
@@ -940,7 +935,7 @@ EOT;
     if ($store->getId() === null)
       return;
 
-    $period = $store->getConfig(self::XML_PATH_CONFIG_LINK) * 60;
+    $period = $store->getConfig(MVentory_Tm_Model_Config::_LINK_LIFETIME) * 60;
 
     if (!$period)
       return;

@@ -89,7 +89,7 @@ EOT;
       );
 
     $roleName = Mage::helper('mventory')
-      ->getConfig('mventory_tm/api/default_role');
+      ->getConfig(MVentory_Tm_Model_Config::_DEFAULT_ROLE);
 
     $role = Mage::getResourceModel('api/role_collection')
       ->addFieldToFilter('role_name', $roleName);

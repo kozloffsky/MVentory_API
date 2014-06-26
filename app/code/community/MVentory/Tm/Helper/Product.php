@@ -24,8 +24,6 @@
  */
 class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
 
-  const ROOT_WEBSITE_PATH = 'mventory_tm/api/root_website';
-
   /**
    * Returns product's category
    *
@@ -79,7 +77,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     foreach ($ids as $id) {
       $website = $app->getWebsite($id);
 
-      if (!$this->getConfig(self::ROOT_WEBSITE_PATH, $website))
+      if (!$this->getConfig(MVentory_Tm_Model_Config::_ROOT_WEBSITE, $website))
         break;
     }
 
