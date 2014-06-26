@@ -19,18 +19,18 @@
 <config>
   <api>
     <resources>
-      <mventory_tm_dataflow translate="title" module="mventory_tm">
+      <mventory_tm_dataflow translate="title" module="mventory">
         <title>Dataflow API</title>
-        <model>mventory_tm/dataflow_api</model>
+        <model>mventory/dataflow_api</model>
         <acl>mventory/dataflow</acl>
 
         <methods>
-          <getProfilesList translate="title" module="mventory_tm">
+          <getProfilesList translate="title" module="mventory">
             <title>Get a list of profiles</title>
             <acl>mventory/dataflow</acl>
           </getProfilesList>
 
-          <executeProfile translate="title" module="mventory_tm">
+          <executeProfile translate="title" module="mventory">
             <title>Execute a profile</title>
             <acl>mventory/dataflow</acl>
           </executeProfile>
@@ -38,11 +38,11 @@
       </mventory_tm_dataflow>
 
       <catalog_category>
-        <model>mventory_tm/category_api</model>
+        <model>mventory/category_api</model>
         <acl>mventory/catalog/category</acl>
 
         <methods>
-          <treeActiveOnly translate="title" module="mventory_tm">
+          <treeActiveOnly translate="title" module="mventory">
             <title>Retrieve a tree of active categories</title>
             <acl>mventory/catalog/category/active_tree</acl>
           </treeActiveOnly>
@@ -50,7 +50,7 @@
       </catalog_category>
 
       <catalog_product>
-        <model>mventory_tm/product_api</model>
+        <model>mventory/product_api</model>
         <acl>mventory/catalog/product</acl>
 
         <methods>
@@ -59,7 +59,7 @@
             <acl>mventory/catalog/product/info</acl>
           </fullInfo>
 
-          <limitedList translate="title" module="mventory_tm">
+          <limitedList translate="title" module="mventory">
             <title>Retrieve limited list of products</title>
             <method>limitedList</method>
             <acl>mventory/catalog/product/info</acl>
@@ -70,12 +70,12 @@
             <acl>mventory/catalog/product/create</acl>
           </createAndReturnInfo>
 
-          <duplicateAndReturnInfo translate="title" module="mventory_tm">
+          <duplicateAndReturnInfo translate="title" module="mventory">
             <title>Duplicate product</title>
             <acl>mventory/catalog/product/create</acl>
           </duplicateAndReturnInfo>
 
-          <statistics translate="title" module="mventory_tm">
+          <statistics translate="title" module="mventory">
             <title>Get info about new products, sales and stock</title>
             <acl>mventory/statistics</acl>
           </statistics>
@@ -91,17 +91,17 @@
       </catalog_product>
 
       <catalog_product_attribute>
-        <model>mventory_tm/product_attribute_api</model>
+        <model>mventory/product_attribute_api</model>
         <acl>mventory/catalog/product/attribute</acl>
 
         <methods>
-          <fullInfoList translate="title" module="mventory_tm">
+          <fullInfoList translate="title" module="mventory">
             <title>Retrieve attribute list with full info</title>
             <method>fullInfoList</method>
             <acl>mventory/catalog/product/attribute/read</acl>
           </fullInfoList>
 
-          <addOptionAndReturnInfo translate="title" module="mventory_tm">
+          <addOptionAndReturnInfo translate="title" module="mventory">
             <title>Add option and return full info</title>
             <acl>mventory/catalog/product/attribute/option/add</acl>
           </addOptionAndReturnInfo>
@@ -109,11 +109,11 @@
       </catalog_product_attribute>
 
       <catalog_product_attribute_set>
-        <model>mventory_tm/product_attribute_set_api</model>
+        <model>mventory/product_attribute_set_api</model>
         <acl>mventory/catalog/product/attribute/set</acl>
 
         <methods>
-          <fullInfoList translate="title" module="mventory_tm">
+          <fullInfoList translate="title" module="mventory">
             <title>Retrieve product attribute sets with full info</title>
             <method>fullInfoList</method>
             <acl>mventory/catalog/product/attribute/set/list</acl>
@@ -122,11 +122,11 @@
       </catalog_product_attribute_set>
 
       <catalog_product_attribute_media>
-        <model>mventory_tm/product_attribute_media_api</model>
+        <model>mventory/product_attribute_media_api</model>
         <acl>mventory/catalog/product/media</acl>
 
         <methods>
-          <createAndReturnInfo translate="title" module="mventory_tm">
+          <createAndReturnInfo translate="title" module="mventory">
             <title>Upload new product image and return full info</title>
             <acl>mventory/catalog/product/media/create</acl>
           </createAndReturnInfo>
@@ -149,7 +149,7 @@
             Rename back to 'remove' when the app will be updated to support it
             and after all customers will have updated their apps
           -->
-          <removeAndReturnInfo translate="title" module="mventory_tm">
+          <removeAndReturnInfo translate="title" module="mventory">
             <title>Upload new product image and return full info</title>
             <method>remove_</method>
             <acl>mventory/catalog/product/media/remove</acl>
@@ -158,7 +158,7 @@
       </catalog_product_attribute_media>
 
       <cataloginventory_stock_item>
-        <model>mventory_tm/stock_item_api</model>
+        <model>mventory/stock_item_api</model>
         <acl>mventory/cataloginventory</acl>
 
         <methods>
@@ -178,29 +178,29 @@
       </cataloginventory_stock_item>
 
       <cart>
-        <model>mventory_tm/cart_api</model>
+        <model>mventory/cart_api</model>
         <acl>mventory/cart</acl>
 
         <methods>
-          <createOrderForProduct translate="title" module="mventory_tm">
+          <createOrderForProduct translate="title" module="mventory">
             <title>Create order for specified SKU</title>
             <method>createOrderForProduct</method>
             <acl>mventory/cart/order</acl>
           </createOrderForProduct>
 
-          <createOrderForMultipleProducts translate="title" module="mventory_tm">
+          <createOrderForMultipleProducts translate="title" module="mventory">
             <title>Create order for multiple products</title>
             <method>createOrderForMultipleProducts</method>
             <acl>mventory/cart/order</acl>
           </createOrderForMultipleProducts>
 
-          <addToCart translate="title" module="mventory_tm">
+          <addToCart translate="title" module="mventory">
             <title>Add an item to cart</title>
             <method>addToCart</method>
             <acl>mventory/cart</acl>
           </addToCart>
 
-          <getCart translate="title" module="mventory_tm">
+          <getCart translate="title" module="mventory">
             <title>Get contents of the whole cart</title>
             <method>getCart</method>
             <acl>mventory/cart</acl>
@@ -259,16 +259,16 @@
       </cart>
 
       <sales_order>
-        <model>mventory_tm/order_api</model>
+        <model>mventory/order_api</model>
         <acl>mventory/sales/order</acl>
 
         <methods>
-          <listByStatus translate="title" module="mventory_tm">
+          <listByStatus translate="title" module="mventory">
             <title>Retrieve list of orders by status and store</title>
             <acl>mventory/sales/order/info</acl>
           </listByStatus>
 
-          <fullInfo translate="title" module="mventory_tm">
+          <fullInfo translate="title" module="mventory">
             <title>Retrieve full order information</title>
             <acl>mventory/sales/order/info</acl>
           </fullInfo>
@@ -276,11 +276,11 @@
       </sales_order>
 
       <sales_order_shipment>
-        <model>mventory_tm/order_shipment_api</model>
+        <model>mventory/order_shipment_api</model>
         <acl>mventory/sales/shipment</acl>
 
         <methods>
-          <createShipmentWithTracking translate="title" module="mventory_tm">
+          <createShipmentWithTracking translate="title" module="mventory">
             <title>Create shipment with tracking and retrieve full order information</title>
             <acl>mventory/sales/shipment/create_with_tracking</acl>
           </createShipmentWithTracking>
@@ -290,7 +290,7 @@
 
     <acl>
       <resources>
-        <mventory translate="title" module="mventory_tm">
+        <mventory translate="title" module="mventory">
           <title>MVentory</title>
           <sort_order>-1</sort_order>
 
@@ -302,7 +302,7 @@
               <title>Category</title>
               <sort_order>1</sort_order>
 
-              <active_tree translate="title" module="mventory_tm">
+              <active_tree translate="title" module="mventory">
                 <title>Retrieve active categories tree</title>
                 <sort_order>1</sort_order>
               </active_tree>
@@ -312,12 +312,12 @@
               <title>Product</title>
               <sort_order>2</sort_order>
 
-              <create translate="title" module="mventory_tm">
+              <create translate="title" module="mventory">
                 <title>Create and return full products data</title>
                 <sort_order>1</sort_order>
               </create>
 
-              <info translate="title" module="mventory_tm">
+              <info translate="title" module="mventory">
                 <title>Retrieve full products data</title>
                 <sort_order>2</sort_order>
               </info>
@@ -336,7 +336,7 @@
                 <title>Product Images</title>
                 <sort_order>6</sort_order>
 
-                <create translate="title" module="mventory_tm">
+                <create translate="title" module="mventory">
                   <title>Create (Upload) and return full info</title>
                   <sort_order>1</sort_order>
                 </create>
@@ -356,7 +356,7 @@
                 <title>Product Attributes</title>
                 <sort_order>7</sort_order>
 
-                <read translate="title" module="mventory_tm">
+                <read translate="title" module="mventory">
                   <title>Retrieve full attribute data</title>
                   <sort_order>1</sort_order>
                 </read>
@@ -365,7 +365,7 @@
                   <title>Options</title>
                   <sort_order>2</sort_order>
 
-                    <add translate="title" module="mventory_tm">
+                    <add translate="title" module="mventory">
                       <title>Add and return full info</title>
                       <sort_order>1</sort_order>
                     </add>
@@ -375,7 +375,7 @@
                   <title>Attribute Sets</title>
                   <sort_order>3</sort_order>
 
-                  <list translate="title" module="mventory_tm">
+                  <list translate="title" module="mventory">
                     <title>Full info list</title>
                     <sort_order>1</sort_order>
                   </list>
@@ -394,12 +394,12 @@
             </info>
           </cataloginventory>
 
-          <dataflow translate="title" module="mventory_tm">
+          <dataflow translate="title" module="mventory">
             <title>Dataflow</title>
             <sort_order>3</sort_order>
           </dataflow>
 
-          <statistics translate="title" module="mventory_tm">
+          <statistics translate="title" module="mventory">
             <title>Retrieve info about new products, sales and stock</title>
             <sort_order>4</sort_order>
           </statistics>
@@ -412,7 +412,7 @@
               <title>Order</title>
               <sort_order>1</sort_order>
 
-              <info translate="title" module="mventory_tm">
+              <info translate="title" module="mventory">
                 <title>Retrieve orders full info</title>
                 <sort_order>1</sort_order>
               </info>
@@ -422,7 +422,7 @@
               <title>Order shipments</title>
               <sort_order>2</sort_order>
 
-              <create_with_tracking translate="title" module="mventory_tm">
+              <create_with_tracking translate="title" module="mventory">
                 <title>Create with tracking</title>
                 <sort_order>1</sort_order>
               </create_with_tracking>
@@ -433,7 +433,7 @@
             <title>Shopping Cart</title>
             <sort_order>6</sort_order>
 
-            <cart translate="title" module="mventory_tm">
+            <cart translate="title" module="mventory">
               <title>Access to MVentory shopping cart</title>
               <sort_order>1</sort_order>
             </cart>

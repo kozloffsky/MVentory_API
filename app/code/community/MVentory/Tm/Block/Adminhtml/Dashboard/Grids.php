@@ -34,7 +34,7 @@ class MVentory_Tm_Block_Adminhtml_Dashboard_Grids extends Mage_Adminhtml_Block_D
     // load tab statically
     $this->addTab('stock_info', array(
       'label' => $this->__('Stock Info'),
-      'content' => $this->getLayout()->createBlock('mventory_tm/adminhtml_dashboard_tab_stock')->toHtml(),
+      'content' => $this->getLayout()->createBlock('mventory/adminhtml_dashboard_tab_stock')->toHtml(),
       'active' => false
     ));
 

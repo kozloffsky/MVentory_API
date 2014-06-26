@@ -31,7 +31,7 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
     $frontends = array();
 
     $attributeResource
-                   = Mage::getResourceSingleton('mventory_tm/entity_attribute');
+                   = Mage::getResourceSingleton('mventory/entity_attribute');
 
     foreach ($productIds as $productId) {
       $product = Mage::getModel('catalog/product')
@@ -295,7 +295,7 @@ class MVentory_Tm_Model_Product_Action extends Mage_Core_Model_Abstract {
       if (!$product->getId())
         continue;
 
-      $category = Mage::getModel('mventory_tm/matching')
+      $category = Mage::getModel('mventory/matching')
         ->matchCategory($product);
 
       if ($category) {

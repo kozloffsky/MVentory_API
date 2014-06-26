@@ -48,7 +48,7 @@ class MVentory_Tm_Model_Order_Shipment_Api extends Mage_Sales_Model_Order_Shipme
     if (!$order->getId())
       $this->_fault('order_not_exists');
 
-    $userWebsite = Mage::helper('mventory_tm')->getApiUserWebsite();
+    $userWebsite = Mage::helper('mventory')->getApiUserWebsite();
 
     if (!$userWebsite)
       $this->_fault('access_denied');
@@ -70,7 +70,7 @@ class MVentory_Tm_Model_Order_Shipment_Api extends Mage_Sales_Model_Order_Shipme
 
     $this->addTrack($shipmentId,$carrier,$title,$trackNumber);
 
-    $orderApi = Mage::getModel('mventory_tm/order_api');
+    $orderApi = Mage::getModel('mventory/order_api');
 
     return $orderApi->fullInfo($orderIncrementId);
   }

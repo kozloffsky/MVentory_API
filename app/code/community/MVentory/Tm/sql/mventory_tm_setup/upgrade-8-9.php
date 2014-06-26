@@ -21,7 +21,7 @@ $this->startSetup();
 
 $table = $this
            ->getConnection()
-           ->newTable($this->getTable('mventory_tm/cart_item'))
+           ->newTable($this->getTable('mventory/cart_item'))
            ->addColumn('transaction_id',
                        Varien_Db_Ddl_Table::TYPE_BIGINT,
                        null,
@@ -104,7 +104,7 @@ $table = $this
                          'nullable'  => false
                     ),
                        'User Name')
-           ->addIndex($this->getIdxName('mventory_tm/cart_item',
+           ->addIndex($this->getIdxName('mventory/cart_item',
                                         array('transaction_id')),
                       array('store_id', 'date_time'))
            ->setComment('Custom cart table');
@@ -122,7 +122,7 @@ BEGIN
 END;
 ____SQL;
 
-$sql = str_replace('##table_name##', $this->getTable('mventory_tm/cart_item'), $sql);
+$sql = str_replace('##table_name##', $this->getTable('mventory/cart_item'), $sql);
 
 $write = Mage::getSingleton('core/resource')->getConnection('core_write');
 $write->exec($sql);

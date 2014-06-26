@@ -32,7 +32,7 @@ class MVentory_Tm_Catalog_ProductController
     $storeId = (int) $request->getParam('store', 0);
 
     try {
-      $numberOfRenamed = Mage::getSingleton('mventory_tm/product_action')
+      $numberOfRenamed = Mage::getSingleton('mventory/product_action')
                            ->rebuildNames($productIds, $storeId);
 
       $m = '%d of %d record(s) have been updated.';
@@ -73,7 +73,7 @@ class MVentory_Tm_Catalog_ProductController
 
     try {
       // Populate product attributes
-      $numberOfPopulate = Mage::getSingleton('mventory_tm/product_action')
+      $numberOfPopulate = Mage::getSingleton('mventory/product_action')
                            ->populateAttributes($productIds, $storeId);
 
       $m = '%d of %d record(s) have been updated.';
@@ -108,7 +108,7 @@ class MVentory_Tm_Catalog_ProductController
     $storeId = (int) $request->getParam('store', 0);
 
     try {
-      $number = Mage::getSingleton('mventory_tm/product_action')
+      $number = Mage::getSingleton('mventory/product_action')
                   ->matchCategories($productIds);
 
       $m = '%d of %d record(s) have been updated.';

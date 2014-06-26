@@ -39,7 +39,7 @@ class MVentory_Tm_Model_Category_Api extends Mage_Catalog_Model_Category_Api
 
   public function treeActiveOnly()
   {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId(null);
+    $storeId = Mage::helper('mventory')->getCurrentStoreId(null);
 
     $model = Mage::getModel("catalog/category_api");
     $tree = $model->tree(null, $storeId);

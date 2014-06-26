@@ -34,7 +34,7 @@ class MVentory_Tm_Model_Matching
    *
    */
   protected function _construct () {
-    $this->_init('mventory_tm/matching');
+    $this->_init('mventory/matching');
   }
 
   public function loadBySetId ($setId, $cleanRules = true) {
@@ -149,7 +149,7 @@ class MVentory_Tm_Model_Matching
   }
 
   protected function _getLostCategoryId ($product) {
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     return $helper->getConfig(self::LOST_CATEGORY_PATH,
                               $helper->getWebsite($product));

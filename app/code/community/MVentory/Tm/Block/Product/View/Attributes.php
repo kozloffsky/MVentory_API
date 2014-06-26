@@ -37,7 +37,7 @@ class MVentory_Tm_Block_Product_View_Attributes
    * @return array
    */
   public function getAdditionalData (array $exclude = array(), $html = true) {
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     $data = array();
 

@@ -24,6 +24,6 @@
  */
 class MVentory_Tm_Model_Order_Transaction extends Mage_Core_Model_Abstract {
   protected function _construct() {
-    $this->_init('mventory_tm/order_transaction');
+    $this->_init('mventory/order_transaction');
   }
 }

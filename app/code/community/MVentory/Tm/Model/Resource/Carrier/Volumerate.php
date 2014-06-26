@@ -83,7 +83,7 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
    * @return void
    */
   protected function _construct () {
-    $this->_init('mventory_tm/carrier_volumerate', 'pk');
+    $this->_init('mventory/carrier_volumerate', 'pk');
   }
 
   /**
@@ -175,7 +175,7 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
    */
   public function uploadAndImport (Varien_Object $object) {
     $shippingTypes =
-      Mage::getModel('mventory_tm/system_config_source_allowedshippingtypes')
+      Mage::getModel('mventory/system_config_source_allowedshippingtypes')
         ->toArray();
 
     if (!$shippingTypes)
@@ -195,7 +195,7 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
 
     $file = $_FILES['groups']['tmp_name'][$groupId]['fields'][$field]['value'];
 
-    $this->_helper = Mage::helper('mventory_tm');
+    $this->_helper = Mage::helper('mventory');
 
     $this->_importWebsiteId = (int) Mage::app()
                                       ->getWebsite($scopeId)

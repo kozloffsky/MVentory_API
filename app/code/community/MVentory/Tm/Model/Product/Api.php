@@ -80,14 +80,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $identifierType = 'sku';
     }
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     $productId = $helper->getProductId($productId, $identifierType);
 
     if (!($productId && $helper->hasApiUserAccess($productId, 'id')))
       $this->_fault('product_not_exists');
 
-    $website = Mage::helper('mventory_tm/product')->getWebsite($productId);
+    $website = Mage::helper('mventory/product')->getWebsite($productId);
     $storeId = $website
                  ->getDefaultStore()
                  ->getId();
@@ -105,7 +105,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $result[$key] = $value;
     }
 
-    $stockItem = Mage::getModel('mventory_tm/stock_item_api');
+    $stockItem = Mage::getModel('mventory/stock_item_api');
 
     $_result = $stockItem->items($productId);
 
@@ -113,7 +113,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       $result = array_merge($result, $_result[0]);
 
     $result['set_attributes']
-      = Mage::getModel('mventory_tm/product_attribute_api')
+      = Mage::getModel('mventory/product_attribute_api')
           ->fullInfoList($result['set']);
 
     $productAttributeMedia
@@ -133,7 +133,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
     $result['images'] = $images;
 
-     $helper = Mage::helper('mventory_tm/product_configurable');
+     $helper = Mage::helper('mventory/product_configurable');
 
     if ($siblingIds = $helper->getSiblingsIds($productId)) {
       foreach ($result['set_attributes'] as $attr)
@@ -170,7 +170,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   }
 
   public function limitedList ($name = null, $categoryId = null, $page = 1) {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
+    $storeId = Mage::helper('mventory')->getCurrentStoreId();
 
     $limit = (int) Mage::getStoreConfig(self::FETCH_LIMIT_PATH, $storeId);
 
@@ -236,7 +236,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   public function createAndReturnInfo ($type, $set, $sku, $data,
                                        $storeId = null) {
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     if (!$id = $helper->getProductId($sku, 'sku')) {
       $data['mv_created_userid'] = $helper->getApiUser()->getId();
@@ -274,7 +274,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                                           $mode = 'all',
                                           $subtractQty = 0) {
 
-    $newId = Mage::helper('mventory_tm/product')->getProductId($newSku, 'sku');
+    $newId = Mage::helper('mventory/product')->getProductId($newSku, 'sku');
 
     if ($newId)
       return $this->fullInfo($newId, 'id');
@@ -367,7 +367,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
    * @return array
    */
   public function statistics () {
-    $storeId    = Mage::helper('mventory_tm')->getCurrentStoreId();
+    $storeId    = Mage::helper('mventory')->getCurrentStoreId();
     $store      = Mage::app()->getStore($storeId);
 
     $date       = new Zend_Date();
@@ -565,7 +565,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
                           $store = null,
                           $identifierType = null) {
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     $productId = $helper->getProductId($productId, $identifierType);
 
@@ -594,10 +594,10 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
       return $result;
 
     if ($removeSkus)
-      Mage::getResourceModel('mventory_tm/sku')->removeByProductId($productId);
+      Mage::getResourceModel('mventory/sku')->removeByProductId($productId);
 
     if ($skus) {
-      Mage::getResourceModel('mventory_tm/sku')->add(
+      Mage::getResourceModel('mventory/sku')->add(
         $skus,
         $productId,
         $helper->getCurrentWebsite()
@@ -629,14 +629,14 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   protected function _getProduct($productId, $store = null,
                                  $identifierType = null) {
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     $productId = $helper->getProductId($productId, $identifierType);
 
     if (!($productId && $helper->hasApiUserAccess($productId, 'id')))
       $this->_fault('product_not_exists');
 
-    $helper = Mage::helper('mventory_tm/product_configurable');
+    $helper = Mage::helper('mventory/product_configurable');
 
     //Load details of assigned product if the product is configurable
     if ($childrenIds = $helper->getChildrenIds($productId))
@@ -673,7 +673,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   }
 
   protected function _getStockJournalRecord ($qty) {
-    if (!$user = Mage::helper('mventory_tm')->getApiUser())
+    if (!$user = Mage::helper('mventory')->getApiUser())
       return;
 
     $date = Mage::getModel('core/date')->date();

@@ -25,9 +25,9 @@ class MVentory_Tm_Model_Product_Attribute_Set_Api
   extends Mage_Catalog_Model_Product_Attribute_Set_Api {
 
   public function fullInfoList () {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId(null);
+    $storeId = Mage::helper('mventory')->getCurrentStoreId(null);
 
-    $attributeApi = Mage::getModel('mventory_tm/product_attribute_api');
+    $attributeApi = Mage::getModel('mventory/product_attribute_api');
 
     $sets = $this->itemsPerStoreView($storeId);
 
@@ -40,7 +40,7 @@ class MVentory_Tm_Model_Product_Attribute_Set_Api
 
   private function itemsPerStoreView($storeId)
   {
-    $attributeApi = Mage::getModel('mventory_tm/product_attribute_api');
+    $attributeApi = Mage::getModel('mventory/product_attribute_api');
     $attributeModel = Mage::getModel('catalog/resource_eav_attribute')
       ->setEntityTypeId(Mage::getModel('eav/entity')->setType(Mage_Catalog_Model_Product::ENTITY)->getTypeId());
 

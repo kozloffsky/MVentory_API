@@ -45,13 +45,13 @@ class MVentory_Tm_Block_Carrier_Volumerate_Grid
    */
   protected function _prepareCollection () {
     $collection
-      = Mage::getResourceModel('mventory_tm/carrier_volumerate_collection')
+      = Mage::getResourceModel('mventory/carrier_volumerate_collection')
           ->setWebsiteFilter($this->getWebsiteId());
 
     $this->setCollection($collection);
 
     $shippingTypes
-      = Mage::getModel('mventory_tm/system_config_source_allowedshippingtypes')
+      = Mage::getModel('mventory/system_config_source_allowedshippingtypes')
           ->toArray();
 
     foreach ($collection as $rate) {
@@ -81,7 +81,7 @@ class MVentory_Tm_Block_Carrier_Volumerate_Grid
    */
   protected function _prepareColumns () {
     $helper = Mage::helper('adminhtml');
-    $tmHelper = Mage::helper('mventory_tm');
+    $tmHelper = Mage::helper('mventory');
 
     $columns = array(
       'shipping_type' => array(

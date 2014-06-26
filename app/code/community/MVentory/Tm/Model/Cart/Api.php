@@ -30,11 +30,11 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
                                          $transactionId = null, $name = null,
                                          $taxClass = null) {
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     $storeId = $helper->getCurrentStoreId();
 
-    $productApi = Mage::getModel('mventory_tm/product_api');
+    $productApi = Mage::getModel('mventory/product_api');
 
     //Try load order which was created but API client didn't received
     //its ID. It prevents from double ordering in case data lost during
@@ -42,7 +42,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     if ($transactionId !== null) {
       $transactionId = (int) $transactionId;
 
-      $orderId = Mage::getResourceModel('mventory_tm/order_transaction')
+      $orderId = Mage::getResourceModel('mventory/order_transaction')
                    ->getOrderIdByTransaction($transactionId);
 
       if ($orderId) {
@@ -222,7 +222,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     //to API client if it will try to create order with same transaction ID
     //next time
     if ($transactionId !== null) {
-      $transaction = Mage::getModel('mventory_tm/order_transaction');
+      $transaction = Mage::getModel('mventory/order_transaction');
 
       $transaction
         ->setOrderId((int) $orderId)
@@ -270,15 +270,15 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
   	$apiResult = array();
   	$apiResult['qtys'] = array();
   	
-    $orderApi = Mage::getModel('mventory_tm/order_api');
+    $orderApi = Mage::getModel('mventory/order_api');
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     $storeId = $helper->getCurrentStoreId();
 
     $transactionId = 0;
 
-    $productApi = Mage::getModel('mventory_tm/product_api');
+    $productApi = Mage::getModel('mventory/product_api');
 
     if (is_array($productsToOrder) && count($productsToOrder)>0)
     {
@@ -289,7 +289,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
       //communication
       $transactionId = $this->convertTo32bitTransactionId($firstTransaction['transaction_id']);
 
-      $orderId = Mage::getResourceModel('mventory_tm/order_transaction')
+      $orderId = Mage::getResourceModel('mventory/order_transaction')
                    ->getOrderIdByTransaction($transactionId);
 
       if ($orderId) {
@@ -303,7 +303,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
     foreach ($productsToOrder as &$productData)
     {
-      $cartItem = Mage::getModel('mventory_tm/cart_item');
+      $cartItem = Mage::getModel('mventory/cart_item');
 
       $cartItem->load($productData['transaction_id']);
 
@@ -488,7 +488,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     //Save transaction ID and orderId pair. So, it will return existing order
     //to API client if it will try to create order with same transaction ID
     //next time
-    $transaction = Mage::getModel('mventory_tm/order_transaction');
+    $transaction = Mage::getModel('mventory/order_transaction');
 
     $transaction
       ->setOrderId((int) $orderId)
@@ -517,7 +517,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
     foreach ($productsToOrder as $productData)
     {
-      Mage::getModel('mventory_tm/cart_item')->setId($productData['transaction_id'])->delete();
+      Mage::getModel('mventory/cart_item')->setId($productData['transaction_id'])->delete();
     }
 
     $apiResult['order_details'] = $orderApi->fullInfo($orderId);
@@ -531,18 +531,18 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     $user = $session->getUser();
 
     $data['user_name'] = $user->getFirstname() . " " . $user->getLastname();
-    $data['store_id'] = Mage::helper('mventory_tm')->getCurrentStoreId(null);
+    $data['store_id'] = Mage::helper('mventory')->getCurrentStoreId(null);
 
-    Mage::getModel('mventory_tm/cart_item')->setData($data)->save();
+    Mage::getModel('mventory/cart_item')->setData($data)->save();
   }
 
   function getCart()
   {
     $cartItemLifeTime = Mage::getStoreConfig('mventory_tm/api/cart-item-lifetime');
     $deleteBeforeTimestamp = time() - $cartItemLifeTime*60;
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId(null);
+    $storeId = Mage::helper('mventory')->getCurrentStoreId(null);
 
-    return Mage::getResourceModel('mventory_tm/cart_item')
+    return Mage::getResourceModel('mventory/cart_item')
       ->getCart($deleteBeforeTimestamp, $storeId);
   }
 

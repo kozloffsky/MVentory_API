@@ -148,7 +148,7 @@ class MVentory_Tm_Model_Carrier_Volumerate
   }
 
   public function getRate (Mage_Shipping_Model_Rate_Request $request) {
-    return Mage::getResourceModel('mventory_tm/carrier_volumerate')
+    return Mage::getResourceModel('mventory/carrier_volumerate')
              ->getRate($request);
   }
 

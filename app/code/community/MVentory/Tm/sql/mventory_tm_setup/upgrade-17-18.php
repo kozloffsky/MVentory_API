@@ -17,7 +17,7 @@
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
 
-$tableName = 'mventory_tm/carrier_volumerate';
+$tableName = 'mventory/carrier_volumerate';
 $table = $this->getTable($tableName);
 
 $connection = $this->getConnection();

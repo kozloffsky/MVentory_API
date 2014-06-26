@@ -63,7 +63,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
    * @return array
    */
   public function info ($attribute) {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
+    $storeId = Mage::helper('mventory')->getCurrentStoreId();
 
     $data = parent::info($attribute);
 
@@ -118,7 +118,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
   }
 
   public function addOptionAndReturnInfo ($attribute, $value) {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
+    $storeId = Mage::helper('mventory')->getCurrentStoreId();
 
     $attribute = $this->_getAttribute($attribute);
     $attributeId = $attribute->getId();
@@ -170,7 +170,7 @@ class MVentory_Tm_Model_Product_Attribute_Api
 
         $this->addOption($attributeId, $data);
 
-        $helper = Mage::helper('mventory_tm');
+        $helper = Mage::helper('mventory');
 
         $subject = 'New attribute value: ' . $value;
         $body = $subject;

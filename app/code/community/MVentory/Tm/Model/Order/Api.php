@@ -25,7 +25,7 @@
 class MVentory_Tm_Model_Order_Api extends Mage_Sales_Model_Order_Api {
 
   public function listByStatus ($status = null) {
-    $storeId = Mage::helper('mventory_tm')->getCurrentStoreId();
+    $storeId = Mage::helper('mventory')->getCurrentStoreId();
 
     $limit = (int) Mage::getStoreConfig(
                      MVentory_Tm_Model_Product_Api::FETCH_LIMIT_PATH,
@@ -140,7 +140,7 @@ class MVentory_Tm_Model_Order_Api extends Mage_Sales_Model_Order_Api {
   protected function _initOrder ($orderIncrementId) {
     $order = parent::_initOrder($orderIncrementId);
 
-    $userWebsite = Mage::helper('mventory_tm')->getApiUserWebsite();
+    $userWebsite = Mage::helper('mventory')->getApiUserWebsite();
 
     if (!$userWebsite)
       $this->_fault('access_denied');

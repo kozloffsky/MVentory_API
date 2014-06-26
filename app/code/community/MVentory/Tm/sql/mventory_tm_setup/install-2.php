@@ -21,7 +21,7 @@ $this->startSetup();
 
 $table = $this
            ->getConnection()
-           ->newTable($this->getTable('mventory_tm/order_transaction'))
+           ->newTable($this->getTable('mventory/order_transaction'))
            ->addColumn('id',
                        Varien_Db_Ddl_Table::TYPE_INTEGER,
                        null,
@@ -48,7 +48,7 @@ $table = $this
                          'nullable' => false,
                        ),
                        'Order ID')
-           ->addIndex($this->getIdxName('mventory_tm/order_transaction',
+           ->addIndex($this->getIdxName('mventory/order_transaction',
                                         array('transaction_id')),
                       array('transaction_id'))
            ->setComment('Order transaction table');

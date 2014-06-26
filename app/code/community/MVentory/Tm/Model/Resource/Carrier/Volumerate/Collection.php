@@ -29,7 +29,7 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate_Collection
    * Define resource model and item
    */
   protected function _construct () {
-    $this->_init('mventory_tm/carrier_volumerate');
+    $this->_init('mventory/carrier_volumerate');
 
     $this->_shipTable = $this->getMainTable();
     $this->_countryTable = $this->getTable('directory/country');

@@ -19,7 +19,7 @@
 
 $this->startSetup();
 
-$tableName = 'mventory_tm/matching_rules';
+$tableName = 'mventory/matching_rules';
 
 $idxName = $this->getIdxName($tableName, array('attribute_set_id'));
 

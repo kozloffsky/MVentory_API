@@ -20,7 +20,7 @@
 
 <config>
   <tabs>
-    <mventory translate="label" module="mventory_tm">
+    <mventory translate="label" module="mventory">
       <label>mVentory</label>
       <sort_order>100</sort_order>
     </mventory>
@@ -116,7 +116,7 @@
               <label>Default product visibility</label>
               <comment>Applies to products without photos that have been created via the phone app</comment>
               <frontend_type>select</frontend_type>
-              <source_model>mventory_tm/system_config_source_visibility</source_model>
+              <source_model>mventory/system_config_source_visibility</source_model>
 
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
@@ -326,7 +326,7 @@
             <import translate="label">
               <label>Import</label>
               <frontend_type>file</frontend_type>
-              <backend_model>mventory_tm/system_config_backend_carrier_volumerate</backend_model>
+              <backend_model>mventory/system_config_backend_carrier_volumerate</backend_model>
 
               <show_in_default>0</show_in_default>
               <show_in_website>1</show_in_website>
@@ -337,7 +337,7 @@
 
             <export translate="label">
               <label>Export</label>
-              <frontend_model>mventory_tm/system_config_form_field_exportrates</frontend_model>
+              <frontend_model>mventory/system_config_form_field_exportrates</frontend_model>
 
               <show_in_default>0</show_in_default>
               <show_in_website>1</show_in_website>

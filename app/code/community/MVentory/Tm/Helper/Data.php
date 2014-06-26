@@ -139,7 +139,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
                ->getWebsite($website)
                ->getDefaultStore();
 
-    return Mage::getResourceModel('mventory_tm/product')
+    return Mage::getResourceModel('mventory/product')
              ->getAttributeRawValue($productId, $attribute, $store);
   }
 
@@ -284,7 +284,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
     $isApiRequest = Mage::getSingleton('api/server')->getAdapter() != null;
     $applyRules = (bool) $this->getConfig(
       self::_APPLY_RULES,
-      Mage::helper('mventory_tm/product')->getWebsite($observer->getProduct())
+      Mage::helper('mventory/product')->getWebsite($observer->getProduct())
     );
 
     return !($isApiRequest || $applyRules);

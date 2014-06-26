@@ -116,7 +116,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
       $id = (int) $this->getProductIdByBarcode($productId);
 
       if ($id < 1)
-        $id = (int) Mage::getResourceModel('mventory_tm/sku')
+        $id = (int) Mage::getResourceModel('mventory/sku')
           ->getProductId($productId, $this->getCurrentWebsite());
 
       return $id > 0 ? $id : null;
@@ -136,7 +136,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     if ($id > 0)
       return $id;
 
-    $id = (int) Mage::getResourceModel('mventory_tm/sku')
+    $id = (int) Mage::getResourceModel('mventory/sku')
       ->getProductId($productId, $this->getCurrentWebsite());
 
     if ($id > 0)

@@ -19,7 +19,7 @@
 
 $this->startSetup();
 
-$tableName = 'mventory_tm/additional_skus';
+$tableName = 'mventory/additional_skus';
 
 $idxName = $this->getIdxName(
              $tableName,

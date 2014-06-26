@@ -33,13 +33,13 @@ mVentory configuration URL: <a href="%1$s">%1$s</a> (Can only be used once and i
 EOT;
 
   public function populateAttributes ($observer) {
-    if (Mage::helper('mventory_tm/product')->isObserverDisabled($observer))
+    if (Mage::helper('mventory/product')->isObserverDisabled($observer))
       return;
 
     $event = $observer->getEvent();
 
     //Populate product attributes
-    Mage::getSingleton('mventory_tm/product_action')
+    Mage::getSingleton('mventory/product_action')
       ->populateAttributes(array($event->getProduct()), null, false);
   }
 
@@ -92,7 +92,7 @@ EOT;
 
     $route = 'mventory_tm/catalog_product/massNameRebuild';
 
-    $label = Mage::helper('mventory_tm')->__('Rebuild product name');
+    $label = Mage::helper('mventory')->__('Rebuild product name');
     $url = $block->getUrl($route, array('_current' => true));
 
     $block
@@ -108,7 +108,7 @@ EOT;
 
     $route = 'mventory_tm/catalog_product/massAttributesPopulate';
 
-    $label = Mage::helper('mventory_tm')->__('Populate product attributes');
+    $label = Mage::helper('mventory')->__('Populate product attributes');
     $url = $block->getUrl($route, array('_current' => true));
 
     $block
@@ -121,7 +121,7 @@ EOT;
 
     $route = 'mventory_tm/catalog_product/massCategoryMatch';
 
-    $label = Mage::helper('mventory_tm')->__('Match product category');
+    $label = Mage::helper('mventory')->__('Match product category');
     $url = $block->getUrl($route, array('_current' => true));
 
     $block
@@ -142,7 +142,7 @@ EOT;
 
     unset($attrs);
 
-    $helper = Mage::helper('mventory_tm/product_configurable');
+    $helper = Mage::helper('mventory/product_configurable');
 
     $productId = $product->getId();
 
@@ -269,7 +269,7 @@ EOT;
   }
 
   public function resetExcludeFlag ($observer) {
-    if (Mage::helper('mventory_tm/product')->isObserverDisabled($observer))
+    if (Mage::helper('mventory/product')->isObserverDisabled($observer))
       return;
 
     $images = $observer->getImages();
@@ -281,7 +281,7 @@ EOT;
   public function checkAccessToWebsite ($observer) {
     $apiUser = $observer->getModel();
 
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory');
 
     $website = $helper->getApiUserWebsite($apiUser);
 
@@ -340,7 +340,7 @@ EOT;
   }
 
   public function matchCategory ($observer) {
-    if (Mage::helper('mventory_tm/product')->isObserverDisabled($observer))
+    if (Mage::helper('mventory/product')->isObserverDisabled($observer))
       return;
 
     $product = $observer
@@ -350,7 +350,7 @@ EOT;
     if ($product->getTmCategoryMatched())
       return;
 
-    $result = Mage::getModel('mventory_tm/matching')->matchCategory($product);
+    $result = Mage::getModel('mventory/matching')->matchCategory($product);
 
     if ($result)
       $product->setCategoryIds((string) $result);
@@ -374,7 +374,7 @@ EOT;
           == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE)
       return $this;
 
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory');
 
     $configurable = $helper->getConfigurableAttribute($product->getAttributeSetId());
 
@@ -429,7 +429,7 @@ EOT;
     if (($hash = $product->getData('mv_attributes_hash')) == $oldHash)
       return;
 
-    $helper = Mage::helper('mventory_tm/product_configurable');
+    $helper = Mage::helper('mventory/product_configurable');
 
     if (!$configurableId = $helper->getIdByChild($product))
       return;
@@ -485,7 +485,7 @@ EOT;
     if (!$hash = $product->getData('mv_attributes_hash'))
       return;
 
-    $helper = Mage::helper('mventory_tm/product_configurable');
+    $helper = Mage::helper('mventory/product_configurable');
 
     $attribute = $helper
       ->getConfigurableAttribute($product->getAttributeSetId());
@@ -553,7 +553,7 @@ EOT;
       $skus[] = $_product->getSku();
       $skus[] = $_product->getData('product_barcode_');
 
-      if ($_skus = Mage::getResourceModel('mventory_tm/sku')->get($_id))
+      if ($_skus = Mage::getResourceModel('mventory/sku')->get($_id))
         $skus = array_merge($skus, $_skus);
     }
 
@@ -588,7 +588,7 @@ EOT;
     //attributes in the product to preserve them.
     //The images is saved in saveImagesAfterMerge() method after
     //the product is saved
-    if ($images = Mage::helper('mventory_tm/image')->getUniques($_products)) {
+    if ($images = Mage::helper('mventory/image')->getUniques($_products)) {
       $data = array(
         'images' => $images,
         'values' => $helper->getMediaAttrs($_products)
@@ -625,7 +625,7 @@ EOT;
     if (!$hash = $product->getData('mv_attributes_hash'))
       return;
 
-    $helper = Mage::helper('mventory_tm/product_configurable');
+    $helper = Mage::helper('mventory/product_configurable');
 
     if (($id = $product->getId()) && $helper->getIdByChild($product))
       return;
@@ -693,7 +693,7 @@ EOT;
     $attribute = $data['attribute'];
     $products = $data['products']->addItem($product);
 
-    $helper = Mage::helper('mventory_tm/product_configurable');
+    $helper = Mage::helper('mventory/product_configurable');
 
     $helper
       ->addAttribute($configurable, $attribute, $products)
@@ -767,7 +767,7 @@ EOT;
     if ($price == $origPrice)
       return;
 
-    $helper = Mage::helper('mventory_tm/product_configurable');
+    $helper = Mage::helper('mventory/product_configurable');
 
     if (!$childrenIds = $helper->getSiblingsIds($product))
       return;
@@ -821,7 +821,7 @@ EOT;
     if (!$product->getId())
       return;
 
-    $helper = Mage::helper('mventory_tm/product_configurable');
+    $helper = Mage::helper('mventory/product_configurable');
 
     if (!$childrenIds = $helper->getSiblingsIds($product))
       return;
@@ -880,7 +880,7 @@ EOT;
     if ($origDescription == $description)
       return;
 
-    $helper = Mage::helper('mventory_tm/product_configurable');
+    $helper = Mage::helper('mventory/product_configurable');
 
     if (!$childrenIds = $helper->getSiblingsIds($product))
       return;
@@ -917,15 +917,15 @@ EOT;
     $product = $observer->getProduct();
 
     if ($skus = $product->getData('mventory_additional_skus'))
-      Mage::getResourceModel('mventory_tm/sku')->add(
+      Mage::getResourceModel('mventory/sku')->add(
         $skus,
         $product->getId(),
-        Mage::helper('mventory_tm/product')->getWebsite($product)
+        Mage::helper('mventory/product')->getWebsite($product)
       );
   }
 
   public function generateLinkForProfile ($observer) {
-    $helper = Mage::helper('mventory_tm');
+    $helper = Mage::helper('mventory');
 
     if (!$customer = $helper->getCustomerByApiUser($observer->getObject()))
       return;
@@ -969,7 +969,7 @@ EOT;
     if (!$data = $product->getData('mventory_add_images'))
       return;
 
-    Mage::helper('mventory_tm/product')
+    Mage::helper('mventory/product')
       ->addImages($product, $data['images'])
       ->setAttributesValue($product->getId(), $data['values']);
   }
@@ -987,7 +987,7 @@ EOT;
         )
       );
 
-      $helper = Mage::helper('mventory_tm');
+      $helper = Mage::helper('mventory');
 
       $block->addButton(
         'create_api_user',
@@ -1030,8 +1030,8 @@ EOT;
       'convert_attribute',
       array(
         'label' => $isConverted
-                     ? Mage::helper('mventory_tm')->__('Remove from mVentory')
-                       : Mage::helper('mventory_tm')->__('Add to mVentory'),
+                     ? Mage::helper('mventory')->__('Remove from mVentory')
+                       : Mage::helper('mventory')->__('Add to mVentory'),
         'onclick' => 'setLocation(\'' . $url . '\')',
         'class' => $isConverted ? 'delete' : 'add'
       ),

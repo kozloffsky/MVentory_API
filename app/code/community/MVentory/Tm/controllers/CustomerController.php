@@ -88,7 +88,7 @@ EOT;
         'warning'
       );
 
-    $roleName = Mage::helper('mventory_tm')
+    $roleName = Mage::helper('mventory')
       ->getConfig('mventory_tm/api/default_role');
 
     $role = Mage::getResourceModel('api/role_collection')

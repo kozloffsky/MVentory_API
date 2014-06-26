@@ -52,7 +52,7 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
 
     $file['name'] = strtolower(trim($file['name']));
 
-    //$storeId = Mage::helper('mventory_tm')->getCurrentStoreId($storeId);
+    //$storeId = Mage::helper('mventory')->getCurrentStoreId($storeId);
 
     //Temp solution, apply image settings globally
     $storeId = null;
@@ -65,7 +65,7 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
       //Throw of first 5 symbols becau se 'file'
       //has following format '/i/m/image.ext' (dispretion path)
       if (strtolower(substr($image['file'], 5)) == $name)
-        return Mage::getModel('mventory_tm/product_api')
+        return Mage::getModel('mventory/product_api')
                  ->fullInfo($productId, $identifierType);
 
     $hasMainImage = false;
@@ -102,7 +102,7 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
 
     $this->create($productId, $data, $storeId, $identifierType);
 
-    $productApi = Mage::getModel('mventory_tm/product_api');
+    $productApi = Mage::getModel('mventory/product_api');
 
     //Set product's visibility to 'catalog and search' if product doesn't have
     //small image before addind the image
@@ -125,10 +125,10 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
     $this->remove($productId, $file, $identifierType);
     $images = $this->items($productId, null, $identifierType);
 
-    $productApi = Mage::getModel('mventory_tm/product_api');
+    $productApi = Mage::getModel('mventory/product_api');
 
     if (!$images) {
-      $helper = Mage::helper('mventory_tm/product');
+      $helper = Mage::helper('mventory/product');
 
       $productApi->update(
         $productId,
@@ -173,7 +173,7 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
   protected function _initProduct($productId, $store = null,
                                   $identifierType = null) {
 
-    $helper = Mage::helper('mventory_tm/product');
+    $helper = Mage::helper('mventory/product');
 
     $productId = $helper->getProductId($productId, $identifierType);
 
@@ -206,7 +206,7 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
 
       $path = $tmp . DS . $name;
 
-      if (Mage::helper('mventory_tm/image')->fixOrientation($path))
+      if (Mage::helper('mventory/image')->fixOrientation($path))
         $data = $io->read($path);
     } catch (Exception $e) {}
 

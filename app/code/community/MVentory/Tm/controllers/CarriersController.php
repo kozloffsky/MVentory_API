@@ -39,7 +39,7 @@ class MVentory_Tm_CarriersController
 
     $content = $this
                  ->getLayout()
-                 ->createBlock('mventory_tm/carrier_volumerate_grid')
+                 ->createBlock('mventory/carrier_volumerate_grid')
                  ->setWebsiteId($websiteId)
                  ->getCsvFile();
 

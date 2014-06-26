@@ -19,7 +19,7 @@
 
 $this->startSetup();
 
-$tableName = 'mventory_tm/carrier_volumerate';
+$tableName = 'mventory/carrier_volumerate';
 
 $fields = array(
   'website_id',

@@ -31,8 +31,8 @@
     </reference>
 
     <reference name="content">
-      <block type="mventory_tm/matching" name="mventory.matching" template="mventory/matching.phtml">
-        <block type="mventory_tm/matching_categories" name="mventory.matching.categories" as="categories" template="mventory/matching/categories.phtml" />
+      <block type="mventory/matching" name="mventory.matching" template="mventory/matching.phtml">
+        <block type="mventory/matching_categories" name="mventory.matching.categories" as="categories" template="mventory/matching/categories.phtml" />
       </block>
     </reference>
   </adminhtml_catalog_product_set_edit>

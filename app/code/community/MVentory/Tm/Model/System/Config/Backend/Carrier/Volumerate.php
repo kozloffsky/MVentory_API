@@ -30,7 +30,7 @@ class MVentory_Tm_Model_System_Config_Backend_Carrier_Volumerate
   }
 
   public function _afterSave () {
-    Mage::getResourceModel('mventory_tm/carrier_volumerate')
+    Mage::getResourceModel('mventory/carrier_volumerate')
       ->uploadAndImport($this);
   }
 }

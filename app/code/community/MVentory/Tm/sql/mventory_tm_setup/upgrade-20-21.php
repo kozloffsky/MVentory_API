@@ -19,7 +19,7 @@
 
 $this->startSetup();
 
-$tableName = $this->getTable('mventory_tm/additional_skus');
+$tableName = $this->getTable('mventory/additional_skus');
 
 $c = $this->getConnection();
 

@@ -30,6 +30,6 @@ class MVentory_Tm_Model_Resource_Matching
   );
 
   protected function _construct() {
-    $this->_init('mventory_tm/matching_rules', 'id');
+    $this->_init('mventory/matching_rules', 'id');
   }
 }

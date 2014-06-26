@@ -153,7 +153,7 @@ class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
       return $this->getProfileErrorMessage(self::PROFILE_ERR_FAILED, $profile, $user, "Last action is an IO action but does not save data into a file.");
     }
 
-    $currentStoreID = Mage::helper('mventory_tm')->getCurrentStoreId();
+    $currentStoreID = Mage::helper('mventory')->getCurrentStoreId();
 
     foreach($actions as $action)
     {

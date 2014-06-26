@@ -94,7 +94,7 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
 
     $data = array(
       'id' => 'mventory-rule-reset',
-      'label' => Mage::helper('mventory_tm')->__('Reset rule')
+      'label' => Mage::helper('mventory')->__('Reset rule')
     );
 
     $button = $this
@@ -107,7 +107,7 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
     $data = array(
       'id' => 'mventory-rule-save',
       'class' => 'disabled',
-      'label' => Mage::helper('mventory_tm')->__('Save rule')
+      'label' => Mage::helper('mventory')->__('Save rule')
     );
 
     $button = $this
@@ -125,7 +125,7 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
   }
 
   protected function _getRules () {
-    return Mage::getModel('mventory_tm/matching')
+    return Mage::getModel('mventory/matching')
       ->loadBySetId($this->_getSetId());
   }
 
