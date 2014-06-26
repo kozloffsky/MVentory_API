@@ -341,7 +341,7 @@
     <layout>
       <updates>
         <page-tm-additions>
-          <file>page/mv-additions.xml</file>
+          <file>mventory.xml</file>
         </page-tm-additions>
       </updates>
     </layout>
