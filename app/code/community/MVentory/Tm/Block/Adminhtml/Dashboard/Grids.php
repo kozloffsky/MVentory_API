@@ -24,20 +24,20 @@
 class MVentory_Tm_Block_Adminhtml_Dashboard_Grids extends Mage_Adminhtml_Block_Dashboard_Grids
 {
 
-    /**
-     * Add tab with stock info
-     */
-    protected function _prepareLayout()
-    {
-        parent::_prepareLayout();
+  /**
+   * Add tab with stock info
+   */
+  protected function _prepareLayout()
+  {
+    parent::_prepareLayout();
 
-        // load tab statically
-        $this->addTab('stock_info', array(
-            'label'     => $this->__('Stock Info'),
-            'content'   => $this->getLayout()->createBlock('mventory_tm/adminhtml_dashboard_tab_stock')->toHtml(),
-            'active'    => false
-        ));
+    // load tab statically
+    $this->addTab('stock_info', array(
+      'label' => $this->__('Stock Info'),
+      'content' => $this->getLayout()->createBlock('mventory_tm/adminhtml_dashboard_tab_stock')->toHtml(),
+      'active' => false
+    ));
 
-        return $this;
-    }
+    return $this;
+  }
 }
