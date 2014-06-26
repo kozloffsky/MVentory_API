@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
+class MVentory_API_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
   const CONF_TYPE = Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE;
 
@@ -170,7 +170,7 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
     $storeId = Mage::helper('mventory')->getCurrentStoreId();
 
     $limit = (int) Mage::getStoreConfig(
-      MVentory_Tm_Model_Config::_FETCH_LIMIT,
+      MVentory_API_Model_Config::_FETCH_LIMIT,
       $storeId
     );
 
@@ -246,12 +246,12 @@ class MVentory_Tm_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
 
       //Set visibility to website's default value
       $data['visibility'] = (int) $helper->getConfig(
-        MVentory_Tm_Model_Config::_API_VISIBILITY,
+        MVentory_API_Model_Config::_API_VISIBILITY,
         $website
       );
 
       $data['tax_class_id'] = (int) $helper->getConfig(
-        MVentory_Tm_Model_Config::_TAX_CLASS,
+        MVentory_API_Model_Config::_TAX_CLASS,
         $website
       );
 

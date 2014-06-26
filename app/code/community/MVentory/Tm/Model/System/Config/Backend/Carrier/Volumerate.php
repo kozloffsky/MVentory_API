@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_System_Config_Backend_Carrier_Volumerate
+class MVentory_API_Model_System_Config_Backend_Carrier_Volumerate
   extends Mage_Core_Model_Config_Data {
 
   public function _beforeSave () {

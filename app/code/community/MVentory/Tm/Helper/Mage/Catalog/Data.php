@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Helper_Mage_Catalog_Data extends Mage_Catalog_Helper_Data {
+class MVentory_API_Helper_Mage_Catalog_Data extends Mage_Catalog_Helper_Data {
 
   /**
    * Same as Mage_Catalog_Helper_Data::getBreadcrumbPath(), but returns

@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
+class MVentory_API_Block_Matching extends Mage_Adminhtml_Block_Template {
 
   protected $_attrs = null;
   protected $_categories = null;
@@ -87,7 +87,7 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
   /**
    * Prepare layout
    *
-   * @return MVentory_Tm_Block_Matching
+   * @return MVentory_API_Block_Matching
    */
   protected function _prepareLayout () {
     parent::_prepareLayout();
@@ -164,7 +164,7 @@ class MVentory_Tm_Block_Matching extends Mage_Adminhtml_Block_Template {
 
   protected function _prepareRule ($data) {
     $id = $data['id'];
-    $default = ($id == MVentory_Tm_Model_Matching::DEFAULT_RULE_ID);
+    $default = ($id == MVentory_API_Model_Matching::DEFAULT_RULE_ID);
 
     $category = $data['category'];
     $hasCategory = false;

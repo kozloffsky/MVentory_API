@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
+class MVentory_API_Helper_Product extends MVentory_API_Helper_Data {
 
   /**
    * Returns product's category
@@ -77,7 +77,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
     foreach ($ids as $id) {
       $website = $app->getWebsite($id);
 
-      if (!$this->getConfig(MVentory_Tm_Model_Config::_ROOT_WEBSITE, $website))
+      if (!$this->getConfig(MVentory_API_Model_Config::_ROOT_WEBSITE, $website))
         break;
     }
 
@@ -363,7 +363,7 @@ class MVentory_Tm_Helper_Product extends MVentory_Tm_Helper_Data {
    * @param Mage_Catalog_Model_Product $product Product
    * @param array $images
    *
-   * @return MVentory_Tm_Helper_Product
+   * @return MVentory_API_Helper_Product
    */
   public function addImages ($product, array $images) {
     $_images = $this->getImages($product);

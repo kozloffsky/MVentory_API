@@ -21,7 +21,7 @@
  *
  * @package MVentory/API
  */
-class MVentory_Tm_Model_Order_Shipment_Api extends Mage_Sales_Model_Order_Shipment_Api {
+class MVentory_API_Model_Order_Shipment_Api extends Mage_Sales_Model_Order_Shipment_Api {
 
   public function createShipmentWithTracking($orderIncrementId, $carrier,
   $title, $trackNumber, $params = null) {

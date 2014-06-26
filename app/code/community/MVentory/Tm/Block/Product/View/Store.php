@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Product_View_Store extends Mage_Core_Block_Template {
+class MVentory_API_Block_Product_View_Store extends Mage_Core_Block_Template {
 
   const XML_PATH_STORE_STORE_ADDRESS = 'general/store_information/address';
 

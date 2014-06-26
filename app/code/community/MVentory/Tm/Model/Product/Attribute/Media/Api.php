@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Product_Attribute_Media_Api
+class MVentory_API_Model_Product_Attribute_Media_Api
   extends Mage_Catalog_Model_Product_Attribute_Media_Api {
 
   public function createAndReturnInfo ($productId, $data, $storeId = null,
@@ -133,7 +133,7 @@ class MVentory_Tm_Model_Product_Attribute_Media_Api
       $productApi->update(
         $productId,
         array('visibility' => (int) $helper->getConfig(
-          MVentory_Tm_Model_Config::_API_VISIBILITY,
+          MVentory_API_Model_Config::_API_VISIBILITY,
           $helper->getWebsite($productId)
         )),
         null,

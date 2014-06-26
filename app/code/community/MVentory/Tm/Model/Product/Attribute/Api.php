@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Product_Attribute_Api
+class MVentory_API_Model_Product_Attribute_Api
   extends Mage_Catalog_Model_Product_Attribute_Api {
 
   protected $_excludeFromSet = array(

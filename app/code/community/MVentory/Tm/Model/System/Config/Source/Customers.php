@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_System_Config_Source_Customers {
+class MVentory_API_Model_System_Config_Source_Customers {
 
   /**
    * Options getter

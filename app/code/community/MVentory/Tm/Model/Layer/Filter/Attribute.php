@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Layer_Filter_Attribute
+class MVentory_API_Model_Layer_Filter_Attribute
   extends Mage_Catalog_Model_Layer_Filter_Attribute {
 
   const SORT_GROUPED = 'grouped';

@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Layer extends Mage_Catalog_Model_Layer {
+class MVentory_API_Model_Layer extends Mage_Catalog_Model_Layer {
 
   /**
    * Get collection of all filterable attributes for layer products set
@@ -35,7 +35,7 @@ class MVentory_Tm_Model_Layer extends Mage_Catalog_Model_Layer {
     if (!$setIds)
       return array();
 
-    //Used in MVentory_Tm_Block_Layer_View class
+    //Used in MVentory_API_Block_Layer_View class
     $this->setData('_set_ids', $setIds);
 
     $collection

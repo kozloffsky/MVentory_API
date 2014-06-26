@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Resource_Matching
+class MVentory_API_Model_Resource_Matching
   extends Mage_Core_Model_Resource_Db_Abstract {
 
   protected $_serializableFields = array(

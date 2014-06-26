@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Config
+class MVentory_API_Model_Config
 {
   //Config paths
   const _FETCH_LIMIT = 'mventory/api/products-number-to-fetch';

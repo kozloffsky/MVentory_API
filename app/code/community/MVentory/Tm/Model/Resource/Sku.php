@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Resource_Sku
+class MVentory_API_Model_Resource_Sku
   extends Mage_Core_Model_Resource_Db_Abstract {
 
   protected function _construct() {

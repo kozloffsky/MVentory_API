@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Product_Url extends Mage_Catalog_Model_Product_Url {
+class MVentory_API_Model_Product_Url extends Mage_Catalog_Model_Product_Url {
 
   /**
    * Check product category

@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Stock_Item_Api
+class MVentory_API_Model_Stock_Item_Api
   extends Mage_CatalogInventory_Model_Stock_Item_Api {
 
   public function items ($productIds) {

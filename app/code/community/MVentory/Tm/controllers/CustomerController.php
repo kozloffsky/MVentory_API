@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_CustomerController extends Mage_Adminhtml_Controller_Action
+class MVentory_API_CustomerController extends Mage_Adminhtml_Controller_Action
 {
 
   const _NO_ADDRESS = <<<'EOT'
@@ -46,7 +46,7 @@ Save the XML-RPC user again to generate a new link
 EOT;
 
   protected function _construct() {
-    $this->setUsedModuleName('MVentory_Tm');
+    $this->setUsedModuleName('MVentory_API');
   }
 
   /**
@@ -89,7 +89,7 @@ EOT;
       );
 
     $roleName = Mage::helper('mventory')
-      ->getConfig(MVentory_Tm_Model_Config::_DEFAULT_ROLE);
+      ->getConfig(MVentory_API_Model_Config::_DEFAULT_ROLE);
 
     $role = Mage::getResourceModel('api/role_collection')
       ->addFieldToFilter('role_name', $roleName);

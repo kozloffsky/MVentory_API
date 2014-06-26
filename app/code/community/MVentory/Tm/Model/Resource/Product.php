@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Resource_Product
+class MVentory_API_Model_Resource_Product
   extends Mage_Catalog_Model_Resource_Product {
 
   /**

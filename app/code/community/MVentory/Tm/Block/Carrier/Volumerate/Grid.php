@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Carrier_Volumerate_Grid
+class MVentory_API_Block_Carrier_Volumerate_Grid
   extends Mage_Adminhtml_Block_Widget_Grid {
 
   /**

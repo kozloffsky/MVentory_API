@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Config_Data_Websites
+class MVentory_API_Model_Config_Data_Websites
   extends Mage_Core_Model_Config_Data {
 
   protected function _beforeSave () {

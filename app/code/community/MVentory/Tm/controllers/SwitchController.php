@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_SwitchController
+class MVentory_API_SwitchController
   extends Mage_Core_Controller_Front_Action {
 
   public function toMobileAction() {

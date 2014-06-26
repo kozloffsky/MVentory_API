@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Observer {
+class MVentory_API_Model_Observer {
   const __CONFIG_URL = <<<'EOT'
 mVentory configuration URL: <a href="%1$s">%1$s</a> (Can only be used once and is valid for %2$d hours)
 EOT;
@@ -463,7 +463,7 @@ EOT;
       $helper->getImages($product, null, false)
         ? Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH
           : (int) $helper->getConfig(
-              MVentory_Tm_Model_Config::_API_VISIBILITY,
+              MVentory_API_Model_Config::_API_VISIBILITY,
               $helper->getWebsite($product)
             )
     );
@@ -599,7 +599,7 @@ EOT;
     //So to add images collected on previous step we need to unset value
     //of media_gallery attribute, because on duplicate process images from the
     //media_gallery attribute and collected image are same. It allows for
-    //addImages() method of MVentory_Tm_Helper_Product class to add all images
+    //addImages() method of MVentory_API_Helper_Product class to add all images
     //to the duplicate
     if ($product->getOrigIsDuplicate())
       $product->unsMediaGallery();
@@ -935,7 +935,7 @@ EOT;
     if ($store->getId() === null)
       return;
 
-    $period = $store->getConfig(MVentory_Tm_Model_Config::_LINK_LIFETIME) * 60;
+    $period = $store->getConfig(MVentory_API_Model_Config::_LINK_LIFETIME) * 60;
 
     if (!$period)
       return;

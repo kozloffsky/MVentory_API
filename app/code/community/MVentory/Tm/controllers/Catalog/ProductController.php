@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Catalog_ProductController
+class MVentory_API_Catalog_ProductController
   extends Mage_Adminhtml_Controller_Action {
 
   public function massNameRebuildAction () {

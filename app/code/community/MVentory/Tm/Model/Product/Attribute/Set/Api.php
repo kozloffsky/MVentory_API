@@ -21,7 +21,7 @@
  *
  * @package MVentory/API
  */
-class MVentory_Tm_Model_Product_Attribute_Set_Api
+class MVentory_API_Model_Product_Attribute_Set_Api
   extends Mage_Catalog_Model_Product_Attribute_Set_Api {
 
   public function fullInfoList () {

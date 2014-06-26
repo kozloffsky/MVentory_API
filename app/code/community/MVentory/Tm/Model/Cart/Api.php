@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
+class MVentory_API_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
   public function createOrderForProduct ($sku, $price, $qty, $customerId,
                                          $transactionId = null, $name = null,
@@ -64,7 +64,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
     if (!$productId) {
       if ($taxClass == null)
         $taxClass = (int) $helper->getConfig(
-          MVentory_Tm_Model_Config::_TAX_CLASS,
+          MVentory_API_Model_Config::_TAX_CLASS,
           $helper->getCurrentWebsite()
         );
 
@@ -161,8 +161,10 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
 
     $cartCustomer = Mage::getModel('checkout/cart_customer_api');
 
-    $data = array('mode' => Mage_Checkout_Model_Cart_Customer_Api::MODE_CUSTOMER,
-                  'entity_id' => $customerId);
+    $data = array(
+      'mode' => Mage_Checkout_Model_Cart_Customer_Api::MODE_CUSTOMER,
+      'entity_id' => $customerId
+    );
 
     $result = $cartCustomer->set($quoteId, $data, $storeId);
 
@@ -539,7 +541,7 @@ class MVentory_Tm_Model_Cart_Api extends Mage_Checkout_Model_Cart_Api {
   function getCart()
   {
     $cartItemLifeTime = Mage::getStoreConfig(
-      MVentory_Tm_Model_Config::_ITEM_LIFETIME
+      MVentory_API_Model_Config::_ITEM_LIFETIME
     );
     $deleteBeforeTimestamp = time() - $cartItemLifeTime*60;
     $storeId = Mage::helper('mventory')->getCurrentStoreId(null);

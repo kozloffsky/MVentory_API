@@ -23,7 +23,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_System_Config_Form_Field_Exportrates
+class MVentory_API_Block_System_Config_Form_Field_Exportrates
   extends Mage_Adminhtml_Block_System_Config_Form_Field {
 
   protected function _getElementHtml (Varien_Data_Form_Element_Abstract $elem) {

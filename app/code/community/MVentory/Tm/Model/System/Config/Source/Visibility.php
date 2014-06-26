@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_System_Config_Source_Visibility
+class MVentory_API_Model_System_Config_Source_Visibility
   extends Mage_Catalog_Model_Product_Visibility
 {
 

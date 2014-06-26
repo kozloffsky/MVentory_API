@@ -20,9 +20,9 @@
 
 <config>
   <modules>
-    <MVentory_Tm>
+    <MVentory_API>
       <active>true</active>
       <codePool>community</codePool>
-    </MVentory_Tm>
+    </MVentory_API>
   </modules>
 </config>

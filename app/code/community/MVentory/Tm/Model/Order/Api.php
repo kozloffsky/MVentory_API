@@ -22,13 +22,13 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Order_Api extends Mage_Sales_Model_Order_Api {
+class MVentory_API_Model_Order_Api extends Mage_Sales_Model_Order_Api {
 
   public function listByStatus ($status = null) {
     $storeId = Mage::helper('mventory')->getCurrentStoreId();
 
     $limit = (int) Mage::getStoreConfig(
-      MVentory_Tm_Model_Config::_FETCH_LIMIT,
+      MVentory_API_Model_Config::_FETCH_LIMIT,
       $storeId
     );
 

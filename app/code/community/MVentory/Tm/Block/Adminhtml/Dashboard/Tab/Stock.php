@@ -21,7 +21,7 @@
  *
  * @package MVentory/API
  */
-class MVentory_Tm_Block_Adminhtml_Dashboard_Tab_Stock
+class MVentory_API_Block_Adminhtml_Dashboard_Tab_Stock
   extends Mage_Adminhtml_Block_Template {
 
   protected $_totalStockQty;

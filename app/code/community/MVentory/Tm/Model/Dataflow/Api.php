@@ -21,7 +21,7 @@
  *
  * @package MVentory/API
  */
-class MVentory_Tm_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
+class MVentory_API_Model_Dataflow_Api extends Mage_Api_Model_Resource_Abstract {
 
   const PROFILE_ERR_INVALID = 0;
   const PROFILE_ERR_FAILED = 1;

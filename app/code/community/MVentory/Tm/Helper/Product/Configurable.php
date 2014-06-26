@@ -22,8 +22,8 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Helper_Product_Configurable
-  extends MVentory_Tm_Helper_Product {
+class MVentory_API_Helper_Product_Configurable
+  extends MVentory_API_Helper_Product {
 
   public function getIdByChild ($child) {
     $id = $child instanceof Mage_Catalog_Model_Product

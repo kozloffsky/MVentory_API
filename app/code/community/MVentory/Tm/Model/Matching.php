@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Matching
+class MVentory_API_Model_Matching
   extends Mage_Core_Model_Abstract
   implements IteratorAggregate {
 
@@ -150,7 +150,7 @@ class MVentory_Tm_Model_Matching
   protected function _getLostCategoryId ($product) {
     $helper = Mage::helper('mventory/product');
 
-    return $helper->getConfig(MVentory_Tm_Model_Config::_LOST_CATEGORY,
+    return $helper->getConfig(MVentory_API_Model_Config::_LOST_CATEGORY,
                               $helper->getWebsite($product));
   }
 

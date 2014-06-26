@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Product_View_Tabs
+class MVentory_API_Block_Product_View_Tabs
   extends Mage_Catalog_Block_Product_View_Tabs {
 
   protected $_product = null;

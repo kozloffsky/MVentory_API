@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Product_View_Attributes
+class MVentory_API_Block_Product_View_Attributes
  extends Mage_Catalog_Block_Product_View_Attributes {
 
   /**

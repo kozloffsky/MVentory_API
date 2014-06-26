@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Resource_Carrier_Volumerate_Collection
+class MVentory_API_Model_Resource_Carrier_Volumerate_Collection
   extends Mage_Shipping_Model_Resource_Carrier_Tablerate_Collection {
 
   /**

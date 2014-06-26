@@ -21,7 +21,7 @@
  *
  * @package MVentory/API
  */
-class MVentory_Tm_Model_Category_Api extends Mage_Catalog_Model_Category_Api
+class MVentory_API_Model_Category_Api extends Mage_Catalog_Model_Category_Api
 {
 
   private function removeInactive(&$tree)

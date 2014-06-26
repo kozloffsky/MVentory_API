@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Helper_Image extends MVentory_Tm_Helper_Product {
+class MVentory_API_Helper_Image extends MVentory_API_Helper_Product {
 
   private $_supportedTypes = array(
     IMAGETYPE_GIF => 'gif',

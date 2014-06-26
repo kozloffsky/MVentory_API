@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Method_Dummy
+class MVentory_API_Model_Method_Dummy
   extends Mage_Payment_Model_Method_Abstract {
 
   protected $_code = 'dummy';

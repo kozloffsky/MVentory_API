@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Block_Layer_View extends Mage_Catalog_Block_Layer_View {
+class MVentory_API_Block_Layer_View extends Mage_Catalog_Block_Layer_View {
 
   /**
    * Get all fiterable attributes of current category

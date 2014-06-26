@@ -20,47 +20,47 @@
 
 <config>
   <modules>
-    <MVentory_Tm>
+    <MVentory_API>
       <version>25</version>
-    </MVentory_Tm>
+    </MVentory_API>
   </modules>
 
   <global>
     <blocks>
       <mventory>
-        <class>MVentory_Tm_Block</class>
+        <class>MVentory_API_Block</class>
       </mventory>
 
       <catalog>
         <rewrite>
-          <layer_view>MVentory_Tm_Block_Layer_View</layer_view>
-          <product_view_attributes>MVentory_Tm_Block_Product_View_Attributes</product_view_attributes>
-          <product_view_description>MVentory_Tm_Block_Product_View_Description</product_view_description>
-          <product_view_tabs>MVentory_Tm_Block_Product_View_Tabs</product_view_tabs>
+          <layer_view>MVentory_API_Block_Layer_View</layer_view>
+          <product_view_attributes>MVentory_API_Block_Product_View_Attributes</product_view_attributes>
+          <product_view_description>MVentory_API_Block_Product_View_Description</product_view_description>
+          <product_view_tabs>MVentory_API_Block_Product_View_Tabs</product_view_tabs>
         </rewrite>
       </catalog>
 
       <adminhtml>
         <rewrite>
-          <dashboard_grids>MVentory_Tm_Block_Adminhtml_Dashboard_Grids</dashboard_grids>
+          <dashboard_grids>MVentory_API_Block_Adminhtml_Dashboard_Grids</dashboard_grids>
         </rewrite>
       </adminhtml>
 
       <page>
         <rewrite>
-          <html_footer>MVentory_Tm_Block_Html_Footer</html_footer>
+          <html_footer>MVentory_API_Block_Html_Footer</html_footer>
         </rewrite>
       </page>
     </blocks>
 
     <models>
       <mventory>
-        <class>MVentory_Tm_Model</class>
+        <class>MVentory_API_Model</class>
         <resourceModel>mventory_resources</resourceModel>
       </mventory>
 
       <mventory_resources>
-        <class>MVentory_Tm_Model_Resource</class>
+        <class>MVentory_API_Model_Resource</class>
 
         <entities>
           <order_transaction>
@@ -86,33 +86,33 @@
 
       <catalog>
         <rewrite>
-          <layer>MVentory_Tm_Model_Layer</layer>
-          <layer_filter_attribute>MVentory_Tm_Model_Layer_Filter_Attribute</layer_filter_attribute>
-          <product_url>MVentory_Tm_Model_Product_Url</product_url>
+          <layer>MVentory_API_Model_Layer</layer>
+          <layer_filter_attribute>MVentory_API_Model_Layer_Filter_Attribute</layer_filter_attribute>
+          <product_url>MVentory_API_Model_Product_Url</product_url>
         </rewrite>
       </catalog>
 
       <core>
         <rewrite>
-          <convert>MVentory_Tm_Model_Core_Convert</convert>
+          <convert>MVentory_API_Model_Core_Convert</convert>
         </rewrite>
       </core>
     </models>
 
     <helpers>
       <mventory>
-        <class>MVentory_Tm_Helper</class>
+        <class>MVentory_API_Helper</class>
       </mventory>
 
       <catalog>
         <rewrite>
-          <data>MVentory_Tm_Helper_Mage_Catalog_Data</data>
+          <data>MVentory_API_Helper_Mage_Catalog_Data</data>
         </rewrite>
       </catalog>
 
       <sales>
         <rewrite>
-          <data>MVentory_Tm_Helper_Mage_Sales_Data</data>
+          <data>MVentory_API_Helper_Mage_Sales_Data</data>
         </rewrite>
       </sales>
     </helpers>
@@ -120,8 +120,8 @@
     <resources>
       <mventory_setup>
         <setup>
-          <module>MVentory_Tm</module>
-          <class>MVentory_Tm_Model_Resource_Setup</class>
+          <module>MVentory_API</module>
+          <class>MVentory_API_Model_Resource_Setup</class>
         </setup>
       </mventory_setup>
     </resources>
@@ -320,7 +320,7 @@
       <mventory_adminhtml>
         <use>admin</use>
         <args>
-          <module>MVentory_Tm</module>
+          <module>MVentory_API</module>
           <frontName>mventory</frontName>
         </args>
       </mventory_adminhtml>
@@ -332,7 +332,7 @@
       <mventory>
         <use>standard</use>
         <args>
-          <module>MVentory_Tm</module>
+          <module>MVentory_API</module>
           <frontName>mventory</frontName>
         </args>
       </mventory>

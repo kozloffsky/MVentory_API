@@ -21,7 +21,7 @@
  *
  * @package MVentory/API
  */
-class MVentory_Tm_Model_Resource_Cart_Item
+class MVentory_API_Model_Resource_Cart_Item
   extends Mage_Core_Model_Resource_Db_Abstract {
 
   protected function _construct() {

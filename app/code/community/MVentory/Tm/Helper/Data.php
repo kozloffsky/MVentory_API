@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
+class MVentory_API_Helper_Data extends Mage_Core_Helper_Abstract {
 
   protected $_baseMediaUrl = null;
 
@@ -281,7 +281,7 @@ class MVentory_Tm_Helper_Data extends Mage_Core_Helper_Abstract {
   public function isObserverDisabled ($observer) {
     $isApiRequest = Mage::getSingleton('api/server')->getAdapter() != null;
     $applyRules = (bool) $this->getConfig(
-      MVentory_Tm_Model_Config::_APPLY_RULES,
+      MVentory_API_Model_Config::_APPLY_RULES,
       Mage::helper('mventory/product')->getWebsite($observer->getProduct())
     );
 

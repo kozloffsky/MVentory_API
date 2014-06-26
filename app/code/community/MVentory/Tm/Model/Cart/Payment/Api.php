@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Cart_Payment_Api
+class MVentory_API_Model_Cart_Payment_Api
   extends Mage_Checkout_Model_Cart_Payment_Api {
 
   public function setPaymentMethod ($quoteId, $paymentData, $store = null) {

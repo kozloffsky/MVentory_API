@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Resource_Carrier_Volumerate
+class MVentory_API_Model_Resource_Carrier_Volumerate
   extends Mage_Shipping_Model_Resource_Carrier_Tablerate {
 
   protected $_helper = null;
@@ -460,7 +460,7 @@ class MVentory_Tm_Model_Resource_Carrier_Volumerate
    * Save import data batch
    *
    * @param array $data
-   * @return MVentory_Tm_Model_Resource_Carrier_Volumerate
+   * @return MVentory_API_Model_Resource_Carrier_Volumerate
    */
   protected function _saveImportData (array $data) {
     if (empty($data))

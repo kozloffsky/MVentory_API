@@ -21,7 +21,7 @@
  *
  * @package MVentory/API
  */
-class MVentory_Tm_Model_Core_Convert extends Mage_Core_Model_Convert {
+class MVentory_API_Model_Core_Convert extends Mage_Core_Model_Convert {
 
-    protected $_profileDefaultClass = 'MVentory_Tm_Model_Dataflow_Convert_Profile';
+    protected $_profileDefaultClass = 'MVentory_API_Model_Dataflow_Convert_Profile';
 }

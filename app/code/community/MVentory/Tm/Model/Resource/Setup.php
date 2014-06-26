@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Resource_Setup extends Mage_Eav_Model_Entity_Setup {
+class MVentory_API_Model_Resource_Setup extends Mage_Eav_Model_Entity_Setup {
 
   protected $_mappings = array(
     Mage_Catalog_Model_Product::ENTITY => array(

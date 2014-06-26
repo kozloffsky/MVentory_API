@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Dataflow_Convert_Profile extends Mage_Dataflow_Model_Convert_Profile
+class MVentory_API_Model_Dataflow_Convert_Profile extends Mage_Dataflow_Model_Convert_Profile
 {
   public function getActions()
   {

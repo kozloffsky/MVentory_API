@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Model_Order_Transaction extends Mage_Core_Model_Abstract {
+class MVentory_API_Model_Order_Transaction extends Mage_Core_Model_Abstract {
   protected function _construct() {
     $this->_init('mventory/order_transaction');
   }

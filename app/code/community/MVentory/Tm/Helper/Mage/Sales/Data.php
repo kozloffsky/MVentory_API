@@ -22,7 +22,7 @@
  * @package MVentory/API
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
-class MVentory_Tm_Helper_Mage_Sales_Data extends Mage_Sales_Helper_Data {
+class MVentory_API_Helper_Mage_Sales_Data extends Mage_Sales_Helper_Data {
 
   /**
    * Check allow to send new order confirmation email

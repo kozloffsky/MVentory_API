@@ -23,7 +23,7 @@
  * @author Anatoly A. Kazantsev <anatoly@mventory.com>
  */
 
-class MVentory_Tm_AppController
+class MVentory_API_AppController
   extends Mage_Core_Controller_Front_Action {
 
   const KEY_LENGTH = 16;
