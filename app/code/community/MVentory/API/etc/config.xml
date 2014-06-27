@@ -103,12 +103,6 @@
         <class>MVentory_API_Helper</class>
       </mventory>
 
-      <catalog>
-        <rewrite>
-          <data>MVentory_API_Helper_Mage_Catalog_Data</data>
-        </rewrite>
-      </catalog>
-
       <sales>
         <rewrite>
           <data>MVentory_API_Helper_Mage_Sales_Data</data>
