@@ -35,7 +35,6 @@
         <rewrite>
           <layer_view>MVentory_API_Block_Layer_View</layer_view>
           <product_view_attributes>MVentory_API_Block_Product_View_Attributes</product_view_attributes>
-          <product_view_description>MVentory_API_Block_Product_View_Description</product_view_description>
           <product_view_tabs>MVentory_API_Block_Product_View_Tabs</product_view_tabs>
         </rewrite>
       </catalog>
