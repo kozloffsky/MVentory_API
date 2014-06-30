@@ -295,6 +295,13 @@
         <from><![CDATA[#^/mventory-key/(.*)$#]]></from>
         <to><![CDATA[/mventory/app/redirect/key/$1/]]></to>
       </mventory_app_config_redirect>
+
+      <!-- Support for old app -->
+      <!-- !!!TODO: remove it after all apps will be upgraded -->
+      <mventory_image_redirect>
+        <from><![CDATA[#^/mventory_tm/image/get/file/(.*)$#]]></from>
+        <to><![CDATA[/mventory/image/get/file/$1]]></to>
+      </mventory_image_redirect>
     </rewrite>
 
     <cache>
