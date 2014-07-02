@@ -522,37 +522,6 @@ class MVentory_API_Model_Product_Api extends Mage_Catalog_Model_Product_Api {
   }
 
   /**
-   * Delete product
-   *
-   * The method is redefined to prevent removing of products from Magento
-   * via API. It disables a product and adds (DELETED) to its name
-   *
-   * @param int|string $productId (SKU or ID)
-   * @param  string $identifierType
-   *
-   * @return boolean
-   */
-  public function delete ($productId, $identifierType = null) {
-    $product = $this->_getProduct($productId, null, $identifierType);
-
-    $name = $product->getName();
-
-    if (substr($name, -strlen('(DELETED)')) != '(DELETED)')
-      $name .= ' (DELETED)';
-
-    try {
-      $product
-        ->setName($name)
-        ->setStatus(Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
-        ->save();
-    } catch (Mage_Core_Exception $e) {
-      $this->_fault('not_deleted', $e->getMessage());
-    }
-
-    return true;
-  }
-
-  /**
    * Update product data
    *
    * @param int|string $productId
