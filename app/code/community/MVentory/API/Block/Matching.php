@@ -40,7 +40,7 @@ class MVentory_API_Block_Matching extends Mage_Adminhtml_Block_Template {
                ->setAttributeSetFilter($this->_getSetId());
 
     foreach ($attrs as $attr) {
-      if (substr($attr->getAttributeCode(), -1) != '_')
+      if (!$attr->getIsUserDefined())
         continue;
 
       $type = $attr->getFrontendInput();

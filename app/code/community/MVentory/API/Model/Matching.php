@@ -165,7 +165,7 @@ class MVentory_API_Model_Matching
                ->setAttributeSetFilter($this->getData('attribute_set_id'));
 
     foreach ($_attrs as $attr) {
-      if (substr($attr->getAttributeCode(), -1) != '_')
+      if (!$attr->getIsUserDefined())
         continue;
 
       $type = $attr->getFrontendInput();
