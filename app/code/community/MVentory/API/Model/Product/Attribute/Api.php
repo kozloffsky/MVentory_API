@@ -25,36 +25,25 @@
 class MVentory_API_Model_Product_Attribute_Api
   extends Mage_Catalog_Model_Product_Attribute_Api {
 
-  protected $_excludeFromSet = array(
-    'old_id' => true,
-    'news_from_date' => true,
-    'news_to_date' => true,
-    'country_of_manufacture' => true,
-    'category_id' => true,
-    'required_options' => true,
-    'has_options' => true,
-    'image_label' => true,
-    'small_image_label' => true,
-    'thumbnail_label' => true,
-    'group_price' => true,
-    'tier_price' => true,
-    'msrp_enabled' => true,
-    'minimal_price' => true,
-    'msrp_display_actual_price_type' => true,
-    'msrp' => true,
-    'enable_googlecheckout' => true,
-    'meta_title' => true,
-    'meta_keyword' => true,
-    'meta_description' => true,
-    'is_recurring' => true,
-    'recurring_profile' => true,
-    'custom_design' => true,
-    'custom_design_from' => true,
-    'custom_design_to' => true,
-    'custom_layout_update' => true,
-    'page_layout' => true,
-    'options_container' => true,
+  protected $_whitelist = array(
+    'category_ids' => true,
+    'name' => true,
+    'description' => true,
+    'short_description' => true,
+    'sku' => true,
+    'price' => true,
+    'special_price' => true,
+    'special_from_date' => true,
+    'special_to_data' => true,
+    'weight' => true,
+    'tax_class_id' => true
   );
+
+  public function __construct () {
+    parent::__construct();
+
+    $this->_ignoredAttributeCodes[] = 'cost';
+  }
 
   /**
    * Get information about attribute with list of options
@@ -62,26 +51,24 @@ class MVentory_API_Model_Product_Attribute_Api
    * @param integer|string $attribute attribute ID or code
    * @return array
    */
-  public function info ($attribute) {
+  public function info ($attr) {
+    $attr = $attr instanceof Mage_Catalog_Model_Resource_Eav_Attribute
+              ? $attr
+                : $this->_getAttribute($attr);
+
     $storeId = Mage::helper('mventory')->getCurrentStoreId();
 
-    $data = parent::info($attribute);
-
-    $label = $data['frontend_label'][0]['label'];
-
-    foreach($data['frontend_label'] as $_label)
-      if ($_label['store_id'] == $storeId) {
-        $label = $_label['label'];
-        break;
-      }
+    $label = (($labels = $attr->getStoreLabels()) && isset($labels[$storeId]))
+               ? $labels[$storeId]
+                 : $attr->getFrontendLabel();
 
     return array(
-      'attribute_id' => $data['attribute_id'],
-      'attribute_code' => $data['attribute_code'],
-      'frontend_input' => $data['frontend_input'],
-      'default_value' => $data['default_value'],
-      'is_required' => $data['is_required'],
-      'is_configurable' => $data['is_configurable'],
+      'attribute_id' => $attr->getId(),
+      'attribute_code' => $attr->getAttributeCode(),
+      'frontend_input' => $attr->getFrontendInput(),
+      'default_value' => $attr->getDefaultValue(),
+      'is_required' => $attr->getIsRequired(),
+      'is_configurable' => $attr->getIsConfigurable(),
       'label' => $label,
 
       //!!!DEPRECATED: replaced by 'label' key
@@ -90,31 +77,24 @@ class MVentory_API_Model_Product_Attribute_Api
         array('store_id' => 0, 'label' => $label)
       ),
 
-      'options' => $this->optionsPerStoreView(
-        $data['attribute_id'],
-        $storeId
-      )
+      'options' => $this->optionsPerStoreView($attr->getId(), $storeId)
     );
   }
 
   public function fullInfoList ($setId) {
-    $_attributes = $this->items($setId);
+    $attrs = Mage::getModel('catalog/product')
+      ->getResource()
+      ->loadAllAttributes()
+      ->getSortedAttributes($setId);
 
-    $attributes = array();
+    $result = array();
 
-    foreach ($_attributes as $_attribute) {
-      if (isset($this->_excludeFromSet[$_attribute['code']]))
-        continue;
+    foreach ($attrs as $attr)
+      if ((!$attr->getId() || $attr->isInSet($setId))
+          && $this->_isAllowedAttribute($attr))
+        $result[] = $this->info($attr);
 
-      $attribute = $this->info($_attribute['attribute_id']);
-
-      if ($attribute['label'] == '~')
-        continue;
-
-      $attributes[] = $attribute;
-    }
-
-    return $attributes;
+    return $result;
   }
 
   public function addOptionAndReturnInfo ($attribute, $value) {
@@ -262,5 +242,22 @@ class MVentory_API_Model_Product_Attribute_Api
     return $resource
              ->getConnection('core_write')
              ->delete($table, $condition);
+  }
+
+  protected function _isAllowedAttribute ($attr, $attrs = null) {
+    if (!parent::_isAllowedAttribute($attr, $attrs))
+      return false;
+
+    if (!(($attr->getIsVisible() && $attr->getIsUserDefined())
+          || isset($this->_whitelist[$attr->getAttributeCode()])))
+      return false;
+
+    $storeId = Mage::helper('mventory')->getCurrentStoreId();
+
+    $label = (($labels = $attr->getStoreLabels()) && isset($labels[$storeId]))
+               ? $labels[$storeId]
+                 : $attr->getFrontendLabel();
+
+    return $label != '~';
   }
 }
